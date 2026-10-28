@@ -17,13 +17,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
-      - name: 📦 Install dependencies
-        run: npm run install:all
+      - name: 📦 Install Client Dependencies
+        run: npm install --prefix client --legacy-peer-deps
 
       - name: 🔨 Build Frontend
-        run: npm run build
+        run: npm --prefix client run build
 
       - name: 📂 Sync files to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -33,4 +32,3 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: public_html/
           local-dir: client/dist/
-
