@@ -1,7 +1,9 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { SmartLink } from './SmartLink.jsx';
@@ -16,8 +18,9 @@ const VARIANTS = {
 const storageKey = (a) => `pms-announcement-${a._id}-${a.updatedAt}`;
 
 export function AnnouncementBar() {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const announcement = site?.announcements?.[0];
   const [dismissed, setDismissed] = useState(() => {
     try {
@@ -54,7 +57,7 @@ export function AnnouncementBar() {
                 </SmartLink>
               )}
             </p>
-            <button type="button" onClick={dismiss} className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 hover:bg-white/15" aria-label="Dismiss announcement">
+            <button type="button" onClick={dismiss} className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 hover:bg-white/15" aria-label={uiText("Dismiss announcement")}>
               <X className="size-4" />
             </button>
           </div>

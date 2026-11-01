@@ -1,6 +1,9 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { ErrorState, PageSkeleton } from '@/components/site/States.jsx';
 import { useConfirm } from '../components/ConfirmDialog.jsx';
 import { docLabel } from './format.js';
@@ -58,17 +61,17 @@ export function useEditorForm({ resource, id, defaults, basePath, toForm = ident
     setBaseline(JSON.stringify(next));
     const status = overrides.status;
     const scheduled = doc.publishedAt && new Date(doc.publishedAt) > new Date();
-    if (status === 'published' && previousStatus !== 'published') toast.success(scheduled ? 'Scheduled for publishing' : 'Published — now live on the website');
-    else if (status === 'draft' && previousStatus === 'published') toast.success('Unpublished — saved as draft');
-    else if (status === 'archived') toast.success('Archived');
-    else toast.success('Saved');
+    if (status === 'published' && previousStatus !== 'published') toast.success(scheduled ? uiText("Scheduled for publishing") : uiText("Published — now live on the website"));
+    else if (status === 'draft' && previousStatus === 'published') toast.success(uiText("Unpublished — saved as draft"));
+    else if (status === 'archived') toast.success(uiText("Archived"));
+    else toast.success(uiText("Saved"));
     if (isNew) setRedirect({ to: `${basePath}/${doc._id}`, replace: true });
     return doc;
   };
 
   const duplicate = async () => {
     if (dirty) {
-      const ok = await confirm({ title: 'Duplicate the last saved version?', description: 'Your unsaved changes are not included in the copy and will be discarded.', confirmLabel: 'Duplicate' });
+      const ok = await confirm({ get title() { return uiText("Duplicate the last saved version?"); }, get description() { return uiText("Your unsaved changes are not included in the copy and will be discarded."); }, get confirmLabel() { return uiText("Duplicate"); } });
       if (!ok) return;
     }
     try {
@@ -82,9 +85,9 @@ export function useEditorForm({ resource, id, defaults, basePath, toForm = ident
 
   const remove = async ({ force = false, description } = {}) => {
     const ok = await confirm({
-      title: `Delete “${label(item.data)}”?`,
-      description: description || 'This permanently deletes only this item. Anything that still contains other content is protected and cannot be deleted.',
-      confirmLabel: 'Delete permanently',
+      get title() { return uiTemplate`Delete “${label(item.data)}”?`; },
+      description: description || uiText("This permanently deletes only this item. Anything that still contains other content is protected and cannot be deleted."),
+      get confirmLabel() { return uiText("Delete permanently"); },
       destructive: true,
       onConfirm: () => mutations.remove.mutateAsync({ id, force }),
     });
@@ -113,10 +116,11 @@ export function useEditorForm({ resource, id, defaults, basePath, toForm = ident
 }
 
 export function EditorGate({ editor, form, children }) {
+  useUiLanguage();
   const ed = editor || form;
   if (!ed) return <PageSkeleton />;
   if (!ed.isNew && ed.item?.isError) {
-    return <ErrorState error={ed.item.error} onRetry={ed.item.refetch} title="Could not load this item" />;
+    return <ErrorState error={ed.item.error} onRetry={ed.item.refetch} title={uiText("Could not load this item")} />;
   }
   if (!ed.form) return <PageSkeleton />;
   return typeof children === 'function' ? children() : children;

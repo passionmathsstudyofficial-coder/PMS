@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -8,6 +9,7 @@ const DIFFICULTY_STYLES = {
 };
 
 export function DifficultyBadge({ difficulty, className }) {
+  useUiLanguage();
   const term = useTerm();
   if (!difficulty) return null;
   return (
@@ -18,6 +20,7 @@ export function DifficultyBadge({ difficulty, className }) {
 }
 
 export function Chip({ children, className, tone = 'muted' }) {
+  useUiLanguage();
   const tones = {
     muted: 'bg-muted text-muted-foreground',
     brand: 'bg-brand-soft text-brand',

@@ -1,3 +1,7 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { BookOpen, ExternalLink, Plus, ShoppingBag, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
@@ -15,12 +19,13 @@ import { refId, useResourceList } from '../lib/resources.js';
 import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 
 export function BooksList() {
+  useUiLanguage();
   const [filters, setFilter, active] = useQueryFilters(['class', 'category']);
   return (
     <ResourceListPage
       resource="books"
-      title="Reference Books (संदर्भ पुस्तकें)"
-      description="Manage recommended mathematics textbooks, reference guides, and external purchasing links (Amazon, Flipkart)."
+      title={uiText("Reference Books (संदर्भ पुस्तकें)")}
+      description={uiText("Manage recommended mathematics textbooks, reference guides, and external purchasing links (Amazon, Flipkart).")}
       baseParams={active}
       filters={
         <div className="flex flex-wrap items-center gap-2">
@@ -28,29 +33,29 @@ export function BooksList() {
           <SelectField
             value={filters.category || ''}
             onChange={(v) => setFilter('category', v)}
-            placeholder="All Categories"
+            placeholder={uiText("All Categories")}
             options={[
-              { value: '', label: 'All Categories' },
-              { value: 'recommended', label: 'Recommended Books' },
-              { value: 'ncert', label: 'NCERT Mathematics' },
-              { value: 'reference', label: 'Reference Books (RD Sharma, RS Aggarwal)' },
-              { value: 'exam_prep', label: 'Exam Preparation Books' },
-              { value: 'practice', label: 'Practice & Workbooks' },
-              { value: 'olympiad', label: 'Olympiad & Competitive' },
+              { value: '', get label() { return uiText("All Categories"); } },
+              { value: 'recommended', get label() { return uiText("Recommended Books"); } },
+              { value: 'ncert', get label() { return uiText("NCERT Mathematics"); } },
+              { value: 'reference', get label() { return uiText("Reference Books (RD Sharma, RS Aggarwal)"); } },
+              { value: 'exam_prep', get label() { return uiText("Exam Preparation Books"); } },
+              { value: 'practice', get label() { return uiText("Practice & Workbooks"); } },
+              { value: 'olympiad', get label() { return uiText("Olympiad & Competitive"); } },
             ]}
             className="w-48"
           />
         </div>
       }
       createPath={adminUrl(`books/new${filters.class ? `?class=${filters.class}` : ''}`)}
-      createLabel="Add Reference Book"
+      createLabel={uiText("Add Reference Book")}
       editPath={(item) => adminUrl(`books/${item._id}`)}
-      rowLabel={(b) => `${b.author} — ${b.title?.en || b.title?.hi || 'Book'}`}
+      rowLabel={(b) => `${b.author} — ${adminText(b.title) || 'Book'}`}
       columns={[
-        { header: 'Title', cell: (b) => <LocalizedCell value={b.title} /> },
-        { header: 'Author', cell: (b) => <span className="text-xs font-semibold">{b.author}</span> },
+        { get header() { return uiText("Title"); }, cell: (b) => <LocalizedCell value={b.title} /> },
+        { get header() { return uiText("Author"); }, cell: (b) => <span className="text-xs font-semibold">{b.author}</span> },
         {
-          header: 'Category',
+          get header() { return uiText("Category"); },
           className: 'hidden sm:table-cell',
           cell: (b) => (
             <span className="rounded-md bg-orange-50 px-2 py-0.5 text-[10px] font-bold text-orange-700 uppercase dark:bg-orange-950 dark:text-orange-300">
@@ -58,9 +63,9 @@ export function BooksList() {
             </span>
           ),
         },
-        { header: 'Class', className: 'hidden md:table-cell', cell: (b) => (b.class ? `Class ${b.class.number}` : 'All') },
+        { get header() { return uiText("Class"); }, className: 'hidden md:table-cell', cell: (b) => (b.class ? uiTemplate`Class ${b.class.number}` : uiText("All")) },
         {
-          header: 'Purchase Link',
+          get header() { return uiText("Purchase Link"); },
           className: 'hidden lg:table-cell',
           cell: (b) =>
             b.purchaseUrl ? (
@@ -69,8 +74,7 @@ export function BooksList() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
-              >
-                Link <ExternalLink className="size-3" />
+              >{uiText("Link")}<ExternalLink className="size-3" />
               </a>
             ) : (
               <span className="text-xs text-muted-foreground">—</span>
@@ -82,6 +86,7 @@ export function BooksList() {
 }
 
 export function BookEditor({ id }) {
+  useUiLanguage();
   const [params] = useSearchParams();
   const form = useEditorForm({
     resource: 'books',
@@ -137,46 +142,46 @@ export function BookEditor({ id }) {
       {() => (
         <EditorShell
           form={form}
-          title={isNew ? 'New Reference Book' : `Book — ${doc?.title?.en || doc?.title?.hi || doc?.author || ''}`}
+          title={isNew ? uiText("New Reference Book") : uiTemplate`Book — ${adminText(doc?.title) || doc?.author || ''}`}
         >
         <div className="grid gap-6">
-          <Panel title="Book Information">
-            <L10nField label="Book Title" value={doc.title} onChange={(title) => set('title', title)} placeholder="e.g. NCERT Mathematics Class 10 / R.D. Sharma" required />
+          <Panel title={uiText("Book Information")}>
+            <L10nField label={uiText("Book Title")} value={doc.title} onChange={(title) => set('title', title)} placeholder={uiText("e.g. NCERT Mathematics Class 10 / R.D. Sharma")} required />
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="URL Slug (e.g. rs-aggarwal, rd-sharma, ml-aggarwal)" hint="Unique identifier for reference solution URLs. Leave blank to auto-generate.">
+              <Field label={uiText("URL Slug (e.g. rs-aggarwal, rd-sharma, ml-aggarwal)")} hint={uiText("Unique identifier for reference solution URLs. Leave blank to auto-generate.")}>
                 <input
                   type="text"
                   value={doc.slug || ''}
                   onChange={(e) => set('slug', e.target.value)}
-                  placeholder="e.g. rs-aggarwal"
+                  placeholder={uiText("e.g. rs-aggarwal")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
-              <Field label="Author (लेखक)" required>
+              <Field label={uiText("Author (लेखक)")} required>
                 <input
                   type="text"
                   value={doc.author || ''}
                   onChange={(e) => set('author', e.target.value)}
-                  placeholder="e.g. NCERT / Dr. R.D. Sharma"
+                  placeholder={uiText("e.g. NCERT / Dr. R.D. Sharma")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
-              <Field label="Publisher (प्रकाशक)">
+              <Field label={uiText("Publisher (प्रकाशक)")}>
                 <input
                   type="text"
                   value={doc.publisher || ''}
                   onChange={(e) => set('publisher', e.target.value)}
-                  placeholder="e.g. Dhanpat Rai Publications"
+                  placeholder={uiText("e.g. Dhanpat Rai Publications")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
-              <Field label="Edition (संस्करण)">
+              <Field label={uiText("Edition (संस्करण)")}>
                 <input
                   type="text"
                   value={doc.edition || ''}
                   onChange={(e) => set('edition', e.target.value)}
-                  placeholder="e.g. 2026 Edition"
+                  placeholder={uiText("e.g. 2026 Edition")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
@@ -184,39 +189,39 @@ export function BookEditor({ id }) {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <SelectField
-                label="Book Category / श्रेणी"
+                label={uiText("Book Category / श्रेणी")}
                 value={doc.category || 'recommended'}
                 onChange={(category) => set('category', category)}
                 options={[
-                  { value: 'recommended', label: 'Recommended Books (अनुशंसित पुस्तकें)' },
-                  { value: 'ncert', label: 'NCERT Textbooks & Exemplars' },
-                  { value: 'reference', label: 'Reference Books (R.D. Sharma / R.S. Aggarwal)' },
-                  { value: 'exam_prep', label: 'Board Exam Preparation & PYQ' },
-                  { value: 'practice', label: 'Workbooks & Practice Books' },
-                  { value: 'olympiad', label: 'Olympiad & Competitive Maths' },
-                  { value: 'other', label: 'Other Educational Book' },
+                  { value: 'recommended', get label() { return uiText("Recommended Books (अनुशंसित पुस्तकें)"); } },
+                  { value: 'ncert', get label() { return uiText("NCERT Textbooks & Exemplars"); } },
+                  { value: 'reference', get label() { return uiText("Reference Books (R.D. Sharma / R.S. Aggarwal)"); } },
+                  { value: 'exam_prep', get label() { return uiText("Board Exam Preparation & PYQ"); } },
+                  { value: 'practice', get label() { return uiText("Workbooks & Practice Books"); } },
+                  { value: 'olympiad', get label() { return uiText("Olympiad & Competitive Maths"); } },
+                  { value: 'other', get label() { return uiText("Other Educational Book"); } },
                 ]}
                 required
               />
-              <Field label="Optional Price Display">
+              <Field label={uiText("Optional Price Display")}>
                 <input
                   type="text"
                   value={doc.price || ''}
                   onChange={(e) => set('price', e.target.value)}
-                  placeholder="e.g. ₹450 / Approx ₹399"
+                  placeholder={uiText("e.g. ₹450 / Approx ₹399")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
             </div>
 
-            <L10nField label="Recommended For (Student Guidance)" value={doc.recommendedFor} onChange={(recommendedFor) => set('recommendedFor', recommendedFor)} placeholder="e.g. Best for CBSE Board Exams & Concept Clarity" />
-            <L10nField label="Detailed Description" value={doc.description} onChange={(description) => set('description', description)} placeholder="Overview of book topics, chapters covered, and benefits" />
+            <L10nField label={uiText("Recommended For (Student Guidance)")} value={doc.recommendedFor} onChange={(recommendedFor) => set('recommendedFor', recommendedFor)} placeholder={uiText("e.g. Best for CBSE Board Exams & Concept Clarity")} />
+            <L10nField label={uiText("Detailed Description")} value={doc.description} onChange={(description) => set('description', description)} placeholder={uiText("Overview of book topics, chapters covered, and benefits")} />
           </Panel>
 
-          <Panel title="Purchasing Link (Amazon / Flipkart / Publisher)">
+          <Panel title={uiText("Purchasing Link (Amazon / Flipkart / Publisher)")}>
             <Field
-              label="External Buying / Purchase Link"
-              hint="Paste the direct Amazon, Flipkart, or publisher bookstore URL where students can purchase this book."
+              label={uiText("External Buying / Purchase Link")}
+              hint={uiText("Paste the direct Amazon, Flipkart, or publisher bookstore URL where students can purchase this book.")}
             >
               <div className="relative">
                 <input
@@ -232,7 +237,7 @@ export function BookEditor({ id }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="absolute top-1/2 right-2.5 -translate-y-1/2 text-brand hover:text-brand/80"
-                    title="Test Link"
+                    title={uiText("Test Link")}
                   >
                     <ExternalLink className="size-4" />
                   </a>
@@ -241,10 +246,10 @@ export function BookEditor({ id }) {
             </Field>
           </Panel>
 
-          <Panel title="Educational Association (Class / Chapter / Topic)">
+          <Panel title={uiText("Educational Association (Class / Chapter / Topic)")}>
             <div className="grid gap-4 sm:grid-cols-3">
               <RefSelect
-                label="Class (कक्षा)"
+                label={uiText("Class (कक्षा)")}
                 resource="classes"
                 params={{ limit: 50 }}
                 value={classId}
@@ -253,10 +258,10 @@ export function BookEditor({ id }) {
                   set('chapter', '');
                   set('topic', '');
                 }}
-                labelOf={(c) => `Class ${c.number} — ${c.name?.en || c.name?.hi || ''}`}
+                labelOf={(c) => uiTemplate`Class ${c.number} — ${adminText(c.name) || ''}`}
               />
               <RefSelect
-                label="Specific Chapter (Optional)"
+                label={uiText("Specific Chapter (Optional)")}
                 resource="chapters"
                 params={{ class: classId, limit: 100 }}
                 disabled={!classId}
@@ -265,23 +270,23 @@ export function BookEditor({ id }) {
                   set('chapter', ch);
                   set('topic', '');
                 }}
-                labelOf={(ch) => `अध्याय ${ch.number} — ${ch.title?.en || ch.title?.hi || ''}`}
+                labelOf={(ch) => uiTemplate`अध्याय ${ch.number} — ${adminText(ch.title) || ''}`}
               />
               <RefSelect
-                label="Specific Topic (Optional)"
+                label={uiText("Specific Topic (Optional)")}
                 resource="topics"
                 params={{ chapter: chapterId, limit: 100 }}
                 disabled={!chapterId}
                 value={refId(doc.topic)}
                 onChange={(tp) => set('topic', tp)}
-                labelOf={(tp) => `Topic ${tp.number} — ${tp.title?.en || tp.title?.hi || ''}`}
+                labelOf={(tp) => uiTemplate`Topic ${tp.number} — ${adminText(tp.title) || ''}`}
               />
             </div>
           </Panel>
 
-          <Panel title="Cover Image & Visuals">
-            <MediaField label="Upload Book Cover Image" value={doc.coverImage} onChange={(coverImage) => set('coverImage', coverImage)} />
-            <Field label="Or External Cover Image URL">
+          <Panel title={uiText("Cover Image & Visuals")}>
+            <MediaField label={uiText("Upload Book Cover Image")} value={doc.coverImage} onChange={(coverImage) => set('coverImage', coverImage)} />
+            <Field label={uiText("Or External Cover Image URL")}>
               <input
                 type="url"
                 value={doc.coverUrl || ''}
@@ -292,15 +297,15 @@ export function BookEditor({ id }) {
             </Field>
           </Panel>
 
-          <Panel title="PDF Preview / Solutions (Optional)">
+          <Panel title={uiText("PDF Preview / Solutions (Optional)")}>
             <MediaField
-              label="Upload Book / Solutions PDF"
+              label={uiText("Upload Book / Solutions PDF")}
               kind="pdf"
               value={doc.pdfFile}
               onChange={(pdfFile) => set('pdfFile', pdfFile)}
-              hint="Upload book notes or solutions PDF for student preview."
+              hint={uiText("Upload book notes or solutions PDF for student preview.")}
             />
-            <Field label="Or External PDF URL">
+            <Field label={uiText("Or External PDF URL")}>
               <input
                 type="url"
                 value={doc.pdfUrl || ''}
@@ -311,17 +316,17 @@ export function BookEditor({ id }) {
             </Field>
           </Panel>
 
-          <Panel title="Display & Highlighting">
+          <Panel title={uiText("Display & Highlighting")}>
             <div className="space-y-3">
               <SwitchField
-                label="Has Reference Solutions (संदर्भ समाधान उपलब्ध)"
-                hint="Enable if this book has chapter & exercise solutions under Reference Solutions section."
+                label={uiText("Has Reference Solutions (संदर्भ समाधान उपलब्ध)")}
+                hint={uiText("Enable if this book has chapter & exercise solutions under Reference Solutions section.")}
                 checked={doc.hasSolutions !== false}
                 onChange={(hasSolutions) => set('hasSolutions', hasSolutions)}
               />
               <SwitchField
-                label="Featured Book"
-                hint="Highlight this book on the student homepage and chapter recommended books shelf."
+                label={uiText("Featured Book")}
+                hint={uiText("Highlight this book on the student homepage and chapter recommended books shelf.")}
                 checked={Boolean(doc.featured)}
                 onChange={(featured) => set('featured', featured)}
               />

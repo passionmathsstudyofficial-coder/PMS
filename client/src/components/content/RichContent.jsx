@@ -1,3 +1,5 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { resolveMediaUrl } from '@/lib/media';
 import { prepareRichHtml } from './mathContent.js';
 import DOMPurify from 'dompurify';
 import { renderMathContent } from './renderMathContent.js';
@@ -13,6 +15,7 @@ const PURIFY_CONFIG = {
 
 /** Sanitized CMS HTML with KaTeX math ($…$, $$…$$ and <span data-latex>). */
 export function RichContent({ html, className, as: Tag = 'div', ...props }) {
+  useUiLanguage();
   const ref = useRef(null);
   const clean = useMemo(() => DOMPurify.sanitize(prepareRichHtml(html), PURIFY_CONFIG), [html]);
 
@@ -29,10 +32,16 @@ export function RichContent({ html, className, as: Tag = 'div', ...props }) {
     });
     renderMathContent(el);
     el.querySelectorAll('img').forEach((img) => {
+      img.src = resolveMediaUrl(img.getAttribute('src'));
       img.loading = 'lazy';
       img.decoding = 'async';
     });
-    el.querySelectorAll('a[href^="http"]').forEach((a) => {
+    el.querySelectorAll('a[href]').forEach((a) => {
+      a.setAttribute('href', resolveMediaUrl(a.getAttribute('href')) || a.getAttribute('href'));
+      if (/\.(pdf|docx?)(?:$|[?#])/i.test(a.getAttribute('href'))) {
+        a.classList.add('document-link');
+        a.setAttribute('aria-label', `${a.textContent || 'Document'} · Open document`);
+      }
       if (!a.href.startsWith(window.location.origin)) {
         a.target = '_blank';
         a.rel = 'noopener noreferrer';

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Home } from 'lucide-react';
 import { Fragment } from 'react';
 import { Link } from 'react-router';
@@ -9,12 +11,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 /** Breadcrumbs always come from database relationships (API "breadcrumbs" array). */
 export function Breadcrumbs({ items, className }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   if (!items?.length) return null;
   return (
     <Breadcrumb className={cn('w-full max-w-full overflow-x-auto pb-1', className)}>
@@ -25,12 +28,12 @@ export function Breadcrumbs({ items, className }) {
             <Fragment key={`${item.url}-${index}`}>
               <BreadcrumbItem>
                 {last ? (
-                  <BreadcrumbPage className="font-semibold">{t(item.label)}</BreadcrumbPage>
+                  <BreadcrumbPage className="font-semibold">{item.url === '/' ? uiText('Home') : t(item.label)}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild>
                     <Link to={item.url} className="inline-flex items-center gap-1 hover:text-brand">
                       {index === 0 && <Home className="size-3.5" aria-hidden="true" />}
-                      {t(item.label)}
+                      {item.url === '/' ? uiText('Home') : t(item.label)}
                     </Link>
                   </BreadcrumbLink>
                 )}

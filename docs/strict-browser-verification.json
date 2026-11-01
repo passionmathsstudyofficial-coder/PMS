@@ -1,0 +1,396 @@
+{
+  "publicUrlsPreviouslyPassed": 131,
+  "adminDestinationsPassed": 30,
+  "scopedRoutes": [
+    {
+      "path": "/study-materials/ncert-solutions/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-solutions/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-books/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/ncert-notes/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/cbse-sample-papers/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/extra-questions/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/important-questions/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/english-summaries/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/study-materials/syllabus/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rs-aggarwal/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/rd-sharma/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-6",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-7",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-8",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-9",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-10",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-11",
+      "enHindi": false,
+      "hiEnglish": false
+    },
+    {
+      "path": "/reference-solutions/ml-aggarwal/class-12",
+      "enHindi": false,
+      "hiEnglish": false
+    }
+  ],
+  "remainingScopedRoutes": 0,
+  "editorTabPersistence": true,
+  "independentSaves": true,
+  "bothPreviewLanguages": true,
+  "mobileEnglishHindi": true
+}

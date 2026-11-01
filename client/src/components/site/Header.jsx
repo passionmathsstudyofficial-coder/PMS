@@ -1,4 +1,6 @@
-import { ChevronRight, LogIn, Search, Sparkles } from 'lucide-react';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { ChevronRight, Search, Sparkles } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
@@ -10,7 +12,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher.jsx';
@@ -37,8 +39,9 @@ const FALLBACK_CLASSES = [
 ];
 
 function ClassesMenu({ label }) {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const rawClasses = site?.classes?.length ? site.classes : FALLBACK_CLASSES;
   const classes = [...rawClasses].sort((a, b) => b.number - a.number);
@@ -58,9 +61,7 @@ function ClassesMenu({ label }) {
                 <span className="block truncate text-sm font-bold group-hover:text-brand">
                   {cls.name ? t(cls.name) : (t(cls.label) || `${term('class')} ${cls.number}`)}
                 </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  NCERT हल · सूत्र · नोट्स
-                </span>
+                <span className="block truncate text-xs text-muted-foreground">{' '}{uiText("NCERT हल · सूत्र · नोट्स")}{' '}</span>
               </span>
             </Link>
           ))}
@@ -71,22 +72,21 @@ function ClassesMenu({ label }) {
 }
 
 function StudyMaterialsMenu() {
+  useUiLanguage();
   const items = [
-    { title: 'NCERT Solutions', sub: 'Class 6–12 step-by-step solutions', url: '/study-materials/ncert-solutions' },
-    { title: 'NCERT Books', sub: 'Latest edition textbook PDFs', url: '/study-materials/ncert-books' },
-    { title: 'NCERT Notes', sub: 'Key formulas & chapter summaries', url: '/study-materials/ncert-notes' },
-    { title: 'CBSE Sample Papers', sub: 'Model papers & PYQ with solutions', url: '/study-materials/cbse-sample-papers' },
-    { title: 'Extra Questions', sub: 'Practice questions with steps', url: '/study-materials/extra-questions' },
-    { title: 'Important Questions', sub: 'High-scoring board questions', url: '/study-materials/important-questions' },
-    { title: 'English Summaries', sub: 'Concept summaries & proof guides', url: '/study-materials/english-summaries' },
-    { title: 'Syllabus', sub: 'Updated CBSE curriculum & marking', url: '/study-materials/syllabus' },
+    { get title() { return uiText("NCERT Solutions"); }, get sub() { return uiText("Class 6–12 step-by-step solutions"); }, url: '/study-materials/ncert-solutions' },
+    { get title() { return uiText("NCERT Books"); }, get sub() { return uiText("Latest edition textbook PDFs"); }, url: '/study-materials/ncert-books' },
+    { get title() { return uiText("NCERT Notes"); }, get sub() { return uiText("Key formulas & chapter summaries"); }, url: '/study-materials/ncert-notes' },
+    { get title() { return uiText("CBSE Sample Papers"); }, get sub() { return uiText("Model papers & PYQ with solutions"); }, url: '/study-materials/cbse-sample-papers' },
+    { get title() { return uiText("Extra Questions"); }, get sub() { return uiText("Practice questions with steps"); }, url: '/study-materials/extra-questions' },
+    { get title() { return uiText("Important Questions"); }, get sub() { return uiText("High-scoring board questions"); }, url: '/study-materials/important-questions' },
+    { get title() { return uiText("English Summaries"); }, get sub() { return uiText("Concept summaries & proof guides"); }, url: '/study-materials/english-summaries' },
+    { get title() { return uiText("Syllabus"); }, get sub() { return uiText("Updated CBSE curriculum & marking"); }, url: '/study-materials/syllabus' },
   ];
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
-        Study Materials
-      </NavigationMenuTrigger>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("Study Materials")}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <div className="grid w-[36rem] grid-cols-2 gap-2 p-3">
           {items.map((item) => (
@@ -106,17 +106,16 @@ function StudyMaterialsMenu() {
 }
 
 function ReferenceSolutionsMenu() {
+  useUiLanguage();
   const items = [
-    { title: 'RS Aggarwal Solutions', author: 'R.S. Aggarwal', sub: 'Classes 6 to 12 solutions', url: '/reference-solutions/rs-aggarwal' },
-    { title: 'RD Sharma Solutions', author: 'Dr. R.D. Sharma', sub: 'Detailed question steps & proofs', url: '/reference-solutions/rd-sharma' },
-    { title: 'ML Aggarwal Solutions', author: 'M.L. Aggarwal', sub: 'Understanding Mathematics solutions', url: '/reference-solutions/ml-aggarwal' },
+    { get title() { return uiText("RS Aggarwal Solutions"); }, author: 'R.S. Aggarwal', get sub() { return uiText("Classes 6 to 12 solutions"); }, url: '/reference-solutions/rs-aggarwal' },
+    { get title() { return uiText("RD Sharma Solutions"); }, author: 'Dr. R.D. Sharma', get sub() { return uiText("Detailed question steps & proofs"); }, url: '/reference-solutions/rd-sharma' },
+    { get title() { return uiText("ML Aggarwal Solutions"); }, author: 'M.L. Aggarwal', get sub() { return uiText("Understanding Mathematics solutions"); }, url: '/reference-solutions/ml-aggarwal' },
   ];
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
-        Reference Solutions
-      </NavigationMenuTrigger>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("Reference Solutions")}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <div className="w-80 p-2 space-y-1">
           {items.map((item) => (
@@ -133,9 +132,7 @@ function ReferenceSolutionsMenu() {
             </Link>
           ))}
           <div className="border-t pt-1.5 mt-1">
-            <Link to="/reference-solutions" className="block text-center text-xs font-bold text-brand hover:underline py-1">
-              Browse All Reference Books →
-            </Link>
+            <Link to="/reference-solutions" className="block text-center text-xs font-bold text-brand hover:underline py-1">{' '}{uiText("Browse All Reference Books →")}{' '}</Link>
           </div>
         </div>
       </NavigationMenuContent>
@@ -144,19 +141,18 @@ function ReferenceSolutionsMenu() {
 }
 
 function MoreMenu() {
+  useUiLanguage();
   const items = [
-    { title: 'Search Website', url: '/search' },
-    { title: 'Important Formulas', url: '/class-10/maths/prashnavali' },
-    { title: 'About Passion Maths', url: '/about-us' },
-    { title: 'Contact Us', url: '/contact' },
-    { title: 'Privacy Policy', url: '/privacy-policy' },
+    { get title() { return uiText("Search Website"); }, url: '/search' },
+    { get title() { return uiText("Important Formulas"); }, url: '/class-10/maths/prashnavali' },
+    { get title() { return uiText("About Passion Maths"); }, url: '/about-us' },
+    { get title() { return uiText("Contact Us"); }, url: '/contact' },
+    { get title() { return uiText("Privacy Policy"); }, url: '/privacy-policy' },
   ];
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
-        More
-      </NavigationMenuTrigger>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("More")}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="w-52 p-2 space-y-0.5">
           {items.map((item) => (
@@ -173,18 +169,19 @@ function MoreMenu() {
 }
 
 function MobileSearch() {
+  useUiLanguage();
   const [open, setOpen] = useState(false);
   return (
     <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
       <DialogPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon-lg" className="md:hidden" aria-label="Search / खोजें">
+        <Button variant="ghost" size="icon-lg" className="md:hidden" aria-label={uiText("Search / खोजें")}>
           <Search className="size-5" />
         </Button>
       </DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 data-open:animate-in data-open:fade-in-0" />
         <DialogPrimitive.Content className="fixed inset-x-0 top-0 z-50 border-b bg-background p-4 shadow-xl data-open:animate-in data-open:slide-in-from-top-4">
-          <DialogPrimitive.Title className="sr-only">Search</DialogPrimitive.Title>
+          <DialogPrimitive.Title className="sr-only">{uiText("Search")}</DialogPrimitive.Title>
           <SearchBar autoFocus size="lg" onNavigate={() => setOpen(false)} />
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
@@ -193,8 +190,9 @@ function MobileSearch() {
 }
 
 export function Header() {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const header = site?.settings?.header || {};
   const items = site?.navigation?.header || [];
@@ -211,17 +209,24 @@ export function Header() {
         <Logo className="shrink-0 mr-auto sm:hidden" showText={false} />
         <Logo className="shrink-0 hidden sm:flex mr-2 xl:mr-4" />
 
-        <NavigationMenu viewport={false} className="hidden lg:flex shrink-0" aria-label="Main">
+        <NavigationMenu viewport={false} className="hidden lg:flex shrink-0" aria-label={uiText("Main")}>
           <NavigationMenuList className="gap-0.5 xl:gap-1">
-            <ClassesMenu label={term('class')} />
-            <StudyMaterialsMenu />
-            <ReferenceSolutionsMenu />
-            <MoreMenu />
+            {site?.navigationConfigured?.header ? items.map((item) => item.type === 'classes' ? (
+              header.showClassPills !== false && <ClassesMenu key={item._id} label={t(item.label)} />
+            ) : item.children?.length ? (
+              <NavigationMenuItem key={item._id}>
+                <NavigationMenuTrigger>{t(item.label)}</NavigationMenuTrigger>
+                <NavigationMenuContent><div className="w-64 p-2">{item.children.map(child => <SmartLink key={child._id} to={child.url} newTab={child.newTab} className="block rounded-lg p-3 text-sm hover:bg-muted">{t(child.label)}</SmartLink>)}</div></NavigationMenuContent>
+              </NavigationMenuItem>
+            ) : <NavigationMenuItem key={item._id}><SmartLink to={item.url} newTab={item.newTab} className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-semibold hover:bg-muted">{t(item.label)}</SmartLink></NavigationMenuItem>) : <>
+              {header.showClassPills !== false && <ClassesMenu label={term('class')} />}
+              <StudyMaterialsMenu /><ReferenceSolutionsMenu /><MoreMenu />
+            </>}
           </NavigationMenuList>
         </NavigationMenu>
 
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
-          {header.showLanguageSwitcher !== false && <LanguageSwitcher className="hidden sm:flex" />}
+          {header.showLanguageSwitch !== false && <LanguageSwitcher className="hidden sm:flex" />}
           {header.showSearch !== false && (
             <>
               <SearchBar className="hidden md:block w-36 lg:w-44 xl:w-64 transition-all focus-within:w-56 xl:focus-within:w-72" />
@@ -229,19 +234,8 @@ export function Header() {
             </>
           )}
           {header.showThemeSwitch !== false && <ThemeToggle />}
-          {header.showLoginButton && header.loginUrl ? (
-            <Button asChild size="default" className="hidden sm:inline-flex">
-              <SmartLink to={header.loginUrl}>
-                <LogIn className="size-4" /> {t(header.loginLabel) || 'Login'}
-              </SmartLink>
-            </Button>
-          ) : (
-            <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground">
-              <Link to="/login">
-                <LogIn className="size-3.5" /> Admin
-              </Link>
-            </Button>
-          )}
+          {header.showLoginButton && <Button size="sm" asChild><SmartLink allowAdmin to={header.loginUrl || '/login'}>{t(header.loginLabel) || uiText("Login")}</SmartLink></Button>}
+
         </div>
       </div>
     </header>

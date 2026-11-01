@@ -1,3 +1,5 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Play } from 'lucide-react';
 import { useState } from 'react';
 import { useL10n } from '@/lib/i18n';
@@ -6,6 +8,7 @@ import { youTubeEmbed, youTubeThumb } from '@/lib/youtube';
 
 /** Thumbnail-first YouTube player: the iframe loads only after the student presses play (no layout shift). */
 export function YouTubeEmbed({ video, title: titleOverride, className, showCaption = true }) {
+  useUiLanguage();
   const t = useL10n();
   const [playing, setPlaying] = useState(false);
   if (!video?.youtubeId || video.isVisible === false) return null;
@@ -25,7 +28,7 @@ export function YouTubeEmbed({ video, title: titleOverride, className, showCapti
             className="absolute inset-0 size-full border-0"
           />
         ) : (
-          <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full" aria-label={`Play video: ${title}`}>
+          <button type="button" onClick={() => setPlaying(true)} className="group absolute inset-0 size-full" aria-label={uiTemplate`Play video: ${title}`}>
             <img
               src={video.thumbnailUrl || youTubeThumb(video.youtubeId)}
               alt=""

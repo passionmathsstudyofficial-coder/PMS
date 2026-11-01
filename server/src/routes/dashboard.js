@@ -17,6 +17,7 @@ import {
   Solution,
   Topic,
   Video,
+  User,
 } from '../models/index.js';
 import { requireAuth, requirePermission } from '../middleware/auth.js';
 import { labelOf } from '../services/activity.js';
@@ -72,6 +73,7 @@ router.get('/', requireAuth, requirePermission('content:read'), async (req, res)
         type: typeLabel,
         id: d._id,
         label: labelOf(d) || d.type || typeLabel,
+        localizedLabel: d.title || d.name || d.text || null,
         status: d.status,
         updatedAt: d.updatedAt,
         updatedBy: d.updatedBy?.name,
@@ -93,6 +95,7 @@ router.get('/', requireAuth, requirePermission('content:read'), async (req, res)
   }
 
   const totals = {
+    students: await User.countDocuments(),
     classes: content.classes.total,
     chapters: content.chapters.total,
     topics: content.topics?.total || 0,

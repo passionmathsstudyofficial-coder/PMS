@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Maximize, Minimize, RotateCcw, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
@@ -5,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { TransformComponent, TransformWrapper, useControls } from 'react-zoom-pan-pinch';
 
 function ToolbarButton({ label, children, ...props }) {
+  useUiLanguage();
   return (
     <button
       type="button"
@@ -19,6 +22,7 @@ function ToolbarButton({ label, children, ...props }) {
 }
 
 function ZoomControls({ fullscreen, onFullscreen }) {
+  useUiLanguage();
   const { zoomIn, zoomOut, resetTransform } = useControls();
   useEffect(() => {
     const onKey = (e) => {
@@ -31,16 +35,16 @@ function ZoomControls({ fullscreen, onFullscreen }) {
   }, [zoomIn, zoomOut, resetTransform]);
   return (
     <div className="flex items-center gap-2">
-      <ToolbarButton label="Zoom in" onClick={() => zoomIn()}>
+      <ToolbarButton label={uiText("Zoom in")} onClick={() => zoomIn()}>
         <ZoomIn className="size-5" />
       </ToolbarButton>
-      <ToolbarButton label="Zoom out" onClick={() => zoomOut()}>
+      <ToolbarButton label={uiText("Zoom out")} onClick={() => zoomOut()}>
         <ZoomOut className="size-5" />
       </ToolbarButton>
-      <ToolbarButton label="Reset zoom" onClick={() => resetTransform()}>
+      <ToolbarButton label={uiText("Reset zoom")} onClick={() => resetTransform()}>
         <RotateCcw className="size-5" />
       </ToolbarButton>
-      <ToolbarButton label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'} onClick={onFullscreen}>
+      <ToolbarButton label={fullscreen ? uiText("Exit fullscreen") : uiText("Fullscreen")} onClick={onFullscreen}>
         {fullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}
       </ToolbarButton>
     </div>
@@ -49,6 +53,7 @@ function ZoomControls({ fullscreen, onFullscreen }) {
 
 /** Zoom / pinch / fullscreen / next-previous image viewer. Loaded only when a student first opens an image. */
 export default function ImageViewerDialog({ state, onClose, onIndex }) {
+  useUiLanguage();
   const containerRef = useRef(null);
   const [fullscreen, setFullscreen] = useState(false);
   const [direction, setDirection] = useState(0);
@@ -105,7 +110,7 @@ export default function ImageViewerDialog({ state, onClose, onIndex }) {
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.18 }}
             >
-                <DialogPrimitive.Title className="sr-only">{current.alt || 'Image viewer'}</DialogPrimitive.Title>
+                <DialogPrimitive.Title className="sr-only">{current.alt || uiText("Image viewer")}</DialogPrimitive.Title>
                 <TransformWrapper key={index} initialScale={1} minScale={1} maxScale={6} centerOnInit wheel={{ step: 0.2 }} doubleClick={{ mode: 'toggle', step: 1.5 }}>
                   <div className="flex items-center justify-between gap-3 p-3 sm:p-4">
                     <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white" aria-live="polite">
@@ -113,7 +118,7 @@ export default function ImageViewerDialog({ state, onClose, onIndex }) {
                     </span>
                     <ZoomControls fullscreen={fullscreen} onFullscreen={toggleFullscreen} />
                     <DialogPrimitive.Close asChild>
-                      <ToolbarButton label="Close image viewer">
+                      <ToolbarButton label={uiText("Close image viewer")}>
                         <X className="size-5" />
                       </ToolbarButton>
                     </DialogPrimitive.Close>
@@ -138,10 +143,10 @@ export default function ImageViewerDialog({ state, onClose, onIndex }) {
 
                     {images.length > 1 && (
                       <>
-                        <button type="button" onClick={() => go(-1)} aria-label="Previous image" className="absolute top-1/2 left-2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25 sm:left-4">
+                        <button type="button" onClick={() => go(-1)} aria-label={uiText("Previous image")} className="absolute top-1/2 left-2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25 sm:left-4">
                           <ChevronLeft className="size-6" />
                         </button>
-                        <button type="button" onClick={() => go(1)} aria-label="Next image" className="absolute top-1/2 right-2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25 sm:right-4">
+                        <button type="button" onClick={() => go(1)} aria-label={uiText("Next image")} className="absolute top-1/2 right-2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white hover:bg-white/25 sm:right-4">
                           <ChevronRight className="size-6" />
                         </button>
                       </>
@@ -150,7 +155,7 @@ export default function ImageViewerDialog({ state, onClose, onIndex }) {
                 </TransformWrapper>
 
                 {(current.caption || current.alt) && <p className="mx-auto max-w-3xl px-4 py-3 text-center text-sm text-white/85">{current.caption || current.alt}</p>}
-                <p className="pb-3 text-center text-[11px] text-white/45">Pinch or double-tap to zoom · दो उँगलियों से ज़ूम करें</p>
+                <p className="pb-3 text-center text-[11px] text-white/45">{uiText("Pinch or double-tap to zoom · दो उँगलियों से ज़ूम करें")}</p>
               </motion.div>
             </DialogPrimitive.Content>
           </DialogPrimitive.Portal>

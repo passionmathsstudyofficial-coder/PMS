@@ -1,3 +1,8 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { documentDownloadUrl } from '@/lib/media';
+import { resolveMediaUrl } from '@/lib/media';
 import {
   ArrowLeft,
   ArrowRight,
@@ -39,9 +44,10 @@ import { AdSlot } from '@/components/site/AdSlot.jsx';
 import { hasContent, useL10n, useLang } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
-import { ContentHeader, PrevNext, StatPills, otherLanguage } from './ContentHeader.jsx';
+import { ContentHeader, PrevNext, StatPills } from './ContentHeader.jsx';
 
 function DifficultyBadge({ difficulty }) {
+  useUiLanguage();
   const diff = String(difficulty || 'beginner').toLowerCase();
   const tones = {
     beginner: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800',
@@ -49,21 +55,16 @@ function DifficultyBadge({ difficulty }) {
     medium: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800',
     hard: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800',
   };
-  const labels = {
-    beginner: 'Beginner / शुरुआती',
-    easy: 'Easy / आसान',
-    medium: 'Medium / मध्यम',
-    hard: 'Hard / कठिन',
-  };
   return (
     <span className={cn('inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold', tones[diff] || tones.beginner)}>
       <Sparkles className="size-3" />
-      {labels[diff] || diff}
+      {uiText(diff)}
     </span>
   );
 }
 
 function PracticeQuestionItem({ q, index }) {
+  useUiLanguage();
   const t = useL10n();
   const [openSolution, setOpenSolution] = useState(false);
   const [openHint, setOpenHint] = useState(false);
@@ -73,14 +74,13 @@ function PracticeQuestionItem({ q, index }) {
       <div className="p-5 sm:p-6">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="grid size-7 place-items-center rounded-lg bg-brand-soft text-xs font-extrabold text-brand">
-              Q{q.questionNumber || index + 1}
+            <span className="grid size-7 place-items-center rounded-lg bg-brand-soft text-xs font-extrabold text-brand">{' '}{uiText("Q")}{q.questionNumber || index + 1}
             </span>
             {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
           </div>
           {q.marks && (
             <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-              {q.marks} {q.marks > 1 ? 'Marks' : 'Mark'}
+              {q.marks} {q.marks > 1 ? uiText("Marks") : uiText("Mark")}
             </span>
           )}
         </div>
@@ -98,7 +98,7 @@ function PracticeQuestionItem({ q, index }) {
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-600 hover:text-amber-700 dark:text-amber-400"
             >
               <Lightbulb className="size-3.5" />
-              {openHint ? 'Hide Hint' : 'Show Hint / संकेत'}
+              {openHint ? uiText("Hide Hint") : uiText("Show Hint / संकेत")}
             </button>
             {openHint && (
               <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50/70 p-3.5 text-xs text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200">
@@ -117,12 +117,12 @@ function PracticeQuestionItem({ q, index }) {
             className="text-xs font-semibold"
           >
             <CheckCircle className="mr-1.5 size-3.5" />
-            {openSolution ? 'Hide Solution / हल छिपाएं' : 'View Step-by-Step Solution / हल देखें'}
+            {openSolution ? uiText("Hide Solution / हल छिपाएं") : uiText("View Step-by-Step Solution / हल देखें")}
           </Button>
 
           {hasContent(q.answer) && !openSolution && (
             <div className="text-xs text-muted-foreground">
-              <strong className="text-foreground">Answer:</strong>
+              <strong className="text-foreground">{uiText("Answer:")}</strong>
               <RichContent html={t(q.answer)} className="inline text-xs text-muted-foreground" />
             </div>
           )}
@@ -131,11 +131,9 @@ function PracticeQuestionItem({ q, index }) {
         {/* Solution Content */}
         {openSolution && (
           <div className="mt-4 rounded-xl border bg-muted/40 p-4 sm:p-5">
-            <p className="mb-2 text-xs font-extrabold tracking-wider text-brand uppercase">Step-by-Step Solution / चरणबद्ध हल</p>
+            <p className="mb-2 text-xs font-extrabold tracking-wider text-brand uppercase">{uiText("Step-by-Step Solution / चरणबद्ध हल")}</p>
             {hasContent(q.answer) && (
-              <div className="mb-3 rounded-lg bg-brand-soft/50 p-2.5 text-xs font-semibold text-brand">
-                Final Answer:
-                <RichContent html={t(q.answer)} className="mt-1 text-xs font-semibold text-brand" />
+              <div className="mb-3 rounded-lg bg-brand-soft/50 p-2.5 text-xs font-semibold text-brand">{uiText("Final Answer:")}<RichContent html={t(q.answer)} className="mt-1 text-xs font-semibold text-brand" />
               </div>
             )}
             <RichContent html={t(q.solution)} />
@@ -147,6 +145,7 @@ function PracticeQuestionItem({ q, index }) {
 }
 
 export default function TopicPage({ data, breadcrumbs, related }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { lang } = useLang();
@@ -181,17 +180,17 @@ export default function TopicPage({ data, breadcrumbs, related }) {
 
   // Contents nav items based on available data
   const navItems = [
-    { id: 'overview', label: 'Overview / अवलोकन', icon: Sparkles, show: true },
-    { id: 'videos', label: `Video Lessons (${allVideos.length})`, icon: Video, show: allVideos.length > 0 },
-    { id: 'notes', label: 'Study Notes / नोट्स', icon: BookOpen, show: hasContent(topic.notes) },
-    { id: 'pdf-resources', label: `PDF Notes & Files (${resources.length})`, icon: FileText, show: resources.length > 0 },
-    { id: 'formulas', label: `Formula Sheet (${topic.formulas?.length || 0})`, icon: Sparkles, show: topic.formulas?.length > 0 },
-    { id: 'practice', label: `Practice Questions (${topic.practiceQuestions?.length || 0})`, icon: HelpCircle, show: topic.practiceQuestions?.length > 0 },
-    { id: 'worksheets', label: `Worksheets (${worksheets.length})`, icon: FileSpreadsheet, show: worksheets.length > 0 },
-    { id: 'solutions', label: 'Solutions / हल', icon: FileCheck, show: solutions.length > 0 },
-    { id: 'books', label: `Reference Books (${books.length})`, icon: BookOpen, show: books.length > 0 },
-    { id: 'links', label: `External Resources (${topic.externalLinks?.length || 0})`, icon: ExternalLink, show: topic.externalLinks?.length > 0 },
-    { id: 'continue', label: 'Continue Learning', icon: ArrowRight, show: true },
+    { id: 'overview', get label() { return uiText("Overview / अवलोकन"); }, icon: Sparkles, show: true },
+    { id: 'videos', get label() { return uiTemplate`Video Lessons (${allVideos.length})`; }, icon: Video, show: allVideos.length > 0 },
+    { id: 'notes', get label() { return uiText("Study Notes / नोट्स"); }, icon: BookOpen, show: hasContent(topic.notes) },
+    { id: 'pdf-resources', get label() { return uiTemplate`PDF Notes & Files (${resources.length})`; }, icon: FileText, show: resources.length > 0 },
+    { id: 'formulas', get label() { return uiTemplate`Formula Sheet (${topic.formulas?.length || 0})`; }, icon: Sparkles, show: topic.formulas?.length > 0 },
+    { id: 'practice', get label() { return uiTemplate`Practice Questions (${topic.practiceQuestions?.length || 0})`; }, icon: HelpCircle, show: topic.practiceQuestions?.length > 0 },
+    { id: 'worksheets', get label() { return uiTemplate`Worksheets (${worksheets.length})`; }, icon: FileSpreadsheet, show: worksheets.length > 0 },
+    { id: 'solutions', get label() { return uiText("Solutions / हल"); }, icon: FileCheck, show: solutions.length > 0 },
+    { id: 'books', get label() { return uiTemplate`Reference Books (${books.length})`; }, icon: BookOpen, show: books.length > 0 },
+    { id: 'links', get label() { return uiTemplate`External Resources (${topic.externalLinks?.length || 0})`; }, icon: ExternalLink, show: topic.externalLinks?.length > 0 },
+    { id: 'continue', get label() { return uiText("Continue Learning"); }, icon: ArrowRight, show: true },
   ].filter((item) => item.show);
 
   const [activeSection, setActiveSection] = useState('overview');
@@ -244,24 +243,23 @@ export default function TopicPage({ data, breadcrumbs, related }) {
             <Chip>
               {term('chapter')} {chapter.number}
             </Chip>
-            <span className="rounded-full bg-slate-900 px-3 py-0.5 text-xs font-bold text-white dark:bg-white dark:text-slate-900">
-              Topic {topic.number}
+            <span className="rounded-full bg-slate-900 px-3 py-0.5 text-xs font-bold text-white dark:bg-white dark:text-slate-900">{uiText("Topic")}{' '}{topic.number}
             </span>
             {topic.difficulty && <DifficultyBadge difficulty={topic.difficulty} />}
           </div>
         }
         title={t(topic.title, mode)}
-        subtitle={[otherLanguage(topic.title, lang), t(topic.shortDescription, mode)].filter(Boolean).join(' — ')}
+        subtitle={t(topic.shortDescription, mode)}
         aside={<LanguageNotice />}
       >
         <StatPills
           items={[
-            ...(allVideos.length > 0 ? [{ value: allVideos.length, label: 'Videos' }] : []),
-            ...(resources.length > 0 ? [{ value: resources.length, label: 'PDFs & Files' }] : []),
-            ...(topic.formulas?.length > 0 ? [{ value: topic.formulas.length, label: 'Formulas' }] : []),
-            ...(topic.practiceQuestions?.length > 0 ? [{ value: topic.practiceQuestions.length, label: 'Questions' }] : []),
-            ...(books.length > 0 ? [{ value: books.length, label: 'Books' }] : []),
-            ...(topic.estimatedTime ? [{ value: t(topic.estimatedTime) || '30 min', label: 'Est. Time' }] : []),
+            ...(allVideos.length > 0 ? [{ value: allVideos.length, get label() { return uiText("Videos"); } }] : []),
+            ...(resources.length > 0 ? [{ value: resources.length, get label() { return uiText("PDFs & Files"); } }] : []),
+            ...(topic.formulas?.length > 0 ? [{ value: topic.formulas.length, get label() { return uiText("Formulas"); } }] : []),
+            ...(topic.practiceQuestions?.length > 0 ? [{ value: topic.practiceQuestions.length, get label() { return uiText("Questions"); } }] : []),
+            ...(books.length > 0 ? [{ value: books.length, get label() { return uiText("Books"); } }] : []),
+            ...(topic.estimatedTime ? [{ value: t(topic.estimatedTime) || '30 min', get label() { return uiText("Est. Time"); } }] : []),
           ]}
         />
       </ContentHeader>
@@ -279,9 +277,10 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                 onOpen={() => openViewer([toViewerImage(cover, { alt: t(cover.alt) })])}
               />
             )}
+            {(topic.attachments || []).map((attachment) => <Figure key={attachment._id || attachment.media?._id} media={attachment.media} alt={t(attachment.alt)} caption={t(attachment.caption)} onOpen={() => openViewer([toViewerImage(attachment.media, { alt: t(attachment.alt) })])} />)}
             {t(topic.shortDescription) && (
               <div className="mt-4 rounded-2xl border border-brand/20 bg-brand-soft/40 p-5 text-sm leading-relaxed text-foreground sm:text-base">
-                <p className="font-semibold text-brand">Concept Summary:</p>
+                <p className="font-semibold text-brand">{uiText("Concept Summary:")}</p>
                 <p className="mt-1 text-muted-foreground">{t(topic.shortDescription)}</p>
               </div>
             )}
@@ -296,14 +295,12 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     <Video className="size-5" />
                   </span>
                   <div>
-                    <h2 id="videos-heading" className="font-heading text-xl font-bold text-foreground">
-                      Video Lessons / वीडियो कक्षाएं
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Comprehensive video lectures with step-by-step concepts</p>
+                    <h2 id="videos-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Video Lessons / वीडियो कक्षाएं")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Comprehensive video lectures with step-by-step concepts")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
-                  {allVideos.length} {allVideos.length > 1 ? 'Videos' : 'Video'}
+                  {allVideos.length} {allVideos.length > 1 ? uiText("Videos") : uiText("Video")}
                 </span>
               </div>
 
@@ -319,10 +316,8 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                   <BookOpen className="size-5" />
                 </span>
                 <div>
-                  <h2 id="notes-heading" className="font-heading text-xl font-bold text-foreground">
-                    Study Notes / अध्ययन नोट्स
-                  </h2>
-                  <p className="text-xs text-muted-foreground">Detailed mathematical explanation, definitions and theorems</p>
+                  <h2 id="notes-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Study Notes / अध्ययन नोट्स")}{' '}</h2>
+                  <p className="text-xs text-muted-foreground">{uiText("Detailed mathematical explanation, definitions and theorems")}</p>
                 </div>
               </div>
 
@@ -341,22 +336,19 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     <Sparkles className="size-5" />
                   </span>
                   <div>
-                    <h2 id="formulas-heading" className="font-heading text-xl font-bold text-foreground">
-                      Important Formulas / मुख्य सूत्र
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Formulas, equations, and mathematical identities for quick recall</p>
+                    <h2 id="formulas-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Important Formulas / मुख्य सूत्र")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Formulas, equations, and mathematical identities for quick recall")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                  {topic.formulas.length} Formulas
-                </span>
+                  {topic.formulas.length}{uiText("Formulas")}</span>
               </div>
 
               <div className="grid gap-3.5 sm:grid-cols-2">
                 {topic.formulas.map((formula, idx) => (
                   <div key={formula._id || idx} className="rounded-2xl border-2 border-indigo/20 bg-card p-4 transition-all hover:border-indigo/40 hover:shadow-sm">
                     <div className="mb-2 flex items-center justify-between gap-2 border-b border-border/50 pb-2">
-                      <span className="text-xs font-bold text-indigo">{t(formula.title) || `Formula ${idx + 1}`}</span>
+                      <span className="text-xs font-bold text-indigo">{t(formula.title) || uiTemplate`Formula ${idx + 1}`}</span>
                       <CopyLatexButton latex={formula.latex} />
                     </div>
                     <div className="py-2 text-center">
@@ -378,14 +370,12 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     <FileText className="size-5" />
                   </span>
                   <div>
-                    <h2 id="pdf-resources-heading" className="font-heading text-xl font-bold text-foreground">
-                      PDF Notes & Downloadable Material / अध्ययन सामग्री
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Download chapter notes, formula sheets, worksheets and practice assignments</p>
+                    <h2 id="pdf-resources-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("PDF Notes & Downloadable Material / अध्ययन सामग्री")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Download chapter notes, formula sheets, worksheets and practice assignments")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
-                  {resources.length} {resources.length > 1 ? 'Files' : 'File'}
+                  {resources.length} {resources.length > 1 ? uiText("Files") : uiText("File")}
                 </span>
               </div>
 
@@ -393,7 +383,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                 {resources.map((res) => {
                   const title = t(res.title) || 'Study Material PDF';
                   const desc = t(res.description);
-                  const fileUrl = res.fileUrl || res.file?.url;
+                  const fileUrl = resolveMediaUrl(res.file?.url || res.fileUrl);
 
                   return (
                     <div key={res._id} className="flex flex-col justify-between rounded-2xl border bg-card p-5 transition-all hover:border-brand/40 hover:shadow-md">
@@ -401,7 +391,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                         <div className="mb-2 flex items-center justify-between gap-2">
                           <span className="inline-flex items-center gap-1 rounded-md bg-brand-soft px-2 py-0.5 text-[11px] font-bold text-brand uppercase">
                             <FileText className="size-3" />
-                            {res.resourceType.replace(/_/g, ' ')}
+                            {uiText(res.resourceType)}
                           </span>
                           {res.fileSize && <span className="text-[11px] font-medium text-muted-foreground">{res.fileSize}</span>}
                         </div>
@@ -418,20 +408,16 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                               onClick={() => handleOpenPdf(fileUrl, title, res.downloadAllowed !== false)}
                               className="flex-1 text-xs font-semibold"
                             >
-                              <Eye className="mr-1.5 size-3.5" />
-                              Preview PDF
-                            </Button>
+                              <Eye className="mr-1.5 size-3.5" />{uiText("Preview PDF")}</Button>
                             {res.downloadAllowed !== false && (
                               <Button size="sm" asChild className="flex-1 text-xs font-semibold">
-                                <a href={fileUrl} download target="_blank" rel="noopener noreferrer">
-                                  <Download className="mr-1.5 size-3.5" />
-                                  Download
-                                </a>
+                                <a href={documentDownloadUrl(fileUrl)} download target="_blank" rel="noopener noreferrer">
+                                  <Download className="mr-1.5 size-3.5" />{uiText("Download")}</a>
                               </Button>
                             )}
                           </>
                         ) : (
-                          <span className="text-xs text-muted-foreground">File unavailable</span>
+                          <span className="text-xs text-muted-foreground">{uiText("File unavailable")}</span>
                         )}
                       </div>
                     </div>
@@ -450,15 +436,12 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     <HelpCircle className="size-5" />
                   </span>
                   <div>
-                    <h2 id="practice-heading" className="font-heading text-xl font-bold text-foreground">
-                      Practice Questions & Solutions / अभ्यास प्रश्न व हल
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Test your understanding with topic-wise problems and solutions</p>
+                    <h2 id="practice-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Practice Questions & Solutions / अभ्यास प्रश्न व हल")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Test your understanding with topic-wise problems and solutions")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-purple-100 px-2.5 py-1 text-xs font-bold text-purple-800 dark:bg-purple-950 dark:text-purple-300">
-                  {topic.practiceQuestions.length} Questions
-                </span>
+                  {topic.practiceQuestions.length}{uiText("Questions")}</span>
               </div>
 
               <div className="space-y-4">
@@ -477,24 +460,20 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                   <FileSpreadsheet className="size-5" />
                 </span>
                 <div>
-                  <h2 id="worksheets-heading" className="font-heading text-xl font-bold text-foreground">
-                    Worksheets & Assignments / अभ्यास पत्रक
-                  </h2>
-                  <p className="text-xs text-muted-foreground">Downloadable homework sheets, activity sheets, and practice forms</p>
+                  <h2 id="worksheets-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Worksheets & Assignments / अभ्यास पत्रक")}{' '}</h2>
+                  <p className="text-xs text-muted-foreground">{uiText("Downloadable homework sheets, activity sheets, and practice forms")}</p>
                 </div>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {worksheets.map((ws) => {
                   const title = t(ws.title) || 'Practice Worksheet';
-                  const fileUrl = ws.fileUrl || ws.file?.url;
+                  const fileUrl = resolveMediaUrl(ws.file?.url || ws.fileUrl);
 
                   return (
                     <div key={ws._id} className="rounded-2xl border bg-card p-5">
                       <div className="mb-2 flex items-center justify-between">
-                        <span className="rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700 dark:bg-teal-950 dark:text-teal-300">
-                          Worksheet
-                        </span>
+                        <span className="rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-bold text-teal-700 dark:bg-teal-950 dark:text-teal-300">{uiText("Worksheet")}</span>
                         {ws.fileSize && <span className="text-[11px] text-muted-foreground">{ws.fileSize}</span>}
                       </div>
                       <h4 className="font-heading text-base font-bold">{title}</h4>
@@ -502,10 +481,8 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                       <div className="mt-4 flex gap-2">
                         {fileUrl && (
                           <Button size="sm" asChild className="w-full">
-                            <a href={fileUrl} download target="_blank" rel="noopener noreferrer">
-                              <Download className="mr-1.5 size-3.5" />
-                              Download Worksheet PDF
-                            </a>
+                            <a href={documentDownloadUrl(fileUrl)} download target="_blank" rel="noopener noreferrer">
+                              <Download className="mr-1.5 size-3.5" />{uiText("Download Worksheet PDF")}</a>
                           </Button>
                         )}
                       </div>
@@ -525,15 +502,12 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     <BookOpen className="size-5" />
                   </span>
                   <div>
-                    <h2 id="books-heading" className="font-heading text-xl font-bold text-foreground">
-                      Recommended Reference Books / संदर्भ पुस्तकें
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Expert recommended textbooks, NCERT guides & competitive books</p>
+                    <h2 id="books-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Recommended Reference Books / संदर्भ पुस्तकें")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Expert recommended textbooks, NCERT guides & competitive books")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-800 dark:bg-orange-950 dark:text-orange-300">
-                  {books.length} Books
-                </span>
+                  {books.length}{uiText("Books")}</span>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -557,29 +531,25 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                         </div>
                         <div className="min-w-0 flex-1">
                           <span className="inline-block rounded-md bg-orange-50 px-2 py-0.5 text-[10px] font-bold text-orange-700 uppercase dark:bg-orange-950 dark:text-orange-300">
-                            {b.category?.replace(/_/g, ' ') || 'Reference Book'}
+                            {uiText(b.category || 'Reference Book')}
                           </span>
                           <h4 className="mt-1 font-heading text-base font-bold leading-snug text-foreground">{title}</h4>
-                          <p className="text-xs font-semibold text-muted-foreground">By {b.author}</p>
+                          <p className="text-xs font-semibold text-muted-foreground">{uiText("By")}{b.author}</p>
                           {b.publisher && <p className="text-[11px] text-muted-foreground">{b.publisher} {b.edition ? `• ${b.edition}` : ''}</p>}
                           {b.price && <p className="mt-1 text-xs font-extrabold text-brand">{b.price}</p>}
                         </div>
                       </div>
 
                       <div className="border-t bg-muted/20 px-4 py-3">
-                        {rec && <p className="mb-2.5 text-xs text-muted-foreground"><strong className="text-foreground">Recommended for:</strong> {rec}</p>}
+                        {rec && <p className="mb-2.5 text-xs text-muted-foreground"><strong className="text-foreground">{uiText("Recommended for:")}</strong> {rec}</p>}
                         {desc && !rec && <p className="mb-2.5 line-clamp-2 text-xs text-muted-foreground">{desc}</p>}
                         {b.purchaseUrl ? (
                           <Button size="sm" className="w-full bg-orange-600 font-bold text-white hover:bg-orange-700" asChild>
                             <a href={b.purchaseUrl} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink className="mr-1.5 size-3.5" />
-                              Buy Book / खरीदें ↗
-                            </a>
+                              <ExternalLink className="mr-1.5 size-3.5" />{' '}{uiText("Buy Book / खरीदें ↗")}{' '}</a>
                           </Button>
                         ) : (
-                          <Button size="sm" variant="outline" className="w-full text-xs" disabled>
-                            Available in Stores
-                          </Button>
+                          <Button size="sm" variant="outline" className="w-full text-xs" disabled>{uiText("Available in Stores")}</Button>
                         )}
                       </div>
                     </div>
@@ -597,10 +567,8 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                   <ExternalLink className="size-5" />
                 </span>
                 <div>
-                  <h2 id="links-heading" className="font-heading text-xl font-bold text-foreground">
-                    Additional Learning & References / उपयोगी लिंक्स
-                  </h2>
-                  <p className="text-xs text-muted-foreground">Verified external articles, interactive applets, and learning materials</p>
+                  <h2 id="links-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Additional Learning & References / उपयोगी लिंक्स")}{' '}</h2>
+                  <p className="text-xs text-muted-foreground">{uiText("Verified external articles, interactive applets, and learning materials")}</p>
                 </div>
               </div>
 
@@ -615,7 +583,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                   >
                     <div>
                       <div className="mb-1 flex items-center justify-between text-xs font-bold text-brand">
-                        <span className="uppercase">{link.category || 'Reference'}</span>
+                        <span className="uppercase">{link.category || uiText("Reference")}</span>
                         <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </div>
                       <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-brand">{t(link.title)}</h4>
@@ -634,12 +602,9 @@ export default function TopicPage({ data, breadcrumbs, related }) {
           {/* 10. Continue Learning / Prev & Next Navigation */}
           <section id="continue" className="scroll-mt-24 space-y-6 pt-4">
             <div className="rounded-2xl border bg-gradient-to-r from-brand-soft via-indigo-soft/30 to-purple-soft/40 p-6 shadow-sm">
-              <h3 className="font-heading text-lg font-bold text-foreground">
-                Continue Learning in {t(chapter.title)}
+              <h3 className="font-heading text-lg font-bold text-foreground">{uiText("Continue Learning in")}{t(chapter.title)}
               </h3>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Progress through all topics and exercises to master this chapter.
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{uiText("Progress through all topics and exercises to master this chapter.")}</p>
 
               {/* Prev / Next Topic Actions */}
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -650,16 +615,14 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                   >
                     <ArrowLeft className="size-4 shrink-0 text-brand transition-transform group-hover:-translate-x-1" />
                     <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">Previous Topic</span>
+                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">{uiText("Previous Topic")}</span>
                       <span className="block truncate font-heading text-sm font-bold text-foreground group-hover:text-brand">
                         {t(prev.title)}
                       </span>
                     </div>
                   </Link>
                 ) : (
-                  <div className="rounded-xl border border-dashed p-3.5 text-center text-xs text-muted-foreground">
-                    First topic of this chapter
-                  </div>
+                  <div className="rounded-xl border border-dashed p-3.5 text-center text-xs text-muted-foreground">{uiText("First topic of this chapter")}</div>
                 )}
 
                 {next ? (
@@ -668,7 +631,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     className="group flex items-center justify-between gap-3 rounded-xl border bg-card p-3.5 transition hover:border-brand/40 hover:shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">Next Topic</span>
+                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">{uiText("Next Topic")}</span>
                       <span className="block truncate font-heading text-sm font-bold text-foreground group-hover:text-brand">
                         {t(next.title)}
                       </span>
@@ -681,7 +644,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                     className="group flex items-center justify-between gap-3 rounded-xl border bg-card p-3.5 transition hover:border-brand/40 hover:shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">Chapter Overview</span>
+                      <span className="block text-[11px] font-bold text-muted-foreground uppercase">{uiText("Chapter Overview")}</span>
                       <span className="block truncate font-heading text-sm font-bold text-foreground group-hover:text-brand">
                         {t(chapter.title)}
                       </span>
@@ -700,13 +663,10 @@ export default function TopicPage({ data, breadcrumbs, related }) {
         <aside className="space-y-5 lg:col-span-4">
           <div className="space-y-5 lg:sticky lg:top-[calc(var(--header-height)+1rem)]">
             {/* Table of Contents ("ON THIS PAGE") */}
-            <nav aria-label="On this page" className="rounded-2xl border bg-card p-4 shadow-sm">
+            <nav aria-label={uiText("On this page")} className="rounded-2xl border bg-card p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between border-b pb-2.5">
-                <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">
-                  ON THIS PAGE / इस पृष्ठ पर
-                </span>
-                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand">
-                  Class {cls.number}
+                <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">{' '}{uiText("ON THIS PAGE / इस पृष्ठ पर")}{' '}</span>
+                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand">{uiText("Class")}{' '}{cls.number}
                 </span>
               </div>
               <ul className="space-y-1">
@@ -738,12 +698,9 @@ export default function TopicPage({ data, breadcrumbs, related }) {
             {siblings.length > 0 && (
               <div className="rounded-2xl border bg-card p-4 shadow-sm">
                 <div className="mb-3 flex items-center justify-between border-b pb-2.5">
-                  <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">
-                    Topics in Chapter ({siblings.length})
+                  <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">{' '}{uiText("Topics in Chapter (")}{siblings.length})
                   </span>
-                  <Link to={chapterUrl} className="text-[11px] font-semibold text-brand hover:underline">
-                    View All
-                  </Link>
+                  <Link to={chapterUrl} className="text-[11px] font-semibold text-brand hover:underline">{uiText("View All")}</Link>
                 </div>
                 <ul className="space-y-1.5">
                   {siblings.map((s) => {
@@ -775,10 +732,8 @@ export default function TopicPage({ data, breadcrumbs, related }) {
             {exercises.length > 0 && (
               <div className="rounded-2xl border bg-card p-4 shadow-sm">
                 <div className="mb-3 flex items-center justify-between border-b pb-2.5">
-                  <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">
-                    Exercises (प्रश्नावली)
-                  </span>
-                  <span className="text-[11px] text-muted-foreground">{exercises.length} Exercises</span>
+                  <span className="font-heading text-xs font-extrabold tracking-wider text-muted-foreground uppercase">{uiText("Exercises (प्रश्नावली)")}</span>
+                  <span className="text-[11px] text-muted-foreground">{exercises.length}{uiText("Exercises")}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-1.5">
                   {exercises.map((ex) => (
@@ -786,8 +741,7 @@ export default function TopicPage({ data, breadcrumbs, related }) {
                       key={ex._id}
                       to={ex.url}
                       className="flex items-center justify-center rounded-lg border border-border/60 bg-muted/30 py-2 text-xs font-semibold text-foreground transition hover:border-brand/40 hover:bg-brand-soft hover:text-brand"
-                    >
-                      Ex {ex.number}
+                    >{' '}{uiText("Ex")}{' '}{ex.number}
                     </Link>
                   ))}
                 </div>

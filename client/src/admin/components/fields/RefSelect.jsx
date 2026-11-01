@@ -1,3 +1,6 @@
+import { adminText } from '../../lib/format.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { Check, ChevronsUpDown, Loader2, X } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
@@ -10,17 +13,17 @@ import { Field } from './Fields.jsx';
 
 export const refLabels = {
   classes: (c) => {
-    const name = c.name?.en || c.name?.hi || '';
-    return name.includes(String(c.number)) ? name : `Class ${c.number}${name ? ` — ${name}` : ''}`;
+    const name = adminText(c.name) || '';
+    return name.includes(String(c.number)) ? name : `${uiText('Class')} ${c.number}${name ? ` — ${name}` : ''}`;
   },
-  chapters: (c) => `अध्याय ${c.number} — ${c.title?.en || c.title?.hi || ''}${c.class?.number ? ` (Class ${c.class.number})` : ''}`,
-  exercises: (e) => `प्रश्नावली ${e.number}${e.chapter?.title ? ` — ${e.chapter.title.en || e.chapter.title.hi}` : ''}`,
-  questions: (q) => `Question ${q.number}${q.exercise?.number ? ` · प्रश्नावली ${q.exercise.number}` : ''}`,
-  subjects: (s) => s.name?.en || s.name?.hi || s.slug,
+  chapters: (c) => `${uiText('Chapter')} ${c.number} — ${adminText(c.title) || ''}${c.class?.number ? ` (${uiText('Class')} ${c.class.number})` : ''}`,
+  exercises: (e) => `${uiText('Exercise')} ${e.number}${e.chapter?.title ? ` — ${adminText(e.chapter.title)}` : ''}`,
+  questions: (q) => `${uiText('Question')} ${q.number}${q.exercise?.number ? ` · ${uiText('Exercise')} ${q.exercise.number}` : ''}`,
+  subjects: (s) => adminText(s.name) || s.slug,
   notes: (n) => docLabel(n),
-  'important-questions': (q) => String(q.text?.en || q.text?.hi || q.slug || '').replace(/<[^>]+>/g, '').slice(0, 80),
+  'important-questions': (q) => String(adminText(q.text) || q.slug || '').replace(/<[^>]+>/g, '').slice(0, 80),
   pages: (p) => docLabel(p),
-  videos: (v) => v.title?.en || v.title?.hi || v.youtubeId,
+  videos: (v) => adminText(v.title) || v.youtubeId,
 };
 
 function useOptions(resource, params, open, q) {
@@ -33,7 +36,8 @@ function useOptions(resource, params, open, q) {
 }
 
 /** Searchable single reference picker (Class → Chapter → Exercise cascades use `params`). */
-export function RefSelect({ label, hint, error, required, resource, value, onChange, params = {}, placeholder = 'Select…', disabled, getLabel, className, clearable = false }) {
+export function RefSelect({ label, hint, error, required, resource, value, onChange, params = {}, placeholder = uiText("Select…"), disabled, getLabel, className, clearable = false }) {
+  useUiLanguage();
   const triggerId = useId();
   const triggerRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -62,12 +66,12 @@ export function RefSelect({ label, hint, error, required, resource, value, onCha
               aria-invalid={Boolean(error)}
               className="flex h-9 w-full min-w-0 items-center justify-between gap-2 rounded-lg border bg-background px-3 text-left text-sm disabled:opacity-50 aria-invalid:border-destructive"
             >
-              <span className={cn('truncate', !current && 'text-muted-foreground')}>{current ? labelOf(current) : id ? 'Loading…' : placeholder}</span>
+              <span className={cn('truncate', !current && 'text-muted-foreground')}>{current ? labelOf(current) : id ? uiText("Loading…") : placeholder}</span>
               <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
             </button>
           </PopoverTrigger>
           {clearable && id && !disabled && (
-            <button type="button" onClick={() => onChange(null)} className="grid size-9 shrink-0 place-items-center rounded-lg border text-muted-foreground hover:text-foreground" aria-label="Clear selection">
+            <button type="button" onClick={() => onChange(null)} className="grid size-9 shrink-0 place-items-center rounded-lg border text-muted-foreground hover:text-foreground" aria-label={uiText("Clear selection")}>
               <X className="size-4" />
             </button>
           )}
@@ -79,7 +83,7 @@ export function RefSelect({ label, hint, error, required, resource, value, onCha
           onEscapeKeyDown={() => triggerRef.current?.focus()}
         >
           <div className="border-b p-2">
-            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" className="h-8 w-full rounded-md bg-muted px-2 text-sm outline-none" aria-label="Search options" />
+            <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder={uiText("Search…")} className="h-8 w-full rounded-md bg-muted px-2 text-sm outline-none" aria-label={uiText("Search options")} />
           </div>
           <ul className="max-h-72 overflow-y-auto p-1" role="listbox">
             {options.isPending && (
@@ -105,7 +109,7 @@ export function RefSelect({ label, hint, error, required, resource, value, onCha
                 </button>
               </li>
             ))}
-            {options.data?.items?.length === 0 && <li className="p-3 text-center text-xs text-muted-foreground">Nothing found</li>}
+            {options.data?.items?.length === 0 && <li className="p-3 text-center text-xs text-muted-foreground">{uiText("Nothing found")}</li>}
           </ul>
         </PopoverContent>
       </Popover>
@@ -115,6 +119,7 @@ export function RefSelect({ label, hint, error, required, resource, value, onCha
 
 /** Multiple references shown as removable chips. */
 export function RefMultiSelect({ label, hint, resource, value = [], onChange, params, getLabel }) {
+  useUiLanguage();
   const labelOf = getLabel || refLabels[resource] || docLabel;
   const add = (option) => {
     if (option && !value.some((v) => refId(v) === option._id)) onChange([...value, option]);
@@ -127,14 +132,14 @@ export function RefMultiSelect({ label, hint, resource, value = [], onChange, pa
           {value.map((item) => (
             <li key={refId(item)} className="inline-flex max-w-full items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs font-medium">
               <span className="truncate">{typeof item === 'object' ? labelOf(item) : item}</span>
-              <button type="button" onClick={() => onChange(value.filter((v) => refId(v) !== refId(item)))} aria-label="Remove">
+              <button type="button" onClick={() => onChange(value.filter((v) => refId(v) !== refId(item)))} aria-label={uiText("Remove")}>
                 <X className="size-3" />
               </button>
             </li>
           ))}
         </ul>
       )}
-      <RefSelect resource={resource} value={null} onChange={add} params={params} placeholder="Add…" getLabel={getLabel} />
+      <RefSelect resource={resource} value={null} onChange={add} params={params} placeholder={uiText("Add…")} getLabel={getLabel} />
     </Field>
   );
 }

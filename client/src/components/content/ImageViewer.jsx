@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { createContext, lazy, Suspense, useCallback, useContext, useMemo, useState } from 'react';
 import { imageUrl } from '@/lib/media';
 import { cn } from '@/lib/utils';
@@ -9,6 +10,7 @@ const ViewerContext = createContext({ openViewer: () => {} });
 export const useImageViewer = () => useContext(ViewerContext);
 
 export function ImageViewerProvider({ children }) {
+  useUiLanguage();
   const [state, setState] = useState(null);
   const [loaded, setLoaded] = useState(false);
 

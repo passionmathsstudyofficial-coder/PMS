@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Navigate, createBrowserRouter } from 'react-router';
 import { ADMIN_PATH } from '@/lib/config';
 import Root from '@/Root.jsx';
@@ -10,6 +11,7 @@ const lazyPage = (loader) => async () => ({ Component: (await loader()).default 
 
 // Shown while a code-split page loads on the very first visit (no providers are available yet).
 function BootSkeleton() {
+  useUiLanguage();
   return (
     <div className="min-h-dvh bg-background">
       <div className="h-[var(--header-height)] border-b" />
@@ -24,7 +26,6 @@ export const router = createBrowserRouter([
     errorElement: <RouteError />,
     hydrateFallbackElement: <BootSkeleton />,
     children: [
-      { path: 'login', lazy: lazyPage(() => import('@/admin/pages/LoginPage.jsx')) },
       { path: 'admin/login', lazy: lazyPage(() => import('@/admin/pages/LoginPage.jsx')) },
       { path: 'admin', element: <Navigate to={ADMIN_PATH} replace /> },
       { path: 'admin/*', element: <Navigate to={ADMIN_PATH} replace /> },
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
       {
         element: <PublicLayout />,
         children: [
+          ...['login', 'register', 'forgot-password', 'reset-password'].map(path => ({ path, lazy: lazyPage(() => import('@/pages/StudentAccountPage.jsx')) })),
           { index: true, element: <HomePage /> },
           { path: 'search', lazy: lazyPage(() => import('@/pages/SearchPage.jsx')) },
           { path: '*', lazy: lazyPage(() => import('@/pages/ContentPage.jsx')) },

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import * as React from "react"
 import { cn } from "cn"
 import { Slot } from "radix-ui"
@@ -7,9 +9,10 @@ function Breadcrumb({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <nav
-      aria-label="breadcrumb"
+      aria-label={uiText("breadcrumb")}
       data-slot="breadcrumb"
       className={cn(className)}
       {...props}
@@ -21,6 +24,7 @@ function BreadcrumbList({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <ol
       data-slot="breadcrumb-list"
@@ -37,6 +41,7 @@ function BreadcrumbItem({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <li
       data-slot="breadcrumb-item"
@@ -51,6 +56,7 @@ function BreadcrumbLink({
   className,
   ...props
 }) {
+  useUiLanguage();
   const Comp = asChild ? Slot.Root : "a"
 
   return (
@@ -66,6 +72,7 @@ function BreadcrumbPage({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <span
       data-slot="breadcrumb-page"
@@ -83,6 +90,7 @@ function BreadcrumbSeparator({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <li
       data-slot="breadcrumb-separator"
@@ -102,6 +110,7 @@ function BreadcrumbEllipsis({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <span
       data-slot="breadcrumb-ellipsis"
@@ -115,7 +124,7 @@ function BreadcrumbEllipsis({
     >
       <MoreHorizontalIcon
       />
-      <span className="sr-only">More</span>
+      <span className="sr-only">{uiText("More")}</span>
     </span>
   )
 }

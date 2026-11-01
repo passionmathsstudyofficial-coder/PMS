@@ -1,15 +1,18 @@
 import { Toaster as Sonner } from "sonner";
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 import { useTheme } from "@/lib/theme"
+import { useUiTranslation } from '@/lib/useUiTranslation.jsx';
 
 const Toaster = ({
   ...props
 }) => {
   const { resolvedTheme = "light" } = useTheme()
+  const t = useUiTranslation();
 
   return (
     <Sonner
       theme={resolvedTheme}
+      containerAriaLabel={t('Notifications')}
       className="toaster group"
       icons={{
         success: (
@@ -37,6 +40,7 @@ const Toaster = ({
         }
       }
       toastOptions={{
+        closeButtonAriaLabel: t('Close'),
         classNames: {
           toast: "cn-toast",
         },

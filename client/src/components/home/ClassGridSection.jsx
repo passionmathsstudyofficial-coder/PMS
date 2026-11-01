@@ -1,11 +1,13 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { SectionShell } from './SectionShell.jsx';
 
 function Stat({ value, label }) {
+  useUiLanguage();
   return (
     <div className="flex flex-col">
       <span className="font-heading text-lg font-extrabold text-ink dark:text-foreground">{value}</span>
@@ -15,7 +17,8 @@ function Stat({ value, label }) {
 }
 
 function ClassCard({ cls, large }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const title = t(cls.name) || `${term('class')} ${cls.number}`;
   const empty = !cls.stats?.chapters;
@@ -65,6 +68,7 @@ function ClassCard({ cls, large }) {
 }
 
 export function ClassGridSection({ section }) {
+  useUiLanguage();
   const classes = section.data?.classes || [];
   const featuredLayout = section.config?.layout === 'featured';
   const featured = featuredLayout ? classes.filter((c) => c.featured) : [];

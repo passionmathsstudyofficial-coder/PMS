@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { v2 as cloudinary } from 'cloudinary';
 import { env } from '../config/env.js';
-import { isImage, isPdf } from './imageInfo.js';
+import { isImage } from './imageInfo.js';
 import { slugify } from '../utils/slug.js';
 
 if (env.cloudinaryConfigured) {
@@ -26,7 +26,7 @@ function uploadToCloudinary(buffer, options) {
 
 function cloudinaryResourceType(info) {
   if (isImage(info)) return 'image';
-  if (isPdf(info)) return 'raw';
+  if (['pdf', 'doc', 'docx'].includes(info?.format)) return 'raw';
   if (info && info.format && ['mp4','webm','mov','m4v','ogv'].includes(info.format)) return 'video';
   return 'auto';
 }
@@ -41,9 +41,10 @@ export async function storeFile({ buffer, info, name, kind = 'file' }) {
     const resourceType = cloudinaryResourceType(info);
     const opts = {
       folder: `${env.CLOUDINARY_FOLDER}/${kind}`,
-      public_id: `${base}-${suffix}`,
+      public_id: `${base}-${suffix}${resourceType === 'raw' ? `.${ext}` : ''}`,
       resource_type: resourceType,
       overwrite: false,
+      ...(resourceType === 'raw' ? { type: 'private' } : {}),
     };
     if (resourceType === 'image' && isImage(info)) {
       if (info.format === 'svg') opts.format = 'svg';
@@ -60,6 +61,8 @@ export async function storeFile({ buffer, info, name, kind = 'file' }) {
       format: result.format ?? ext,
     };
   }
+
+  if (process.env.VERCEL) throw new Error('Persistent uploads require Cloudinary on Vercel. Configure CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.');
 
   const now = new Date();
   const dir = path.join(uploadRoot, String(now.getFullYear()), String(now.getMonth() + 1).padStart(2, '0'));
@@ -85,10 +88,10 @@ export async function removeFile(media) {
   if (!media?.publicId) return;
   if (media.provider === 'cloudinary') {
     if (env.cloudinaryConfigured) {
-      const resourceType = String(media.format || '').toLowerCase() === 'pdf' ? 'raw'
+      const resourceType = ['pdf', 'doc', 'docx'].includes(String(media.format || '').toLowerCase()) ? 'raw'
         : ['mp4','webm','mov','m4v','ogv'].includes(String(media.format || '').toLowerCase()) ? 'video'
         : 'image';
-      await cloudinary.uploader.destroy(media.publicId, { invalidate: true, resource_type: resourceType });
+      await cloudinary.uploader.destroy(media.publicId, { invalidate: true, resource_type: resourceType, ...(/\/raw\/private\//.test(media.url || '') ? { type: 'private' } : {}) });
     }
     return;
   }

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { LayoutTemplate } from 'lucide-react';
 import { useEffect } from 'react';
@@ -22,11 +24,12 @@ export function useHashScroll(ready) {
 }
 
 export default function HomePage() {
+  const language = useUiLanguage();
   const site = useSite();
   const t = useL10n();
   const [params] = useSearchParams();
   const preview = params.get('preview') === '1';
-  const home = useQuery({ queryKey: ['home', preview], queryFn: () => get('/public/home', preview ? { preview: 1 } : undefined) });
+  const home = useQuery({ queryKey: ['home', preview, language], queryFn: () => get('/public/home', { lang:language, ...(preview ? {preview:1} : {}) }) });
   useHashScroll(home.isSuccess);
 
   const route = site?.seoRoutes?.home || {};
@@ -36,8 +39,8 @@ export default function HomePage() {
   return (
     <>
       <Seo
-        title={t(route.title) || t(settings.seo?.defaultTitle) || 'NCERT गणित हल कक्षा 6 से 12 | Passion Maths Study'}
-        description={t(route.description) || t(settings.seo?.defaultDescription) || 'Class 6 to 12 NCERT Mathematics step-by-step solutions, formulas and notes in Hindi and English.'}
+        title={t(route.title) || t(settings.seo?.defaultTitle) || uiText("NCERT गणित हल कक्षा 6 से 12 | Passion Maths Study")}
+        description={t(route.description) || t(settings.seo?.defaultDescription) || uiText("Class 6 to 12 NCERT Mathematics step-by-step solutions, formulas and notes in Hindi and English.")}
         canonical="/"
         robots={route.robots}
         image={route.ogImage?.url}

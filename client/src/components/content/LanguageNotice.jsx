@@ -1,10 +1,12 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Languages } from 'lucide-react';
-import { useLang } from '@/lib/i18n';
+import { useContentLang as useLang } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 /** "हिंदी में देखें" / "View in English" quick switch shown on study pages. */
 export function LanguageNotice({ className }) {
+  useUiLanguage();
   const site = useSite();
   const term = useTerm();
   const { lang, setLang } = useLang();

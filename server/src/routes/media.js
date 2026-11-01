@@ -1,8 +1,10 @@
+import { mergeLanguageFields } from '../../../shared/localization.js';
 import express from 'express';
+import { validateUpload } from '../lib/documentInfo.js';
 import multer from 'multer';
 import { env } from '../config/env.js';
 import { cache } from '../lib/cache.js';
-import { detectFile, isImage, isPdf } from '../lib/imageInfo.js';
+import { isImage } from '../lib/imageInfo.js';
 import { asString, isObjectId, parsePagination } from '../lib/request.js';
 import { sanitizeSvg } from '../lib/sanitize.js';
 import { removeFile, storeFile } from '../lib/storage.js';
@@ -15,13 +17,13 @@ import { escapeRegex } from '../utils/slug.js';
 
 const router = express.Router();
 const KINDS = Media.schema.path('kind').enumValues;
-const ALLOWED_EXT = /\.(png|jpe?g|webp|gif|svg|pdf)$/i;
+const ALLOWED_EXT = /\.(png|jpe?g|webp|gif|svg|pdf|doc|docx)$/i;
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: env.MAX_UPLOAD_MB * 1024 * 1024, files: 10, fields: 30 },
   fileFilter: (req, file, cb) => {
-    if (!ALLOWED_EXT.test(file.originalname)) return cb(new ApiError(400, `${file.originalname}: only PNG, JPG, JPEG, WEBP, GIF, SVG images and PDF files are allowed`));
+    if (!ALLOWED_EXT.test(file.originalname)) return cb(new ApiError(400, `${file.originalname}: only PNG, JPG, JPEG, WEBP, GIF, SVG images, PDF and Word documents are allowed`));
     cb(null, true);
   },
 });
@@ -43,7 +45,7 @@ function metadataFrom(body = {}) {
 }
 
 async function prepareFile(file) {
-  const info = detectFile(file.buffer);
+  const info = validateUpload(file);
   if (!info) throw new ApiError(400, `${file.originalname}: file content is not a valid PNG, JPG, WEBP, GIF, SVG image or PDF`);
   let buffer = file.buffer;
   if (isImage(info) && info.format === 'svg') {
@@ -54,8 +56,8 @@ async function prepareFile(file) {
 }
 
 function defaultKindFor(info, userKind) {
-  if (userKind && KINDS.includes(userKind)) return userKind;
-  if (isPdf(info)) return 'pdf';
+  if (['pdf', 'doc', 'docx'].includes(info?.format)) return 'pdf';
+  if (userKind && userKind !== 'pdf' && KINDS.includes(userKind)) return userKind;
   return 'image';
 }
 
@@ -136,12 +138,12 @@ router.put('/:id', requireAuth, requirePermission('media:write'), async (req, re
   const body = req.body || {};
   const update = {};
   if (body.title !== undefined) update.title = asString(body.title, 200);
-  if (body.alt) update.alt = { hi: asString(body.alt.hi, 600), en: asString(body.alt.en, 600) };
-  if (body.caption) update.caption = { hi: asString(body.caption.hi, 6000), en: asString(body.caption.en, 6000) };
+  if (body.alt) update.alt = Object.fromEntries(['hi', 'en'].filter(key => body.alt[key] !== undefined).map(key => [key, asString(body.alt[key], 600)]));
+  if (body.caption) update.caption = Object.fromEntries(['hi', 'en'].filter(key => body.caption[key] !== undefined).map(key => [key, asString(body.caption[key], 6000)]));
   if (body.description !== undefined) update.description = asString(body.description, 2000);
   if (KINDS.includes(body.kind)) update.kind = body.kind;
   if (Array.isArray(body.tags)) update.tags = body.tags.map((t) => String(t).trim().toLowerCase()).filter(Boolean).slice(0, 20);
-  media.set(update);
+  media.set(mergeLanguageFields(media.toObject(),update));
   media.updatedBy = req.admin._id;
   await media.save();
   cache.invalidate();
@@ -156,7 +158,7 @@ router.post('/:id/replace', requireAuth, requirePermission('media:write'), uploa
   if (embedded.length) throw new ApiError(409, 'This image is embedded in rich text. Replace it using the image button in those editors first.', { usage: embedded });
   if (!req.file) throw new ApiError(400, 'No file uploaded. Use the "file" field.');
   const { buffer, info } = await prepareFile(req.file);
-  const previous = { provider: media.provider, publicId: media.publicId };
+  const previous = { provider: media.provider, publicId: media.publicId, format: media.format, url: media.url };
   const kind = defaultKindFor(info, media.kind);
   const stored = await storeFile({ buffer, info, name: media.title || req.file.originalname, kind });
   media.set({ ...stored, mimeType: info.mimeType, originalName: req.file.originalname.slice(0, 300), kind, updatedBy: req.admin._id });

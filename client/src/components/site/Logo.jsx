@@ -1,15 +1,18 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Link } from 'react-router';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useBrand } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 export function Logo({ className, showText = true, textClassName, variant = 'header' }) {
+  useUiLanguage();
   const brand = useBrand();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const src = variant === 'footer' ? brand.footerLogoSrc : brand.logoSrc;
   const name = t(brand.name) || 'Passion Maths Study';
   return (
-    <Link to="/" className={cn('group flex shrink-0 items-center gap-2.5', className)} aria-label={`${name} – Home`}>
+    <Link to="/" className={cn('group flex shrink-0 items-center gap-2.5', className)} aria-label={uiTemplate`${name} – Home`}>
       <span className={cn('grid size-10 sm:size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-0.5 shadow-xs ring-1 ring-black/5 dark:ring-white/10', variant === 'footer' && 'size-12')}>
         <img
           src={src || '/brand/pms-logo.png'}

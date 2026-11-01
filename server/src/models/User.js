@@ -1,14 +1,16 @@
 import mongoose from 'mongoose';
 import { ObjectId } from './schemas/common.js';
 
-// Student accounts (reserved for future features such as bookmarks and progress tracking).
+// Student authentication is isolated from staff accounts and sessions.
 const userSchema = new mongoose.Schema(
   {
     name: { type: String, trim: true, maxlength: 120 },
     email: { type: String, lowercase: true, trim: true, unique: true, sparse: true, maxlength: 200 },
     passwordHash: { type: String, select: false },
     isActive: { type: Boolean, default: true },
-    preferredLanguage: { type: String, enum: ['hi', 'en'], default: 'hi' },
+    preferredLanguage: { type: String, enum: ['hi', 'en'], default: 'en' },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lockUntil: Date,
     classLevel: { type: ObjectId, ref: 'Class' },
     bookmarks: [
       {

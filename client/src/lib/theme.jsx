@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 
 // Must match public/theme-init.js, which applies the saved theme before React loads.
@@ -18,6 +19,7 @@ function readStoredTheme() {
 
 /** Light / dark / system theme. The student's choice wins over the admin default (Website Settings → Theme). */
 export function ThemeProvider({ defaultTheme = 'light', children }) {
+  useUiLanguage();
   const [stored, setStored] = useState(readStoredTheme);
   const [systemDark, setSystemDark] = useState(() => darkQuery().matches);
   const theme = stored || (THEMES.includes(defaultTheme) ? defaultTheme : 'light');

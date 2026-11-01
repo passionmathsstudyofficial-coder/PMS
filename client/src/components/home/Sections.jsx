@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight, BookOpen, FileText, Star } from 'lucide-react';
 import { useRef } from 'react';
 import { Link } from 'react-router';
@@ -9,7 +10,7 @@ import { RichContent } from '@/components/content/RichContent.jsx';
 import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
 import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { Icon } from '@/lib/icons';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from '@/lib/motion';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
@@ -18,8 +19,9 @@ import { SectionButtons, SectionShell } from './SectionShell.jsx';
 const COLS = { 1: 'lg:grid-cols-1', 2: 'lg:grid-cols-2', 3: 'lg:grid-cols-3', 4: 'lg:grid-cols-4', 5: 'lg:grid-cols-5', 6: 'lg:grid-cols-6' };
 
 export function StatisticsSection({ section }) {
+  useUiLanguage();
   const ref = useRef(null);
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const auto = section.data?.auto || {};
   const valueOf = (raw) => String(raw || '').replace(/\{(\w+)\}/g, (_, key) => (auto[key] ?? ''));
 
@@ -63,7 +65,8 @@ export function StatisticsSection({ section }) {
 }
 
 export function StepsSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const items = section.items || [];
   return (
     <SectionShell section={section} className="py-10 sm:py-14" containerClassName="relative">
@@ -89,7 +92,8 @@ export function StepsSection({ section }) {
 }
 
 export function ChapterGridSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const chapters = section.data?.chapters || [];
   if (!chapters.length) return null;
@@ -124,7 +128,8 @@ export function ChapterGridSection({ section }) {
 }
 
 export function CardGridSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const cols = section.config?.columns || 3;
   return (
     <SectionShell section={section}>
@@ -157,7 +162,8 @@ export function CardGridSection({ section }) {
 }
 
 export function QuestionListSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const important = section.data?.importantQuestions || [];
   const questions = section.data?.questions || [];
@@ -199,7 +205,8 @@ export function QuestionListSection({ section }) {
 }
 
 export function NotesSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const notes = section.data?.notes || [];
   if (!notes.length) return null;
   return (
@@ -219,6 +226,7 @@ export function NotesSection({ section }) {
 }
 
 export function VideoSection({ section }) {
+  useUiLanguage();
   const videos = [section.video, ...(section.config?.videos || [])].filter((v) => v?.youtubeId);
   if (!videos.length) return null;
   return (
@@ -235,7 +243,8 @@ export function VideoSection({ section }) {
 }
 
 export function ImageGallerySection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const { openViewer } = useImageViewer();
   const gallery = section.config?.gallery || [];
   if (!gallery.length) return null;
@@ -254,7 +263,8 @@ export function ImageGallerySection({ section }) {
 }
 
 export function CtaSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const background = section.config?.background || 'brand';
   const inverted = background === 'brand' || background === 'dark';
   return (
@@ -281,7 +291,8 @@ export function CtaSection({ section }) {
 }
 
 export function FaqSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   if (!section.items?.length) return null;
   return (
     <SectionShell section={section} containerClassName="max-w-4xl">
@@ -298,7 +309,8 @@ export function FaqSection({ section }) {
 }
 
 export function TextSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   return (
     <SectionShell section={section} heading={Boolean(t(section.title))}>
       <div className="grid items-start gap-8 lg:grid-cols-12">
@@ -328,7 +340,8 @@ export function TextSection({ section }) {
 }
 
 export function RelatedLinksSection({ section }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   if (!section.items?.length) return null;
   return (
     <SectionShell section={section}>

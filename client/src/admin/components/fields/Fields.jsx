@@ -1,3 +1,7 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { mapLegacyLanguages } from '../../../../../shared/languages.js';
 import { Lock, Unlock, X } from 'lucide-react';
 import { useId, useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -7,15 +11,18 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { ICON_NAMES, Icon } from '@/lib/icons';
 import { cn } from '@/lib/utils';
+import { TranslationStatus } from '../TranslationStatus.jsx';
+import { getUiLanguage } from '@/lib/uiLanguage.js';
 
 export function Field({ label, hint, error, required, htmlFor, children, className, aside }) {
+  useUiLanguage();
   return (
     <div className={cn('space-y-1.5', className)}>
       {(label || aside) && (
         <div className="flex items-center justify-between gap-2">
           {label && (
             <Label htmlFor={htmlFor} className="text-[13px] font-semibold">
-              {label}
+              {typeof label === 'string' ? uiText(label) : label}
               {required && (
                 <span className="text-destructive" aria-hidden="true">
                   {' '}
@@ -28,10 +35,10 @@ export function Field({ label, hint, error, required, htmlFor, children, classNa
         </div>
       )}
       {children}
-      {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {hint && !error && <p className="text-xs text-muted-foreground">{typeof hint === 'string' ? uiText(hint) : hint}</p>}
       {error && (
         <p className="text-xs font-medium text-destructive" role="alert">
-          {error}
+          {typeof error === 'string' ? uiText(error) : error}
         </p>
       )}
     </div>
@@ -39,6 +46,7 @@ export function Field({ label, hint, error, required, htmlFor, children, classNa
 }
 
 export function TextField({ label, hint, error, required, value, onChange, className, inputClassName, ...props }) {
+  useUiLanguage();
   const id = useId();
   return (
     <Field label={label} hint={hint} error={error} required={required} htmlFor={id} className={className}>
@@ -48,6 +56,7 @@ export function TextField({ label, hint, error, required, value, onChange, class
 }
 
 export function TextareaField({ label, hint, error, required, value, onChange, className, rows = 3, ...props }) {
+  useUiLanguage();
   const id = useId();
   return (
     <Field label={label} hint={hint} error={error} required={required} htmlFor={id} className={className}>
@@ -57,6 +66,7 @@ export function TextareaField({ label, hint, error, required, value, onChange, c
 }
 
 export function NumberField({ label, hint, error, required, value, onChange, className, ...props }) {
+  useUiLanguage();
   const id = useId();
   return (
     <Field label={label} hint={hint} error={error} required={required} htmlFor={id} className={className}>
@@ -75,21 +85,23 @@ export function NumberField({ label, hint, error, required, value, onChange, cla
 }
 
 export function SwitchField({ label, hint, checked, onChange, className }) {
+  useUiLanguage();
   const id = useId();
   return (
     <div className={cn('flex items-start justify-between gap-4 rounded-xl border bg-background px-3 py-2.5', className)}>
       <div>
         <Label htmlFor={id} className="text-[13px] font-semibold">
-          {label}
+          {typeof label === 'string' ? uiText(label) : label}
         </Label>
-        {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
+        {hint && <p className="mt-0.5 text-xs text-muted-foreground">{typeof hint === 'string' ? uiText(hint) : hint}</p>}
       </div>
       <Switch id={id} checked={Boolean(checked)} onCheckedChange={onChange} />
     </div>
   );
 }
 
-export function SelectField({ label, hint, error, required, value, onChange, options, placeholder = 'Select…', className, allowEmpty = false }) {
+export function SelectField({ label, hint, error, required, value, onChange, options, placeholder = uiText("Select…"), className, allowEmpty = false }) {
+  useUiLanguage();
   const id = useId();
   const EMPTY = '__empty__';
   return (
@@ -99,7 +111,7 @@ export function SelectField({ label, hint, error, required, value, onChange, opt
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {allowEmpty && <SelectItem value={EMPTY}>— None —</SelectItem>}
+          {allowEmpty && <SelectItem value={EMPTY}>{uiText("— None —")}</SelectItem>}
           {options.map((option) => (
             <SelectItem key={String(option.value)} value={String(option.value)}>
               {option.label}
@@ -112,29 +124,29 @@ export function SelectField({ label, hint, error, required, value, onChange, opt
 }
 
 const LANG_TABS = [
-  { key: 'hi', label: 'हिंदी' },
-  { key: 'en', label: 'English' },
-  { key: 'mixed', label: 'Mixed' },
+  { key: 'en', get label() { return uiText("English") + ' (ENG)'; } },
+  { key: 'hi', get label() { return uiText("Hindi") + ' (HIN)'; } },
 ];
 
-/** Localized value editor with हिंदी / English / Mixed tabs. */
+/** Localized value editor with हिंदी / English tabs. */
 export function L10nField({ label, hint, error, required, value, onChange, multiline = false, rows = 3, modes = ['hi', 'en'], placeholder, className }) {
+  useUiLanguage();
   const id = useId();
   const tabs = LANG_TABS.filter((t) => modes.includes(t.key));
-  const [active, setActive] = useState(tabs[0].key);
-  const current = value || {};
+  const [active, setActive] = useState(() => tabs.some(tab => tab.key === getUiLanguage()) ? getUiLanguage() : tabs[0].key);
+  const current = mapLegacyLanguages(value || {});
   const set = (text) => onChange({ ...current, [active]: text });
   const filled = (key) => Boolean(String(current[key] || '').trim());
   return (
     <Field
-      label={label}
+      label={typeof label === 'string' ? uiText(label) : label}
       hint={hint}
-      error={error}
+      error={typeof error === 'string' ? uiText(error) : error}
       required={required}
       htmlFor={`${id}-${active}`}
       className={className}
       aside={
-        <div className="flex rounded-lg bg-muted p-0.5" role="tablist" aria-label={`${label} language`}>
+        <div className="flex rounded-lg bg-muted p-0.5" role="tablist" aria-label={uiTemplate`${label} language`}>
           {tabs.map((tab) => (
             <button
               key={tab.key}
@@ -156,6 +168,7 @@ export function L10nField({ label, hint, error, required, value, onChange, multi
       ) : (
         <Input id={`${id}-${active}`} className="h-9" value={current[active] || ''} onChange={(e) => set(e.target.value)} placeholder={placeholder} lang={active === 'hi' ? 'hi' : 'en'} />
       )}
+      <TranslationStatus value={current} required={required} />
     </Field>
   );
 }
@@ -171,12 +184,13 @@ export function slugifyClient(input) {
     .slice(0, 120);
 }
 
-export function SlugField({ label = 'URL slug', value, onChange, suggestion, prefix, hint, error }) {
+export function SlugField({ label = uiText("URL slug"), value, onChange, suggestion, prefix, hint, error }) {
+  useUiLanguage();
   const id = useId();
   const [locked, setLocked] = useState(Boolean(value));
   const effective = locked ? value : slugifyClient(suggestion) || value;
   return (
-    <Field label={label} hint={hint || 'Lowercase English letters, numbers and hyphens (SEO-friendly).'} error={error} htmlFor={id}>
+    <Field label={label} hint={hint || uiText("Lowercase English letters, numbers and hyphens (SEO-friendly).")} error={error} htmlFor={id}>
       <div className="flex items-center gap-2">
         {prefix && <span className="hidden max-w-[45%] truncate text-xs text-muted-foreground sm:inline">{prefix}</span>}
         <Input
@@ -196,8 +210,8 @@ export function SlugField({ label = 'URL slug', value, onChange, suggestion, pre
             setLocked(!locked);
           }}
           className="grid size-9 shrink-0 place-items-center rounded-lg border text-muted-foreground hover:text-foreground"
-          title={locked ? 'Auto-generate from title' : 'Edit slug manually'}
-          aria-label={locked ? 'Auto-generate slug' : 'Edit slug manually'}
+          title={locked ? uiText("Auto-generate from title") : uiText("Edit slug manually")}
+          aria-label={locked ? uiText("Auto-generate slug") : uiText("Edit slug manually")}
         >
           {locked ? <Lock className="size-4" /> : <Unlock className="size-4" />}
         </button>
@@ -206,24 +220,23 @@ export function SlugField({ label = 'URL slug', value, onChange, suggestion, pre
   );
 }
 
-export function LanguageModeField({ value, onChange, label = 'Language mode' }) {
+export function LanguageModeField({ value, onChange, label = uiText("Language mode") }) {
+  useUiLanguage();
   return (
     <SelectField
-      label={label}
-      hint="Auto follows the हिंदी/ENG switch. Mixed keeps Hindi-English terminology exactly as typed."
-      value={value || 'auto'}
+      label={typeof label === 'string' ? uiText(label) : label}
+      hint={uiText("Selected language is always respected. Content is never translated.")}
+      value="auto"
       onChange={onChange}
       options={[
-        { value: 'auto', label: 'Auto (Hindi + English)' },
-        { value: 'hi', label: 'Hindi only' },
-        { value: 'en', label: 'English only' },
-        { value: 'mixed', label: 'Mixed Hindi-English' },
+        { value: 'auto', get label() { return uiText("Follow selected language"); } },
       ]}
     />
   );
 }
 
-export function TagsField({ label = 'Tags', value = [], onChange, hint = 'Press Enter or comma to add.' }) {
+export function TagsField({ label = uiText("Tags"), value = [], onChange, hint = uiText("Press Enter or comma to add.") }) {
+  useUiLanguage();
   const id = useId();
   const [draft, setDraft] = useState('');
   const add = () => {
@@ -240,7 +253,7 @@ export function TagsField({ label = 'Tags', value = [], onChange, hint = 'Press 
         {(value || []).map((tag) => (
           <span key={tag} className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-medium">
             {tag}
-            <button type="button" onClick={() => onChange(value.filter((t) => t !== tag))} aria-label={`Remove ${tag}`}>
+            <button type="button" onClick={() => onChange(value.filter((t) => t !== tag))} aria-label={uiTemplate`Remove ${tag}`}>
               <X className="size-3" />
             </button>
           </span>
@@ -273,6 +286,7 @@ const toLocalInput = (value) => {
 };
 
 export function DateTimeField({ label, hint, value, onChange }) {
+  useUiLanguage();
   const id = useId();
   return (
     <Field label={label} hint={hint} htmlFor={id}>
@@ -282,6 +296,7 @@ export function DateTimeField({ label, hint, value, onChange }) {
 }
 
 export function ColorField({ label, value, onChange, hint }) {
+  useUiLanguage();
   const id = useId();
   return (
     <Field label={label} hint={hint} htmlFor={id}>
@@ -293,7 +308,8 @@ export function ColorField({ label, value, onChange, hint }) {
   );
 }
 
-export function IconField({ label = 'Icon', value, onChange }) {
+export function IconField({ label = uiText("Icon"), value, onChange }) {
+  useUiLanguage();
   return (
     <Field label={label}>
       <div className="flex max-h-32 flex-wrap gap-1 overflow-y-auto rounded-lg border bg-background p-1.5">

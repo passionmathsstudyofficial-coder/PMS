@@ -81,3 +81,12 @@ test('password policy and slugs', () => {
   assert.equal(slugify('  Class 10 — Maths!! '), 'class-10-maths');
   assert.equal(slugify('त्रिभुज', 'fallback'), 'fallback');
 });
+
+
+test('an in-flight public cache producer cannot repopulate stale data after a save', async () => {
+ const {cache}=await import('../src/lib/cache.js');
+ let release; const pending=cache.wrap('audit-race',60000,()=>new Promise(resolve=>{release=resolve;}));
+ cache.invalidate();release('old');await pending;
+ assert.equal(cache.get('audit-race'),undefined);
+ await cache.wrap('audit-race',60000,async()=> 'new');assert.equal(cache.get('audit-race'),'new');
+});

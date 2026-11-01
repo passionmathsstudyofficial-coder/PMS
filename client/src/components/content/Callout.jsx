@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AlertTriangle, CheckCircle2, Info, Lightbulb, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +11,7 @@ const STYLES = {
 };
 
 export function Callout({ variant = 'note', title, action, children, className }) {
+  useUiLanguage();
   const style = STYLES[variant] || STYLES.note;
   const IconComponent = style.icon;
   return (

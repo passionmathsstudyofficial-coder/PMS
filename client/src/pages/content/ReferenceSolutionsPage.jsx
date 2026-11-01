@@ -1,3 +1,8 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { documentDownloadUrl } from '@/lib/media';
+import { resolveMediaUrl } from '@/lib/media';
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
 import { LanguageNotice } from '@/components/content/LanguageNotice.jsx';
@@ -23,13 +28,15 @@ import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
 import { StudySidebar } from '@/components/site/StudySidebar.jsx';
 import { EmptyState } from '@/components/site/States.jsx';
 import { errorMessage, get } from '@/lib/api';
-import { hasContent, useL10n } from '@/lib/i18n';
+import { hasContent, useL10n, useInterfaceL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { ContentHeader, PrevNext } from './ContentHeader.jsx';
 
 export default function ReferenceSolutionsPage({ data, breadcrumbs, path, preview, previewToken }) {
+  useUiLanguage();
   const t = useL10n();
+  const interfaceL10n = useInterfaceL10n();
   const term = useTerm();
   const {
     level = 'hub',
@@ -73,7 +80,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
       setPages((current) => [...current, result.data.questions]);
       setPage(page + 1);
     } catch (error) {
-      toast.error(errorMessage(error));
+      toast.apiError(error);
     } finally {
       setLoading(false);
     }
@@ -86,12 +93,12 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         <ContentHeader
           breadcrumbs={breadcrumbs}
           watermark="Ref"
-          eyebrow={<Chip tone="brand">Reference Solutions</Chip>}
+          eyebrow={<Chip tone="brand">{uiText("Reference Solutions")}</Chip>}
           title={{
-            hi: 'संदर्भ पुस्तक समाधान (Reference Book Solutions)',
+            hi: 'संदर्भ पुस्तक हल',
             en: 'Mathematics Reference Book Solutions',
           }}
-          subtitle="Chapter-wise and exercise-wise step-by-step solutions for RS Aggarwal, RD Sharma, and ML Aggarwal for Classes 6 to 12."
+          subtitle={uiText("Chapter-wise and exercise-wise step-by-step solutions for RS Aggarwal, RD Sharma, and ML Aggarwal for Classes 6 to 12.")}
         />
 
         <div className="container-page py-10">
@@ -106,27 +113,26 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                     <div>
                       <div className="mb-3 flex items-center justify-between">
                         <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand uppercase">
-                          {b.category || 'Reference Book'}
+                          {uiText(b.category || "Reference Book")}
                         </span>
                         <span className="text-xs text-muted-foreground">{b.author}</span>
                       </div>
                       <h2 className="font-heading text-xl font-bold text-foreground sm:text-2xl">
-                        {t(b.title)}
+                        {interfaceL10n(b.title)}
                       </h2>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        {t(b.description)}
+                        {interfaceL10n(b.description)}
                       </p>
 
                       <div className="mt-6">
-                        <p className="mb-2.5 text-xs font-bold text-muted-foreground uppercase">Select Class for Solutions:</p>
+                        <p className="mb-2.5 text-xs font-bold text-muted-foreground uppercase">{uiText("Select Class for Solutions:")}</p>
                         <div className="flex flex-wrap gap-2">
                           {(b.classes || [6, 7, 8, 9, 10, 11, 12]).map((cNum) => (
                             <Link
                               key={cNum}
                               to={`/reference-solutions/${b.slug}/class-${cNum}`}
                               className="rounded-xl border bg-background px-3.5 py-1.5 text-xs font-bold text-foreground transition hover:border-brand hover:bg-brand hover:text-white"
-                            >
-                              Class {cNum}
+                            >{uiText("Class")}{' '}{cNum}
                             </Link>
                           ))}
                         </div>
@@ -137,8 +143,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                       <Link
                         to={`/reference-solutions/${b.slug}`}
                         className="inline-flex items-center text-sm font-bold text-brand hover:underline"
-                      >
-                        View All Chapters & Exercises for {t(b.title)} <ArrowRight className="ml-1.5 size-4" />
+                      >{' '}{uiText("View All Chapters & Exercises for")}{' '}{interfaceL10n(b.title)} <ArrowRight className="ml-1.5 size-4" />
                       </Link>
                     </div>
                   </div>
@@ -162,21 +167,18 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         <ContentHeader
           breadcrumbs={breadcrumbs}
           watermark="Book"
-          eyebrow={<Chip tone="brand">{t(book?.title) || 'Reference Book'}</Chip>}
+          eyebrow={<Chip tone="brand">{interfaceL10n(book?.title) || uiText("Reference Book")}</Chip>}
           title={book.title}
-          subtitle={`Complete exercise-wise step-by-step solutions for ${book.title?.en || t(book.title)} across middle and high school classes.`}
+          subtitle={uiTemplate`Complete exercise-wise step-by-step solutions for ${interfaceL10n(book.title)} across middle and high school classes.`}
         />
 
         <div className="container-page py-10">
           <div className="grid gap-8 lg:grid-cols-12">
             <div className="space-y-8 lg:col-span-8">
               <div className="rounded-3xl border bg-card p-6 sm:p-8">
-                <h2 className="mb-2 font-heading text-xl font-bold text-foreground">
-                  Select Your Class for {t(book.title)}
+                <h2 className="mb-2 font-heading text-xl font-bold text-foreground">{' '}{uiText("Select Your Class for")}{' '}{interfaceL10n(book.title)}
                 </h2>
-                <p className="mb-6 text-sm text-muted-foreground">
-                  Choose your class below to access detailed chapter-by-chapter exercise solutions, step-by-step formulas, and free PDF notes:
-                </p>
+                <p className="mb-6 text-sm text-muted-foreground">{' '}{uiText("Choose your class below to access detailed chapter-by-chapter exercise solutions, step-by-step formulas, and free PDF notes:")}{' '}</p>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   {(book.classes || [10, 9, 8, 7, 6, 11, 12]).map((cNum) => (
@@ -190,10 +192,8 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                           {cNum}
                         </span>
                         <div>
-                          <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">
-                            Class {cNum} Solutions
-                          </h3>
-                          <p className="text-xs text-muted-foreground">Chapter & Exercise Solutions</p>
+                          <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">{uiText("Class")}{' '}{cNum}{uiText("Solutions")}</h3>
+                          <p className="text-xs text-muted-foreground">{uiText("Chapter & Exercise Solutions")}</p>
                         </div>
                       </div>
                       <ChevronRight className="size-5 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-brand" />
@@ -221,15 +221,15 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           watermark={`C${cls.number}`}
           eyebrow={
             <div className="flex items-center gap-2">
-              <Chip tone="brand">Class {cls.number}</Chip>
-              <Chip>{t(book.title)}</Chip>
+              <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
+              <Chip>{interfaceL10n(book.title)}</Chip>
             </div>
           }
           title={{
-            hi: `${t(book.title)} कक्षा ${cls.number} गणित समाधान`,
-            en: `${book.title?.en || t(book.title)} Solutions for Class ${cls.number} Maths`,
+            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} गणित समाधान`,
+            en: `${interfaceL10n(book.title)} Solutions for Class ${cls.number} Maths`,
           }}
-          subtitle={`Complete chapter-wise and exercise-wise solutions for Class ${cls.number} Mathematics as per latest board curriculum.`}
+          subtitle={uiTemplate`Complete chapter-wise and exercise-wise solutions for Class ${cls.number} Mathematics as per latest board curriculum.`}
         />
 
         <div className="container-page py-10">
@@ -237,27 +237,22 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
             <div className="space-y-6 lg:col-span-8">
               {/* Introduction box */}
               <div className="rounded-2xl border bg-card p-5 text-sm text-foreground/90">
-                <p>
-                  Welcome to <strong>{t(book.title)} Class {cls.number}</strong> solutions index on Passion Maths Study.
-                  Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.
-                </p>
+                <p>{uiText("Welcome to")}<strong>{interfaceL10n(book.title)}{uiText("Class")}{' '}{cls.number}</strong>{' '}{uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
               </div>
 
               {/* Chapters and Exercise Links */}
               <div className="space-y-4">
-                <h2 className="font-heading text-lg font-bold text-foreground">
-                  Class {cls.number} Chapters & Exercises
-                </h2>
+                <h2 className="font-heading text-lg font-bold text-foreground">{uiText("Class")}{' '}{cls.number}{uiText("Chapters & Exercises")}</h2>
 
                 {chapters.length === 0 ? (
-                  <EmptyState title="No chapters found" description="Chapters for this reference book will appear here." />
+                  <EmptyState title={uiText("No chapters found")} description={uiText("Chapters for this reference book will appear here.")} />
                 ) : (
                   <div className="space-y-4">
                     {chapters.map((ch) => (
                       <div key={ch._id} className="rounded-2xl border bg-card p-5 shadow-xs transition hover:border-brand/40">
                         <div className="mb-3 flex flex-col justify-between gap-1 sm:flex-row sm:items-center">
                           <Link to={ch.url} className="group">
-                            <span className="text-xs font-bold text-brand uppercase">Chapter {ch.number}</span>
+                            <span className="text-xs font-bold text-brand uppercase">{uiText("Chapter")}{' '}{ch.number}</span>
                             <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">
                               {t(ch.title)}
                             </h3>
@@ -270,7 +265,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                               </Button>
                             )}
                             <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
-                              <Link to={ch.url}>Chapter Page →</Link>
+                              <Link to={ch.url}>{uiText("Chapter Page →")}</Link>
                             </Button>
                           </div>
                         </div>
@@ -278,15 +273,14 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                         {/* Clickable exercise pills */}
                         {ch.exercises?.length > 0 && (
                           <div className="border-t pt-3">
-                            <p className="mb-2 text-[11px] font-bold text-muted-foreground uppercase">Exercises:</p>
+                            <p className="mb-2 text-[11px] font-bold text-muted-foreground uppercase">{uiText("Exercises:")}</p>
                             <div className="flex flex-wrap gap-2">
                               {ch.exercises.map((ex) => (
                                 <Link
                                   key={ex.slug || ex.number}
                                   to={ex.url || `${ch.url}/${ex.slug}`}
                                   className="rounded-lg border bg-background px-3 py-1 text-xs font-bold transition hover:border-brand hover:bg-brand hover:text-white"
-                                >
-                                  Exercise {ex.number}
+                                >{uiText("Exercise")}{' '}{ex.number}
                                 </Link>
                               ))}
                             </div>
@@ -325,16 +319,16 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           watermark={`Ch${chapter.number}`}
           eyebrow={
             <div className="flex items-center gap-2">
-              <Chip tone="brand">Class {cls.number}</Chip>
-              <Chip>{t(book.title)}</Chip>
-              <Chip>Chapter {chapter.number}</Chip>
+              <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
+              <Chip>{interfaceL10n(book.title)}</Chip>
+              <Chip>{uiText("Chapter")}{' '}{chapter.number}</Chip>
             </div>
           }
           title={{
-            hi: `${t(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number}: ${t(chapter.title)}`,
-            en: `${book.title?.en || t(book.title)} Class ${cls.number} Chapter ${chapter.number}: ${chapter.title?.en || t(chapter.title)}`,
+            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number}: ${t(chapter.title)}`,
+            en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number}: ${chapter.title?.en || t(chapter.title)}`,
           }}
-          subtitle={`Exercise-wise step-by-step solutions, key concept summaries, and PDF download for Chapter ${chapter.number}.`}
+          subtitle={uiTemplate`Exercise-wise step-by-step solutions, key concept summaries, and PDF download for Chapter ${chapter.number}.`}
         />
 
         <div className="container-page py-10">
@@ -351,20 +345,16 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                       <FileText className="size-5" />
                     </span>
                     <div>
-                      <h3 className="font-heading text-sm font-bold text-foreground">
-                        Chapter {chapter.number} Complete Solution PDF
-                      </h3>
-                      <p className="text-xs text-muted-foreground">Download or view the verified solutions guide</p>
+                      <h3 className="font-heading text-sm font-bold text-foreground">{uiText("Chapter")}{' '}{chapter.number}{uiText("Complete Solution PDF")}</h3>
+                      <p className="text-xs text-muted-foreground">{uiText("Download or view the verified solutions guide")}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" onClick={() => openPdf(chapter.pdfUrl || chapter.pdfFile?.url, `${t(chapter.title)} PDF`)}>
-                      <Eye className="mr-1.5 size-3.5" /> View PDF
-                    </Button>
+                      <Eye className="mr-1.5 size-3.5" />{uiText("View PDF")}</Button>
                     <Button size="sm" variant="default" asChild>
-                      <a href={chapter.pdfUrl || chapter.pdfFile?.url} download target="_blank" rel="noopener noreferrer">
-                        <Download className="mr-1.5 size-3.5" /> Download
-                      </a>
+                      <a href={documentDownloadUrl(resolveMediaUrl(chapter.pdfFile?.url || chapter.pdfUrl))} download target="_blank" rel="noopener noreferrer">
+                        <Download className="mr-1.5 size-3.5" />{uiText("Download")}</a>
                     </Button>
                   </div>
                 </div>
@@ -372,8 +362,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
 
               {/* Clickable exercises list */}
               <section className="space-y-4">
-                <h2 className="font-heading text-lg font-bold text-foreground">
-                  Select Exercise in Chapter {chapter.number}
+                <h2 className="font-heading text-lg font-bold text-foreground">{' '}{uiText("Select Exercise in Chapter")}{' '}{chapter.number}
                 </h2>
 
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -388,10 +377,9 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                           {ex.number}
                         </span>
                         <div>
-                          <h3 className="font-heading text-sm font-bold text-foreground group-hover:text-brand">
-                            Exercise {ex.number}
+                          <h3 className="font-heading text-sm font-bold text-foreground group-hover:text-brand">{uiText("Exercise")}{' '}{ex.number}
                           </h3>
-                          <p className="text-xs text-muted-foreground">Step-by-step solutions</p>
+                          <p className="text-xs text-muted-foreground">{uiText("Step-by-step solutions")}</p>
                         </div>
                       </div>
                       <ChevronRight className="size-4 text-muted-foreground transition group-hover:translate-x-1 group-hover:text-brand" />
@@ -403,7 +391,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
               {/* Chapter overview if available */}
               {chapter.shortDescription && (
                 <div className="rounded-2xl border bg-card p-5">
-                  <h3 className="mb-2 font-heading text-sm font-bold text-foreground">Chapter Overview</h3>
+                  <h3 className="mb-2 font-heading text-sm font-bold text-foreground">{uiText("Chapter Overview")}</h3>
                   <p className="text-xs leading-relaxed text-muted-foreground">{t(chapter.shortDescription)}</p>
                 </div>
               )}
@@ -436,24 +424,23 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         watermark={`Ex${exercise.number}`}
         eyebrow={
           <div className="flex items-center gap-2">
-            <Chip tone="brand">Class {cls.number}</Chip>
-            <Chip>{t(book.title)}</Chip>
-            <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">
-              Ch {chapter.number} · {t(chapter.title)}
+            <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
+            <Chip>{interfaceL10n(book.title)}</Chip>
+            <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">{' '}{uiText("Ch")}{' '}{chapter.number} · {t(chapter.title)}
             </Link>
           </div>
         }
         title={{
-          hi: `${t(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number} अभ्यास ${exercise.number}`,
-          en: `${book.title?.en || t(book.title)} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} Solutions`,
+          hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number} अभ्यास ${exercise.number}`,
+          en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} Solutions`,
         }}
-        subtitle={`Detailed step-by-step solutions for Exercise ${exercise.number} with mathematical formulas, diagrams, and video lessons.`}
+        subtitle={uiTemplate`Detailed step-by-step solutions for Exercise ${exercise.number} with mathematical formulas, diagrams, and video lessons.`}
         aside={<LanguageNotice />}
       />
 
       {/* Sibling exercises navigation bar */}
       {siblings.length > 1 && (
-        <nav aria-label="Exercises" className="border-b bg-background">
+        <nav aria-label={uiText("Exercises")} className="border-b bg-background">
           <div className="container-page flex gap-2 overflow-x-auto py-3">
             {siblings.map((s) => (
               <Link
@@ -465,8 +452,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                     ? 'border-brand bg-brand text-brand-foreground shadow-xs'
                     : 'bg-card hover:border-brand/40 hover:text-brand',
                 )}
-              >
-                Exercise {s.number}
+              >{uiText("Exercise")}{' '}{s.number}
               </Link>
             ))}
           </div>
@@ -487,20 +473,16 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                     <FileText className="size-4" />
                   </span>
                   <div>
-                    <h3 className="font-heading text-xs font-bold text-foreground">
-                      Exercise {exercise.number} PDF Solution Sheet
-                    </h3>
-                    <p className="text-[11px] text-muted-foreground">View online or download offline file</p>
+                    <h3 className="font-heading text-xs font-bold text-foreground">{uiText("Exercise")}{' '}{exercise.number}{uiText("PDF Solution Sheet")}</h3>
+                    <p className="text-[11px] text-muted-foreground">{uiText("View online or download offline file")}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => openPdf(exercise.pdfUrl || chapter.pdfUrl, `Exercise ${exercise.number} PDF`)}>
-                    <Eye className="mr-1 size-3.5" /> View PDF
-                  </Button>
+                    <Eye className="mr-1 size-3.5" />{uiText("View PDF")}</Button>
                   <Button size="sm" variant="default" className="h-8 text-xs" asChild>
-                    <a href={exercise.pdfUrl || chapter.pdfUrl} download target="_blank" rel="noopener noreferrer">
-                      <Download className="mr-1 size-3.5" /> Download
-                    </a>
+                    <a href={documentDownloadUrl(resolveMediaUrl(exercise.pdfFile?.url || exercise.pdfUrl || chapter.pdfFile?.url || chapter.pdfUrl))} download target="_blank" rel="noopener noreferrer">
+                      <Download className="mr-1 size-3.5" />{uiText("Download")}</a>
                   </Button>
                 </div>
               </div>
@@ -512,12 +494,8 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                 <div className="mx-auto mb-3 grid size-12 place-items-center rounded-2xl bg-brand/10 text-brand">
                   <BookOpen className="size-6" />
                 </div>
-                <h3 className="font-heading text-base font-bold text-foreground">
-                  Exercise {exercise.number} Solutions
-                </h3>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Digital question blocks for this exercise are being updated. Use the PDF button above to view complete step-by-step solutions.
-                </p>
+                <h3 className="font-heading text-base font-bold text-foreground">{uiText("Exercise")}{' '}{exercise.number}{uiText("Solutions")}</h3>
+                <p className="mt-1 text-xs text-muted-foreground">{' '}{uiText("Digital question blocks for this exercise are being updated. Use the PDF button above to view complete step-by-step solutions.")}{' '}</p>
               </div>
             ) : (
               questions.map((question) => (

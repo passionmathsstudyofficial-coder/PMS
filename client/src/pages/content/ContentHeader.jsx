@@ -1,18 +1,22 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { ContentLanguageSwitcher } from '@/components/content/ContentLanguageSwitcher.jsx';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { useRef } from 'react';
+import { isValidElement, useRef } from 'react';
 import { Link } from 'react-router';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs.jsx';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useEntrance } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark, children, aside, className }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const ref = useRef(null);
   useEntrance(ref, [String(watermark), breadcrumbs?.at(-1)?.url]);
 
-  const resolvedTitle = typeof title === 'object' && title !== null ? t(title) : title;
-  const resolvedSubtitle = typeof subtitle === 'object' && subtitle !== null ? t(subtitle) : subtitle;
+  const resolvedTitle = typeof title === 'object' && title !== null && !isValidElement(title) ? t(title) : title;
+  const resolvedSubtitle = typeof subtitle === 'object' && subtitle !== null && !isValidElement(subtitle) ? t(subtitle) : subtitle;
 
   return (
     <section ref={ref} className={cn('relative overflow-hidden border-b bg-gradient-to-b from-brand-soft/40 to-background', className)}>
@@ -22,7 +26,7 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
           className="pointer-events-none absolute -top-6 right-2 font-heading text-[9rem] leading-none font-extrabold text-brand/[0.06] select-none sm:right-10 sm:text-[12rem] dark:text-white/[0.04]"
           aria-hidden="true"
         >
-          {watermark}
+          {typeof watermark === 'string' ? uiText(watermark) : watermark}
         </span>
       )}
       <div className="container-page relative py-6 sm:py-9">
@@ -43,6 +47,7 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
               </p>
             )}
             {children && <div data-enter>{children}</div>}
+            <ContentLanguageSwitcher />
           </div>
           {aside && (
             <div data-enter className="shrink-0">
@@ -56,6 +61,7 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
 }
 
 export function StatPills({ items }) {
+  useUiLanguage();
   const list = items.filter((i) => i.value !== undefined && i.value !== null);
   if (!list.length) return null;
   return (
@@ -71,6 +77,7 @@ export function StatPills({ items }) {
 }
 
 function PrevNextLink({ item, direction, t }) {
+  useUiLanguage();
   if (!item) return <span className="hidden sm:block" />;
   const isPrev = direction === 'prev';
   return (
@@ -93,19 +100,12 @@ function PrevNextLink({ item, direction, t }) {
 }
 
 export function PrevNext({ prev, next, t }) {
+  useUiLanguage();
   if (!prev && !next) return null;
   return (
-    <nav aria-label="Previous and next" className="mt-10 grid gap-3 sm:grid-cols-2">
+    <nav aria-label={uiText("Previous and next")} className="mt-10 grid gap-3 sm:grid-cols-2">
       <PrevNextLink item={prev} direction="prev" t={t} />
       <PrevNextLink item={next} direction="next" t={t} />
     </nav>
   );
-}
-
-/** Returns the title in the language that is NOT currently displayed (for bilingual subtitles). */
-export function otherLanguage(value, lang) {
-  if (!value) return '';
-  const other = lang === 'hi' ? value.en : value.hi;
-  const current = lang === 'hi' ? value.hi : value.en;
-  return other && other !== current ? other : '';
 }

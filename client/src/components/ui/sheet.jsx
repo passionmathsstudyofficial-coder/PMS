@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 "use client"
 
 import * as React from "react"
@@ -10,24 +12,28 @@ import { XIcon } from "lucide-react"
 function Sheet({
   ...props
 }) {
+  useUiLanguage();
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
 
 function SheetTrigger({
   ...props
 }) {
+  useUiLanguage();
   return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 }
 
 function SheetClose({
   ...props
 }) {
+  useUiLanguage();
   return <SheetPrimitive.Close data-slot="sheet-close" {...props} />
 }
 
 function SheetPortal({
   ...props
 }) {
+  useUiLanguage();
   return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 }
 
@@ -35,6 +41,7 @@ function SheetOverlay({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
@@ -54,6 +61,7 @@ function SheetContent({
   showCloseButton = true,
   ...props
 }) {
+  useUiLanguage();
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -76,7 +84,7 @@ function SheetContent({
             >
               <XIcon
               />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{uiText("Close")}</span>
             </Button>
           </SheetPrimitive.Close>
         )}
@@ -89,6 +97,7 @@ function SheetHeader({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <div
       data-slot="sheet-header"
@@ -102,6 +111,7 @@ function SheetFooter({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <div
       data-slot="sheet-footer"
@@ -115,6 +125,7 @@ function SheetTitle({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
@@ -131,6 +142,7 @@ function SheetDescription({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"

@@ -1,0 +1,22 @@
+import path from 'node:path';
+process.env.TEST_MONGODB_URI='mongodb://127.0.0.1:27022/pms_audit_browser';
+const helpers=await import('./server/tests/helpers.js');
+process.env.CLIENT_DIST_DIR=path.resolve('client/dist');
+const {app}=await helpers.startServer();
+await helpers.createAdmin({email:'audit-browser@test.local'});
+const owner=await helpers.login(app,'audit-browser@test.local');
+const {createLanguageFixture}=await import('./server/tests/language-fixture.js');
+const fixture=await createLanguageFixture(owner);
+await owner.put('/api/site-settings').send({header:{showLoginButton:true,loginUrl:'/login',loginLabel:{en:'Student login',hi:'विद्यार्थी लॉगिन'}}});
+await owner.put('/api/navigation/header').send({items:[{type:'classes',label:{en:'Classes',hi:'कक्षाएँ'}},{type:'link',label:{en:'Study Materials',hi:'अध्ययन सामग्री'},url:'/study-materials'},{type:'column',label:{en:'Resources',hi:'संसाधन'},children:[{label:{en:'Notes',hi:'नोट्स'},url:'/class-10/maths/notes'},{label:{en:'PDF resources',hi:'पीडीएफ संसाधन'},url:'/class-10/maths/resources'}]}]});
+await (await import('supertest')).default(app).post('/api/student/auth/register').send({name:'Browser Student',email:'browser-student@test.local',password:helpers.PASSWORD});
+// Valid one-page PDF with matching byte offsets and xref for a real browser preview.
+const objects=['<< /Type /Catalog /Pages 2 0 R >>','<< /Type /Pages /Kids [3 0 R] /Count 1 >>','<< /Type /Page /Parent 2 0 R /MediaBox [0 0 400 400] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'];
+const stream='BT /F1 18 Tf 40 320 Td (PMS audit PDF - fractions and revision) Tj ET';objects.push(`<< /Length ${Buffer.byteLength(stream)} >>\nstream\n${stream}\nendstream`);
+let pdf='%PDF-1.4\n';const offsets=[0];objects.forEach((object,index)=>{offsets.push(Buffer.byteLength(pdf));pdf+=`${index+1} 0 obj\n${object}\nendobj\n`;});const xref=Buffer.byteLength(pdf);pdf+=`xref\n0 6\n0000000000 65535 f \n${offsets.slice(1).map(offset=>String(offset).padStart(10,'0')+' 00000 n ').join('\n')}\ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+const uploaded=await owner.post('/api/media/upload').attach('files',Buffer.from(pdf),'audit-study.pdf');
+if(uploaded.status!==201)throw new Error(JSON.stringify(uploaded.body));
+await fixture.create('resources',{title:{en:'Audit PDF revision',hi:'पीडीएफ पुनरीक्षण'},description:{en:'Download and preview the revision sheet.',hi:'पुनरीक्षण पत्रक देखें और डाउनलोड करें।'},class:fixture.classes[4]._id,subject:fixture.subjects[0]._id,chapter:fixture.chapter._id,file:uploaded.body.items[0]._id,resourceType:'ncert_notes'});
+await fixture.create('sections',{type:'hero',page:'home',name:'Audit hero'});
+const server=app.listen(5102,'127.0.0.1',()=>console.log('Audit fixture ready: http://127.0.0.1:5102'));
+process.on('SIGINT',()=>server.close(async()=>{await helpers.stopServer();process.exit(0);}));

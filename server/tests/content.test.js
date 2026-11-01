@@ -109,7 +109,7 @@ test('question with ordered solution blocks is sanitized, hidden as draft and vi
 
   assert.equal((await owner.patch(`/api/questions/${ids.question}/status`).send({ status: 'published' })).status, 200);
 
-  const page = await resolve(app, QUESTION_PATH);
+  const page = await resolve(app, QUESTION_PATH, '&lang=hi');
   assert.equal(page.status, 200);
   assert.equal(page.body.type, 'question');
   const q = page.body.data.question;
@@ -120,7 +120,7 @@ test('question with ordered solution blocks is sanitized, hidden as draft and vi
   const crumbs = page.body.breadcrumbs.map((c) => c.label.hi);
   assert.deepEqual(crumbs, ['होम', 'कक्षा 10', 'गणित', 'अध्याय 5', 'प्रश्नावली 5.2', 'प्रश्न 3']);
   assert.equal(page.body.breadcrumbs.at(-2).url, '/class-10/maths/adhyay-5/prashnavali-5-2');
-  assert.match(page.body.seo.title, /प्रश्नावली 5.2/);
+  assert.match(page.body.seo.title, /ज्ञात करें/);
   assert.ok(page.body.related.some((r) => r.url === '/class-10/maths/adhyay-5/prashnavali-5-1'));
 });
 
@@ -181,7 +181,7 @@ test('search finds classes, प्रश्नावली, Hindi words and form
   assert.equal(ex.body.results[0].type, 'exercise');
   assert.equal(ex.body.results[0].url, '/class-10/maths/adhyay-5/prashnavali-5-2');
 
-  const hindi = await request(app).get(`/api/search?q=${encodeURIComponent('समांतर')}`);
+  const hindi = await request(app).get(`/api/search?lang=hi&q=${encodeURIComponent('समांतर')}`);
   assert.ok(hindi.body.results.some((r) => r.type === 'chapter' && r.url === '/class-10/maths/adhyay-5'));
 
   const formula = await request(app).get(`/api/search?q=${encodeURIComponent('a_n')}`);

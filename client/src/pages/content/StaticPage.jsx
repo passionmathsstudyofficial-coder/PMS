@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { RichContent } from '@/components/content/RichContent.jsx';
 import { useL10n } from '@/lib/i18n';
@@ -5,6 +7,7 @@ import { useSite } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
 
 export default function StaticPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const site = useSite();
   const { page } = data;
@@ -18,7 +21,7 @@ export default function StaticPage({ data, breadcrumbs }) {
           <div className="rounded-2xl border bg-card p-5 sm:p-8">
             <RichContent html={t(page.content, page.languageMode)} />
             {page.template === 'legal' && page.updatedAt && (
-              <p className="mt-8 border-t pt-4 text-xs text-muted-foreground">Last updated: {new Date(page.updatedAt).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
+              <p className="mt-8 border-t pt-4 text-xs text-muted-foreground">{uiText("Last updated:")}{new Date(page.updatedAt).toLocaleDateString('en-IN', { dateStyle: 'long' })}</p>
             )}
           </div>
         </article>
@@ -40,7 +43,7 @@ export default function StaticPage({ data, breadcrumbs }) {
               </p>
             )}
             {!contact.email && !contact.phone && !t(contact.address) && (
-              <p className="text-sm text-muted-foreground">Contact details can be added in Admin → Website Settings.</p>
+              <p className="text-sm text-muted-foreground">{uiText("Contact details can be added in Admin → Website Settings.")}</p>
             )}
           </aside>
         )}

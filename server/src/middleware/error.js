@@ -15,6 +15,9 @@ export const notFound = (req, res, next) => next(new ApiError(404, `Not found: $
 
 // eslint-disable-next-line no-unused-vars
 export function errorHandler(err, req, res, next) {
+  if (res.headersSent) return next(err);
+  res.removeHeader('Content-Disposition');
+  res.type('application/json');
   let status = err.status || err.statusCode || 500;
   let message = err.message || 'Something went wrong';
   let details = err.details;
@@ -48,7 +51,7 @@ export function errorHandler(err, req, res, next) {
 
   if (status >= 500) {
     console.error('[error]', req.method, req.originalUrl, err);
-    if (env.isProd) message = 'Internal server error';
+    if (env.isProd && !(err instanceof ApiError)) message = 'Internal server error';
   }
 
   res.status(status).json({ error: { message, ...(details ? { details } : {}) } });

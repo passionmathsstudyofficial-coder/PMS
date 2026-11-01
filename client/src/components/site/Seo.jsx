@@ -1,3 +1,5 @@
+import { languageUrl } from '../../../../shared/languageUrl.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useEffect } from 'react';
 import { useLang, pickL10n } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
@@ -14,10 +16,12 @@ const absolute = (base, url) => {
  * and crawlers already receive the server-rendered structured data.
  */
 export function Seo({ title, description, canonical, robots = 'index,follow', image, type = 'website', jsonLd }) {
+  useUiLanguage();
   const site = useSite();
   const { lang } = useLang();
   const settings = site?.settings || {};
   const base = (settings.seo?.siteUrl || window.location.origin).replace(/\/$/, '');
+  canonical = canonical ? languageUrl(canonical,lang) : canonical;
   const brand = pickL10n(settings.brand?.name, lang) || 'Passion Maths Study';
   const template = settings.seo?.titleTemplate || '%s';
   const fullTitle = title ? template.replace('%s', title) : brand;
@@ -48,6 +52,9 @@ export function Seo({ title, description, canonical, robots = 'index,follow', im
       {description && <meta property="og:description" content={description} />}
       {canonical && <meta property="og:url" content={absolute(base, canonical)} />}
       {ogImage && <meta property="og:image" content={ogImage} />}
+      {['en','hi'].map(code => <link key={code} rel="alternate" hrefLang={code} href={absolute(base,languageUrl(canonical || window.location.pathname,code))} />)}
+      <link rel="alternate" hrefLang="x-default" href={absolute(base,languageUrl(canonical || window.location.pathname,'en'))} />
+      <meta property="og:locale" content={lang === 'hi' ? 'hi_IN' : 'en_IN'} />
       <meta name="twitter:card" content="summary_large_image" />
     </>
   );

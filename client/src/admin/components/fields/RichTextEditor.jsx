@@ -1,3 +1,10 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { TextStyle, Color } from '@tiptap/extension-text-style';
+import { MediaPicker } from '../media/MediaPicker.jsx';
+import { resolveMediaUrl } from '@/lib/media';
 import { MathNode, mathContent } from './MathNode.js';
 import { prepareRichHtml } from '@/components/content/mathContent.js';
 import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
@@ -42,14 +49,14 @@ import { FormulaInput, latexError } from './FormulaInput.jsx';
 import { normalizeMath } from '@/components/content/mathContent.js';
 
 const QUICK_MATH_SNIPPETS = [
-  { label: 'Fraction', value: '\\frac{a}{b}' },
-  { label: 'Equation', value: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
-  { label: 'Square root', value: '\\sqrt{x + 1}' },
-  { label: 'Exponent', value: 'x^{2}' },
-  { label: 'Subscript', value: 'x_{n}' },
-  { label: 'Matrix', value: '\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}' },
-  { label: 'System', value: '\\begin{cases} x + y = 5 \\\\ x - y = 1 \\end{cases}' },
-  { label: 'Integral', value: '\\int_{a}^{b} f(x)\\,dx' },
+  { get label() { return uiText("Fraction"); }, value: '\\frac{a}{b}' },
+  { get label() { return uiText("Equation"); }, value: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}' },
+  { get label() { return uiText("Square root"); }, value: '\\sqrt{x + 1}' },
+  { get label() { return uiText("Exponent"); }, value: 'x^{2}' },
+  { get label() { return uiText("Subscript"); }, value: 'x_{n}' },
+  { get label() { return uiText("Matrix"); }, value: '\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}' },
+  { get label() { return uiText("System"); }, value: '\\begin{cases} x + y = 5 \\\\ x - y = 1 \\end{cases}' },
+  { get label() { return uiText("Integral"); }, value: '\\int_{a}^{b} f(x)\\,dx' },
 ];
 
 function detectMathFromText(value) {
@@ -139,6 +146,7 @@ function extractMathFromClipboard(event) {
 }
 
 function ToolButton({ active, label, onClick, children, disabled }) {
+  useUiLanguage();
   return (
     <button
       type="button"
@@ -156,6 +164,7 @@ function ToolButton({ active, label, onClick, children, disabled }) {
 }
 
 function FormulaDialog({ open, onOpenChange, onInsert, defaultLatex = '', defaultDisplay = false }) {
+  useUiLanguage();
   const [latex, setLatex] = useState(defaultLatex);
   const [display, setDisplay] = useState(defaultDisplay);
 
@@ -170,7 +179,7 @@ function FormulaDialog({ open, onOpenChange, onInsert, defaultLatex = '', defaul
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Insert formula</DialogTitle>
+          <DialogTitle>{uiText("Insert formula")}</DialogTitle>
         </DialogHeader>
 
         <div className="mb-3 flex flex-wrap gap-2">
@@ -183,12 +192,9 @@ function FormulaDialog({ open, onOpenChange, onInsert, defaultLatex = '', defaul
 
         <FormulaInput value={latex} onChange={setLatex} display={display} autoFocus rows={3} />
         <label className="flex items-center gap-2 text-sm">
-          <Switch checked={display} onCheckedChange={setDisplay} /> Display on its own line (centered)
-        </label>
+          <Switch checked={display} onCheckedChange={setDisplay} />{uiText("Display on its own line (centered)")}</label>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>{uiText("Cancel")}</Button>
           <Button
             disabled={!latex.trim() || Boolean(latexError(normalizeMath(latex, display).latex))}
             onClick={() => {
@@ -196,9 +202,7 @@ function FormulaDialog({ open, onOpenChange, onInsert, defaultLatex = '', defaul
               setLatex('');
               onOpenChange(false);
             }}
-          >
-            Insert
-          </Button>
+          >{uiText("Insert")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -207,6 +211,11 @@ function FormulaDialog({ open, onOpenChange, onInsert, defaultLatex = '', defaul
 
 /** Shared CMS editor. Atomic math and image nodes serialize to sanitized HTML. */
 export default function RichTextEditor({ value, onChange, placeholder, ariaLabel, lang }) {
+  useUiLanguage();
+  const [documentOpen, setDocumentOpen] = useState(false);
+  const [textColor, setTextColor] = useState('#2563eb');
+  const colorSelection = useRef(null);
+  const documentSelection = useRef(null);
   const [formulaOpen, setFormulaOpen] = useState(false);
   const [formulaSeed, setFormulaSeed] = useState('');
   const [formulaDisplay, setFormulaDisplay] = useState(false);
@@ -226,6 +235,8 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
       TableKit.configure({ table: { resizable: false } }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Highlight,
+      TextStyle,
+      Color,
       MathNode,
       ContentImage,
     ],
@@ -239,7 +250,7 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
       },
       attributes: {
         class: 'rich',
-        'aria-label': ariaLabel || 'Rich text editor',
+        'aria-label': ariaLabel || uiText("Rich text editor"),
         'data-placeholder': placeholder || '',
         ...(lang ? { lang } : {}),
       },
@@ -284,6 +295,16 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
 
   if (!editor) return <div className="min-h-28 rounded-lg border bg-muted/40" />;
   const chain = () => editor.chain().focus();
+  const rememberColorSelection = () => {
+    const { from, to } = editor.state.selection;
+    colorSelection.current = { from, to };
+  };
+  const applyColor = (color) => {
+    setTextColor(color);
+    if (!/^#[0-9a-f]{6}$/i.test(color)) return;
+    const selection = colorSelection.current || editor.state.selection;
+    chain().setTextSelection(selection).setColor(color).run();
+  };
 
   const openMathDialog = (seed = '', display = false) => {
     setFormulaSeed(seed);
@@ -309,55 +330,66 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
 
   return (
     <div className="tiptap-editor overflow-hidden rounded-lg border bg-background focus-within:ring-3 focus-within:ring-ring/30">
-      <div className="flex flex-wrap items-center gap-0.5 border-b bg-muted/40 px-1.5 py-1" role="toolbar" aria-label="Formatting">
-        <ToolButton label="Bold" active={state.bold} onClick={() => chain().toggleBold().run()}>
+      <div className="flex flex-wrap items-center gap-0.5 border-b bg-muted/40 px-1.5 py-1" role="toolbar" aria-label={uiText("Formatting")}>
+        <ToolButton label={uiText("Bold")} active={state.bold} onClick={() => chain().toggleBold().run()}>
           <Bold className="size-4" />
         </ToolButton>
-        <ToolButton label="Italic" active={state.italic} onClick={() => chain().toggleItalic().run()}>
+        <Popover onOpenChange={(open) => { if (open) rememberColorSelection(); }}>
+          <PopoverTrigger asChild><button type="button" className="rounded-md px-2 py-1 text-sm font-bold" aria-label={uiText("Text color")} title={uiText("Text color")} onMouseDown={(event) => { event.preventDefault(); rememberColorSelection(); }}>A<span style={{ color: textColor }}> ▰</span></button></PopoverTrigger>
+          <PopoverContent align="start" className="w-56 space-y-2" onOpenAutoFocus={event => event.preventDefault()}>
+            <div className="flex flex-wrap gap-2">
+              {['#000000', '#dc2626', '#ea580c', '#16a34a', '#2563eb', '#9333ea'].map(color => <button key={color} type="button" aria-label={uiTemplate`Text color ${color}`} className="size-6 rounded border" style={{ backgroundColor: color }} onMouseDown={event => event.preventDefault()} onClick={() => applyColor(color)} />)}
+            </div>
+            <label className="flex items-center gap-2 text-xs">{uiText("Custom color")}<input type="color" aria-label={uiText("Custom text color")} value={/^#[0-9a-f]{6}$/i.test(textColor) ? textColor : '#000000'} onChange={event => applyColor(event.target.value)} /></label>
+            <Input aria-label={uiText("Text color HEX")} value={textColor} onChange={event => applyColor(event.target.value)} placeholder="#2563eb" maxLength={7} />
+            <Button type="button" size="sm" variant="outline" onClick={() => { const selection = colorSelection.current || editor.state.selection; chain().setTextSelection(selection).unsetColor().run(); }}>{uiText("Reset color")}</Button>
+          </PopoverContent>
+        </Popover>
+        <ToolButton label={uiText("Italic")} active={state.italic} onClick={() => chain().toggleItalic().run()}>
           <Italic className="size-4" />
         </ToolButton>
-        <ToolButton label="Underline" active={state.underline} onClick={() => chain().toggleUnderline().run()}>
+        <ToolButton label={uiText("Underline")} active={state.underline} onClick={() => chain().toggleUnderline().run()}>
           <UnderlineIcon className="size-4" />
         </ToolButton>
         <>
-            <ToolButton label="Strikethrough" active={state.strike} onClick={() => chain().toggleStrike().run()}>
+            <ToolButton label={uiText("Strikethrough")} active={state.strike} onClick={() => chain().toggleStrike().run()}>
               <Strikethrough className="size-4" />
             </ToolButton>
-            <ToolButton label="Highlight" active={state.highlight} onClick={() => chain().toggleHighlight().run()}>
+            <ToolButton label={uiText("Highlight")} active={state.highlight} onClick={() => chain().toggleHighlight().run()}>
               <Highlighter className="size-4" />
             </ToolButton>
             <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
-            <ToolButton label="Heading" active={state.h2} onClick={() => chain().toggleHeading({ level: 2 }).run()}>
+            <ToolButton label={uiText("Heading")} active={state.h2} onClick={() => chain().toggleHeading({ level: 2 }).run()}>
               <Heading2 className="size-4" />
             </ToolButton>
-            <ToolButton label="Sub-heading" active={state.h3} onClick={() => chain().toggleHeading({ level: 3 }).run()}>
+            <ToolButton label={uiText("Sub-heading")} active={state.h3} onClick={() => chain().toggleHeading({ level: 3 }).run()}>
               <Heading3 className="size-4" />
             </ToolButton>
         </>
-        <ToolButton label="Bullet list" active={state.bullet} onClick={() => chain().toggleBulletList().run()}>
+        <ToolButton label={uiText("Bullet list")} active={state.bullet} onClick={() => chain().toggleBulletList().run()}>
           <List className="size-4" />
         </ToolButton>
-        <ToolButton label="Numbered list" active={state.ordered} onClick={() => chain().toggleOrderedList().run()}>
+        <ToolButton label={uiText("Numbered list")} active={state.ordered} onClick={() => chain().toggleOrderedList().run()}>
           <ListOrdered className="size-4" />
         </ToolButton>
         <>
-            <ToolButton label="Quote" active={state.quote} onClick={() => chain().toggleBlockquote().run()}>
+            <ToolButton label={uiText("Quote")} active={state.quote} onClick={() => chain().toggleBlockquote().run()}>
               <Quote className="size-4" />
             </ToolButton>
             <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
-            <ToolButton label="Align left" active={state.left} onClick={() => chain().setTextAlign('left').run()}>
+            <ToolButton label={uiText("Align left")} active={state.left} onClick={() => chain().setTextAlign('left').run()}>
               <AlignLeft className="size-4" />
             </ToolButton>
-            <ToolButton label="Align center" active={state.center} onClick={() => chain().setTextAlign('center').run()}>
+            <ToolButton label={uiText("Align center")} active={state.center} onClick={() => chain().setTextAlign('center').run()}>
               <AlignCenter className="size-4" />
             </ToolButton>
-            <ToolButton label="Align right" active={state.right} onClick={() => chain().setTextAlign('right').run()}>
+            <ToolButton label={uiText("Align right")} active={state.right} onClick={() => chain().setTextAlign('right').run()}>
               <AlignRight className="size-4" />
             </ToolButton>
         </>
         <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
         <ToolButton
-          label="Link"
+          label={uiText("Link")}
           active={state.link}
           onClick={() => {
             setLinkUrl(editor.getAttributes('link').href || '');
@@ -366,17 +398,18 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
         >
           <LinkIcon className="size-4" />
         </ToolButton>
-        <ToolButton label="Convert to math" onClick={convertSelectionToMath}>
+        <ToolButton label={uiText("Insert PDF / Word document")} onClick={() => { documentSelection.current = editor.state.selection.to; setDocumentOpen(true); }}><span className="text-[10px] font-bold">{uiText("FILE")}</span></ToolButton>
+        <ToolButton label={uiText("Convert to math")} onClick={convertSelectionToMath}>
           <Sigma className="size-4" />
         </ToolButton>
-        <ToolButton label="Edit equation" onClick={() => openMathDialog(editor.getAttributes('math').latex || editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to, ' '), editor.getAttributes('math').display || false)}>
+        <ToolButton label={uiText("Edit equation")} onClick={() => openMathDialog(editor.getAttributes('math').latex || editor.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to, ' '), editor.getAttributes('math').display || false)}>
           <Eye className="size-4" />
         </ToolButton>
-        <ToolButton label="Insert formula (LaTeX)" onClick={() => openMathDialog('', false)}>
+        <ToolButton label={uiText("Insert formula (LaTeX)")} onClick={() => openMathDialog('', false)}>
           <Sigma className="size-4" />
         </ToolButton>
         <>
-            <ToolButton label={state.image ? 'Edit image' : 'Insert image'} onClick={() => {
+            <ToolButton label={state.image ? uiText("Edit image") : uiText("Insert image")} onClick={() => {
               const { from, to } = editor.state.selection;
               imageSelection.current = { from, to, replace: editor.isActive('image') };
               setImageSeed(editor.isActive('image') ? editor.getAttributes('image') : {});
@@ -386,36 +419,34 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
             </ToolButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button type="button" title="Table" aria-label="Table options" className={cn('grid size-8 place-items-center rounded-md text-foreground/70 hover:bg-muted', state.table && 'bg-brand-soft text-brand')}>
+                <button type="button" title={uiText("Table")} aria-label={uiText("Table options")} className={cn('grid size-8 place-items-center rounded-md text-foreground/70 hover:bg-muted', state.table && 'bg-brand-soft text-brand')}>
                   <TableIcon className="size-4" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem onSelect={() => chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>Insert 3 × 3 table</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>{uiText("Insert 3 × 3 table")}</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().addRowAfter().run()}>Add row</DropdownMenuItem>
-                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().addColumnAfter().run()}>Add column</DropdownMenuItem>
-                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().deleteRow().run()}>Delete row</DropdownMenuItem>
-                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().deleteColumn().run()}>Delete column</DropdownMenuItem>
-                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().toggleHeaderRow().run()}>Toggle header row</DropdownMenuItem>
-                <DropdownMenuItem disabled={!state.table} variant="destructive" onSelect={() => chain().deleteTable().run()}>
-                  Delete table
-                </DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().addRowAfter().run()}>{uiText("Add row")}</DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().addColumnAfter().run()}>{uiText("Add column")}</DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().deleteRow().run()}>{uiText("Delete row")}</DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().deleteColumn().run()}>{uiText("Delete column")}</DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} onSelect={() => chain().toggleHeaderRow().run()}>{uiText("Toggle header row")}</DropdownMenuItem>
+                <DropdownMenuItem disabled={!state.table} variant="destructive" onSelect={() => chain().deleteTable().run()}>{uiText("Delete table")}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
         </>
         <span className="mx-1 h-5 w-px bg-border" aria-hidden="true" />
-        <ToolButton label="Clear formatting" onClick={() => chain().unsetAllMarks().clearNodes().run()}>
+        <ToolButton label={uiText("Clear formatting")} onClick={() => chain().unsetAllMarks().clearNodes().run()}>
           <RemoveFormatting className="size-4" />
         </ToolButton>
-        <ToolButton label="Undo" disabled={!state.canUndo} onClick={() => chain().undo().run()}>
+        <ToolButton label={uiText("Undo")} disabled={!state.canUndo} onClick={() => chain().undo().run()}>
           <Undo2 className="size-4" />
         </ToolButton>
-        <ToolButton label="Redo" disabled={!state.canRedo} onClick={() => chain().redo().run()}>
+        <ToolButton label={uiText("Redo")} disabled={!state.canRedo} onClick={() => chain().redo().run()}>
           <Redo2 className="size-4" />
         </ToolButton>
         <span className="flex-1" />
-        <ToolButton label="Toggle rendered preview" active={preview} onClick={() => setPreview((v) => !v)}>
+        <ToolButton label={uiText("Toggle rendered preview")} active={preview} onClick={() => setPreview((v) => !v)}>
           <Eye className="size-4" />
         </ToolButton>
       </div>
@@ -424,7 +455,7 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
 
       {preview && (
         <div className="border-t bg-paper px-3 py-2.5 dark:bg-muted/30">
-          <p className="mb-1 text-[10px] font-bold tracking-wide text-muted-foreground uppercase">Student view</p>
+          <p className="mb-1 text-[10px] font-bold tracking-wide text-muted-foreground uppercase">{uiText("Student view")}</p>
           <RichContent html={value} />
         </div>
       )}
@@ -440,6 +471,11 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
           chain().insertContent(mathContent(latex, display)).run();
         }}
       />
+      <MediaPicker open={documentOpen} onOpenChange={setDocumentOpen} kind="pdf" onSelect={(media) => {
+        const href = resolveMediaUrl(media.url);
+        if (!href) return;
+        chain().insertContentAt(documentSelection.current ?? editor.state.selection.to, { type: 'paragraph', content: [{ type: 'text', text: media.originalName || media.title || 'Document', marks: [{ type: 'link', attrs: { href, target: '_blank', rel: 'noopener noreferrer' } }] }] }).run();
+      }} />
       <ImageDialog
         open={mediaOpen}
         onOpenChange={setMediaOpen}
@@ -457,14 +493,12 @@ export default function RichTextEditor({ value, onChange, placeholder, ariaLabel
       <Dialog open={linkOpen} onOpenChange={setLinkOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Link</DialogTitle>
+            <DialogTitle>{uiText("Link")}</DialogTitle>
           </DialogHeader>
-          <Input autoFocus placeholder="https://… or /class-10/maths" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && applyLink()} />
+          <Input autoFocus placeholder={uiText("https://… or /class-10/maths")} value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && applyLink()} />
           <DialogFooter>
-            <Button variant="outline" onClick={() => setLinkOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={applyLink}>{linkUrl ? 'Apply link' : 'Remove link'}</Button>
+            <Button variant="outline" onClick={() => setLinkOpen(false)}>{uiText("Cancel")}</Button>
+            <Button onClick={applyLink}>{linkUrl ? uiText("Apply link") : uiText("Remove link")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

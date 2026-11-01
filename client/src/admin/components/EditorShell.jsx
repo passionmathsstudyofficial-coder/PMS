@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Archive, CalendarClock, Copy, Eye, Loader2, RotateCcw, Save, Send, Trash2, Undo2 } from 'lucide-react';
 import { useEffect } from 'react';
 import { useBlocker } from 'react-router';
@@ -15,7 +17,7 @@ export function useUnsavedGuard(dirty) {
 
   useEffect(() => {
     if (blocker.state !== 'blocked') return;
-    confirm({ title: 'Leave without saving?', description: 'You have unsaved changes on this page.', confirmLabel: 'Discard changes', destructive: true }).then((ok) =>
+    confirm({ get title() { return uiText("Leave without saving?"); }, get description() { return uiText("You have unsaved changes on this page."); }, get confirmLabel() { return uiText("Discard changes"); }, destructive: true }).then((ok) =>
       ok ? blocker.proceed() : blocker.reset(),
     );
   }, [blocker, confirm]);
@@ -54,6 +56,7 @@ export function EditorShell({
   sidebar,
   children,
 }) {
+  useUiLanguage();
   const { can } = useAdminAuth();
   const isEditor = form && typeof form.save === 'function';
   const f = isEditor ? form.form : form;
@@ -92,14 +95,13 @@ export function EditorShell({
         actions={
           <>
             {hasStatus && <StatusBadge doc={{ ...(d || {}), ...(f || {}) }} />}
-            {isUnsaved && <span className="text-xs font-semibold text-warning">Unsaved changes</span>}
+            {isUnsaved && <span className="text-xs font-semibold text-warning">{uiText("Unsaved changes")}</span>}
             {onPreview && (
               <Button type="button" variant="outline" size="lg" onClick={onPreview}>
-                <Eye /> Preview
-              </Button>
+                <Eye />{uiText("Preview")}</Button>
             )}
             <Button type="button" size="lg" onClick={() => doSave({})} disabled={isSaving}>
-              {isSaving ? <Loader2 className="animate-spin" /> : <Save />} {isNew ? 'Save' : 'Save changes'}
+              {isSaving ? <Loader2 className="animate-spin" /> : <Save />} {isNew ? uiText("Save") : uiText("Save changes")}
             </Button>
           </>
         }
@@ -108,42 +110,38 @@ export function EditorShell({
         <div className="min-w-0 space-y-5 xl:col-span-8">{children}</div>
         <aside className="space-y-4 xl:sticky xl:top-20 xl:col-span-4">
           {hasStatus && (
-            <Panel title="Publish">
+            <Panel title={uiText("Publish")}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Status</span>
+                  <span className="text-muted-foreground">{uiText("Status")}</span>
                   <StatusBadge doc={{ ...(d || {}), ...(f || {}) }} />
                 </div>
                 <div className="grid gap-2">
                   {status !== 'published' && (
                     <Button type="button" variant="outline" onClick={() => doSave({ status: 'draft' })} disabled={isSaving}>
-                      <Save /> Save draft
-                    </Button>
+                      <Save />{uiText("Save draft")}</Button>
                   )}
                   {status !== 'published' && canPublish && (
                     <Button type="button" onClick={() => doSave({ status: 'published' })} disabled={isSaving}>
-                      {scheduled ? <CalendarClock /> : <Send />} {scheduled ? 'Schedule' : 'Publish'}
+                      {scheduled ? <CalendarClock /> : <Send />} {scheduled ? uiText("Schedule") : uiText("Publish")}
                     </Button>
                   )}
                   {status === 'published' && (
                     <Button type="button" onClick={() => doSave({})} disabled={isSaving}>
-                      <Save /> Update
-                    </Button>
+                      <Save />{uiText("Update")}</Button>
                   )}
                   {status === 'published' && canPublish && (
                     <Button type="button" variant="outline" onClick={() => doSave({ status: 'draft' })} disabled={isSaving}>
-                      <Undo2 /> Unpublish
-                    </Button>
+                      <Undo2 />{uiText("Unpublish")}</Button>
                   )}
                   {status === 'archived' && (
                     <Button type="button" variant="ghost" onClick={() => doSave({ status: 'draft' })} disabled={isSaving}>
-                      <RotateCcw /> Restore as draft
-                    </Button>
+                      <RotateCcw />{uiText("Restore as draft")}</Button>
                   )}
-                  {!canPublish && <p className="text-xs text-muted-foreground">An admin needs to publish your draft.</p>}
+                  {!canPublish && <p className="text-xs text-muted-foreground">{uiText("An admin needs to publish your draft.")}</p>}
                 </div>
-                <SwitchField label="Visible on website" hint="Hide without unpublishing." checked={f?.isVisible !== false} onChange={(v) => sf('isVisible', v)} />
-                <DateTimeField label="Publish date" hint="Pick a future date to schedule publishing." value={f?.publishedAt} onChange={(v) => sf('publishedAt', v)} />
+                <SwitchField label={uiText("Visible on website")} hint={uiText("Hide without unpublishing.")} checked={f?.isVisible !== false} onChange={(v) => sf('isVisible', v)} />
+                <DateTimeField label={uiText("Publish date")} hint={uiText("Pick a future date to schedule publishing.")} value={f?.publishedAt} onChange={(v) => sf('publishedAt', v)} />
               </div>
             </Panel>
           )}
@@ -151,36 +149,33 @@ export function EditorShell({
           {sidebar}
 
           {!isNew && d && (
-            <Panel title="More actions">
+            <Panel title={uiText("More actions")}>
               <div className="grid gap-2">
                 {doDuplicate && (
                   <Button type="button" variant="outline" onClick={doDuplicate}>
-                    <Copy /> Duplicate
-                  </Button>
+                    <Copy />{uiText("Duplicate")}</Button>
                 )}
                 {hasStatus && status !== 'archived' && canPublish && (
                   <Button type="button" variant="ghost" onClick={() => doSave({ status: 'archived' })}>
-                    <Archive /> Archive
-                  </Button>
+                    <Archive />{uiText("Archive")}</Button>
                 )}
                 {doDelete && can('content:delete') && (
                   <Button type="button" variant="destructive" onClick={doDelete}>
-                    <Trash2 /> Delete
-                  </Button>
+                    <Trash2 />{uiText("Delete")}</Button>
                 )}
               </div>
               <dl className="mt-4 space-y-1 text-xs text-muted-foreground">
                 <div className="flex justify-between gap-2">
-                  <dt>Created</dt>
+                  <dt>{uiText("Created")}</dt>
                   <dd>{formatDate(d.createdAt)}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt>Last updated</dt>
+                  <dt>{uiText("Last updated")}</dt>
                   <dd>{formatDate(d.updatedAt)}</dd>
                 </div>
                 {d.publishedAt && (
                   <div className="flex justify-between gap-2">
-                    <dt>Published</dt>
+                    <dt>{uiText("Published")}</dt>
                     <dd>{formatDate(d.publishedAt)}</dd>
                   </div>
                 )}

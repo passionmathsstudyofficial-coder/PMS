@@ -1,5 +1,9 @@
 import crypto from 'node:crypto';
+import { cache } from '../lib/cache.js';
 import express from 'express';
+import { driveDocument, normalizeDocumentUrl } from '../../../shared/documents.js';
+import { mergeLanguageFields } from '../../../shared/localization.js';
+import { languageResponse } from '../middleware/language.js';
 import { hasPermission } from '../lib/permissions.js';
 import { isObjectId } from '../lib/request.js';
 import {
@@ -15,6 +19,7 @@ import {
   Question,
   RelatedContent,
   Resource,
+  Media,
   Section,
   Solution,
   Subject,
@@ -28,6 +33,8 @@ import { BOOK_SELECT, MEDIA_SELECT, RESOURCE_SELECT, VIDEO_SELECT, blockPopulate
 
 
 const router = express.Router();
+router.use(async (req, res, next) => { if (req.method === 'GET') await cache.sync(); next(); });
+router.use((req,res,next) => req.method === 'GET' ? optionalAuth(req,res,() => req.query.scope === 'admin' || req.admin && req.query.lang === undefined ? next() : languageResponse(req,res,next)) : next());
 const idFilter = (query, keys) =>
   Object.fromEntries(keys.filter((k) => isObjectId(query[k])).map((k) => [k, query[k]]));
 const copySuffix = () => `copy-${crypto.randomBytes(2).toString('hex')}`;
@@ -169,6 +176,18 @@ router.use(
   '/resources',
   crudRouter(Resource, {
     entityType: 'Resource',
+    beforeWrite: async (doc) => {
+      try {
+        doc.fileUrl = normalizeDocumentUrl(doc.fileUrl);
+        doc.externalUrl = normalizeDocumentUrl(doc.externalUrl);
+        if (!doc.fileUrl && driveDocument(doc.externalUrl)) doc.fileUrl = doc.externalUrl;
+      } catch (error) { throw new ApiError(400, error.message); }
+      if (!doc.file) return;
+      const file = await Media.findById(doc.file).select('format bytes').lean();
+      if (!file) throw new ApiError(400, 'Selected attachment does not exist. Choose a file from the Media Library.');
+      doc.fileType = file.format;
+      if (!doc.fileSize && file.bytes) doc.fileSize = `${(file.bytes / (1024 * 1024)).toFixed(2)} MB`;
+    },
     defaultSort: { sortOrder: 1, createdAt: -1 },
     adminFilters: (q) => ({
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'exercise', 'book']),
@@ -278,11 +297,11 @@ async function saveSolution(question, req) {
   if (payload === undefined) return;
   let solution = await Solution.findOne({ question: question._id });
   if (!solution) solution = new Solution({ question: question._id, createdBy: req.admin._id });
-  solution.set({
-    blocks: Array.isArray(payload?.blocks) ? payload.blocks : [],
+  solution.set(mergeLanguageFields(solution.toObject(),{
+    blocks: Array.isArray(payload?.blocks) ? payload.blocks : solution.blocks.toObject(),
     languageMode: payload?.languageMode || 'auto',
     template: isObjectId(payload?.template) ? payload.template : undefined,
-  });
+  }));
   solution.updatedBy = req.admin._id;
   await solution.save();
 }

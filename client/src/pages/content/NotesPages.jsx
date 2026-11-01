@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { FileText } from 'lucide-react';
 import { Link } from 'react-router';
 import { Chip } from '@/components/content/badges.jsx';
@@ -13,6 +14,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
 
 export function NotesListPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, notes } = data;
@@ -52,6 +54,7 @@ export function NotesListPage({ data, breadcrumbs }) {
 }
 
 export function NotePage({ data, breadcrumbs, related }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { openViewer } = useImageViewer();

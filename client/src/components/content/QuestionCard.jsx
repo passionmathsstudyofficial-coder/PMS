@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Lightbulb, Link2 } from 'lucide-react';
 import { useState } from 'react';
@@ -14,6 +16,7 @@ import { SolutionRenderer } from './SolutionRenderer.jsx';
 import { YouTubeEmbed } from './YouTubeEmbed.jsx';
 
 function Attachments({ items, images, offset = 0 }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { openViewer } = useImageViewer();
@@ -35,6 +38,7 @@ function Attachments({ items, images, offset = 0 }) {
 }
 
 export function QuestionCard({ question, headingLevel = 'h2', showPermalink = true, defaultOpen = true, className }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { lang } = useLang();
@@ -78,14 +82,14 @@ export function QuestionCard({ question, headingLevel = 'h2', showPermalink = tr
         </div>
         {showPermalink && question.url && (
           <Link to={question.url} className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-brand">
-            <Link2 className="size-3.5" aria-hidden="true" /> <span className="sr-only sm:not-sr-only">Link</span>
+            <Link2 className="size-3.5" aria-hidden="true" /> <span className="sr-only sm:not-sr-only">{uiText("Link")}</span>
           </Link>
         )}
       </header>
 
       <div className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
         {onlyOther && (
-          <p className="text-xs text-muted-foreground">{langs[0] === 'hi' ? 'यह प्रश्न केवल हिंदी में उपलब्ध है।' : 'This question is available in English only.'}</p>
+          <p className="text-xs text-muted-foreground">{langs[0] === 'hi' ? uiText("यह प्रश्न केवल हिंदी में उपलब्ध है।") : uiText("This question is available in English only.")}</p>
         )}
         <RichContent html={t(question.text, mode)} className="text-[16.5px] font-medium sm:text-[17px]" />
         <Attachments items={questionAttachments} images={questionImages} />

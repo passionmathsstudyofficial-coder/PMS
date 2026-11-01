@@ -1,3 +1,5 @@
+import { requestLanguage } from '../middleware/language.js';
+import { localizePublicContent,languageUrl } from './languageContent.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { env } from '../config/env.js';
@@ -38,6 +40,7 @@ function headTags({ settings, title, description, canonical, robots = 'index,fol
   const brand = pick(settings.brand?.name, lang) || 'Passion Maths Study';
   const templateStr = settings.seo?.titleTemplate || '%s | Passion Maths Study';
   const fullTitle = title ? templateStr.replace('%s', title) : brand;
+  canonical = canonical ? languageUrl(canonical,lang) : canonical;
   const ogImage = absolute(base, image || settings.seo?.defaultOgImage?.url || settings.brand?.logo?.url || settings.brand?.logoUrl);
   const tags = [
     `<title data-ssr>${esc(fullTitle)}</title>`,
@@ -56,6 +59,8 @@ function headTags({ settings, title, description, canonical, robots = 'index,fol
     settings.seo?.googleSiteVerification
       ? `<meta data-ssr name="google-site-verification" content="${esc(settings.seo.googleSiteVerification)}" />`
       : '',
+    ...['en','hi'].map(code => `<link data-ssr rel="alternate" hreflang="${code}" href="${esc(absolute(base,languageUrl(canonical || '/',code)))}" />`),
+    `<link data-ssr rel="alternate" hreflang="x-default" href="${esc(absolute(base,languageUrl(canonical || '/','en')))}" />`,
     ...extra,
   ];
   return tags.filter(Boolean).join('\n    ');
@@ -82,7 +87,7 @@ function structuredData(result, base, settings, lang) {
       ...(isArticle ? { headline: seo.title } : { name: seo.title }),
       description: seo.description,
       url: absolute(base, seo.canonical),
-      inLanguage: ['hi-IN', 'en-IN'],
+      inLanguage: lang === 'hi' ? 'hi-IN' : 'en-IN',
       ...(seo.ogImage ? { image: absolute(base, seo.ogImage) } : {}),
       publisher: { '@type': 'Organization', name: settings.seo?.organizationName || 'Passion Maths Study' },
       isAccessibleForFree: true,
@@ -103,7 +108,7 @@ function structuredData(result, base, settings, lang) {
 export async function renderAppHtml(req, res) {
   const [html, site] = await Promise.all([loadTemplate(), getSiteBootstrap()]);
   const { settings, seoRoutes } = site;
-  const lang = settings.language?.default || 'hi';
+  const lang = requestLanguage(req);
   const base = siteBase(settings);
   const pathname = req.path.replace(/\/+$/, '') || '/';
   let status = 200;
@@ -141,12 +146,16 @@ export async function renderAppHtml(req, res) {
         }),
       ],
     });
+  } else if (['/login', '/register', '/forgot-password', '/reset-password'].includes(pathname)) {
+    head = headTags({ settings, title: lang === 'hi' ? 'विद्यार्थी खाता' : 'Student account', description: '', robots: 'noindex,nofollow', lang });
+    res.set('Cache-Control', 'no-store');
+    res.set('Referrer-Policy', 'no-referrer');
   } else if (pathname === '/search') {
     const route = seoRoutes.search || {};
     head = headTags({ settings, title: pick(route.title, lang) || 'Search', description: pick(route.description, lang), robots: 'noindex,follow', lang });
   } else {
     try {
-      const result = await cache.wrap(`resolve:${pathname}:1`, 60_000, () => resolvePath(pathname, { page: 1 }));
+      const result = localizePublicContent(await cache.wrap(`resolve:${pathname}:1`, 60_000, () => resolvePath(pathname, { page: 1 })),lang);
       if (result.type === 'redirect') return res.redirect(301, result.redirect);
       const seo = result.seo || {};
       head = headTags({
@@ -168,7 +177,9 @@ export async function renderAppHtml(req, res) {
   }
 
   const page = html.replace('<!--app-head-->', head).replace(/<html lang="[^"]*">/, `<html lang="${lang}">`);
-  if (!res.get('Cache-Control')) res.set('Cache-Control', status === 200 ? 'public, no-cache' : 'no-store');
+  if (!res.get('Cache-Control')) res.set('Cache-Control', status === 200 ? 'private, no-cache' : 'no-store');
+  res.set('Content-Language',lang);
+  res.vary('Cookie');
   res.status(status).type('html').send(page);
 }
 

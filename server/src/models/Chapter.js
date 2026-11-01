@@ -62,13 +62,10 @@ chapterSchema.pre('save', function flagChildren() {
     !this.isNew && (this.isModified('number') || this.isModified('title') || this.isModified('class') || this.isModified('subject'));
 });
 
-chapterSchema.post('save', function refreshExercises(doc) {
+chapterSchema.post('save', async function refreshExercises(doc) {
   if (!doc.$locals.refreshChildren) return;
-  mongoose
-    .model('Exercise')
-    .find({ chapter: doc._id })
-    .then((items) => Promise.all(items.map((e) => e.save())))
-    .catch((err) => console.error('[chapter] failed to refresh exercises', err.message));
+  const items = await mongoose.model('Exercise').find({ chapter: doc._id });
+  await Promise.all(items.map(e => e.save()));
 });
 
 export const Chapter = mongoose.model('Chapter', chapterSchema);

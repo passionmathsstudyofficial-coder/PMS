@@ -1,19 +1,21 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { motion } from 'framer-motion';
 import { useId } from 'react';
 import { useLang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 const OPTIONS = [
-  { value: 'hi', label: 'हिंदी', aria: 'हिंदी में देखें' },
-  { value: 'en', label: 'ENG', aria: 'View in English' },
-  { value: 'mixed', label: 'Hinglish', aria: 'हिंग्लिश / Mixed' },
+  { value: 'hi', label: 'हिंदी', get aria() { return uiText("हिंदी में देखें"); } },
+  { value: 'en', label: 'ENG', get aria() { return uiText("View in English"); } },
 ];
 
 export function LanguageSwitcher({ className }) {
+  useUiLanguage();
   const { lang, setLang } = useLang();
   const layoutId = useId();
   return (
-    <div role="group" aria-label="Language / भाषा" className={cn('relative flex items-center rounded-full bg-muted p-0.5 sm:p-1 text-xs font-bold', className)}>
+    <div role="group" aria-label={uiText("Language / भाषा")} className={cn('relative flex items-center rounded-full bg-muted p-0.5 sm:p-1 text-xs font-bold', className)}>
       {OPTIONS.map((option) => {
         const active = lang === option.value;
         return (

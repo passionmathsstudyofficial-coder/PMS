@@ -1,3 +1,6 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { LanguageSwitcher } from '@/components/site/LanguageSwitcher.jsx';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Eye, EyeOff, KeyRound, Loader2, ShieldCheck } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -12,6 +15,7 @@ import { useBrand } from '@/lib/site';
 import { meQuery } from '../lib/auth.jsx';
 
 export default function LoginPage() {
+  useUiLanguage();
   const brand = useBrand();
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +77,7 @@ export default function LoginPage() {
   return (
     <div className="grid min-h-dvh bg-muted/40 lg:grid-cols-2">
       <meta name="robots" content="noindex,nofollow" />
-      <title>Sign in · PMS Admin</title>
+      <title>{uiText("Sign in · PMS Admin")}</title><div className="fixed right-4 top-4 z-50"><LanguageSwitcher /></div>
       <div className="relative hidden overflow-hidden bg-[#1b1d2a] text-white lg:flex lg:flex-col lg:justify-between lg:p-12">
         <div className="bg-grid absolute inset-0 opacity-20" aria-hidden="true" />
         <div className="absolute -bottom-24 -left-24 size-96 rounded-full bg-brand/40 blur-3xl" aria-hidden="true" />
@@ -84,18 +88,15 @@ export default function LoginPage() {
           <span className="font-heading text-xl font-extrabold">Passion Maths Study</span>
         </Link>
         <div className="relative max-w-md">
-          <p className="font-heading text-4xl leading-tight font-extrabold">
-            Manage every अध्याय, प्रश्नावली and solution — <span className="text-saffron">without touching code.</span>
+          <p className="font-heading text-4xl leading-tight font-extrabold">{' '}{uiText("Manage every अध्याय, प्रश्नावली and solution —")}{' '}<span className="text-saffron">{uiText("without touching code.")}</span>
           </p>
-          <p className="mt-4 text-white/70">Classes 6–12 · Questions · Step-by-step solutions · Diagrams · Videos · SEO</p>
+          <p className="mt-4 text-white/70">{uiText("Classes 6–12 · Questions · Step-by-step solutions · Diagrams · Videos · SEO")}</p>
         </div>
         <div className="relative flex items-center justify-between text-xs text-white/50">
           <p className="flex items-center gap-2">
-            <ShieldCheck className="size-4" /> Protected area. All sign-in attempts are logged.
-          </p>
+            <ShieldCheck className="size-4" />{uiText("Protected area. All sign-in attempts are logged.")}</p>
           <Link to="/" className="inline-flex items-center gap-1 font-semibold text-white/80 hover:text-white underline">
-            <ArrowLeft className="size-3.5" /> Home Page
-          </Link>
+            <ArrowLeft className="size-3.5" />{uiText("Home Page")}</Link>
         </div>
       </div>
 
@@ -108,11 +109,11 @@ export default function LoginPage() {
               className="inline-flex items-center gap-2 rounded-xl border border-border/80 bg-card px-3.5 py-2 text-xs font-bold text-foreground shadow-sm transition hover:border-brand hover:text-brand"
             >
               <ArrowLeft className="size-4 text-brand" />
-              <span>← Back to Home Page</span>
+              <span>{uiText("← Back to Home Page")}</span>
             </Link>
             <div className="flex items-center gap-2 lg:hidden">
               <img src={brand.logoSrc} alt="" className="size-8 rounded-lg bg-white object-contain p-0.5" />
-              <span className="font-heading text-sm font-extrabold">PMS Admin</span>
+              <span className="font-heading text-sm font-extrabold">{uiText("PMS Admin")}</span>
             </div>
           </div>
 
@@ -120,22 +121,21 @@ export default function LoginPage() {
             <form data-enter onSubmit={submitPassword} className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm" noValidate>
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-xl font-extrabold">Sign in</h1>
-                  <p className="text-sm text-muted-foreground">Admin dashboard access</p>
+                  <h1 className="text-xl font-extrabold">{uiText("Sign in")}</h1>
+                  <p className="text-sm text-muted-foreground">{uiText("Admin dashboard access")}</p>
                 </div>
                 <Button asChild variant="outline" size="sm" className="gap-1 font-bold text-xs h-8">
                   <Link to="/">
-                    <ArrowLeft className="size-3" /> Home
-                  </Link>
+                    <ArrowLeft className="size-3" />{uiText("Home")}</Link>
                 </Button>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{uiText("Email")}</Label>
                 <Input id="email" type="email" autoComplete="username" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-10" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{uiText("Password")}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -150,7 +150,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={showPassword ? uiText("Hide password") : uiText("Show password")}
                   >
                     {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -162,8 +162,8 @@ export default function LoginPage() {
                 </p>
               )}
               <Button type="submit" size="lg" className="h-10 w-full" disabled={busy || !email || !password}>
-                {busy && <Loader2 className="animate-spin" />} Sign in
-              </Button>
+                {busy && <Loader2 className="animate-spin" />}{uiText("Sign in")}</Button>
+              <Link to="/forgot-password?kind=admin" className="block text-center text-sm text-brand">{uiText("Forgot password")}</Link>
             </form>
           ) : (
             <form data-enter onSubmit={submitCode} className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm">
@@ -172,8 +172,8 @@ export default function LoginPage() {
                   <KeyRound className="size-5" />
                 </span>
                 <div>
-                  <h1 className="text-xl font-extrabold">Two-factor verification</h1>
-                  <p className="text-sm text-muted-foreground">Enter the 6-digit code from your authenticator app.</p>
+                  <h1 className="text-xl font-extrabold">{uiText("Two-factor verification")}</h1>
+                  <p className="text-sm text-muted-foreground">{uiText("Enter the 6-digit code from your authenticator app.")}</p>
                 </div>
               </div>
               <Input
@@ -185,7 +185,7 @@ export default function LoginPage() {
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                 className="h-12 text-center font-mono text-2xl tracking-[0.5em]"
-                aria-label="Verification code"
+                aria-label={uiText("Verification code")}
               />
               {error && (
                 <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -193,11 +193,8 @@ export default function LoginPage() {
                 </p>
               )}
               <Button type="submit" size="lg" className="h-10 w-full" disabled={busy || code.length !== 6}>
-                {busy && <Loader2 className="animate-spin" />} Verify
-              </Button>
-              <button type="button" onClick={() => setChallenge(null)} className="w-full text-center text-xs text-muted-foreground hover:text-foreground">
-                Use a different account
-              </button>
+                {busy && <Loader2 className="animate-spin" />}{uiText("Verify")}</Button>
+              <button type="button" onClick={() => setChallenge(null)} className="w-full text-center text-xs text-muted-foreground hover:text-foreground">{uiText("Use a different account")}</button>
             </form>
           )}
         </div>

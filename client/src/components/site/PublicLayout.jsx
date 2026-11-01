@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useRef } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { ImageViewerProvider } from '@/components/content/ImageViewer.jsx';
@@ -11,6 +13,7 @@ import { Header } from './Header.jsx';
 import { ErrorState, PageSkeleton } from './States.jsx';
 
 function PageTransition({ children }) {
+  useUiLanguage();
   const ref = useRef(null);
   const location = useLocation();
   useGSAP(
@@ -25,14 +28,13 @@ function PageTransition({ children }) {
 }
 
 export default function PublicLayout() {
+  useUiLanguage();
   const site = useSiteQuery();
 
   return (
     <ImageViewerProvider>
       <div className="flex min-h-dvh flex-col overflow-x-clip">
-        <a href="#main" className="sr-only z-[60] rounded-md bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2">
-          Skip to content
-        </a>
+        <a href="#main" className="sr-only z-[60] rounded-md bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2">{uiText("Skip to content")}</a>
         {site?.isPending ? (
           <>
             <div className="h-[var(--header-height)] border-b bg-background" />
@@ -40,7 +42,7 @@ export default function PublicLayout() {
           </>
         ) : site?.isError ? (
           <div className="container-page py-16">
-            <ErrorState error={site.error} onRetry={site.refetch} title="Website could not load / वेबसाइट लोड नहीं हो सकी" />
+            <ErrorState error={site.error} onRetry={site.refetch} title={uiText("Website could not load / वेबसाइट लोड नहीं हो सकी")} />
           </div>
         ) : (
           <>

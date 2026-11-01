@@ -1,10 +1,12 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useEffect, useId, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { Logo } from './Logo.jsx';
@@ -12,7 +14,8 @@ import { SearchBar } from './SearchBar.jsx';
 import { SmartLink } from './SmartLink.jsx';
 
 function ClassAccordion({ cls, open, onToggle }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const id = useId();
   const title = t(cls.name) || `${term('class')} ${cls.number} ${term('mathematics')}`;
@@ -75,8 +78,9 @@ function ClassAccordion({ cls, open, onToggle }) {
 }
 
 export function MobileMenu() {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -98,12 +102,12 @@ export function MobileMenu() {
         { _id: 'c6', number: 6, url: '/class-6/maths', subjects: [{ _id: 's6', url: '/class-6/maths' }] },
       ];
   const classes = [...rawClasses].sort((a, b) => b.number - a.number);
-  const links = (site?.navigation?.header || []).filter((item) => item.type === 'link');
+  const links = (site?.navigation?.header || []).filter((item) => item.type !== 'classes');
 
   return (
     <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
       <DialogPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label="Open menu / मेनू खोलें">
+        <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label={uiText("Open menu / मेनू खोलें")}>
           <Menu className="size-6" />
         </Button>
       </DialogPrimitive.Trigger>
@@ -122,24 +126,24 @@ export function MobileMenu() {
                 className="fixed inset-y-0 left-0 z-50 flex w-[88%] max-w-sm flex-col bg-background shadow-2xl outline-none"
               >
                 <div className="flex items-center justify-between gap-2 border-b px-4 py-3">
-                  <DialogPrimitive.Title className="sr-only">Navigation menu</DialogPrimitive.Title>
-                  <DialogPrimitive.Description className="sr-only">Mathematics classes and links</DialogPrimitive.Description>
+                  <DialogPrimitive.Title className="sr-only">{uiText("Navigation menu")}</DialogPrimitive.Title>
+                  <DialogPrimitive.Description className="sr-only">{uiText("Mathematics classes and links")}</DialogPrimitive.Description>
                   <Logo textClassName="max-w-[11rem]" />
                   <DialogPrimitive.Close asChild>
-                    <Button variant="outline" size="lg" className="shrink-0 gap-1.5" aria-label="Close menu / बंद करें">
-                      <X className="size-5" /> <span className="text-xs font-semibold">Close</span>
+                    <Button variant="outline" size="lg" className="shrink-0 gap-1.5" aria-label={uiText("Close menu / बंद करें")}>
+                      <X className="size-5" /> <span className="text-xs font-semibold">{uiText("Close")}</span>
                     </Button>
                   </DialogPrimitive.Close>
                 </div>
 
                 <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-                  <SearchBar onNavigate={() => setOpen(false)} />
+                  {site?.settings?.header?.showSearch !== false && <SearchBar onNavigate={() => setOpen(false)} />}
 
 
 
                   {links.length > 0 && (
-                    <nav aria-label="Main" className="mt-4 grid grid-cols-2 gap-2">
-                      {links.map((item) => (
+                    <nav aria-label={uiText("Main")} className="mt-4 grid grid-cols-2 gap-2">
+                      {links.flatMap(item => [item, ...(item.children || [])]).filter(item => item.url).map((item) => (
                         <SmartLink
                           key={item._id}
                           to={item.url}
@@ -152,19 +156,20 @@ export function MobileMenu() {
                     </nav>
                   )}
 
+                  {!site?.navigationConfigured?.header && <>
                   {/* Study Materials Mobile Links */}
                   <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">Study Materials</p>
+                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Study Materials")}</p>
                     <div className="grid grid-cols-2 gap-1.5">
                       {[
-                        { title: 'NCERT Solutions', url: '/study-materials/ncert-solutions' },
-                        { title: 'NCERT Books', url: '/study-materials/ncert-books' },
-                        { title: 'NCERT Notes', url: '/study-materials/ncert-notes' },
-                        { title: 'CBSE Sample Papers', url: '/study-materials/cbse-sample-papers' },
-                        { title: 'Extra Questions', url: '/study-materials/extra-questions' },
-                        { title: 'Important Questions', url: '/study-materials/important-questions' },
-                        { title: 'English Summaries', url: '/study-materials/english-summaries' },
-                        { title: 'Syllabus', url: '/study-materials/syllabus' },
+                        { get title() { return uiText("NCERT Solutions"); }, url: '/study-materials/ncert-solutions' },
+                        { get title() { return uiText("NCERT Books"); }, url: '/study-materials/ncert-books' },
+                        { get title() { return uiText("NCERT Notes"); }, url: '/study-materials/ncert-notes' },
+                        { get title() { return uiText("CBSE Sample Papers"); }, url: '/study-materials/cbse-sample-papers' },
+                        { get title() { return uiText("Extra Questions"); }, url: '/study-materials/extra-questions' },
+                        { get title() { return uiText("Important Questions"); }, url: '/study-materials/important-questions' },
+                        { get title() { return uiText("English Summaries"); }, url: '/study-materials/english-summaries' },
+                        { get title() { return uiText("Syllabus"); }, url: '/study-materials/syllabus' },
                       ].map((item) => (
                         <Link
                           key={item.url}
@@ -180,12 +185,12 @@ export function MobileMenu() {
 
                   {/* Reference Solutions Mobile Links */}
                   <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">Reference Solutions</p>
+                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Reference Solutions")}</p>
                     <div className="space-y-1.5">
                       {[
-                        { title: 'RS Aggarwal Solutions', url: '/reference-solutions/rs-aggarwal' },
-                        { title: 'RD Sharma Solutions', url: '/reference-solutions/rd-sharma' },
-                        { title: 'ML Aggarwal Solutions', url: '/reference-solutions/ml-aggarwal' },
+                        { get title() { return uiText("RS Aggarwal Solutions"); }, url: '/reference-solutions/rs-aggarwal' },
+                        { get title() { return uiText("RD Sharma Solutions"); }, url: '/reference-solutions/rd-sharma' },
+                        { get title() { return uiText("ML Aggarwal Solutions"); }, url: '/reference-solutions/ml-aggarwal' },
                       ].map((b) => (
                         <Link
                           key={b.url}
@@ -194,28 +199,21 @@ export function MobileMenu() {
                           className="flex items-center justify-between rounded-lg border bg-card p-2.5 text-xs font-bold text-foreground/90 hover:border-brand hover:text-brand"
                         >
                           <span>{b.title}</span>
-                          <span className="text-[10px] text-muted-foreground">Class 6–12</span>
+                          <span className="text-[10px] text-muted-foreground">{uiText("Class 6–12")}</span>
                         </Link>
                       ))}
                     </div>
                   </div>
 
-                  <p className="mt-6 mb-1 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{term('class')} 6–12 {term('mathematics')}</p>
-                  <ul>
+                  </>}
+                  {site?.settings?.header?.showClassPills !== false && (!site?.navigationConfigured?.header || site.navigation.header.some(item => item.type === 'classes')) && <>
+                  <p className="mt-6 mb-1 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{term('class')} 6–12 {term('mathematics')}</p><ul>
                     {classes.map((cls) => (
                       <ClassAccordion key={cls._id} cls={cls} open={expanded === cls._id} onToggle={() => setExpanded((id) => (id === cls._id ? null : cls._id))} />
                     ))}
-                  </ul>
+                  </ul></>}
 
-                  <div className="mt-8 border-t pt-4">
-                    <Link
-                      to="/login"
-                      onClick={() => setOpen(false)}
-                      className="flex items-center justify-center gap-2 rounded-xl border border-dashed py-2.5 text-xs font-semibold text-muted-foreground hover:border-brand hover:text-brand"
-                    >
-                      PMS Admin Control Room
-                    </Link>
-                  </div>
+
                 </div>
               </motion.aside>
             </DialogPrimitive.Content>

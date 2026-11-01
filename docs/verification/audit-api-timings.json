@@ -1,0 +1,38 @@
+[
+  {
+    "path": "/api/public/site?lang=en",
+    "status": 200,
+    "warmMeanMs": 4.83,
+    "samples": 5
+  },
+  {
+    "path": "/api/public/home?lang=en",
+    "status": 200,
+    "warmMeanMs": 2.28,
+    "samples": 5
+  },
+  {
+    "path": "/api/public/resolve?path=/class-10/maths&lang=en",
+    "status": 200,
+    "warmMeanMs": 3.13,
+    "samples": 5
+  },
+  {
+    "path": "/api/public/search?q=English&lang=en",
+    "status": 200,
+    "warmMeanMs": 31.1,
+    "samples": 5
+  },
+  {
+    "path": "/sitemap.xml",
+    "status": 200,
+    "warmMeanMs": 3.3,
+    "samples": 5
+  },
+  {
+    "path": "/robots.txt",
+    "status": 200,
+    "warmMeanMs": 2.62,
+    "samples": 5
+  }
+]

@@ -1,8 +1,10 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { api, setCsrfToken, setUnauthorizedHandler } from '@/lib/api';
 import { adminUrl } from '@/lib/config';
 
@@ -16,6 +18,7 @@ export const meQuery = {
 };
 
 export function AdminAuthProvider({ children }) {
+  useUiLanguage();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,7 +31,7 @@ export function AdminAuthProvider({ children }) {
   useEffect(() => {
     setUnauthorizedHandler(() => {
       queryClient.setQueryData(['admin-me'], null);
-      toast.error('Your session has ended. Please sign in again.');
+      toast.error(uiText("Your session has ended. Please sign in again."));
       navigate(adminUrl('/login'), { replace: true, state: { from: location.pathname } });
     });
     return () => setUnauthorizedHandler(null);
@@ -37,11 +40,13 @@ export function AdminAuthProvider({ children }) {
   const logout = useCallback(async () => {
     try {
       await api.post('/auth/logout', null, { skipAuthRedirect: true });
-    } finally {
-      setCsrfToken(null);
-      queryClient.clear();
-      navigate(adminUrl('/login'), { replace: true });
+    } catch (error) {
+      toast.apiError(error);
+      return;
     }
+    setCsrfToken(null);
+    queryClient.clear();
+    navigate(adminUrl('/login'), { replace: true });
   }, [navigate, queryClient]);
 
   const value = useMemo(() => {
@@ -63,7 +68,8 @@ export function AdminAuthProvider({ children }) {
 
 export const useAdminAuth = () => useContext(AuthContext);
 
-export function FullScreenLoader({ label = 'Loading…' }) {
+export function FullScreenLoader({ label = uiText("Loading…") }) {
+  useUiLanguage();
   return (
     <div className="grid min-h-dvh place-items-center bg-muted/40" role="status">
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
@@ -74,15 +80,17 @@ export function FullScreenLoader({ label = 'Loading…' }) {
 }
 
 export function RequireAdmin({ children }) {
+  useUiLanguage();
   const auth = useAdminAuth();
   const location = useLocation();
-  if (auth.isLoading) return <FullScreenLoader label="Checking your session…" />;
+  if (auth.isLoading) return <FullScreenLoader label={uiText("Checking your session…")} />;
   if (!auth.admin) return <Navigate to={adminUrl('/login')} replace state={{ from: location.pathname }} />;
   if (auth.mustEnroll2fa && !location.pathname.endsWith('/account')) return <Navigate to={adminUrl('/account')} replace />;
   return children;
 }
 
 export function Can({ permission, children, fallback = null }) {
+  useUiLanguage();
   const auth = useAdminAuth();
   return auth?.can(permission) ? children : fallback;
 }

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { normalizeMath } from './mathContent.js';
 import katex from 'katex';
 import { Check, Copy } from 'lucide-react';
@@ -6,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { KATEX_OPTIONS } from './RichContent.jsx';
 
 export function MathFormula({ latex, display = true, className }) {
+  useUiLanguage();
   const html = useMemo(() => {
     try {
       const math = normalizeMath(latex, display);
@@ -16,7 +19,7 @@ export function MathFormula({ latex, display = true, className }) {
   }, [latex, display]);
 
   if (!latex) return null;
-  if (!html) return <span role="note" className="text-sm text-muted-foreground">Invalid formula</span>;
+  if (!html) return <span role="note" className="text-sm text-muted-foreground">{uiText("Invalid formula")}</span>;
   return (
     <div
       className={cn(display ? 'math-scroll py-1 text-center' : 'inline', className)}
@@ -28,6 +31,7 @@ export function MathFormula({ latex, display = true, className }) {
 }
 
 export function CopyLatexButton({ latex, className }) {
+  useUiLanguage();
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -43,7 +47,7 @@ export function CopyLatexButton({ latex, className }) {
       type="button"
       onClick={copy}
       className={cn('inline-flex items-center gap-1 rounded-md border bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground', className)}
-      aria-label="Copy LaTeX"
+      aria-label={uiText("Copy LaTeX")}
     >
       {copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />} LaTeX
     </button>

@@ -1,3 +1,6 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { LanguageSwitcher } from '@/components/site/LanguageSwitcher.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, LogOut, Menu, ShieldCheck, UserCog, X } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
@@ -23,6 +26,7 @@ import { ConfirmProvider } from './ConfirmDialog.jsx';
 import { NAV_GROUPS } from './nav.js';
 
 function SidebarNav({ onNavigate }) {
+  useUiLanguage();
   const { can } = useAdminAuth();
   const brand = useBrand();
   return (
@@ -32,11 +36,11 @@ function SidebarNav({ onNavigate }) {
           <img src={brand.logoSrc} alt="" className="size-full object-contain" />
         </span>
         <span className="leading-tight">
-          <span className="block font-heading text-sm font-extrabold">PMS Admin</span>
-          <span className="block text-[11px] text-muted-foreground">Content Management</span>
+          <span className="block font-heading text-sm font-extrabold">{uiText("PMS Admin")}</span>
+          <span className="block text-[11px] text-muted-foreground">{uiText("Content Management")}</span>
         </span>
       </Link>
-      <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label="Admin">
+      <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label={uiText("Admin")}>
         {NAV_GROUPS.map((group) => {
           const items = group.items.filter((item) => !item.permission || can(item.permission));
           if (!items.length) return null;
@@ -72,13 +76,14 @@ function SidebarNav({ onNavigate }) {
 }
 
 function MobileSidebar() {
+  useUiLanguage();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   useEffect(() => setOpen(false), [location.pathname]);
   return (
     <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
       <DialogPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label="Open admin menu">
+        <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label={uiText("Open admin menu")}>
           <Menu className="size-5" />
         </Button>
       </DialogPrimitive.Trigger>
@@ -96,9 +101,9 @@ function MobileSidebar() {
                 exit={{ x: '-100%' }}
                 transition={{ type: 'spring', stiffness: 380, damping: 38 }}
               >
-                <DialogPrimitive.Title className="sr-only">Admin navigation</DialogPrimitive.Title>
+                <DialogPrimitive.Title className="sr-only">{uiText("Admin navigation")}</DialogPrimitive.Title>
                 <DialogPrimitive.Close asChild>
-                  <Button variant="ghost" size="icon" className="absolute top-4 right-3 z-10" aria-label="Close menu">
+                  <Button variant="ghost" size="icon" className="absolute top-4 right-3 z-10" aria-label={uiText("Close menu")}>
                     <X />
                   </Button>
                 </DialogPrimitive.Close>
@@ -113,6 +118,7 @@ function MobileSidebar() {
 }
 
 export function AdminLayout({ children }) {
+  useUiLanguage();
   const { admin, logout } = useAdminAuth();
   const location = useLocation();
   const mainRef = useRef(null);
@@ -136,7 +142,7 @@ export function AdminLayout({ children }) {
   return (
     <ConfirmProvider>
       <meta name="robots" content="noindex,nofollow" />
-      <title>PMS Admin</title>
+      <title>{uiText("PMS Admin")}</title>
       <div className="min-h-dvh bg-muted/40">
         <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r bg-background lg:block">
           <SidebarNav />
@@ -147,19 +153,18 @@ export function AdminLayout({ children }) {
             <div className="flex-1" />
             <Button asChild variant="ghost" size="lg" className="hidden sm:inline-flex">
               <a href="/" target="_blank" rel="noreferrer">
-                <ExternalLink /> View website
-              </a>
+                <ExternalLink />{uiText("View website")}</a>
             </Button>
-            <ThemeToggle />
+            <LanguageSwitcher /><ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button type="button" className="flex items-center gap-2 rounded-full p-0.5 pr-2 hover:bg-muted" aria-label="Account menu">
+                <button type="button" className="flex items-center gap-2 rounded-full p-0.5 pr-2 hover:bg-muted" aria-label={uiText("Account menu")}>
                   <Avatar className="size-8">
                     <AvatarFallback className="bg-brand text-xs font-bold text-white">{initials}</AvatarFallback>
                   </Avatar>
                   <span className="hidden text-left text-xs leading-tight sm:block">
                     <span className="block font-semibold">{admin?.name}</span>
-                    <span className="block text-muted-foreground capitalize">{admin?.role}</span>
+                    <span className="block text-muted-foreground capitalize">{uiText(admin?.role)}</span>
                   </span>
                 </button>
               </DropdownMenuTrigger>
@@ -168,18 +173,16 @@ export function AdminLayout({ children }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to={adminUrl('account')}>
-                    <UserCog /> My account
-                  </Link>
+                    <UserCog />{uiText("My account")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to={adminUrl('account')}>
-                    <ShieldCheck /> Two-factor {admin?.totpEnabled ? 'enabled' : 'setup'}
+                    <ShieldCheck />{uiText("Two-factor")}{' '}{admin?.totpEnabled ? uiText("enabled") : uiText("setup")}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={logout} variant="destructive">
-                  <LogOut /> Sign out
-                </DropdownMenuItem>
+                  <LogOut />{uiText("Sign out")}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </header>

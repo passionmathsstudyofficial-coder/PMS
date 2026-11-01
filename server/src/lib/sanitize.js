@@ -15,7 +15,7 @@ const RICH_OPTIONS = {
     a: ['href', 'target', 'rel', 'title'],
     img: ['src', 'alt', 'title', 'width', 'height'],
     figure: ['data-image', 'data-align', 'style'],
-    span: ['class', 'data-latex', 'data-type'],
+    span: ['class', 'data-latex', 'data-type', 'style'],
     div: ['class', 'data-latex', 'data-type'],
     mark: ['data-color'],
     th: ['colspan', 'rowspan', 'colwidth', 'style'],
@@ -36,6 +36,7 @@ const RICH_OPTIONS = {
   allowedStyles: {
     figure: { width: [/^(?:[1-9]\d?|100)%$/, /^(?:[1-9]\d{0,2}|[1-3]\d{3}|40\d{2})px$/] },
     '*': { 'text-align': TEXT_ALIGN },
+    span: { color: [/^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i, /^rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)$/i, /^(?:black|white|red|green|blue|purple|orange|yellow|gray|grey|teal|navy|maroon)$/i] },
     col: { width: [/^\d+(px|%)$/], 'min-width': [/^\d+(px|%)$/] },
   },
   allowedSchemes: ['http', 'https', 'mailto', 'tel'],
