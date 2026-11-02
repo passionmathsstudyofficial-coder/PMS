@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Lock } from 'lucide-react';
 import { lazy, Suspense } from 'react';
 import { Link, Route, Routes, useParams } from 'react-router';
@@ -7,6 +9,7 @@ import { adminUrl } from '@/lib/config';
 import { AdminLayout } from './components/AdminLayout.jsx';
 import { AdminAuthProvider, RequireAdmin, useAdminAuth } from './lib/auth.jsx';
 import OverviewPage from './pages/OverviewPage.jsx';
+const StudentsPage = lazy(() => import('./pages/StudentsPage.jsx'));
 
 // Each admin area is code-split; pages export several named components.
 const named = (loader, name) => lazy(() => loader().then((module) => ({ default: module[name] })));
@@ -75,24 +78,27 @@ const AccountPage = named(system, 'AccountPage');
 
 /** Editors get key={id} so switching documents always starts with a fresh form. */
 function EditorRoute({ component: Component }) {
+  useUiLanguage();
   const { id } = useParams();
   return <Component key={id} id={id} />;
 }
 
 function Guard({ permission, children }) {
+  useUiLanguage();
   const { can } = useAdminAuth();
   if (!can(permission)) {
-    return <EmptyState icon={Lock} title="No access" description="Your role cannot open this page. Ask the owner (superadmin) for access." />;
+    return <EmptyState icon={Lock} title={uiText("No access")} description={uiText("Your role cannot open this page. Ask the owner (superadmin) for access.")} />;
   }
   return children;
 }
 
 function AdminNotFound() {
+  useUiLanguage();
   return (
     <div className="rounded-2xl border bg-card p-10 text-center">
-      <h1 className="text-xl font-bold">Admin page not found</h1>
+      <h1 className="text-xl font-bold">{uiText("Admin page not found")}</h1>
       <Button asChild className="mt-4">
-        <Link to={adminUrl('')}>Back to overview</Link>
+        <Link to={adminUrl('')}>{uiText("Back to overview")}</Link>
       </Button>
     </div>
   );
@@ -101,6 +107,7 @@ function AdminNotFound() {
 const guarded = (permission, element) => <Guard permission={permission}>{element}</Guard>;
 
 export default function AdminApp() {
+  useUiLanguage();
   return (
     <AdminAuthProvider>
       <RequireAdmin>
@@ -155,6 +162,7 @@ export default function AdminApp() {
               <Route path="ads" element={guarded('settings:write', <AdsPage />)} />
 
               <Route path="admins" element={guarded('users:manage', <AdminsPage />)} />
+              <Route path="students" element={guarded('users:manage', <StudentsPage />)} />
               <Route path="activity" element={guarded('activity:read', <ActivityPage />)} />
               <Route path="backups" element={guarded('backup:read', <BackupsPage />)} />
               <Route path="account" element={<AccountPage />} />

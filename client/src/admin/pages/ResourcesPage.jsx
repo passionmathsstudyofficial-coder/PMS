@@ -1,3 +1,7 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Download, Eye, FileText, Plus, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
@@ -15,12 +19,13 @@ import { refId, useResourceList } from '../lib/resources.js';
 import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 
 export function ResourcesList() {
+  useUiLanguage();
   const [filters, setFilter, active] = useQueryFilters(['class', 'resourceType']);
   return (
     <ResourceListPage
       resource="resources"
-      title="PDFs & Downloadable Resources (पीडीएफ व अध्ययन सामग्री)"
-      description="Manage PDF notes, worksheets, assignments, formula sheets, sample papers, and practice files."
+      title={uiText("PDFs & Downloadable Resources (पीडीएफ व अध्ययन सामग्री)")}
+      description={uiText("Manage PDF notes, worksheets, assignments, formula sheets, sample papers, and practice files.")}
       baseParams={active}
       filters={
         <div className="flex flex-wrap items-center gap-2">
@@ -28,56 +33,56 @@ export function ResourcesList() {
           <SelectField
             value={filters.resourceType || ''}
             onChange={(v) => setFilter('resourceType', v)}
-            placeholder="All Resource Types"
+            placeholder={uiText("All Resource Types")}
             options={[
-              { value: '', label: 'All Resource Types' },
-              { value: 'notes', label: 'Chapter Notes' },
-              { value: 'ncert_notes', label: 'NCERT Notes' },
-              { value: 'ncert_books', label: 'NCERT Books' },
-              { value: 'cbse_sample_papers', label: 'CBSE Sample Papers' },
-              { value: 'extra_questions', label: 'Extra Questions' },
-              { value: 'important_questions', label: 'Important Questions' },
-              { value: 'english_summaries', label: 'English Summaries' },
-              { value: 'syllabus', label: 'Syllabus' },
-              { value: 'formula_sheet', label: 'Formula Sheet' },
-              { value: 'worksheet', label: 'Worksheet' },
-              { value: 'assignment', label: 'Assignment' },
-              { value: 'practice_paper', label: 'Practice Paper' },
-              { value: 'sample_paper', label: 'Sample Paper' },
-              { value: 'previous_year_paper', label: 'Previous Year Paper' },
-              { value: 'solution', label: 'Solution PDF' },
-              { value: 'form', label: 'Registration / Form' },
-              { value: 'revision', label: 'Revision Material' },
-              { value: 'question_bank', label: 'Question Bank' },
-              { value: 'other', label: 'Other Document' },
+              { value: '', get label() { return uiText("All Resource Types"); } },
+              { value: 'notes', get label() { return uiText("Chapter Notes"); } },
+              { value: 'ncert_notes', get label() { return uiText("NCERT Notes"); } },
+              { value: 'ncert_books', get label() { return uiText("NCERT Books"); } },
+              { value: 'cbse_sample_papers', get label() { return uiText("CBSE Sample Papers"); } },
+              { value: 'extra_questions', get label() { return uiText("Extra Questions"); } },
+              { value: 'important_questions', get label() { return uiText("Important Questions"); } },
+              { value: 'english_summaries', get label() { return uiText("English Summaries"); } },
+              { value: 'syllabus', get label() { return uiText("Syllabus"); } },
+              { value: 'formula_sheet', get label() { return uiText("Formula Sheet"); } },
+              { value: 'worksheet', get label() { return uiText("Worksheet"); } },
+              { value: 'assignment', get label() { return uiText("Assignment"); } },
+              { value: 'practice_paper', get label() { return uiText("Practice Paper"); } },
+              { value: 'sample_paper', get label() { return uiText("Sample Paper"); } },
+              { value: 'previous_year_paper', get label() { return uiText("Previous Year Paper"); } },
+              { value: 'solution', get label() { return uiText("Solution PDF"); } },
+              { value: 'form', get label() { return uiText("Registration / Form"); } },
+              { value: 'revision', get label() { return uiText("Revision Material"); } },
+              { value: 'question_bank', get label() { return uiText("Question Bank"); } },
+              { value: 'other', get label() { return uiText("Other Document"); } },
             ]}
             className="w-52"
           />
         </div>
       }
       createPath={adminUrl(`resources/new${filters.class ? `?class=${filters.class}` : ''}`)}
-      createLabel="Upload / Add Resource"
+      createLabel={uiText("Upload / Add Resource")}
       editPath={(item) => adminUrl(`resources/${item._id}`)}
-      rowLabel={(r) => r.title?.en || r.title?.hi || 'Resource'}
+      rowLabel={(r) => adminText(r.title) || uiText("Resource")}
       columns={[
-        { header: 'Title', cell: (r) => <LocalizedCell value={r.title} /> },
+        { get header() { return uiText("Title"); }, cell: (r) => <LocalizedCell value={r.title} /> },
         {
-          header: 'Type',
+          get header() { return uiText("Type"); },
           className: 'hidden sm:table-cell',
           cell: (r) => (
             <span className="rounded-md bg-brand-soft px-2 py-0.5 text-[11px] font-bold text-brand uppercase">
-              {r.resourceType?.replace(/_/g, ' ')}
+              {uiText(r.resourceType)}
             </span>
           ),
         },
-        { header: 'Class', className: 'hidden md:table-cell', cell: (r) => (r.class ? `Class ${r.class.number}` : 'All') },
-        { header: 'Chapter', className: 'hidden lg:table-cell', cell: (r) => (r.chapter ? `अध्याय ${r.chapter.number}` : '—') },
+        { get header() { return uiText("Class"); }, className: 'hidden md:table-cell', cell: (r) => (r.class ? uiTemplate`Class ${r.class.number}` : uiText("All")) },
+        { get header() { return uiText("Chapter"); }, className: 'hidden lg:table-cell', cell: (r) => (r.chapter ? uiTemplate`अध्याय ${r.chapter.number}` : '—') },
         {
-          header: 'Download',
+          get header() { return uiText("Download"); },
           className: 'hidden sm:table-cell',
           cell: (r) => (
             <span className={`text-xs font-semibold ${r.downloadAllowed !== false ? 'text-emerald-600' : 'text-rose-500'}`}>
-              {r.downloadAllowed !== false ? 'Allowed' : 'Disabled'}
+              {r.downloadAllowed !== false ? uiText("Allowed") : uiText("Disabled")}
             </span>
           ),
         },
@@ -87,6 +92,7 @@ export function ResourcesList() {
 }
 
 export function ResourceEditor({ id }) {
+  useUiLanguage();
   const [params] = useSearchParams();
   const form = useEditorForm({
     resource: 'resources',
@@ -138,57 +144,57 @@ export function ResourceEditor({ id }) {
       {() => (
         <EditorShell
           form={form}
-          title={isNew ? 'New PDF / Downloadable Resource' : `Resource — ${doc?.title?.en || doc?.title?.hi || ''}`}
+          title={isNew ? uiText("New PDF / Downloadable Resource") : uiTemplate`Resource — ${adminText(doc?.title) || ''}`}
         >
         <div className="grid gap-6">
-          <Panel title="Resource Details">
-            <L10nField label="Resource Title" value={doc.title} onChange={(title) => set('title', title)} placeholder="e.g. Chapter 04 Quadratic Equations Notes PDF" required />
-            <L10nField label="Description" value={doc.description} onChange={(description) => set('description', description)} placeholder="Short description of this study material or worksheet" />
+          <Panel title={uiText("Resource Details")}>
+            <L10nField label={uiText("Resource Title")} value={doc.title} onChange={(title) => set('title', title)} placeholder={uiText("e.g. Chapter 04 Quadratic Equations Notes PDF")} required />
+            <L10nField label={uiText("Description")} value={doc.description} onChange={(description) => set('description', description)} placeholder={uiText("Short description of this study material or worksheet")} />
 
             <div className="grid gap-4 sm:grid-cols-2">
               <SelectField
-                label="Resource Type / श्रेणी"
+                label={uiText("Resource Type / श्रेणी")}
                 value={doc.resourceType || 'notes'}
                 onChange={(resourceType) => set('resourceType', resourceType)}
                 options={[
-                  { value: 'notes', label: 'Chapter Notes (अध्याय नोट्स)' },
-                  { value: 'ncert_notes', label: 'NCERT Notes (एनसीईआरटी नोट्स)' },
-                  { value: 'ncert_books', label: 'NCERT Textbooks (एनसीईआरटी पुस्तकें)' },
-                  { value: 'cbse_sample_papers', label: 'CBSE Sample Papers (सैंपल पेपर्स)' },
-                  { value: 'extra_questions', label: 'Extra Questions (अतिरिक्त प्रश्न)' },
-                  { value: 'important_questions', label: 'Important Questions (महत्वपूर्ण प्रश्न)' },
-                  { value: 'english_summaries', label: 'English Summaries' },
-                  { value: 'syllabus', label: 'Syllabus (पाठ्यक्रम)' },
-                  { value: 'formula_sheet', label: 'Formula Sheet (सूत्र पत्रक)' },
-                  { value: 'worksheet', label: 'Practice Worksheet (अभ्यास पत्रक)' },
-                  { value: 'assignment', label: 'Homework Assignment (गृहकार्य)' },
-                  { value: 'practice_paper', label: 'Practice Paper' },
-                  { value: 'sample_paper', label: 'Sample Paper' },
-                  { value: 'previous_year_paper', label: 'Previous Year Paper' },
-                  { value: 'solution', label: 'Step-by-step Solution PDF' },
-                  { value: 'form', label: 'Registration / Activity Form' },
-                  { value: 'revision', label: 'Quick Revision Notes' },
-                  { value: 'question_bank', label: 'Question Bank' },
-                  { value: 'other', label: 'Other Downloadable File' },
+                  { value: 'notes', get label() { return uiText("Chapter Notes (अध्याय नोट्स)"); } },
+                  { value: 'ncert_notes', get label() { return uiText("NCERT Notes (एनसीईआरटी नोट्स)"); } },
+                  { value: 'ncert_books', get label() { return uiText("NCERT Textbooks (एनसीईआरटी पुस्तकें)"); } },
+                  { value: 'cbse_sample_papers', get label() { return uiText("CBSE Sample Papers (सैंपल पेपर्स)"); } },
+                  { value: 'extra_questions', get label() { return uiText("Extra Questions (अतिरिक्त प्रश्न)"); } },
+                  { value: 'important_questions', get label() { return uiText("Important Questions (महत्वपूर्ण प्रश्न)"); } },
+                  { value: 'english_summaries', get label() { return uiText("English Summaries"); } },
+                  { value: 'syllabus', get label() { return uiText("Syllabus (पाठ्यक्रम)"); } },
+                  { value: 'formula_sheet', get label() { return uiText("Formula Sheet (सूत्र पत्रक)"); } },
+                  { value: 'worksheet', get label() { return uiText("Practice Worksheet (अभ्यास पत्रक)"); } },
+                  { value: 'assignment', get label() { return uiText("Homework Assignment (गृहकार्य)"); } },
+                  { value: 'practice_paper', get label() { return uiText("Practice Paper"); } },
+                  { value: 'sample_paper', get label() { return uiText("Sample Paper"); } },
+                  { value: 'previous_year_paper', get label() { return uiText("Previous Year Paper"); } },
+                  { value: 'solution', get label() { return uiText("Step-by-step Solution PDF"); } },
+                  { value: 'form', get label() { return uiText("Registration / Activity Form"); } },
+                  { value: 'revision', get label() { return uiText("Quick Revision Notes"); } },
+                  { value: 'question_bank', get label() { return uiText("Question Bank"); } },
+                  { value: 'other', get label() { return uiText("Other Downloadable File"); } },
                 ]}
                 required
               />
-              <Field label="File Size (e.g. 2.4 MB)" hint="Optional manual size label if not auto-computed">
+              <Field label={uiText("File Size (e.g. 2.4 MB)")} hint={uiText("Optional manual size label if not auto-computed")}>
                 <input
                   type="text"
                   value={doc.fileSize || ''}
                   onChange={(e) => set('fileSize', e.target.value)}
-                  placeholder="e.g. 2.4 MB"
+                  placeholder={uiText("e.g. 2.4 MB")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
               </Field>
             </div>
           </Panel>
 
-          <Panel title="Educational Placement (Class / Chapter / Exercise / Book)">
+          <Panel title={uiText("Educational Placement (Class / Chapter / Exercise / Book)")}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <RefSelect
-                label="Class (कक्षा)"
+                label={uiText("Class (कक्षा)")}
                 resource="classes"
                 params={{ limit: 50 }}
                 value={classId}
@@ -198,10 +204,10 @@ export function ResourceEditor({ id }) {
                   set('exercise', '');
                   set('topic', '');
                 }}
-                labelOf={(c) => `Class ${c.number} — ${c.name?.en || c.name?.hi || ''}`}
+                labelOf={(c) => uiTemplate`Class ${c.number} — ${adminText(c.name) || ''}`}
               />
               <RefSelect
-                label="Chapter (अध्याय)"
+                label={uiText("Chapter (अध्याय)")}
                 resource="chapters"
                 params={{ class: classId, limit: 100 }}
                 disabled={!classId}
@@ -211,38 +217,38 @@ export function ResourceEditor({ id }) {
                   set('exercise', '');
                   set('topic', '');
                 }}
-                labelOf={(ch) => `अध्याय ${ch.number} — ${ch.title?.en || ch.title?.hi || ''}`}
+                labelOf={(ch) => uiTemplate`अध्याय ${ch.number} — ${adminText(ch.title) || ''}`}
               />
               <RefSelect
-                label="Exercise (Optional — प्रश्नावली)"
+                label={uiText("Exercise (Optional — प्रश्नावली)")}
                 resource="exercises"
                 params={{ chapter: chapterId, limit: 100 }}
                 disabled={!chapterId}
                 value={refId(doc.exercise)}
                 onChange={(ex) => set('exercise', ex)}
-                labelOf={(ex) => `Ex ${ex.number || ''} — ${ex.title?.en || ex.title?.hi || ''}`}
+                labelOf={(ex) => uiTemplate`Ex ${ex.number || ''} — ${adminText(ex.title) || ''}`}
               />
               <RefSelect
-                label="Reference Book (Optional — संदर्भ पुस्तक)"
+                label={uiText("Reference Book (Optional — संदर्भ पुस्तक)")}
                 resource="books"
                 params={{ limit: 50 }}
                 value={refId(doc.book)}
                 onChange={(b) => set('book', b)}
-                labelOf={(b) => b.title?.en || b.title?.hi || b.name || 'Book'}
+                labelOf={(b) => adminText(b.title) || b.name || uiText("Book")}
               />
             </div>
           </Panel>
 
-          <Panel title="File Attachment, Video & Links">
+          <Panel title={uiText("File Attachment, Video & Links")}>
             <MediaField
-              label="Upload PDF / Document File"
+              label={uiText("Upload PDF / Document File")}
               kind="pdf"
               value={doc.file}
               onChange={(file) => set('file', file)}
-              hint="Upload PDF from your computer or choose from Media Library."
+              hint={uiText("Upload PDF, DOC or DOCX from your computer or choose from Media Library.")}
             />
 
-            <Field label="Or External File URL" hint="Direct link to hosted PDF / Google Drive / Cloud storage file.">
+            <Field label={uiText("Or External File URL")} hint={uiText("Direct link to hosted PDF / Google Drive / Cloud storage file.")}>
               <input
                 type="url"
                 value={doc.fileUrl || ''}
@@ -252,7 +258,7 @@ export function ResourceEditor({ id }) {
               />
             </Field>
 
-            <Field label="YouTube / Video Lesson URL" hint="Embed video lesson (e.g. https://www.youtube.com/watch?v=...)">
+            <Field label={uiText("YouTube / Video Lesson URL")} hint={uiText("Embed video lesson (e.g. https://www.youtube.com/watch?v=...)")}>
               <input
                 type="url"
                 value={doc.videoUrl || ''}
@@ -262,7 +268,7 @@ export function ResourceEditor({ id }) {
               />
             </Field>
 
-            <Field label="External Website URL" hint="Optional link to external study portal or resource.">
+            <Field label={uiText("External Website URL")} hint={uiText("Optional link to external study portal or resource.")}>
               <input
                 type="url"
                 value={doc.externalUrl || ''}
@@ -272,20 +278,20 @@ export function ResourceEditor({ id }) {
               />
             </Field>
 
-            <MediaField label="Optional Document Thumbnail / Preview Cover" value={doc.thumbnail} onChange={(thumbnail) => set('thumbnail', thumbnail)} />
+            <MediaField label={uiText("Optional Document Thumbnail / Preview Cover")} value={doc.thumbnail} onChange={(thumbnail) => set('thumbnail', thumbnail)} />
           </Panel>
 
-          <Panel title="Permissions & Options">
+          <Panel title={uiText("Permissions & Options")}>
             <div className="space-y-3">
               <SwitchField
-                label="Allow Student Downloads"
-                hint="When enabled, students will see a 'Download PDF' button. If disabled, students can only preview."
+                label={uiText("Allow Student Downloads")}
+                hint={uiText("When enabled, students will see a 'Download PDF' button. If disabled, students can only preview.")}
                 checked={doc.downloadAllowed !== false}
                 onChange={(downloadAllowed) => set('downloadAllowed', downloadAllowed)}
               />
               <SwitchField
-                label="Featured Resource"
-                hint="Highlight this PDF on the Subject / Dashboard downloads area."
+                label={uiText("Featured Resource")}
+                hint={uiText("Highlight this PDF on the Subject / Dashboard downloads area.")}
                 checked={Boolean(doc.featured)}
                 onChange={(featured) => set('featured', featured)}
               />

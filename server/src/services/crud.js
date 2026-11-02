@@ -1,4 +1,6 @@
 import express from 'express';
+import { mergeLanguageFields, projectLanguage } from '../../../shared/localization.js';
+import { requestLanguage } from '../middleware/language.js';
 import mongoose from 'mongoose';
 import { cache } from '../lib/cache.js';
 import { hasPermission } from '../lib/permissions.js';
@@ -7,6 +9,7 @@ import { optionalAuth, requireAuth, requirePermission } from '../middleware/auth
 import { ApiError } from '../middleware/error.js';
 import { escapeRegex } from '../utils/slug.js';
 import { labelOf, logActivity } from './activity.js';
+import { protectParent, validateReferences, visibleParents, publicParentFilter } from './relationships.js';
 
 const PROTECTED_FIELDS = ['_id', '__v', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'searchText'];
 
@@ -62,11 +65,16 @@ export function crudRouter(Model, options = {}) {
   const router = express.Router();
 
   const assertPublishRights = (req, fromStatus, toStatus) => {
-    if (!hasStatus || !toStatus || fromStatus === toStatus) return;
+    if (!hasStatus) return;
     const touchesPublished = toStatus === 'published' || fromStatus === 'published';
     if (touchesPublished && !hasPermission(req.admin.role, publishPermission)) {
       throw new ApiError(403, 'Only admins can publish or unpublish content. Save it as a draft instead.');
     }
+  };
+  const assertSolutionRights = async (req, doc) => {
+    if (Model.modelName !== 'Solution' || hasPermission(req.admin.role, publishPermission)) return;
+    const question = await mongoose.model('Question').findById(doc.question).select('status').lean();
+    if (question?.status === 'published') throw new ApiError(403, 'Only admins can change solutions for published questions.');
   };
 
   const findById = async (rawId, pop) => {
@@ -97,7 +105,15 @@ export function crudRouter(Model, options = {}) {
       filter = hasStatus ? Model.publicFilter(await publicFilters(req.query, req)) : await publicFilters(req.query, req);
     }
     const q = asString(req.query.q, 100).trim();
+    if (!adminScope && publicRead) filter = { ...filter, ...await publicParentFilter(Model) };
     if (q && Model.schema.path('searchText')) filter.searchText = { $regex: escapeRegex(q), $options: 'i' };
+    else if (q && !filter.$or) {
+      const fields = ['name', 'title', 'text', 'email'].flatMap(field => {
+        const schema = Model.schema.path(field);
+        return !schema ? [] : schema.instance === 'String' ? [field] : [`${field}.en`, `${field}.hi`];
+      });
+      if (fields.length) filter.$or = fields.map(field => ({ [field]: { $regex: escapeRegex(q), $options: 'i' } }));
+    }
 
     const sortKey = asString(req.query.sort, 40);
     const sort = sortKey
@@ -108,7 +124,8 @@ export function crudRouter(Model, options = {}) {
       Model.find(filter).sort(sort).skip(skip).limit(limit).populate(populate.list || []).lean(),
       Model.countDocuments(filter),
     ]);
-    res.json({ items, total, page, limit, pages: Math.ceil(total / limit) || 1 });
+    const response = { items, total, page, limit, pages: Math.ceil(total / limit) || 1 };
+    res.json(adminScope || !publicRead ? response : projectLanguage(response,requestLanguage(req)));
   });
 
   router.put('/reorder', requirePermission(writePermission), async (req, res) => {
@@ -129,17 +146,22 @@ export function crudRouter(Model, options = {}) {
       if (!publicRead) throw new ApiError(401, 'Authentication required');
       const visible = !hasStatus || (doc.status === 'published' && doc.isVisible && (!doc.publishedAt || doc.publishedAt <= new Date()));
       if (!visible) throw new ApiError(404, `${entityType} not found`);
+      if (!await visibleParents(doc.toObject())) throw new ApiError(404, `${entityType} not found`);
     }
-    res.json(await serialize(doc, req));
+    const result = await serialize(doc, req);
+    res.json(isAdmin && req.query.lang === undefined ? result : projectLanguage(result,requestLanguage(req)));
   });
 
   router.post('/', requireAuth, requirePermission(writePermission), async (req, res) => {
     const body = stripProtected(req.body, extraProtected);
     assertPublishRights(req, 'draft', body.status || 'draft');
     const doc = new Model(body);
+    await assertSolutionRights(req, doc);
     if (Model.schema.path('createdBy')) doc.createdBy = req.admin._id;
     if (Model.schema.path('updatedBy')) doc.updatedBy = req.admin._id;
     if (beforeWrite) await beforeWrite(doc, req, { isNew: true, body: req.body });
+    await doc.validate();
+    await validateReferences(doc);
     await doc.save();
     if (afterWrite) await afterWrite(doc, req, { isNew: true, body: req.body });
     cache.invalidate();
@@ -154,11 +176,16 @@ export function crudRouter(Model, options = {}) {
   router.put('/:id', requireAuth, requirePermission(writePermission), async (req, res) => {
     const doc = await findById(req.params.id);
     const body = stripProtected(req.body, extraProtected);
+    await assertSolutionRights(req, doc);
     const fromStatus = doc.status;
     assertPublishRights(req, fromStatus, body.status);
-    doc.set(body);
+    doc.set(mergeLanguageFields(doc.toObject(),body));
+    await assertSolutionRights(req, doc);
+    if (['class', 'subject', 'chapter', 'exercise'].some(field => doc.isModified(field))) await protectParent(doc);
     if (Model.schema.path('updatedBy')) doc.updatedBy = req.admin._id;
     if (beforeWrite) await beforeWrite(doc, req, { isNew: false, body: req.body });
+    await doc.validate();
+    await validateReferences(doc);
     await doc.save();
     if (afterWrite) await afterWrite(doc, req, { isNew: false, body: req.body });
     cache.invalidate();
@@ -213,6 +240,7 @@ export function crudRouter(Model, options = {}) {
 
   router.delete('/:id', requireAuth, requirePermission(deletePermission), async (req, res) => {
     const doc = await findById(req.params.id);
+    await protectParent(doc);
     if (beforeDelete) await beforeDelete(doc, req);
     await doc.deleteOne();
     if (afterDelete) await afterDelete(doc, req);

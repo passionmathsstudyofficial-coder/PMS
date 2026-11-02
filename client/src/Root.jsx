@@ -1,4 +1,8 @@
-import { Outlet, ScrollRestoration } from 'react-router';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { useLayoutEffect } from 'react';
+import { syncLanguageScope } from '@/lib/uiLanguage.js';
+import { ADMIN_PATH } from '@/lib/config';
+import { Outlet, ScrollRestoration, useLocation } from 'react-router';
 import { ThemeProvider } from '@/lib/theme';
 import { MotionConfig } from 'framer-motion';
 import { Toaster } from '@/components/ui/sonner';
@@ -7,6 +11,7 @@ import { LanguageProvider } from '@/lib/i18n';
 import { SiteProvider, useSite } from '@/lib/site';
 
 function SettingsBridge({ children }) {
+  useUiLanguage();
   const site = useSite();
   const settings = site?.settings;
   return (
@@ -17,6 +22,9 @@ function SettingsBridge({ children }) {
 }
 
 export default function Root() {
+  const location = useLocation();
+  useLayoutEffect(() => syncLanguageScope(location.pathname, ADMIN_PATH), [location.pathname]);
+  useUiLanguage();
   return (
     <SiteProvider>
       <SettingsBridge>

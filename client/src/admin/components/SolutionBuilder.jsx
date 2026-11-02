@@ -1,3 +1,7 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import {
   AlertTriangle,
@@ -48,28 +52,27 @@ import { DragHandle, SortableList, clientKey, itemKey, moveItem } from './Sortab
 import { stripTags } from '../lib/format.js';
 
 export const BLOCK_META = {
-  text: { label: 'Text', group: 'Text', icon: Type },
-  hindiText: { label: 'Hindi text', group: 'Text', icon: Languages, modes: ['hi'] },
-  englishText: { label: 'English text', group: 'Text', icon: Languages, modes: ['en'] },
-  mixedText: { label: 'Mixed Hindi-English', group: 'Text', icon: Languages, modes: ['mixed'] },
-  explanation: { label: 'Explanation / Given', group: 'Text', icon: Info },
-  step: { label: 'Step', group: 'Steps', icon: Footprints, latex: true },
-  calculation: { label: 'Calculation', group: 'Steps', icon: Calculator, latexPrimary: true },
-  construction: { label: 'Steps of construction', group: 'Steps', icon: DraftingCompass },
-  formula: { label: 'Formula', group: 'Math', icon: Sigma, latexPrimary: true },
-  table: { label: 'Table', group: 'Math', icon: Table },
-  image: { label: 'Image', group: 'Visual', icon: ImageIcon, media: true },
-  diagram: { label: 'Diagram', group: 'Visual', icon: PenTool, media: true },
-  graph: { label: 'Graph', group: 'Visual', icon: LineChart, media: true },
-  youtube: { label: 'YouTube video', group: 'Media', icon: Youtube, video: true },
-  note: { label: 'Important note', group: 'Callouts', icon: Info },
-  tip: { label: 'Tip', group: 'Callouts', icon: Lightbulb },
-  warning: { label: 'Warning', group: 'Callouts', icon: AlertTriangle },
-  finalAnswer: { label: 'Final answer', group: 'Result', icon: CheckCircle2, latex: true },
+  text: { get label() { return uiText("Text"); }, get group() { return uiText("Text"); }, icon: Type },
+  hindiText: { get label() { return uiText("Hindi text"); }, get group() { return uiText("Text"); }, icon: Languages, modes: ['hi'] },
+  englishText: { get label() { return uiText("English text"); }, get group() { return uiText("Text"); }, icon: Languages, modes: ['en'] },
+  explanation: { get label() { return uiText("Explanation / Given"); }, get group() { return uiText("Text"); }, icon: Info },
+  step: { get label() { return uiText("Step"); }, get group() { return uiText("Steps"); }, icon: Footprints, latex: true },
+  calculation: { get label() { return uiText("Calculation"); }, get group() { return uiText("Steps"); }, icon: Calculator, latexPrimary: true },
+  construction: { get label() { return uiText("Steps of construction"); }, get group() { return uiText("Steps"); }, icon: DraftingCompass },
+  formula: { get label() { return uiText("Formula"); }, get group() { return uiText("Math"); }, icon: Sigma, latexPrimary: true },
+  table: { get label() { return uiText("Table"); }, get group() { return uiText("Math"); }, icon: Table },
+  image: { get label() { return uiText("Image"); }, get group() { return uiText("Visual"); }, icon: ImageIcon, media: true },
+  diagram: { get label() { return uiText("Diagram"); }, get group() { return uiText("Visual"); }, icon: PenTool, media: true },
+  graph: { get label() { return uiText("Graph"); }, get group() { return uiText("Visual"); }, icon: LineChart, media: true },
+  youtube: { get label() { return uiText("YouTube video"); }, get group() { return uiText("Media"); }, icon: Youtube, video: true },
+  note: { get label() { return uiText("Important note"); }, get group() { return uiText("Callouts"); }, icon: Info },
+  tip: { get label() { return uiText("Tip"); }, get group() { return uiText("Callouts"); }, icon: Lightbulb },
+  warning: { get label() { return uiText("Warning"); }, get group() { return uiText("Callouts"); }, icon: AlertTriangle },
+  finalAnswer: { get label() { return uiText("Final answer"); }, get group() { return uiText("Result"); }, icon: CheckCircle2, latex: true },
 };
 
 const GROUPS = ['Text', 'Steps', 'Math', 'Visual', 'Media', 'Callouts', 'Result'];
-const TYPE_OPTIONS = Object.entries(BLOCK_META).map(([value, meta]) => ({ value, label: meta.label }));
+const TYPE_OPTIONS = Object.entries(BLOCK_META).map(([value, meta]) => ({ value, get label() { return meta.label; } }));
 
 export const newBlock = (type) => ({ _key: clientKey(), type, title: {}, content: {}, latex: '', displayMode: true, media: [], video: null, languageMode: 'auto', isVisible: true });
 
@@ -79,22 +82,23 @@ export const blocksFromTemplate = (blocks = []) =>
 function summary(block) {
   if (BLOCK_META[block.type]?.media) return `${block.media?.length || 0} image(s)`;
   if (block.type === 'youtube') return block.video?.title?.en || block.video?.youtubeId || 'No video selected';
-  const text = stripTags(block.content?.hi || block.content?.en || block.content?.mixed) || block.latex || block.title?.en || block.title?.hi;
+  const text = stripTags(adminText(block.content)) || block.latex || adminText(block.title);
   return text ? text.slice(0, 90) : 'Empty';
 }
 
 function BlockEditor({ block, onChange }) {
+  useUiLanguage();
   const meta = BLOCK_META[block.type] || BLOCK_META.text;
   const set = (patch) => onChange({ ...block, ...patch });
-  const modes = meta.modes || ['hi', 'en', 'mixed'];
+  const modes = meta.modes || ['hi', 'en'];
   const forced = Boolean(meta.modes);
   const [showLatex, setShowLatex] = useState(Boolean(block.latex));
 
   if (meta.media) {
     return (
       <div className="space-y-3">
-        <L10nField label="Heading (optional)" value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
-        <MediaListField label={`${meta.label} images`} hint="Unlimited images. Students can tap to zoom." value={block.media} onChange={(media) => set({ media })} kind="diagrams" />
+        <L10nField label={uiText("Heading (optional)")} value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
+        <MediaListField label={uiTemplate`${meta.label} images`} hint={uiText("Unlimited images. Students can tap to zoom.")} value={block.media} onChange={(media) => set({ media })} kind="diagrams" />
       </div>
     );
   }
@@ -102,17 +106,17 @@ function BlockEditor({ block, onChange }) {
     return (
       <div className="space-y-3">
         <VideoField value={block.video} onChange={(video) => set({ video })} />
-        <L10nField label="Title override (optional)" value={block.title} onChange={(title) => set({ title })} />
+        <L10nField label={uiText("Title override (optional)")} value={block.title} onChange={(title) => set({ title })} />
       </div>
     );
   }
   if (meta.latexPrimary) {
     return (
       <div className="space-y-3">
-        <L10nField label="Heading (optional)" value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
+        <L10nField label={uiText("Heading (optional)")} value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
         <FormulaInput value={block.latex} onChange={(latex) => set({ latex })} display={block.displayMode !== false} />
-        {block.type === 'formula' && <SwitchField label="Display centered on its own line" checked={block.displayMode !== false} onChange={(displayMode) => set({ displayMode })} />}
-        <RichL10nField label="Explanation (optional)" value={block.content} onChange={(content) => set({ content })} minimal />
+        {block.type === 'formula' && <SwitchField label={uiText("Display centered on its own line")} checked={block.displayMode !== false} onChange={(displayMode) => set({ displayMode })} />}
+        <RichL10nField label={uiText("Explanation (optional)")} value={block.content} onChange={(content) => set({ content })} minimal />
         <LanguageModeField value={block.languageMode} onChange={(languageMode) => set({ languageMode })} />
       </div>
     );
@@ -120,10 +124,10 @@ function BlockEditor({ block, onChange }) {
 
   return (
     <div className="space-y-3">
-      <L10nField label="Heading (optional)" value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
+      <L10nField label={uiText("Heading (optional)")} value={block.title} onChange={(title) => set({ title })} placeholder={meta.label} />
       <RichL10nField
-        label={forced ? `${meta.label}` : 'Content'}
-        hint={block.type === 'table' ? 'Use the table button in the toolbar.' : block.type === 'construction' ? 'Use a numbered list for construction steps.' : undefined}
+        label={forced ? `${meta.label}` : uiText("Content")}
+        hint={block.type === 'table' ? uiText("Use the table button in the toolbar.") : block.type === 'construction' ? uiText("Use a numbered list for construction steps.") : undefined}
         value={block.content}
         onChange={(content) => set({ content })}
         modes={modes}
@@ -131,18 +135,18 @@ function BlockEditor({ block, onChange }) {
       />
       {meta.latex &&
         (showLatex ? (
-          <FormulaInput label="Formula line (optional)" value={block.latex} onChange={(latex) => set({ latex })} />
+          <FormulaInput label={uiText("Formula line (optional)")} value={block.latex} onChange={(latex) => set({ latex })} />
         ) : (
           <Button type="button" variant="ghost" size="sm" onClick={() => setShowLatex(true)}>
-            <Sigma /> Add a formula line
-          </Button>
+            <Sigma />{uiText("Add a formula line")}</Button>
         ))}
       {!forced && <LanguageModeField value={block.languageMode} onChange={(languageMode) => set({ languageMode })} />}
     </div>
   );
 }
 
-function AddBlockMenu({ onAdd, label = 'Add block', variant = 'default' }) {
+function AddBlockMenu({ onAdd, label = uiText("Add block"), variant = 'default' }) {
+  useUiLanguage();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -174,6 +178,7 @@ function AddBlockMenu({ onAdd, label = 'Add block', variant = 'default' }) {
 
 /** Block-based solution builder: Explanation → Steps → Formula → Diagram → Video → Final Answer, in any order. */
 export function SolutionBuilder({ blocks = [], onChange, templateKind = 'question', onTemplateApplied }) {
+  useUiLanguage();
   const confirm = useConfirm();
   const [collapsed, setCollapsed] = useState({});
   const items = blocks.map((b) => (itemKey(b) ? b : { ...b, _key: clientKey() }));
@@ -186,9 +191,9 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
     const fresh = blocksFromTemplate(template.blocks);
     if (items.length) {
       const replace = await confirm({
-        title: `Apply “${template.name}”?`,
-        description: 'Replace the current blocks with this template? (Choose Cancel to keep your blocks — you can add blocks individually instead.)',
-        confirmLabel: 'Replace blocks',
+        get title() { return uiTemplate`Apply “${template.name}”?`; },
+        get description() { return uiText("Replace the current blocks with this template? (Choose Cancel to keep your blocks — you can add blocks individually instead.)"); },
+        get confirmLabel() { return uiText("Replace blocks"); },
         destructive: true,
       });
       if (!replace) return;
@@ -206,8 +211,7 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button type="button" variant="outline" size="sm">
-                <Shapes /> Apply template
-              </Button>
+                <Shapes />{uiText("Apply template")}</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-72">
               {templates.data.items.map((template) => (
@@ -221,16 +225,15 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
         )}
         {items.length > 1 && (
           <Button type="button" variant="ghost" size="sm" onClick={() => setCollapsed(Object.fromEntries(items.map((b) => [itemKey(b), !Object.values(collapsed).every(Boolean)])))}>
-            <ChevronDown /> Collapse / expand all
-          </Button>
+            <ChevronDown />{' '}{uiText("Collapse / expand all")}{' '}</Button>
         )}
-        <span className="ml-auto text-xs text-muted-foreground">{items.length} block(s) · drag to reorder</span>
+        <span className="ml-auto text-xs text-muted-foreground">{items.length}{' '}{uiText("block(s) · drag to reorder")}</span>
       </div>
 
       {items.length === 0 && (
         <div className="rounded-2xl border border-dashed p-6 text-center">
-          <p className="text-sm font-semibold">No solution blocks yet</p>
-          <p className="mb-3 text-xs text-muted-foreground">Start with a template or add blocks one by one.</p>
+          <p className="text-sm font-semibold">{uiText("No solution blocks yet")}</p>
+          <p className="mb-3 text-xs text-muted-foreground">{uiText("Start with a template or add blocks one by one.")}</p>
           <div className="flex flex-wrap justify-center gap-2">
             {['explanation', 'step', 'formula', 'diagram', 'finalAnswer'].map((type) => (
               <Button key={type} type="button" variant="outline" size="sm" onClick={() => add(type)}>
@@ -260,16 +263,16 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
                 <div className="w-44">
                   <SelectField value={block.type} onChange={(type) => update(index, { ...block, type })} options={TYPE_OPTIONS} />
                 </div>
-                {(block.type === 'step' || block.type === 'calculation') && <span className="text-xs text-muted-foreground">Step {step}</span>}
+                {(block.type === 'step' || block.type === 'calculation') && <span className="text-xs text-muted-foreground">{uiText("Step")}{step}</span>}
                 {isCollapsed && <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{summary(block)}</span>}
                 <span className="ml-auto flex items-center">
-                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => update(index, { ...block, isVisible: block.isVisible === false })} aria-label={block.isVisible === false ? 'Show block' : 'Hide block'} title={block.isVisible === false ? 'Hidden' : 'Visible'}>
+                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => update(index, { ...block, isVisible: block.isVisible === false })} aria-label={block.isVisible === false ? uiText("Show block") : uiText("Hide block")} title={block.isVisible === false ? uiText("Hidden") : uiText("Visible")}>
                     {block.isVisible === false ? <EyeOff /> : <Eye />}
                   </Button>
-                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(moveItem(items, index, index - 1))} disabled={index === 0} aria-label="Move up">
+                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(moveItem(items, index, index - 1))} disabled={index === 0} aria-label={uiText("Move up")}>
                     <ArrowUp />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(moveItem(items, index, index + 1))} disabled={index === items.length - 1} aria-label="Move down">
+                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(moveItem(items, index, index + 1))} disabled={index === items.length - 1} aria-label={uiText("Move down")}>
                     <ArrowDown />
                   </Button>
                   <Button
@@ -277,7 +280,7 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => onChange([...items.slice(0, index + 1), { ...structuredClone({ ...block, _id: undefined }), _key: clientKey() }, ...items.slice(index + 1)])}
-                    aria-label="Duplicate block"
+                    aria-label={uiText("Duplicate block")}
                   >
                     <Copy />
                   </Button>
@@ -286,14 +289,14 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
                     variant="ghost"
                     size="icon-sm"
                     onClick={async () => {
-                      const ok = await confirm({ title: 'Delete this block?', description: `${meta.label}: ${summary(block)}`, confirmLabel: 'Delete block', destructive: true });
+                      const ok = await confirm({ get title() { return uiText("Delete this block?"); }, description: `${meta.label}: ${summary(block)}`, get confirmLabel() { return uiText("Delete block"); }, destructive: true });
                       if (ok) onChange(items.filter((_, i) => i !== index));
                     }}
-                    aria-label="Delete block"
+                    aria-label={uiText("Delete block")}
                   >
                     <Trash2 className="text-destructive" />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => setCollapsed((c) => ({ ...c, [key]: !isCollapsed }))} aria-label={isCollapsed ? 'Expand' : 'Collapse'} aria-expanded={!isCollapsed}>
+                  <Button type="button" variant="ghost" size="icon-sm" onClick={() => setCollapsed((c) => ({ ...c, [key]: !isCollapsed }))} aria-label={isCollapsed ? uiText("Expand") : uiText("Collapse")} aria-expanded={!isCollapsed}>
                     <ChevronDown className={cn('transition-transform', isCollapsed && '-rotate-90')} />
                   </Button>
                 </span>
@@ -308,7 +311,7 @@ export function SolutionBuilder({ blocks = [], onChange, templateKind = 'questio
         }}
       />
 
-      {items.length > 0 && <AddBlockMenu onAdd={(type) => add(type)} label="Add another block" variant="outline" />}
+      {items.length > 0 && <AddBlockMenu onAdd={(type) => add(type)} label={uiText("Add another block")} variant="outline" />}
     </div>
   );
 }

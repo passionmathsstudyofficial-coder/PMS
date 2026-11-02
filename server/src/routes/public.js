@@ -1,7 +1,9 @@
 import express from 'express';
+import { languageResponse, requestLanguage } from '../middleware/language.js';
 import { cache } from '../lib/cache.js';
 import { asString, isObjectId } from '../lib/request.js';
-import { AdSlot, SiteSettings } from '../models/index.js';
+import { AdSlot, SiteSettings, ActivityLog } from '../models/index.js';
+import { hmac } from '../lib/crypto.js';
 import { optionalAuth, requireAuth, requirePermission } from '../middleware/auth.js';
 import { ApiError } from '../middleware/error.js';
 import { searchLimiter } from '../middleware/rateLimits.js';
@@ -13,12 +15,21 @@ import { search } from '../services/search.js';
 import { getSiteBootstrap } from '../services/site.js';
 
 const router = express.Router();
+router.use(async (req, res, next) => { await cache.sync(); next(); });
+router.use(languageResponse);
 // Browsers must revalidate (cheap 304 via ETag) so admin changes appear immediately; the server cache is cleared on every save.
 const FRESH = 'public, no-cache';
 const PREVIEW_TYPES = new Set(['Class', 'Chapter', 'Exercise', 'Question', 'Note', 'Page', 'Topic']);
 
 const isPreview = (req) => req.query.preview === '1' && Boolean(req.admin);
 const intParam = (value, fallback) => Math.max(1, Number.parseInt(value, 10) || fallback);
+router.get('/revision', async (req, res) => {
+  const revision = await cache.wrap('public-revision', 1000, async () => {
+    const latest = await ActivityLog.findOne().sort({ _id: -1 }).select('_id').lean();
+    return hmac(String(latest?._id || 'initial'));
+  });
+  res.set('Cache-Control', 'no-store').json({ revision });
+});
 
 router.get('/site', async (req, res) => {
   res.set('Cache-Control', FRESH);
@@ -49,6 +60,7 @@ export async function searchHandler(req, res) {
     classNumber: asString(req.query.class, 3) || undefined,
     page: intParam(req.query.page, 1),
     limit: Number.parseInt(req.query.limit, 10) || 20,
+    language: requestLanguage(req),
   });
   res.set('Cache-Control', FRESH);
   res.json(data);
@@ -59,7 +71,8 @@ router.get('/search', searchLimiter, searchHandler);
 router.get('/suggest', searchLimiter, async (req, res) => {
   const q = asString(req.query.q, 100);
   if (q.trim().length < 2) return res.json({ results: [] });
-  const data = await cache.wrap(`suggest:${q.toLowerCase()}`, 30_000, () => search({ q, limit: 8 }));
+  const language = requestLanguage(req);
+  const data = await cache.wrap(`suggest:${language}:${q.toLowerCase()}`, 30_000, () => search({ q, limit: 8, language }));
   res.json({ results: data.results, total: data.total });
 });
 

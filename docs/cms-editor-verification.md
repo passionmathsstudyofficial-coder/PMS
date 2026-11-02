@@ -59,8 +59,25 @@ Earlier uncommitted fixes, including TopicPage and server/tests/content.test.js,
 - Browser verification used the production build with an isolated database: inserted the quadratic formula through its actual dialog, inserted uploaded images in all three editors with captions/size/alignment, saved, reopened, added an inline inequality and a display matrix, saved again, and refreshed the public student exercise route. Observed three rendered equations, three image figures and the Notes section; no math error placeholders.
 - Browser image replacement, removal and undo were exercised, followed by saving and refreshing the student page.
 - The original Class 12 Exercise 2.1 route was also checked against the existing configured database without rewriting its content.
-- Actual phone/tablet visual testing and an upload to the live Cloudinary account were not performed. Responsive CSS constraints and saved width/alignment were checked locally.
+- The initial verification did not include phone/tablet browser viewports or the live Cloudinary provider. Those checks were completed on 1 November 2026, as recorded below.
 
 ## Deployment
 
 Deploy both backend and frontend, because this upgrade changes upload validation, sanitization and media usage checks as well as the editor. From the repository root run `npm ci`, `npm test`, `npm test --workspace client`, and `npm run build`. Deploy the resulting client/dist and restart/redeploy the existing backend using its established hosting process. The local frontend is available at http://localhost:5173 and its API at http://localhost:5000. No database migration or content re-entry is needed.
+
+
+## Completion check — 1 November 2026
+
+The current working tree contains later language, account and document changes; those were preserved. Revalidated the current build rather than relying on the earlier test counts.
+
+- `npm test --workspace client`: 33 passed, 0 failed.
+- `npm test`: 70 passed, 0 failed. The logged mail-provider failure is an intentional recovery-error test, which passed.
+- `npm run build`: passed; KaTeX fonts are included in the output.
+- `npm run check:translations --workspace client` and `npm run check:languages --workspace client`: passed with zero unresolved entries/problems.
+- Phone browser viewport: 390 × 844, with a 375px content viewport after the scrollbar. Document scroll width was also 375px: no page horizontal overflow. Three equations rendered (inline expression, legacy quadratic formula, matrix); zero math error nodes; the uploaded image loaded and shrank to about 302px.
+- Tablet browser viewport: 768 × 1024, with a 753px content viewport. Document scroll width was 753px; three formulas, zero math error nodes; image loaded at 320px. No browser console warnings or errors. Temporary viewport overrides were reset.
+- Both responsive checks used the real published ExercisePage in the production bundle, populated via authenticated admin save APIs and refreshed before measurement. The legacy formula intentionally retained its historic escaped placeholder and dangling dollar in storage, to prove recovery without rewriting the record.
+- Actual configured Cloudinary provider: uploaded a disposable 1px PNG with the existing server storage adapter, fetched it successfully as an image, then removed the verification upload. No production CMS records were changed.
+- Added `server/scripts/verify-cms-browser.mjs` as a repeatable isolated fixture. Run `npm run build` followed by `node server/scripts/verify-cms-browser.mjs` from the repository root with local MongoDB running. It creates a unique local test database, publishes mixed math/image content, serves the production bundle on loopback port 5103, and cleans up on Ctrl+C. Its `/__verify/mobile` harness is test-only; direct route viewport testing was used for the results above.
+
+Implementation and local verification are complete. A hosted production deployment has not been performed; redeploy both existing frontend and backend using the commands above. No content migration is required.

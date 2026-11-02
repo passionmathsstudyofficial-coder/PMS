@@ -1,7 +1,8 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Loader2, Star } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { Chip, DifficultyBadge } from '@/components/content/badges.jsx';
 import { Callout } from '@/components/content/Callout.jsx';
@@ -17,6 +18,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader, StatPills } from './ContentHeader.jsx';
 
 function ImportantQuestionCard({ item, index }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { openViewer } = useImageViewer();
@@ -65,6 +67,7 @@ function ImportantQuestionCard({ item, index }) {
 }
 
 export default function ImportantQuestionsPage({ data, breadcrumbs, path, preview, previewToken }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, pagination } = data;
@@ -80,7 +83,7 @@ export default function ImportantQuestionsPage({ data, breadcrumbs, path, previe
       setPages((current) => [...current, result.data.items]);
       setPage(page + 1);
     } catch (error) {
-      toast.error(errorMessage(error));
+      toast.apiError(error);
     } finally {
       setLoading(false);
     }

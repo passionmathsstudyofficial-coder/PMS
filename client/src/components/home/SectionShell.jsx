@@ -1,8 +1,9 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight } from 'lucide-react';
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { SmartLink } from '@/components/site/SmartLink.jsx';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useReveal } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
@@ -17,7 +18,8 @@ const BACKGROUNDS = {
 const BUTTON_VARIANT = { primary: 'default', secondary: 'secondary', outline: 'outline', ghost: 'ghost', link: 'link' };
 
 export function SectionButtons({ buttons, className, inverted }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   if (!buttons?.length) return null;
   return (
     <div className={cn('flex flex-wrap items-center gap-3', className)}>
@@ -44,8 +46,9 @@ export function SectionButtons({ buttons, className, inverted }) {
 }
 
 export function SectionShell({ section, children, className, containerClassName, heading = true, headingAside }) {
+  useUiLanguage();
   const ref = useRef(null);
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const background = section.config?.background || 'none';
   const inverted = background === 'brand' || background === 'dark';
   const centered = section.config?.align === 'center';

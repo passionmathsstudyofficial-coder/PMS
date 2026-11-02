@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Check, Copy, DraftingCompass } from 'lucide-react';
 import { useState } from 'react';
 import { useL10n, useLang } from '@/lib/i18n';
@@ -10,7 +12,7 @@ import { CopyLatexButton, MathFormula } from './MathFormula.jsx';
 import { RichContent } from './RichContent.jsx';
 import { YouTubeEmbed } from './YouTubeEmbed.jsx';
 
-const FORCED_MODE = { hindiText: 'hi', englishText: 'en', mixedText: 'mixed' };
+const FORCED_MODE = { hindiText: 'hi', englishText: 'en' };
 const MEDIA_TYPES = new Set(['image', 'diagram', 'graph']);
 const MEDIA_TERM = { image: 'figure', diagram: 'diagram', graph: 'graph' };
 
@@ -24,6 +26,7 @@ export function blockImages(blocks, pick) {
 }
 
 function CopyTextButton({ getText }) {
+  useUiLanguage();
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -39,18 +42,18 @@ function CopyTextButton({ getText }) {
       }}
       className="inline-flex items-center gap-1 rounded-md border bg-background/80 px-2 py-1 text-[11px] font-semibold text-muted-foreground hover:text-foreground"
     >
-      {copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
-      Copy
-    </button>
+      {copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}{uiText("Copy")}</button>
   );
 }
 
 function BlockTitle({ children, className }) {
+  useUiLanguage();
   if (!children) return null;
   return <h4 className={cn('mb-2 text-sm font-bold text-foreground', className)}>{children}</h4>;
 }
 
 function StepBlock({ number, title, html, latex, mode, t, term }) {
+  useUiLanguage();
   return (
     <div className="relative flex gap-3 sm:gap-4">
       <div className="flex flex-col items-center">
@@ -76,6 +79,7 @@ function StepBlock({ number, title, html, latex, mode, t, term }) {
 }
 
 export function SolutionBlock({ block, stepNumber, images, parentMode }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { openViewer } = useImageViewer();
@@ -192,6 +196,7 @@ export function SolutionBlock({ block, stepNumber, images, parentMode }) {
 
 /** Renders solution blocks in the exact order configured by the admin. */
 export function SolutionRenderer({ blocks, languageMode = 'auto', extraImages = [], afterBody, className }) {
+  useUiLanguage();
   const t = useL10n();
   const { lang } = useLang();
   const list = blocks || [];

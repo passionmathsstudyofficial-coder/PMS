@@ -48,6 +48,17 @@ test('rejects disguised and unsupported files', async () => {
   assert.equal(anonymous.status, 401);
 });
 
+test('partial media translation saves preserve the other language', async () => {
+  const upload = await owner.post('/api/media/upload').field('altHi', 'मूल चित्र').field('altEn', 'Original image').attach('files', PNG_1x1, 'localized.png');
+  const id = upload.body.items[0]._id;
+  const edited = await owner.put(`/api/media/${id}`).send({ alt: { en: 'Edited image' }, caption: { hi: 'हिंदी विवरण' } });
+  assert.equal(edited.status, 200);
+  assert.equal(edited.body.alt.hi, 'मूल चित्र');
+  await owner.put(`/api/media/${id}`).send({ caption: { en: 'English caption' } });
+  const read = await owner.get(`/api/media/${id}`);
+  assert.equal(read.body.caption.hi, 'हिंदी विवरण'); assert.equal(read.body.caption.en, 'English caption');
+});
+
 test('SVG uploads are sanitized before storage', async () => {
   const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10" onload="alert(1)"><script>alert(document.cookie)</script><line x1="0" y1="0" x2="20" y2="10" stroke="black"/></svg>');
   const res = await owner.post('/api/media/upload').attach('files', svg, 'graph.svg');

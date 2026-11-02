@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ListOrdered } from 'lucide-react';
 import { Link } from 'react-router';
 import { Chip } from '@/components/content/badges.jsx';
@@ -7,6 +8,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
 
 export default function SubjectExercisesPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, subject, chapters } = data;

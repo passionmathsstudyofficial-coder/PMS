@@ -1,3 +1,4 @@
+import { mapLegacyLanguages } from '../../../shared/languages.js';
 // Removes MongoDB operator keys ($gt, $where, …) and prototype-pollution keys from all user input.
 const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
 
@@ -16,7 +17,7 @@ function clean(value, depth = 0) {
 }
 
 export function sanitizeInput(req, res, next) {
-  if (req.body && typeof req.body === 'object') req.body = clean(req.body);
+  if (req.body && typeof req.body === 'object') req.body = mapLegacyLanguages(clean(req.body));
   if (req.params) req.params = clean(req.params);
   // Express 5 exposes req.query as a getter; replace it with a sanitized plain object.
   Object.defineProperty(req, 'query', {

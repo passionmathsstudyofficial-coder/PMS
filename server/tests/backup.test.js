@@ -25,6 +25,7 @@ test('create, verify and restore a backup (accounts are never overwritten)', asy
   assert.ok(backup.body.bytes > 0);
   assert.equal(backup.body.collections.find((c) => c.name === 'classes').count, 1);
   assert.ok(!backup.body.collections.some((c) => c.name === 'sessions'), 'sessions are never backed up');
+  assert.ok(!backup.body.collections.some((c) => ['studentsessions', 'passwordrecoveries'].includes(c.name)), 'student sessions and recovery tokens are never backed up');
 
   const verify = await owner.post(`/api/backups/${backup.body._id}/verify`);
   assert.equal(verify.body.ok, true);

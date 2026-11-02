@@ -1,3 +1,6 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -6,6 +9,7 @@ import { cn } from '@/lib/utils';
  * Space is reserved with min-height (no layout shift) and ad code runs in a sandboxed iframe.
  */
 export function AdSlot({ placement, pageType, className }) {
+  useUiLanguage();
   const site = useSite();
   if (!site?.settings?.ads?.enabled) return null;
   const slots = (site.adSlots || []).filter(
@@ -16,7 +20,7 @@ export function AdSlot({ placement, pageType, className }) {
   return slots.map((slot) => (
     <aside
       key={slot._id}
-      aria-label="Advertisement"
+      aria-label={uiText("Advertisement")}
       className={cn(
         'container-page my-4',
         slot.device === 'desktop' && 'hidden md:block',
@@ -24,13 +28,13 @@ export function AdSlot({ placement, pageType, className }) {
         className,
       )}
     >
-      <p className="mb-1 text-center text-[10px] tracking-wider text-muted-foreground uppercase">विज्ञापन · Advertisement</p>
+      <p className="mb-1 text-center text-[10px] tracking-wider text-muted-foreground uppercase">{uiText("विज्ञापन · Advertisement")}</p>
       <div
         className="flex items-center justify-center overflow-hidden rounded-lg bg-muted/40 [min-height:var(--ad-mobile)] md:[min-height:var(--ad-desktop)]"
         style={{ '--ad-mobile': `${slot.minHeightMobile}px`, '--ad-desktop': `${slot.minHeightDesktop}px` }}
       >
         <iframe
-          title={`Advertisement: ${slot.name}`}
+          title={uiTemplate`Advertisement: ${slot.name}`}
           src={`/api/public/ad-frame/${slot._id}`}
           sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
           loading="lazy"

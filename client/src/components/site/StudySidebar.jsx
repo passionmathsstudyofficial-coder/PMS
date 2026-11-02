@@ -1,3 +1,6 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import {
   AlignLeft,
   BookOpen,
@@ -11,7 +14,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 export const STUDY_MATERIAL_LINKS = [
@@ -34,7 +37,8 @@ export const REFERENCE_BOOK_LINKS = [
 const CLASSES = [12, 11, 10, 9, 8, 7, 6];
 
 export function StudySidebar({ currentCategory, currentBook, currentClass, chapters = [], className }) {
-  const t = useL10n();
+  useUiLanguage();
+  const t = useInterfaceL10n();
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -45,9 +49,9 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
         <div className="rounded-2xl border bg-card p-4 shadow-xs">
           <div className="mb-3 flex items-center justify-between border-b pb-2">
             <h3 className="font-heading text-sm font-bold text-foreground">
-              {currentClass ? `Class ${currentClass.number || currentClass} Chapters` : 'Chapters'}
+              {currentClass ? uiTemplate`Class ${currentClass.number || currentClass} Chapters` : uiText("Chapters")}
             </h3>
-            <span className="text-xs text-muted-foreground">{chapters.length} Total</span>
+            <span className="text-xs text-muted-foreground">{chapters.length}{uiText("Total")}</span>
           </div>
           <div className="max-h-72 space-y-1 overflow-y-auto pr-1">
             {chapters.map((ch) => {
@@ -64,7 +68,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
                   )}
                 >
                   <span className="truncate">
-                    <span className="font-bold">Ch {ch.number}:</span> {t(ch.title) || `Chapter ${ch.number}`}
+                    <span className="font-bold">{uiText("Ch")}{' '}{ch.number}:</span> {t(ch.title) || uiTemplate`Chapter ${ch.number}`}
                   </span>
                   <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
                 </Link>
@@ -78,7 +82,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
       <div className="rounded-2xl border bg-card p-4 shadow-xs">
         <div className="mb-3 flex items-center gap-2 border-b pb-2">
           <Layers className="size-4 text-brand" />
-          <h3 className="font-heading text-sm font-bold text-foreground">Study Materials</h3>
+          <h3 className="font-heading text-sm font-bold text-foreground">{uiText("Study Materials")}</h3>
         </div>
         <ul className="space-y-1">
           {STUDY_MATERIAL_LINKS.map((item) => {
@@ -115,7 +119,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
       <div className="rounded-2xl border bg-card p-4 shadow-xs">
         <div className="mb-3 flex items-center gap-2 border-b pb-2">
           <BookOpen className="size-4 text-brand" />
-          <h3 className="font-heading text-sm font-bold text-foreground">Reference Solutions</h3>
+          <h3 className="font-heading text-sm font-bold text-foreground">{uiText("Reference Solutions")}</h3>
         </div>
         <ul className="space-y-1">
           {REFERENCE_BOOK_LINKS.map((b) => {
@@ -152,16 +156,14 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
             <Link
               to="/reference-solutions"
               className="block rounded-lg px-2 py-1.5 text-center text-xs font-bold text-brand hover:underline"
-            >
-              All Reference Books →
-            </Link>
+            >{uiText("All Reference Books →")}</Link>
           </li>
         </ul>
       </div>
 
       {/* Quick Class Selection */}
       <div className="rounded-2xl border bg-card p-4 shadow-xs">
-        <h3 className="mb-2 text-xs font-extrabold tracking-wider text-muted-foreground uppercase">Classes 6 to 12</h3>
+        <h3 className="mb-2 text-xs font-extrabold tracking-wider text-muted-foreground uppercase">{uiText("Classes 6 to 12")}</h3>
         <div className="grid grid-cols-4 gap-1.5">
           {CLASSES.map((num) => {
             const isCurrent = currentClass && (currentClass.number === num || currentClass === num);

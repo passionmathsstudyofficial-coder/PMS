@@ -1,17 +1,22 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { DocumentAttachment } from './DocumentAttachment.jsx';
 import { Maximize2 } from 'lucide-react';
 import { aspectRatio, imageSrcSet, imageUrl } from '@/lib/media';
 import { cn } from '@/lib/utils';
 
 /** Responsive, never-cropped image. Click opens the zoomable viewer. */
 export function Figure({ media, alt, caption, label, onOpen, className, sizes = '(min-width: 1024px) 760px, 100vw', priority = false }) {
+  useUiLanguage();
   if (!media?.url) return null;
+  if (['pdf', 'doc', 'docx'].includes(media.format)) return <DocumentAttachment media={media} title={caption || media.originalName || media.title} />;
   return (
     <figure className={cn('group', className)}>
       <button
         type="button"
         onClick={onOpen}
         className="relative block w-full cursor-zoom-in overflow-hidden rounded-xl border bg-white p-2 transition-shadow hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50"
-        aria-label={`Open image: ${alt || caption || 'figure'}`}
+        aria-label={uiTemplate`Open image: ${alt || caption || 'figure'}`}
       >
         {label && (
           <span className="absolute top-2 left-2 z-10 rounded-full bg-ink/85 px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase">{label}</span>

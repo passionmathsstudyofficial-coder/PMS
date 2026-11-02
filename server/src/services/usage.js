@@ -13,14 +13,19 @@ import {
   Template,
   Media,
   Topic,
+  Resource,
+  Book,
 } from '../models/index.js';
 import { labelOf } from './activity.js';
 
 const MEDIA_REFS = [
   [SiteSettings, 'Website Settings', ['brand.logo', 'brand.footerLogo', 'brand.favicon', 'seo.defaultOgImage']],
   [ClassLevel, 'Class', ['thumbnail', 'seo.ogImage']],
-  [Chapter, 'Chapter', ['image', 'featuredImage', 'seo.ogImage']],
-  [Exercise, 'Exercise', ['seo.ogImage']],
+  [Chapter, 'Chapter', ['image', 'featuredImage', 'seo.ogImage', 'pdfFile']],
+  [Exercise, 'Exercise', ['seo.ogImage', 'pdfFile']],
+  [Resource, 'Resource', ['file', 'thumbnail']],
+  [Book, 'Book', ['pdfFile', 'coverImage']],
+  [Topic, 'Topic', ['attachments.media', 'image', 'featuredImage']],
   [Question, 'Question', ['attachments.media', 'seo.ogImage']],
   [Solution, 'Solution', ['blocks.media.media']],
   [Note, 'Note', ['attachments.media', 'seo.ogImage']],
@@ -60,7 +65,7 @@ export async function findMediaUsage(id) {
   if (!media?.url) return usage;
   // Embedded rich-text images store durable URLs rather than Media ObjectIds.
   const escaped = media.url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`src=["']${escaped}["']`);
+  const re = new RegExp(String.raw`(?:src|href)=["'](?:${escaped}|(?:https?://[^/]+)?/api/public/files/${id}(?:/[^"'?]+)?(?:\?[^"']*)?)["']`);
   const fields = [
     [Chapter, 'Chapter', ['introduction', 'notes']],
     [Exercise, 'Exercise', ['description', 'instructions', 'notes']],

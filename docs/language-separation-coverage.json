@@ -1,0 +1,5 @@
+{
+  "unresolved": 0,
+  "problems": [],
+  "scope": "Public source guards against cross-language fallback, bilingual secondary headings and a second public language preference. Runtime resolver/API/browser tests verify actual selection."
+}

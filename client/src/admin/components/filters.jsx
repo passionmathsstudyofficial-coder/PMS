@@ -1,3 +1,6 @@
+import { adminText } from '../lib/format.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useSearchParams } from 'react-router';
 import { useResourceList } from '../lib/resources.js';
 
@@ -17,14 +20,14 @@ export function useQueryFilters(keys) {
   return [values, set, active];
 }
 
-export function ClassFilter({ value, onChange, label = 'All classes' }) {
+export function ClassFilter({ value, onChange, label = uiText("All classes") }) {
+  useUiLanguage();
   const list = useResourceList('classes', { limit: 100 });
   return (
-    <select value={value || ''} onChange={(e) => onChange(e.target.value)} className={selectClass} aria-label="Filter by class">
-      <option value="">{label}</option>
+    <select value={value || ''} onChange={(e) => onChange(e.target.value)} className={selectClass} aria-label={uiText("Filter by class")}>
+      <option value="">{uiText(label)}</option>
       {(list.data?.items || []).map((c) => (
-        <option key={c._id} value={c._id}>
-          Class {c.number}
+        <option key={c._id} value={c._id}>{uiText("Class")}{' '}{c.number}
         </option>
       ))}
     </select>
@@ -32,14 +35,14 @@ export function ClassFilter({ value, onChange, label = 'All classes' }) {
 }
 
 export function ChapterFilter({ classId, value, onChange }) {
+  useUiLanguage();
   const list = useResourceList('chapters', { class: classId, limit: 200 }, { enabled: Boolean(classId) });
   return (
-    <select value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={!classId} className={selectClass} aria-label="Filter by अध्याय">
-      <option value="">{classId ? 'All अध्याय' : 'Choose a class first'}</option>
+    <select value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={!classId} className={selectClass} aria-label={uiText("Filter by अध्याय")}>
+      <option value="">{classId ? uiText("All अध्याय") : uiText("Choose a class first")}</option>
       {classId &&
         (list.data?.items || []).map((c) => (
-          <option key={c._id} value={c._id}>
-            अध्याय {c.number} — {c.title?.en || c.title?.hi}
+          <option key={c._id} value={c._id}>{' '}{uiText("अध्याय")}{' '}{c.number} — {adminText(c.title)}
           </option>
         ))}
     </select>
@@ -47,14 +50,14 @@ export function ChapterFilter({ classId, value, onChange }) {
 }
 
 export function ExerciseFilter({ chapterId, value, onChange }) {
+  useUiLanguage();
   const list = useResourceList('exercises', { chapter: chapterId, limit: 200 }, { enabled: Boolean(chapterId) });
   return (
-    <select value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={!chapterId} className={selectClass} aria-label="Filter by प्रश्नावली">
-      <option value="">{chapterId ? 'All प्रश्नावली' : 'Choose an अध्याय first'}</option>
+    <select value={value || ''} onChange={(e) => onChange(e.target.value)} disabled={!chapterId} className={selectClass} aria-label={uiText("Filter by प्रश्नावली")}>
+      <option value="">{chapterId ? uiText("All प्रश्नावली") : uiText("Choose an अध्याय first")}</option>
       {chapterId &&
         (list.data?.items || []).map((e) => (
-          <option key={e._id} value={e._id}>
-            प्रश्नावली {e.number}
+          <option key={e._id} value={e._id}>{' '}{uiText("प्रश्नावली")}{' '}{e.number}
           </option>
         ))}
     </select>

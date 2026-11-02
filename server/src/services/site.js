@@ -40,6 +40,7 @@ export async function publicClasses(preview = false) {
 }
 
 export async function getSiteBootstrap() {
+  await cache.sync();
   return cache.wrap('site', 60_000, async () => {
     const settingsDoc = await SiteSettings.getSingleton();
     await settingsDoc.populate([
@@ -74,6 +75,7 @@ export async function getSiteBootstrap() {
       settings,
       terms,
       navigation,
+      navigationConfigured: Object.fromEntries(NAV_KEYS.map(key => [key, navDocs.some(doc => doc.key === key)])),
       announcements: announcements.map(({ createdBy, updatedBy, ...rest }) => rest),
       classes,
       seoRoutes: Object.fromEntries(seoRoutes.map((r) => [r.routeKey, r])),

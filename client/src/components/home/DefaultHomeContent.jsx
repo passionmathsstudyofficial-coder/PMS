@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import {
   ArrowRight,
   BookOpen,
@@ -24,69 +26,69 @@ import { HeroSection } from './HeroSection.jsx';
 const CLASSES_DATA = [
   {
     number: 10,
-    titleHi: 'कक्षा 10 गणित',
-    titleEn: 'Class 10 Maths',
-    badge: 'बोर्ड परीक्षा 2025',
+    titleHi: uiText("कक्षा 10 गणित"),
+    titleEn: uiText("Class 10 Maths"),
+    get badge() { return uiText("बोर्ड परीक्षा 2025"); },
     color: 'from-amber-500/20 to-orange-500/20 text-amber-500 border-amber-500/30',
     tag: 'Board Special',
-    topics: ['वास्तविक संख्याएँ', 'द्विघात समीकरण', 'समांतर श्रेढ़ी (AP)', 'त्रिकोणमिति'],
+    topics: [uiText("वास्तविक संख्याएँ"), uiText("द्विघात समीकरण"), uiText("समांतर श्रेढ़ी (AP)"), uiText("त्रिकोणमिति")],
     url: '/class-10/maths',
     featured: true,
   },
   {
     number: 12,
-    titleHi: 'कक्षा 12 गणित',
-    titleEn: 'Class 12 Maths',
-    badge: 'सीनियर सेकेंडरी',
+    titleHi: uiText("कक्षा 12 गणित"),
+    titleEn: uiText("Class 12 Maths"),
+    get badge() { return uiText("सीनियर सेकेंडरी"); },
     color: 'from-purple-500/20 to-indigo-500/20 text-purple-400 border-purple-500/30',
     tag: 'Calculus Special',
-    topics: ['संबंध एवं फलन', 'आव्यूह व सारणिक', 'सांतत्य एवं अवकलनीयता', 'समाकलन'],
+    topics: [uiText("संबंध एवं फलन"), uiText("आव्यूह व सारणिक"), uiText("सांतत्य एवं अवकलनीयता"), uiText("समाकलन")],
     url: '/class-12/maths',
     featured: true,
   },
   {
     number: 11,
-    titleHi: 'कक्षा 11 गणित',
-    titleEn: 'Class 11 Maths',
-    badge: 'फाउंडेशन',
+    titleHi: uiText("कक्षा 11 गणित"),
+    titleEn: uiText("Class 11 Maths"),
+    get badge() { return uiText("फाउंडेशन"); },
     color: 'from-blue-500/20 to-cyan-500/20 text-blue-400 border-blue-500/30',
-    topics: ['समुच्चय व संबंध', 'त्रिकोणमितीय फलन', 'सम्मिश्र संख्याएँ', 'अनुक्रम तथा श्रेणी'],
+    topics: [uiText("समुच्चय व संबंध"), uiText("त्रिकोणमितीय फलन"), uiText("सम्मिश्र संख्याएँ"), uiText("अनुक्रम तथा श्रेणी")],
     url: '/class-11/maths',
   },
   {
     number: 9,
-    titleHi: 'कक्षा 9 गणित',
-    titleEn: 'Class 9 Maths',
-    badge: 'माध्यमिक',
+    titleHi: uiText("कक्षा 9 गणित"),
+    titleEn: uiText("Class 9 Maths"),
+    get badge() { return uiText("माध्यमिक"); },
     color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30',
-    topics: ['संख्या पद्धति', 'बहुपद', 'निर्देशांक ज्यामिति', 'त्रिभुज एवं वृत्त'],
+    topics: [uiText("संख्या पद्धति"), uiText("बहुपद"), uiText("निर्देशांक ज्यामिति"), uiText("त्रिभुज एवं वृत्त")],
     url: '/class-9/maths',
   },
   {
     number: 8,
-    titleHi: 'कक्षा 8 गणित',
-    titleEn: 'Class 8 Maths',
-    badge: 'उच्च प्राथमिक',
+    titleHi: uiText("कक्षा 8 गणित"),
+    titleEn: uiText("Class 8 Maths"),
+    get badge() { return uiText("उच्च प्राथमिक"); },
     color: 'from-rose-500/20 to-pink-500/20 text-rose-400 border-rose-500/30',
-    topics: ['परिमेय संख्याएँ', 'एक चर वाले रैखिक समीकरण', 'चतुर्भुजों को समझना', 'क्षेत्रमिति'],
+    topics: [uiText("परिमेय संख्याएँ"), uiText("एक चर वाले रैखिक समीकरण"), uiText("चतुर्भुजों को समझना"), uiText("क्षेत्रमिति")],
     url: '/class-8/maths',
   },
   {
     number: 7,
-    titleHi: 'कक्षा 7 गणित',
-    titleEn: 'Class 7 Maths',
-    badge: 'उच्च प्राथमिक',
+    titleHi: uiText("कक्षा 7 गणित"),
+    titleEn: uiText("Class 7 Maths"),
+    get badge() { return uiText("उच्च प्राथमिक"); },
     color: 'from-yellow-500/20 to-amber-500/20 text-yellow-400 border-yellow-500/30',
-    topics: ['पूर्णांक', 'भिन्न एवं दशमलव', 'सरल समीकरण', 'रेखाएँ एवं कोण'],
+    topics: [uiText("पूर्णांक"), uiText("भिन्न एवं दशमलव"), uiText("सरल समीकरण"), uiText("रेखाएँ एवं कोण")],
     url: '/class-7/maths',
   },
   {
     number: 6,
-    titleHi: 'कक्षा 6 गणित',
-    titleEn: 'Class 6 Maths',
-    badge: 'आरंभिक गणित',
+    titleHi: uiText("कक्षा 6 गणित"),
+    titleEn: uiText("Class 6 Maths"),
+    get badge() { return uiText("आरंभिक गणित"); },
     color: 'from-teal-500/20 to-emerald-500/20 text-teal-400 border-teal-500/30',
-    topics: ['अपनी संख्याओं की जानकारी', 'पूर्ण संख्याएँ', 'संख्याओं के साथ खेलना', 'आधारभूत ज्यामिति'],
+    topics: [uiText("अपनी संख्याओं की जानकारी"), uiText("पूर्ण संख्याएँ"), uiText("संख्याओं के साथ खेलना"), uiText("आधारभूत ज्यामिति")],
     url: '/class-6/maths',
   },
 ];
@@ -94,50 +96,51 @@ const CLASSES_DATA = [
 const KEY_PILLARS = [
   {
     icon: CheckCircle2,
-    title: '100% निःशुल्क NCERT हल',
-    desc: 'कक्षा 6 से 12 तक के प्रत्येक अध्याय व प्रश्नावली का संपूर्ण हल बिना किसी शुल्क के।',
+    get title() { return uiText("100% निःशुल्क NCERT हल"); },
+    get desc() { return uiText("कक्षा 6 से 12 तक के प्रत्येक अध्याय व प्रश्नावली का संपूर्ण हल बिना किसी शुल्क के।"); },
     accent: 'text-emerald-500 bg-emerald-500/10',
   },
   {
     icon: ListOrdered,
-    title: 'चरणबद्ध (Step-by-Step) व्याख्या',
-    desc: 'प्रत्येक प्रश्न में दिया है → सूत्र → गणना चरण → अंतिम उत्तर का स्पष्ट प्रारूप।',
+    get title() { return uiText("चरणबद्ध (Step-by-Step) व्याख्या"); },
+    get desc() { return uiText("प्रत्येक प्रश्न में दिया है → सूत्र → गणना चरण → अंतिम उत्तर का स्पष्ट प्रारूप।"); },
     accent: 'text-brand bg-brand/10',
   },
   {
     icon: Compass,
-    title: 'सटीक आरेख व ग्राफ',
-    desc: 'ज्यामिति, त्रिभुज, वृत्त व ग्राफ के स्पष्ट और स्वच्छ आरेख ताकि परीक्षा में पूरे अंक मिलें।',
+    get title() { return uiText("सटीक आरेख व ग्राफ"); },
+    get desc() { return uiText("ज्यामिति, त्रिभुज, वृत्त व ग्राफ के स्पष्ट और स्वच्छ आरेख ताकि परीक्षा में पूरे अंक मिलें।"); },
     accent: 'text-amber-500 bg-amber-500/10',
   },
   {
     icon: GraduationCap,
-    title: 'द्विभाषी अध्ययन (Hindi + English)',
-    desc: 'हिंदी और English माध्यम दोनों के विद्यार्थियों के लिए सरल व सुगम भाषा में सामग्री।',
+    get title() { return uiText("द्विभाषी अध्ययन (Hindi + English)"); },
+    get desc() { return uiText("हिंदी और English माध्यम दोनों के विद्यार्थियों के लिए सरल व सुगम भाषा में सामग्री।"); },
     accent: 'text-cyan-500 bg-cyan-500/10',
   },
 ];
 
 const FAQS = [
   {
-    q: 'क्या Passion Maths Study की सभी अध्ययन सामग्री निःशुल्क है?',
-    a: 'हाँ! कक्षा 6 से 12 तक के सभी NCERT हल, नोट्स, महत्वपूर्ण सूत्र और वीडियो लेक्चर्स पूरी तरह से 100% निःशुल्क हैं।',
+    q: uiText("क्या Passion Maths Study की सभी अध्ययन सामग्री निःशुल्क है?"),
+    a: uiText("हाँ! कक्षा 6 से 12 तक के सभी NCERT हल, नोट्स, महत्वपूर्ण सूत्र और वीडियो लेक्चर्स पूरी तरह से 100% निःशुल्क हैं।"),
   },
   {
-    q: 'क्या यह नया NCERT 2024–25 पाठ्यक्रम पर आधारित है?',
-    a: 'हाँ, हमारी सभी प्रश्नावलियाँ और अध्याय NCERT 2024-25 के नवीनतम युक्तियुक्त (Rationalised) पाठ्यक्रम के अनुसार तैयार किए गए हैं।',
+    q: uiText("क्या यह नया NCERT 2024–25 पाठ्यक्रम पर आधारित है?"),
+    a: uiText("हाँ, हमारी सभी प्रश्नावलियाँ और अध्याय NCERT 2024-25 के नवीनतम युक्तियुक्त (Rationalised) पाठ्यक्रम के अनुसार तैयार किए गए हैं।"),
   },
   {
-    q: 'दैनिक अपडेट्स और नोट्स के लिए WhatsApp Channel से कैसे जुड़ें?',
-    a: 'पेज पर दिए गए "Join WhatsApp Channel" बटन पर क्लिक करें। वहाँ आपको दैनिक सूत्र पत्रक (Formula Sheets), परीक्षा सूचनाएँ और नए हल मिलेंगे।',
+    q: uiText("दैनिक अपडेट्स और नोट्स के लिए WhatsApp Channel से कैसे जुड़ें?"),
+    a: uiText("पेज पर दिए गए \"Join WhatsApp Channel\" बटन पर क्लिक करें। वहाँ आपको दैनिक सूत्र पत्रक (Formula Sheets), परीक्षा सूचनाएँ और नए हल मिलेंगे।"),
   },
   {
-    q: 'क्या गणित के सूत्र और नोट्स भी उपलब्ध हैं?',
-    a: 'हाँ, प्रत्येक कक्षा के लिए अध्याय-वार महत्वपूर्ण सूत्र और परीक्षा उपयोगी नोट्स व्यवस्थित रूप से उपलब्ध कराए गए हैं।',
+    q: uiText("क्या गणित के सूत्र और नोट्स भी उपलब्ध हैं?"),
+    a: uiText("हाँ, प्रत्येक कक्षा के लिए अध्याय-वार महत्वपूर्ण सूत्र और परीक्षा उपयोगी नोट्स व्यवस्थित रूप से उपलब्ध कराए गए हैं।"),
   },
 ];
 
 export function DefaultHomeContent() {
+  useUiLanguage();
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
@@ -155,16 +158,10 @@ export function DefaultHomeContent() {
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="font-heading text-xl font-extrabold sm:text-2xl">
-                    Passion Maths Study Official Channels
-                  </h2>
-                  <span className="rounded-full bg-[#25D366]/20 px-2.5 py-0.5 text-xs font-extrabold text-[#25D366] ring-1 ring-[#25D366]/40">
-                    Active
-                  </span>
+                  <h2 className="font-heading text-xl font-extrabold sm:text-2xl">{' '}{uiText("Passion Maths Study Official Channels")}{' '}</h2>
+                  <span className="rounded-full bg-[#25D366]/20 px-2.5 py-0.5 text-xs font-extrabold text-[#25D366] ring-1 ring-[#25D366]/40">{uiText("Active")}</span>
                 </div>
-                <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-                  दैनिक सूत्र, नए वीडियो लेक्चर्स, NCERT अभ्यास प्रश्न और बोर्ड परीक्षा की तैयारी सामग्री सीधे प्राप्त करें।
-                </p>
+                <p className="mt-1 max-w-xl text-sm text-muted-foreground">{' '}{uiText("दैनिक सूत्र, नए वीडियो लेक्चर्स, NCERT अभ्यास प्रश्न और बोर्ड परीक्षा की तैयारी सामग्री सीधे प्राप्त करें।")}{' '}</p>
               </div>
             </div>
 
@@ -176,7 +173,7 @@ export function DefaultHomeContent() {
                 className="inline-flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#20bd5a] hover:shadow-lg active:scale-95"
               >
                 <SOCIAL_ICONS.whatsapp className="size-5" />
-                <span>Join WhatsApp Channel</span>
+                <span>{uiText("Join WhatsApp Channel")}</span>
               </a>
               <a
                 href="https://youtube.com/@passionmathsstudy?si=tc1BLKqOF3RTZnnc"
@@ -185,7 +182,7 @@ export function DefaultHomeContent() {
                 className="inline-flex items-center gap-2 rounded-xl border border-[#FF0000]/40 bg-[#FF0000]/10 px-5 py-3 text-sm font-bold text-[#FF0000] transition hover:bg-[#FF0000] hover:text-white active:scale-95"
               >
                 <SOCIAL_ICONS.youtube className="size-5" />
-                <span>Subscribe YouTube</span>
+                <span>{uiText("Subscribe YouTube")}</span>
               </a>
             </div>
           </div>
@@ -196,14 +193,9 @@ export function DefaultHomeContent() {
       <section id="classes" className="container-page scroll-mt-24 py-16 sm:py-24">
         <div className="text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-            <GraduationCap className="size-3.5" /> NCERT कक्षा 6 से 12
-          </div>
-          <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">
-            अपनी कक्षा का चयन करें
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-            प्रत्येक कक्षा के अध्याय-वार संपूर्ण हल, प्रश्नावली समाधान, नोट्स और महत्वपूर्ण प्रश्न।
-          </p>
+            <GraduationCap className="size-3.5" />{' '}{uiText("NCERT कक्षा 6 से 12")}{' '}</div>
+          <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">{' '}{uiText("अपनी कक्षा का चयन करें")}{' '}</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">{' '}{uiText("प्रत्येक कक्षा के अध्याय-वार संपूर्ण हल, प्रश्नावली समाधान, नोट्स और महत्वपूर्ण प्रश्न।")}{' '}</p>
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -221,26 +213,26 @@ export function DefaultHomeContent() {
                     {cls.number}
                   </span>
                   <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
-                    {cls.badge}
+                    {uiText(cls.badge)}
                   </span>
                 </div>
 
                 <h3 className="mt-4 font-heading text-xl font-extrabold group-hover:text-brand transition">
-                  {cls.titleHi} <span className="text-xs font-normal text-muted-foreground">({cls.titleEn})</span>
+                  {uiText(cls.titleHi)}
                 </h3>
 
                 <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
                   {cls.topics.map((t, idx) => (
                     <li key={idx} className="flex items-center gap-2">
                       <span className="size-1.5 rounded-full bg-brand/60" />
-                      <span>{t}</span>
+                      <span>{uiText(t)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
               <div className="mt-6 flex items-center justify-between border-t pt-4 text-xs font-bold text-brand">
-                <span>समाधान देखें</span>
+                <span>{uiText("समाधान देखें")}</span>
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
               </div>
             </Link>
@@ -252,15 +244,9 @@ export function DefaultHomeContent() {
       <section className="border-y bg-muted/30 py-16 sm:py-24">
         <div className="container-page">
           <div className="text-center">
-            <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-              विशेषताएँ
-            </span>
-            <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">
-              Passion Maths Study क्यों चुनें?
-            </h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-              गणित को कठिन नहीं, रोचक और समझने में आसान बनाने के लिए तैयार की गई विशेष शिक्षण पद्धति।
-            </p>
+            <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">{' '}{uiText("विशेषताएँ")}{' '}</span>
+            <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">{' '}{uiText("Passion Maths Study क्यों चुनें?")}{' '}</h2>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">{' '}{uiText("गणित को कठिन नहीं, रोचक और समझने में आसान बनाने के लिए तैयार की गई विशेष शिक्षण पद्धति।")}{' '}</p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -285,36 +271,30 @@ export function DefaultHomeContent() {
         <div className="rounded-3xl border bg-gradient-to-br from-card via-muted/40 to-card p-6 sm:p-10 shadow-lg">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-                महत्वपूर्ण सूत्र झलक
-              </span>
-              <h2 className="mt-2 font-heading text-2xl font-extrabold sm:text-3xl">
-                कक्षा 10 व 12 के सबसे महत्वपूर्ण सूत्र
-              </h2>
-              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
-                परीक्षा में सीधे पूछे जाने वाले और प्रश्नों को हल करने के मुख्य नियम।
-              </p>
+              <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">{' '}{uiText("महत्वपूर्ण सूत्र झलक")}{' '}</span>
+              <h2 className="mt-2 font-heading text-2xl font-extrabold sm:text-3xl">{' '}{uiText("कक्षा 10 व 12 के सबसे महत्वपूर्ण सूत्र")}{' '}</h2>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">{' '}{uiText("परीक्षा में सीधे पूछे जाने वाले और प्रश्नों को हल करने के मुख्य नियम।")}{' '}</p>
             </div>
             <Button asChild size="default" className="rounded-xl font-bold self-start lg:self-auto">
-              <Link to="/class-10/maths">सभी सूत्र एवं नोट्स देखें</Link>
+              <Link to="/class-10/maths">{uiText("सभी सूत्र एवं नोट्स देखें")}</Link>
             </Button>
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border bg-background/80 p-4 text-center">
-              <p className="text-xs font-bold text-muted-foreground">समांतर श्रेढ़ी (AP) n-वाँ पद</p>
+              <p className="text-xs font-bold text-muted-foreground">{uiText("समांतर श्रेढ़ी (AP) n-वाँ पद")}</p>
               <div className="mt-3">
                 <MathFormula latex="a_n = a + (n-1)d" display={true} />
               </div>
             </div>
             <div className="rounded-2xl border bg-background/80 p-4 text-center">
-              <p className="text-xs font-bold text-muted-foreground">त्रिकोणमितीय सर्वसमिका</p>
+              <p className="text-xs font-bold text-muted-foreground">{uiText("त्रिकोणमितीय सर्वसमिका")}</p>
               <div className="mt-3">
                 <MathFormula latex="\sin^2\theta + \cos^2\theta = 1" display={true} />
               </div>
             </div>
             <div className="rounded-2xl border bg-background/80 p-4 text-center">
-              <p className="text-xs font-bold text-muted-foreground">द्विघात सूत्र (श्रीधराचार्य)</p>
+              <p className="text-xs font-bold text-muted-foreground">{uiText("द्विघात सूत्र (श्रीधराचार्य)")}</p>
               <div className="mt-3">
                 <MathFormula latex="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}" display={true} />
               </div>
@@ -327,12 +307,8 @@ export function DefaultHomeContent() {
       <section className="border-t bg-muted/20 py-16 sm:py-24">
         <div className="container-page max-w-3xl">
           <div className="text-center">
-            <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-              संदेह निवारण
-            </span>
-            <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">
-              अक्सर पूछे जाने वाले प्रश्न (FAQ)
-            </h2>
+            <span className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">{' '}{uiText("संदेह निवारण")}{' '}</span>
+            <h2 className="mt-3 font-heading text-3xl font-extrabold sm:text-4xl">{' '}{uiText("अक्सर पूछे जाने वाले प्रश्न (FAQ)")}{' '}</h2>
           </div>
 
           <div className="mt-10 space-y-3">
@@ -343,7 +319,7 @@ export function DefaultHomeContent() {
                   onClick={() => setOpenFaq(openFaq === index ? -1 : index)}
                   className="flex w-full items-center justify-between text-left text-sm font-bold sm:text-base"
                 >
-                  <span>{faq.q}</span>
+                  <span>{uiText(faq.q)}</span>
                   <ChevronDown
                     className={`size-5 text-muted-foreground transition-transform duration-200 shrink-0 ${
                       openFaq === index ? 'rotate-180 text-brand' : ''
@@ -352,7 +328,7 @@ export function DefaultHomeContent() {
                 </button>
                 {openFaq === index && (
                   <p className="mt-3 border-t pt-3 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                    {faq.a}
+                    {uiText(faq.a)}
                   </p>
                 )}
               </div>

@@ -1,3 +1,7 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, BookOpen, BookOpenCheck, CircleHelp, Clock, FileDown, FileText, GraduationCap, Image, Layers, ListOrdered, Megaphone, MonitorPlay as Youtube, Plus, Route, Star } from 'lucide-react';
 import { useRef } from 'react';
@@ -14,17 +18,18 @@ import { useAdminAuth } from '../lib/auth.jsx';
 import { timeAgo } from '../lib/format.js';
 
 const CARDS = [
-  { key: 'classes', label: 'Classes', icon: GraduationCap, to: 'classes' },
-  { key: 'chapters', label: 'Chapters', icon: Layers, to: 'chapters' },
-  { key: 'topics', label: 'Topics', icon: BookOpen, to: 'topics' },
-  { key: 'resources', label: 'PDFs & Files', icon: FileDown, to: 'resources' },
-  { key: 'books', label: 'Books', icon: BookOpenCheck, to: 'books' },
-  { key: 'videos', label: 'Videos', icon: Youtube, to: 'videos' },
-  { key: 'notes', label: 'Notes', icon: FileText, to: 'notes' },
-  { key: 'exercises', label: 'Exercises', icon: ListOrdered, to: 'exercises' },
-  { key: 'questions', label: 'Questions', icon: CircleHelp, to: 'questions' },
-  { key: 'solutions', label: 'Solutions', icon: Route, to: 'solutions' },
-  { key: 'announcements', label: 'Notices', icon: Megaphone, to: 'announcements' },
+  { key: 'students', get label() { return uiText('Students'); }, icon: GraduationCap, to: 'students', permission: 'users:manage' },
+  { key: 'classes', get label() { return uiText("Classes"); }, icon: GraduationCap, to: 'classes' },
+  { key: 'chapters', get label() { return uiText("Chapters"); }, icon: Layers, to: 'chapters' },
+  { key: 'topics', get label() { return uiText("Topics"); }, icon: BookOpen, to: 'topics' },
+  { key: 'resources', get label() { return uiText("PDFs & Files"); }, icon: FileDown, to: 'resources' },
+  { key: 'books', get label() { return uiText("Books"); }, icon: BookOpenCheck, to: 'books' },
+  { key: 'videos', get label() { return uiText("Videos"); }, icon: Youtube, to: 'videos' },
+  { key: 'notes', get label() { return uiText("Notes"); }, icon: FileText, to: 'notes' },
+  { key: 'exercises', get label() { return uiText("Exercises"); }, icon: ListOrdered, to: 'exercises' },
+  { key: 'questions', get label() { return uiText("Questions"); }, icon: CircleHelp, to: 'questions' },
+  { key: 'solutions', get label() { return uiText("Solutions"); }, icon: Route, to: 'solutions' },
+  { key: 'announcements', get label() { return uiText("Notices"); }, icon: Megaphone, to: 'announcements' },
 ];
 
 const EDIT_PATHS = {
@@ -43,6 +48,7 @@ const EDIT_PATHS = {
 };
 
 export default function OverviewPage() {
+  useUiLanguage();
   const ref = useRef(null);
   const { admin, can } = useAdminAuth();
   const dashboard = useQuery({ queryKey: ['admin', 'dashboard'], queryFn: () => get('/dashboard') });
@@ -52,29 +58,25 @@ export default function OverviewPage() {
   return (
     <div ref={ref}>
       <PageHeader
-        title={`Welcome, ${admin?.name?.split(' ')[0] || 'Admin'}`}
-        description="Everything on the student website is managed from here."
+        title={uiTemplate`Welcome, ${admin?.name?.split(' ')[0] || 'Admin'}`}
+        description={uiText("Everything on the student website is managed from here.")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline" size="sm">
               <Link to={adminUrl('topics/new')}>
-                <Plus className="size-4" /> Topic
-              </Link>
+                <Plus className="size-4" />{uiText("Topic")}</Link>
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link to={adminUrl('resources/new')}>
-                <Plus className="size-4" /> PDF / File
-              </Link>
+                <Plus className="size-4" />{' '}{uiText("PDF / File")}{' '}</Link>
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link to={adminUrl('books/new')}>
-                <Plus className="size-4" /> Book
-              </Link>
+                <Plus className="size-4" />{uiText("Book")}</Link>
             </Button>
             <Button asChild size="sm">
               <Link to={adminUrl('chapters/new')}>
-                <Plus className="size-4" /> Chapter
-              </Link>
+                <Plus className="size-4" />{uiText("Chapter")}</Link>
             </Button>
           </div>
         }
@@ -83,7 +85,7 @@ export default function OverviewPage() {
       {dashboard.isError && <ErrorState error={dashboard.error} onRetry={dashboard.refetch} />}
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {CARDS.map(({ key, label, icon: IconComponent, to }) => (
+        {CARDS.filter(card => !card.permission || can(card.permission)).map(({ key, label, icon: IconComponent, to }) => (
           <Link key={key} to={adminUrl(to)} data-reveal className="group rounded-2xl border bg-card p-4 transition hover:border-brand/40 hover:shadow-md">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-muted-foreground">{label}</span>
@@ -100,19 +102,19 @@ export default function OverviewPage() {
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
         {[
-          { label: 'Published', value: data?.totals?.published, className: 'text-success' },
-          { label: 'Drafts', value: data?.totals?.draft, className: 'text-muted-foreground' },
-          { label: 'Scheduled', value: data?.totals?.scheduled, className: 'text-warning' },
+          { get label() { return uiText("Published"); }, value: data?.totals?.published, className: 'text-success' },
+          { get label() { return uiText("Drafts"); }, value: data?.totals?.draft, className: 'text-muted-foreground' },
+          { get label() { return uiText("Scheduled"); }, value: data?.totals?.scheduled, className: 'text-warning' },
         ].map((item) => (
           <div key={item.label} data-reveal className="flex items-center justify-between rounded-2xl border bg-card px-5 py-4">
-            <span className="text-sm font-semibold">{item.label}</span>
+            <span className="text-sm font-semibold">{item.localizedLabel ? adminText(item.localizedLabel) : uiText(item.label)}</span>
             <span className={`font-heading text-2xl font-extrabold ${item.className}`}>{item.value ?? '—'}</span>
           </div>
         ))}
       </div>
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
-        <Panel title="Recently edited" className="xl:col-span-2" bodyClassName="p-0">
+        <Panel title={uiText("Recently edited")} className="xl:col-span-2" bodyClassName="p-0">
           {dashboard.isPending ? (
             <div className="space-y-2 p-4">
               {Array.from({ length: 6 }, (_, i) => (
@@ -125,9 +127,9 @@ export default function OverviewPage() {
                 <li key={`${item.resource}-${item.id}`}>
                   <Link to={adminUrl(`${EDIT_PATHS[item.resource]}/${item.id}`)} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/60 sm:px-5">
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">{item.label}</span>
+                      <span className="block truncate text-sm font-semibold">{item.localizedLabel ? adminText(item.localizedLabel) : uiText(item.label)}</span>
                       <span className="text-xs text-muted-foreground">
-                        {item.type} · {timeAgo(item.updatedAt)}
+                        {uiText(item.type)} · {timeAgo(item.updatedAt)}
                         {item.updatedBy ? ` · ${item.updatedBy}` : ''}
                       </span>
                     </span>
@@ -135,46 +137,44 @@ export default function OverviewPage() {
                   </Link>
                 </li>
               ))}
-              {data?.recent?.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted-foreground">No content yet.</li>}
+              {data?.recent?.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted-foreground">{uiText("No content yet.")}</li>}
             </ul>
           )}
         </Panel>
 
         <div className="space-y-4">
-          <Panel title="Content status">
+          <Panel title={uiText("Content status")}>
             <ul className="space-y-2 text-sm">
               {Object.entries(data?.content || {}).map(([resource, stats]) => (
                 <li key={resource} className="flex items-center justify-between gap-2">
-                  <span className="capitalize">{resource.replace('-', ' ')}</span>
+                  <span className="capitalize">{uiText(resource)}</span>
                   <span className="text-xs text-muted-foreground">
-                    <span className="font-semibold text-success">{stats.published}</span> pub · {stats.draft} draft
-                    {stats.scheduled ? ` · ${stats.scheduled} sched` : ''}
+                    <span className="font-semibold text-success">{stats.published}</span>{' '}{uiText("pub ·")}{' '}{stats.draft}{uiText("draft")}{stats.scheduled ? uiTemplate` · ${stats.scheduled} sched` : ''}
                   </span>
                 </li>
               ))}
             </ul>
           </Panel>
           {can('activity:read') && data?.security && (
-            <Panel title="Security (last 24 h)">
+            <Panel title={uiText("Security (last 24 h)")}>
               <div className="flex items-center gap-3 text-sm">
                 <AlertTriangle className={data.security.failedLogins24h ? 'size-5 text-warning' : 'size-5 text-muted-foreground'} />
                 <span>
-                  <strong>{data.security.failedLogins24h}</strong> failed sign-ins · <strong>{data.security.lockouts24h}</strong> lockouts
-                </span>
+                  <strong>{data.security.failedLogins24h}</strong>{uiText("failed sign-ins ·")}<strong>{data.security.lockouts24h}</strong>{uiText("lockouts")}</span>
               </div>
               <ul className="mt-3 space-y-2">
                 {data.activity.slice(0, 5).map((log) => (
                   <li key={log._id} className="flex items-start gap-2 text-xs">
                     <Clock className="mt-0.5 size-3.5 text-muted-foreground" />
                     <span>
-                      <strong>{log.adminName || log.adminEmail || 'Someone'}</strong> {log.action.replace(/_/g, ' ')} {log.entityLabel && <em>“{log.entityLabel}”</em>}
+                      <strong>{log.adminName || log.adminEmail || uiText("Someone")}</strong> {uiText(log.action)} {log.entityLabel && <em>“{log.entityLabel}”</em>}
                       <span className="block text-muted-foreground">{timeAgo(log.createdAt)}</span>
                     </span>
                   </li>
                 ))}
               </ul>
               <Button asChild variant="link" className="mt-2 px-0">
-                <Link to={adminUrl('activity')}>All activity →</Link>
+                <Link to={adminUrl('activity')}>{uiText("All activity →")}</Link>
               </Button>
             </Panel>
           )}

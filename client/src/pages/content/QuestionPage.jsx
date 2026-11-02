@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router';
 import { Chip } from '@/components/content/badges.jsx';
@@ -10,6 +11,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader, PrevNext } from './ContentHeader.jsx';
 
 export default function QuestionPage({ data, breadcrumbs, related }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, chapter, exercise, question, prev, next } = data;

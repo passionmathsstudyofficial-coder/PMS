@@ -1,7 +1,10 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { DocumentAttachment } from '@/components/content/DocumentAttachment.jsx';
 import { Loader2 } from 'lucide-react';
 import { Fragment, useState } from 'react';
 import { Link } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
 import { LanguageNotice } from '@/components/content/LanguageNotice.jsx';
@@ -18,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { ContentHeader, PrevNext, StatPills } from './ContentHeader.jsx';
 
 export default function ExercisePage({ data, breadcrumbs, related, path, preview, previewToken }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, chapter, exercise, pagination, siblings, prev, next } = data;
@@ -35,7 +39,7 @@ export default function ExercisePage({ data, breadcrumbs, related, path, preview
       setPages((current) => [...current, result.data.questions]);
       setPage(page + 1);
     } catch (error) {
-      toast.error(errorMessage(error));
+      toast.apiError(error);
     } finally {
       setLoading(false);
     }
@@ -107,6 +111,7 @@ export default function ExercisePage({ data, breadcrumbs, related, path, preview
         </aside>
 
         <div className="min-w-0 space-y-6 lg:col-span-9">
+          {(exercise.pdfFile?.url || exercise.pdfUrl) && <DocumentAttachment media={exercise.pdfFile?.url ? exercise.pdfFile : { url: exercise.pdfUrl, format: 'pdf' }} title={t(exercise.title) || uiText("Study document")} />}
           {exercise.introVideo && <YouTubeEmbed video={exercise.introVideo} />}
           {(hasContent(exercise.description) || hasContent(exercise.instructions)) && (
             <div className="space-y-3 rounded-2xl border bg-card p-5">
@@ -116,7 +121,7 @@ export default function ExercisePage({ data, breadcrumbs, related, path, preview
           )}
 
           {hasContent(exercise.notes) && (
-            <section aria-label="Exercise notes" className="rounded-2xl border bg-card p-5">
+            <section aria-label={uiText("Exercise notes")} className="rounded-2xl border bg-card p-5">
               <RichContent html={t(exercise.notes, mode)} />
             </section>
           )}

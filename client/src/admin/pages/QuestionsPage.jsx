@@ -1,6 +1,10 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { DifficultyBadge } from '@/components/content/badges.jsx';
 import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
@@ -21,17 +25,18 @@ import { refId, useResourceItem } from '../lib/resources.js';
 import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 
 export const DIFFICULTY_OPTIONS = [
-  { value: 'easy', label: 'Easy (सरल)' },
-  { value: 'medium', label: 'Medium (मध्यम)' },
-  { value: 'hard', label: 'Hard / HOTS (कठिन)' },
+  { value: 'easy', get label() { return uiText("Easy (सरल)"); } },
+  { value: 'medium', get label() { return uiText("Medium (मध्यम)"); } },
+  { value: 'hard', get label() { return uiText("Hard / HOTS (कठिन)"); } },
 ];
 
 export function QuestionsList() {
+  useUiLanguage();
   const [filters, setFilter, active] = useQueryFilters(['class', 'chapter', 'exercise']);
   return (
     <ResourceListPage
       resource="questions"
-      description="Class → अध्याय → प्रश्नावली → Question. Choose a प्रश्नावली to drag-and-drop the question order."
+      description={uiText("Class → अध्याय → प्रश्नावली → Question. Choose a प्रश्नावली to drag-and-drop the question order.")}
       baseParams={active}
       filters={
         <>
@@ -43,14 +48,14 @@ export function QuestionsList() {
       createPath={adminUrl(`questions/new${filters.exercise ? `?exercise=${filters.exercise}` : ''}`)}
       editPath={(item) => adminUrl(`questions/${item._id}`)}
       reorderable
-      reorderDisabledReason={filters.exercise ? undefined : 'Choose a class, अध्याय and प्रश्नावली to reorder questions.'}
-      rowLabel={(q) => `Question ${q.number}${q.exercise ? ` (प्रश्नावली ${q.exercise.number})` : ''}`}
+      reorderDisabledReason={filters.exercise ? undefined : uiText("Choose a class, अध्याय and प्रश्नावली to reorder questions.")}
+      rowLabel={(q) => uiTemplate`Question ${q.number}${q.exercise ? uiTemplate` (प्रश्नावली ${q.exercise.number})` : ''}`}
       columns={[
-        { header: 'Q', className: 'w-12', cell: (q) => <span className="font-heading font-extrabold text-brand">{q.number}</span> },
-        { header: 'Question', cell: (q) => <LocalizedCell value={q.text} html /> },
-        { header: 'प्रश्नावली', className: 'hidden md:table-cell', cell: (q) => (q.exercise ? q.exercise.number : '—') },
-        { header: 'Class', className: 'hidden lg:table-cell', cell: (q) => (q.class ? `Class ${q.class.number}` : '—') },
-        { header: 'Level', className: 'hidden sm:table-cell', cell: (q) => <DifficultyBadge difficulty={q.difficulty} /> },
+        { get header() { return uiText("Q"); }, className: 'w-12', cell: (q) => <span className="font-heading font-extrabold text-brand">{q.number}</span> },
+        { get header() { return uiText("Question"); }, cell: (q) => <LocalizedCell value={q.text} html /> },
+        { get header() { return uiText("प्रश्नावली"); }, className: 'hidden md:table-cell', cell: (q) => (q.exercise ? q.exercise.number : '—') },
+        { get header() { return uiText("Class"); }, className: 'hidden lg:table-cell', cell: (q) => (q.class ? uiTemplate`Class ${q.class.number}` : '—') },
+        { get header() { return uiText("Level"); }, className: 'hidden sm:table-cell', cell: (q) => <DifficultyBadge difficulty={q.difficulty} /> },
       ]}
     />
   );
@@ -84,6 +89,7 @@ const toQuestionForm = (doc) => ({
 });
 
 export function QuestionEditor({ id }) {
+  useUiLanguage();
   const [params] = useSearchParams();
   const editor = useEditorForm({
     resource: 'questions',
@@ -91,7 +97,7 @@ export function QuestionEditor({ id }) {
     basePath: adminUrl('questions'),
     defaults: { ...QUESTION_DEFAULTS, exercise: params.get('exercise') || null },
     toForm: toQuestionForm,
-    label: (doc) => `Question ${doc?.number}`,
+    label: (doc) => uiTemplate`Question ${doc?.number}`,
   });
   const [previewOpen, setPreviewOpen] = useState(false);
   const [classId, setClassId] = useState('');
@@ -116,35 +122,35 @@ export function QuestionEditor({ id }) {
       {() => (
         <>
           <EditorShell
-            title={editor.isNew ? 'New question' : `Question ${form.number}`}
-            description={exercise ? `Class ${chapter?.class?.number} · अध्याय ${chapter?.number} · प्रश्नावली ${exercise.number}` : 'Choose where this question belongs.'}
+            title={editor.isNew ? uiText("New question") : uiTemplate`Question ${form.number}`}
+            description={exercise ? uiTemplate`Class ${chapter?.class?.number} · अध्याय ${chapter?.number} · प्रश्नावली ${exercise.number}` : uiText("Choose where this question belongs.")}
             backTo={adminUrl(`questions${exercise ? `?class=${chapter?.class?._id}&chapter=${chapter?._id}&exercise=${exercise._id}` : ''}`)}
-            backLabel="Questions"
+            backLabel={uiText("Questions")}
             doc={editor.doc}
             form={form}
             setField={setField}
             dirty={editor.dirty}
             saving={editor.saving}
             onSave={editor.save}
-            onPreview={() => (path && !editor.isNew ? setPreviewOpen(true) : toast.info('Save once to preview.'))}
+            onPreview={() => (path && !editor.isNew ? setPreviewOpen(true) : toast.info(uiText("Save once to preview.")))}
             onDuplicate={editor.duplicate}
-            onDelete={() => editor.remove({ description: 'Deletes this question and its solution only. The प्रश्नावली and other questions are not affected.' })}
+            onDelete={() => editor.remove({ get description() { return uiText("Deletes this question and its solution only. The प्रश्नावली and other questions are not affected."); } })}
             sidebar={
-              <Panel title="Question settings">
+              <Panel title={uiText("Question settings")}>
                 <div className="space-y-3">
-                  <SelectField label="Difficulty" value={form.difficulty} onChange={(v) => setField('difficulty', v)} options={DIFFICULTY_OPTIONS} />
-                  <NumberField label="Marks" value={form.marks} onChange={(v) => setField('marks', v)} min={0} max={100} />
-                  <SwitchField label="Important question" hint="Highlight as exam-important." checked={form.isImportant} onChange={(v) => setField('isImportant', v)} />
+                  <SelectField label={uiText("Difficulty")} value={form.difficulty} onChange={(v) => setField('difficulty', v)} options={DIFFICULTY_OPTIONS} />
+                  <NumberField label={uiText("Marks")} value={form.marks} onChange={(v) => setField('marks', v)} min={0} max={100} />
+                  <SwitchField label={uiText("Important question")} hint={uiText("Highlight as exam-important.")} checked={form.isImportant} onChange={(v) => setField('isImportant', v)} />
                   <LanguageModeField value={form.languageMode} onChange={(v) => setField('languageMode', v)} />
-                  <TagsField value={form.tags} onChange={(v) => setField('tags', v)} hint="Topics (e.g. pythagoras, triangle). Used for related content." />
+                  <TagsField value={form.tags} onChange={(v) => setField('tags', v)} hint={uiText("Topics (e.g. pythagoras, triangle). Used for related content.")} />
                 </div>
               </Panel>
             }
           >
-            <Panel title="1. Location">
+            <Panel title={uiText("1. Location")}>
               <div className="grid gap-4 sm:grid-cols-3">
                 <RefSelect
-                  label="Class"
+                  label={uiText("Class")}
                   resource="classes"
                   value={classId || null}
                   onChange={(v) => {
@@ -154,7 +160,7 @@ export function QuestionEditor({ id }) {
                   }}
                 />
                 <RefSelect
-                  label="अध्याय"
+                  label={uiText("अध्याय")}
                   resource="chapters"
                   value={chapterId || null}
                   disabled={!classId}
@@ -164,33 +170,33 @@ export function QuestionEditor({ id }) {
                     setField('exercise', null);
                   }}
                 />
-                <RefSelect label="प्रश्नावली" required resource="exercises" value={form.exercise} disabled={!chapterId && !form.exercise} params={chapterId ? { chapter: chapterId } : classId ? { class: classId } : {}} onChange={(v) => setField('exercise', v)} />
-                <TextField label="Question number" required value={form.number} onChange={(v) => setField('number', v)} placeholder="3 or 3(ii)" />
+                <RefSelect label={uiText("प्रश्नावली")} required resource="exercises" value={form.exercise} disabled={!chapterId && !form.exercise} params={chapterId ? { chapter: chapterId } : classId ? { class: classId } : {}} onChange={(v) => setField('exercise', v)} />
+                <TextField label={uiText("Question number")} required value={form.number} onChange={(v) => setField('number', v)} placeholder={uiText("3 or 3(ii)")} />
                 <div className="sm:col-span-2">
                   <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.number ? `prashn-${form.number}` : ''} />
                 </div>
               </div>
             </Panel>
 
-            <Panel title="2. Question" description="Type in हिंदी, English or Mixed. Use the Σ button (or $…$) for formulas, e.g. $\angle A = 60^\circ$.">
-              <RichL10nField value={form.text} onChange={(v) => setField('text', v)} placeholder="यदि त्रिभुज ABC में ∠A = 60° और ∠B = 70°, तो ∠C ज्ञात कीजिए।" />
+            <Panel title={uiText("2. Question")} description={uiText("Type in हिंदी or English. Use the Σ button (or $…$) for formulas, e.g. $\\angle A = 60^\\circ$.")}>
+              <RichL10nField value={form.text} onChange={(v) => setField('text', v)} placeholder={uiText("यदि त्रिभुज ABC में ∠A = 60° और ∠B = 70°, तो ∠C ज्ञात कीजिए।")} />
             </Panel>
 
-            <Panel title="3. Images, figures, diagrams & graphs" description="Unlimited images. Choose whether each shows with the question or below the solution. If none are added, the section is hidden.">
+            <Panel title={uiText("3. Images, figures, diagrams & graphs")} description={uiText("Unlimited images. Choose whether each shows with the question or below the solution. If none are added, the section is hidden.")}>
               <MediaListField value={form.attachments} onChange={(v) => setField('attachments', v)} showKind showPlacement kind="diagrams" />
             </Panel>
 
-            <Panel title="4. YouTube video">
+            <Panel title={uiText("4. YouTube video")}>
               <VideoField
                 value={form.video?.video}
                 onChange={(video) => setField('video', { ...form.video, video })}
                 placement={form.video?.placement}
                 onPlacementChange={(placement) => setField('video', { ...form.video, placement })}
-                hint="Paste a YouTube link and choose where the player appears. You can also add a YouTube block between solution steps."
+                hint={uiText("Paste a YouTube link and choose where the player appears. You can also add a YouTube block between solution steps.")}
               />
             </Panel>
 
-            <Panel title="5. Step-by-step solution" description="Add blocks (Explanation → Steps → Formula → Diagram → Video → Final Answer) in any order. Drag to reorder.">
+            <Panel title={uiText("5. Step-by-step solution")} description={uiText("Add blocks (Explanation → Steps → Formula → Diagram → Video → Final Answer) in any order. Drag to reorder.")}>
               <div className="space-y-4">
                 <SolutionBuilder
                   blocks={form.solution?.blocks}
@@ -204,25 +210,25 @@ export function QuestionEditor({ id }) {
                   }
                 />
                 <div className="max-w-sm">
-                  <LanguageModeField label="Solution language mode" value={form.solution?.languageMode} onChange={(languageMode) => setSolution({ languageMode })} />
+                  <LanguageModeField label={uiText("Solution language mode")} value={form.solution?.languageMode} onChange={(languageMode) => setSolution({ languageMode })} />
                 </div>
               </div>
             </Panel>
 
-            <Panel title="6. Hint, short answer & important point">
+            <Panel title={uiText("6. Hint, short answer & important point")}>
               <div className="space-y-4">
-                <RichL10nField label="Hint (students can reveal it)" value={form.hint} onChange={(v) => setField('hint', v)} minimal />
-                <RichL10nField label="Short answer" hint="Used as the final answer when the solution has no “Final answer” block, and in search/FAQ snippets." value={form.answer} onChange={(v) => setField('answer', v)} minimal />
-                <RichL10nField label="Important point" value={form.importantPoint} onChange={(v) => setField('importantPoint', v)} minimal />
+                <RichL10nField label={uiText("Hint (students can reveal it)")} value={form.hint} onChange={(v) => setField('hint', v)} minimal />
+                <RichL10nField label={uiText("Short answer")} hint={uiText("Used as the final answer when the solution has no “Final answer” block, and in search/FAQ snippets.")} value={form.answer} onChange={(v) => setField('answer', v)} minimal />
+                <RichL10nField label={uiText("Important point")} value={form.importantPoint} onChange={(v) => setField('importantPoint', v)} minimal />
               </div>
             </Panel>
 
-            <Panel title="7. SEO">
+            <Panel title={uiText("7. SEO")}>
               <SeoFields
                 value={form.seo}
                 onChange={(v) => setField('seo', v)}
                 fallbackTitle={exercise ? `Class ${chapter?.class?.number} Maths अध्याय ${chapter?.number} प्रश्नावली ${exercise.number} प्रश्न ${form.number} Solution` : ''}
-                fallbackDescription={stripTags(form.text?.hi || form.text?.en || form.text?.mixed).slice(0, 158)}
+                fallbackDescription={stripTags(adminText(form.text)).slice(0, 158)}
                 path={path}
               />
             </Panel>
@@ -235,20 +241,21 @@ export function QuestionEditor({ id }) {
 }
 
 export function SolutionsList() {
+  useUiLanguage();
   return (
     <ResourceListPage
       resource="solutions"
-      description="Every question has one block-based solution. Open a row to edit it inside the question editor."
+      description={uiText("Every question has one block-based solution. Open a row to edit it inside the question editor.")}
       hasStatus={false}
       canDuplicate={false}
       editPath={(s) => adminUrl(`questions/${s.question?._id}`)}
-      rowLabel={(s) => `Solution of question ${s.question?.number || ''}`}
+      rowLabel={(s) => uiTemplate`Solution of question ${s.question?.number || ''}`}
       columns={[
-        { header: 'Question', cell: (s) => (s.question ? `Q${s.question.number}` : 'Deleted question') },
-        { header: 'प्रश्नावली', className: 'hidden sm:table-cell', cell: (s) => s.question?.exercise?.number || '—' },
-        { header: 'Class', className: 'hidden md:table-cell', cell: (s) => (s.question?.class ? `Class ${s.question.class.number}` : '—') },
-        { header: 'Blocks', cell: (s) => s.blocks?.length || 0 },
-        { header: 'Types', className: 'hidden lg:table-cell', cell: (s) => <span className="text-xs text-muted-foreground">{[...new Set((s.blocks || []).map((b) => b.type))].join(' · ')}</span> },
+        { get header() { return uiText("Question"); }, cell: (s) => (s.question ? uiTemplate`Q${s.question.number}` : uiText("Deleted question")) },
+        { get header() { return uiText("प्रश्नावली"); }, className: 'hidden sm:table-cell', cell: (s) => s.question?.exercise?.number || '—' },
+        { get header() { return uiText("Class"); }, className: 'hidden md:table-cell', cell: (s) => (s.question?.class ? uiTemplate`Class ${s.question.class.number}` : '—') },
+        { get header() { return uiText("Blocks"); }, cell: (s) => s.blocks?.length || 0 },
+        { get header() { return uiText("Types"); }, className: 'hidden lg:table-cell', cell: (s) => <span className="text-xs text-muted-foreground">{[...new Set((s.blocks || []).map((b) => b.type))].join(' · ')}</span> },
       ]}
     />
   );

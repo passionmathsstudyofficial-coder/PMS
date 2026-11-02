@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -10,6 +12,7 @@ export const itemKey = (item) => item?._id || item?._key;
 export const withKeys = (list = []) => list.map((item) => (itemKey(item) ? item : { ...item, _key: clientKey() }));
 
 function SortableRow({ id, children }) {
+  useUiLanguage();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   return children({
     ref: setNodeRef,
@@ -20,8 +23,9 @@ function SortableRow({ id, children }) {
 }
 
 export function DragHandle({ className, ...props }) {
+  useUiLanguage();
   return (
-    <button type="button" className={cn('grid size-8 shrink-0 cursor-grab touch-none place-items-center rounded-md text-muted-foreground hover:bg-muted active:cursor-grabbing', className)} aria-label="Drag to reorder" {...props}>
+    <button type="button" className={cn('grid size-8 shrink-0 cursor-grab touch-none place-items-center rounded-md text-muted-foreground hover:bg-muted active:cursor-grabbing', className)} aria-label={uiText("Drag to reorder")} {...props}>
       <GripVertical className="size-4" />
     </button>
   );
@@ -29,6 +33,7 @@ export function DragHandle({ className, ...props }) {
 
 /** Keyboard- and touch-accessible drag & drop list. */
 export function SortableList({ items, onChange, renderItem, className, as: Tag = 'ul' }) {
+  useUiLanguage();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),

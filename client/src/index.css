@@ -307,3 +307,6 @@
     box-shadow: none !important;
   }
 }
+
+.rich { overflow-wrap: anywhere; }
+.rich .document-link { display: inline-block; padding: .5rem .75rem; border: 1px solid currentColor; border-radius: .5rem; font-weight: 600; }

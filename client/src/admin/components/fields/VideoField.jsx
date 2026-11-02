@@ -1,6 +1,8 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { CirclePlay as Youtube, Loader2, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { api, errorMessage } from '@/lib/api';
@@ -9,13 +11,14 @@ import { extractYouTubeId, youTubeThumb } from '@/lib/youtube';
 import { Field, SelectField } from './Fields.jsx';
 
 export const VIDEO_PLACEMENT_OPTIONS = [
-  { value: 'afterQuestion', label: 'After the question' },
-  { value: 'beforeSolution', label: 'Before the solution' },
-  { value: 'afterSolution', label: 'After the solution' },
+  { value: 'afterQuestion', get label() { return uiText("After the question"); } },
+  { value: 'beforeSolution', get label() { return uiText("Before the solution"); } },
+  { value: 'afterSolution', get label() { return uiText("After the solution"); } },
 ];
 
 /** Paste a YouTube URL → validated & stored once in the Video library → rendered automatically on the site. */
-export function VideoField({ label = 'YouTube video', hint, value, onChange, placement, onPlacementChange }) {
+export function VideoField({ label = uiText("YouTube video"), hint, value, onChange, placement, onPlacementChange }) {
+  useUiLanguage();
   const t = useL10n();
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
@@ -35,14 +38,14 @@ export function VideoField({ label = 'YouTube video', hint, value, onChange, pla
       setUrl('');
     } catch (err) {
       setError(errorMessage(err));
-      toast.error(errorMessage(err));
+      toast.apiError(err);
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <Field label={label} hint={hint || 'Paste a YouTube link. The player appears exactly where this field is placed.'} error={error}>
+    <Field label={label} hint={hint || uiText("Paste a YouTube link. The player appears exactly where this field is placed.")} error={error}>
       {video ? (
         <div className="flex items-center gap-3 rounded-xl border bg-background p-2">
           <img src={video.thumbnailUrl || youTubeThumb(video.youtubeId, 'mqdefault')} alt="" className="aspect-video w-28 shrink-0 rounded-md object-cover" />
@@ -51,9 +54,9 @@ export function VideoField({ label = 'YouTube video', hint, value, onChange, pla
             <a href={video.url} target="_blank" rel="noreferrer" className="text-xs text-muted-foreground hover:underline">
               youtu.be/{video.youtubeId}
             </a>
-            {video.isVisible === false && <p className="text-xs font-semibold text-warning">Hidden in Video library</p>}
+            {video.isVisible === false && <p className="text-xs font-semibold text-warning">{uiText("Hidden in Video library")}</p>}
           </div>
-          <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(null)} aria-label="Remove video">
+          <Button type="button" variant="ghost" size="icon-sm" onClick={() => onChange(null)} aria-label={uiText("Remove video")}>
             <Trash2 />
           </Button>
         </div>
@@ -76,12 +79,11 @@ export function VideoField({ label = 'YouTube video', hint, value, onChange, pla
             />
           </div>
           <Button type="button" variant="outline" onClick={add} disabled={busy || !url.trim()}>
-            {busy && <Loader2 className="animate-spin" />} Add video
-          </Button>
+            {busy && <Loader2 className="animate-spin" />}{uiText("Add video")}</Button>
         </div>
       )}
       {onPlacementChange && video && (
-        <SelectField className="mt-2" label="Video position" value={placement || 'afterSolution'} onChange={onPlacementChange} options={VIDEO_PLACEMENT_OPTIONS} />
+        <SelectField className="mt-2" label={uiText("Video position")} value={placement || 'afterSolution'} onChange={onPlacementChange} options={VIDEO_PLACEMENT_OPTIONS} />
       )}
     </Field>
   );

@@ -1,3 +1,7 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { documentDownloadUrl } from '@/lib/media';
+import { resolveMediaUrl } from '@/lib/media';
 import { Download, Eye, FileSpreadsheet, FileText, Filter, Search, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -10,6 +14,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
 
 export default function ResourcesListPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { lang } = useLang();
@@ -23,13 +28,13 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
   const [downloadAllowed, setDownloadAllowed] = useState(true);
 
   const resourceTypes = [
-    { id: 'all', label: 'All Resources / सभी सामग्री' },
-    { id: 'notes', label: 'Chapter Notes / नोट्स' },
-    { id: 'formula_sheet', label: 'Formula Sheets / सूत्र पत्रक' },
-    { id: 'worksheet', label: 'Worksheets & Assignments' },
-    { id: 'practice_paper', label: 'Practice & Sample Papers' },
-    { id: 'solution', label: 'Solutions / हल' },
-    { id: 'revision', label: 'Revision Material' },
+    { id: 'all', get label() { return uiText("All Resources / सभी सामग्री"); } },
+    { id: 'notes', get label() { return uiText("Chapter Notes / नोट्स"); } },
+    { id: 'formula_sheet', get label() { return uiText("Formula Sheets / सूत्र पत्रक"); } },
+    { id: 'worksheet', get label() { return uiText("Worksheets & Assignments"); } },
+    { id: 'practice_paper', get label() { return uiText("Practice & Sample Papers"); } },
+    { id: 'solution', get label() { return uiText("Solutions / हल"); } },
+    { id: 'revision', get label() { return uiText("Revision Material"); } },
   ];
 
   const filteredResources = resources.filter((r) => {
@@ -57,14 +62,14 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
         eyebrow={
           <div className="flex items-center gap-2">
             <Chip tone="brand">{term('class')} {cls.number}</Chip>
-            <Chip>Study Material & PDFs</Chip>
+            <Chip>{uiText("Study Material & PDFs")}</Chip>
           </div>
         }
         title={{
           hi: `कक्षा ${cls.number} गणित पीडीएफ नोट्स, वर्कशीट्स व सूत्र`,
           en: `Class ${cls.number} Mathematics PDF Notes, Formula Sheets & Worksheets`,
         }}
-        subtitle="Free downloadable chapter notes, formula sheets, practice worksheets and previous-year question papers"
+        subtitle={uiText("Free downloadable chapter notes, formula sheets, practice worksheets and previous-year question papers")}
       />
 
       <div className="container-page py-8">
@@ -92,7 +97,7 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
           <div className="relative w-full sm:w-64">
             <input
               type="text"
-              placeholder="Search PDF or worksheet..."
+              placeholder={uiText("Search PDF or worksheet...")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-xl border bg-card px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-brand focus:outline-none"
@@ -106,7 +111,7 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
             {filteredResources.map((res) => {
               const title = t(res.title) || 'Study Material PDF';
               const desc = t(res.description);
-              const fileUrl = res.fileUrl || res.file?.url;
+              const fileUrl = resolveMediaUrl(res.file?.url || res.fileUrl);
 
               return (
                 <div
@@ -117,7 +122,7 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
                     <div className="mb-2 flex items-center justify-between gap-2">
                       <span className="inline-flex items-center gap-1 rounded-md bg-brand-soft px-2 py-0.5 text-[11px] font-bold text-brand uppercase">
                         <FileText className="size-3" />
-                        {res.resourceType?.replace(/_/g, ' ')}
+                        {uiText(res.resourceType)}
                       </span>
                       {res.fileSize && <span className="text-[11px] font-medium text-muted-foreground">{res.fileSize}</span>}
                     </div>
@@ -127,7 +132,7 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
 
                     {res.chapter && (
                       <p className="mt-2 text-[11px] text-muted-foreground">
-                        <strong>Chapter:</strong> {t(res.chapter.title)}
+                        <strong>{uiText("Chapter:")}</strong> {t(res.chapter.title)}
                       </p>
                     )}
                   </div>
@@ -141,20 +146,16 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
                           onClick={() => handleOpenPdf(fileUrl, title, res.downloadAllowed !== false)}
                           className="flex-1 text-xs font-semibold"
                         >
-                          <Eye className="mr-1.5 size-3.5" />
-                          Preview
-                        </Button>
+                          <Eye className="mr-1.5 size-3.5" />{uiText("Preview")}</Button>
                         {res.downloadAllowed !== false && (
                           <Button size="sm" asChild className="flex-1 text-xs font-semibold">
-                            <a href={fileUrl} download target="_blank" rel="noopener noreferrer">
-                              <Download className="mr-1.5 size-3.5" />
-                              Download
-                            </a>
+                            <a href={documentDownloadUrl(fileUrl)} download target="_blank" rel="noopener noreferrer">
+                              <Download className="mr-1.5 size-3.5" />{uiText("Download")}</a>
                           </Button>
                         )}
                       </>
                     ) : (
-                      <span className="text-xs text-muted-foreground">File unavailable</span>
+                      <span className="text-xs text-muted-foreground">{uiText("File unavailable")}</span>
                     )}
                   </div>
                 </div>
@@ -164,8 +165,8 @@ export default function ResourcesListPage({ data, breadcrumbs }) {
         ) : (
           <EmptyState
             icon={FileText}
-            title="No Resources Found"
-            description="No downloadable resources or PDFs found matching the current filter."
+            title={uiText("No Resources Found")}
+            description={uiText("No downloadable resources or PDFs found matching the current filter.")}
           />
         )}
       </div>

@@ -1,22 +1,29 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { mapLegacyLanguages } from '../../../../../shared/languages.js';
 import { hasRichContent as filled } from '@/components/content/mathContent.js';
 import { lazy, Suspense, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Field } from './Fields.jsx';
+import { TranslationStatus } from '../TranslationStatus.jsx';
+import { getUiLanguage } from '@/lib/uiLanguage.js';
 
 const RichTextEditor = lazy(() => import('./RichTextEditor.jsx'));
 
 const TABS = [
-  { key: 'hi', label: 'हिंदी' },
-  { key: 'en', label: 'English' },
-  { key: 'mixed', label: 'Mixed' },
+  { key: 'en', get label() { return uiText("English") + ' (ENG)'; } },
+  { key: 'hi', get label() { return uiText("Hindi") + ' (HIN)'; } },
 ];
 
 
-/** Rich text in हिंदी / English / Mixed. Each tab keeps its own editor so nothing is auto-translated. */
-export function RichL10nField({ label, hint, error, required, value, onChange, modes = ['hi', 'en', 'mixed'], minimal, placeholder, className }) {
-  const tabs = TABS.filter((t) => modes.includes(t.key));
-  const current = value || {};
-  const [active, setActive] = useState(() => tabs.find((t) => filled(current[t.key]))?.key || tabs[0].key);
+/** Rich text in हिंदी / English. Each tab keeps its own editor so nothing is auto-translated. */
+export function RichL10nField({ label, hint, error, required, value, onChange, modes = ['hi', 'en'], minimal, placeholder, className }) {
+  useUiLanguage();
+  const filteredTabs = TABS.filter((t) => modes.includes(t.key));
+  const tabs = filteredTabs.length ? filteredTabs : TABS;
+  const current = mapLegacyLanguages(value || {});
+  const [active, setActive] = useState(() => tabs.some(tab => tab.key === getUiLanguage()) ? getUiLanguage() : tabs[0].key);
 
   return (
     <Field
@@ -27,7 +34,7 @@ export function RichL10nField({ label, hint, error, required, value, onChange, m
       className={className}
       aside={
         tabs.length > 1 && (
-          <div className="flex rounded-lg bg-muted p-0.5" role="tablist" aria-label={`${label || 'Content'} language`}>
+          <div className="flex rounded-lg bg-muted p-0.5" role="tablist" aria-label={uiTemplate`${label || uiText('Content')} language`}>
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -52,10 +59,11 @@ export function RichL10nField({ label, hint, error, required, value, onChange, m
           onChange={(html) => onChange({ ...current, [active]: html })}
           minimal={minimal}
           placeholder={placeholder}
-          ariaLabel={`${label || 'Content'} (${active})`}
+          ariaLabel={`${label || uiText('Content')} (${active})`}
           lang={active === 'en' ? 'en' : 'hi'}
         />
       </Suspense>
+      <TranslationStatus value={current} required={required} />
     </Field>
   );
 }

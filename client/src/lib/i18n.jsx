@@ -1,74 +1,45 @@
+import { useUiLanguage } from './useUiTranslation.jsx';
+import { setUiLanguage, translateUi } from './uiLanguage.js';
+import { mapLegacyLanguages } from '../../../shared/languages.js';
+import { localizedValue, isLocalized, missingContent } from '../../../shared/localization.js';
 import { hasRichContent } from '@/components/content/mathContent.js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = 'pms-lang';
-const LanguageContext = createContext({ lang: 'hi', setLang: () => { } });
+const LanguageContext = createContext({ lang: 'en', setLang: () => {} });
 
-function readStoredLang() {
-  try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    return value === 'hi' || value === 'en' || value === 'mixed' ? value : null;
-  } catch {
-    return null;
-  }
-}
-
-export function LanguageProvider({ defaultLang = 'hi', children }) {
-  const [stored, setStored] = useState(readStoredLang);
-  const lang = stored || defaultLang;
-
-  const setLang = useCallback((next) => {
-    setStored(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* private mode */
-    }
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
-
-  const value = useMemo(() => ({ lang, setLang }), [lang, setLang]);
+export function LanguageProvider({ children }) {
+  const lang = useUiLanguage();
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  const value = useMemo(() => ({ lang, setLang: setUiLanguage }), [lang]);
   return <LanguageContext value={value}>{children}</LanguageContext>;
 }
-
 export const useLang = () => useContext(LanguageContext);
+export const useContentLang = useLang;
 
 export function hasContent(value) {
   if (!value) return false;
+  if (value._translationMissing) return true;
   if (typeof value === 'string') return hasRichContent(value);
   return ['hi', 'en', 'mixed'].some((k) => hasContent(value[k]));
 }
 
-/**
- * Picks the right text for the student's language without destroying mixed Hindi-English content.
- *  - mode "mixed": always show the mixed version (falls back to whatever exists)
- *  - mode "hi"/"en": content exists only in that language
- *  - mode "auto": follow the हिंदी / ENG / Hinglish switch, fall back gracefully
- */
+/** Strict selection. Legacy per-record display modes never override the visitor's preference. */
 export function pickL10n(value, lang, mode = 'auto') {
-  if (!value) return '';
-  if (typeof value === 'string') return value;
-  const ok = (v) => (hasContent(v) ? v : '');
-  const hi = ok(value.hi);
-  const en = ok(value.en);
-  const mixed = ok(value.mixed);
-  if (mode === 'mixed') return mixed || en || hi;
-  if (mode === 'hi') return hi || mixed || en;
-  if (mode === 'en') return en || mixed || hi;
-  if (lang === 'mixed') return mixed || en || hi;
-  return lang === 'hi' ? hi || mixed || en : en || mixed || hi;
+  return localizedValue(value, lang);
 }
 
 /** Which languages a localized value is available in. */
 export function availableLanguages(value) {
   if (!value || typeof value === 'string') return [];
-  return ['hi', 'en', 'mixed'].filter((k) => hasContent(value[k]));
+  return ['hi', 'en'].filter((k) => hasContent(localizedValue(value,k)));
 }
 
 export function useL10n() {
+  const { lang } = useContentLang();
+  return useCallback((value, mode) => pickL10n(value, lang) || (value?._translationMissing || isLocalized(value) && Object.values(value).some(item => typeof item === 'string' && item.trim()) || typeof value === 'string' && value.trim() ? missingContent(lang) : ''), [lang]);
+}
+
+export function useInterfaceL10n() {
   const { lang } = useLang();
-  return useCallback((value, mode) => pickL10n(value, lang, mode), [lang]);
+  return useCallback((value, mode) => translateUi(pickL10n(value, lang), lang) || (value?._translationMissing ? missingContent(lang) : ''), [lang]);
 }

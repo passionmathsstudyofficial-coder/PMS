@@ -7,7 +7,6 @@ export const BLOCK_TYPES = [
   'text',
   'hindiText',
   'englishText',
-  'mixedText',
   'explanation',
   'step',
   'construction',
@@ -32,7 +31,7 @@ const BlockMediaSchema = new Schema({
 
 // Solution blocks are embedded (ordered array) so reordering is one atomic write.
 export const SolutionBlockSchema = new Schema({
-  type: { type: String, enum: BLOCK_TYPES, required: true },
+  type: { type: String, enum: BLOCK_TYPES, required: true, set: value => value === 'mixedText' ? 'text' : value },
   title: l10n(),
   content: richL10n(),
   latex: { type: String, default: '', maxlength: 20_000 },

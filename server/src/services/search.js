@@ -1,3 +1,4 @@
+import { localizedValue } from '../../../shared/localization.js';
 import { stripHtml } from '../lib/sanitize.js';
 import {
   Book,
@@ -61,7 +62,7 @@ function snippetOf(text, terms) {
   return `${start > 0 ? '…' : ''}${clean.slice(start, start + 170)}${start + 170 < clean.length ? '…' : ''}`;
 }
 
-const textFilter = (terms) => (terms.length ? { $and: terms.map((t) => ({ searchText: { $regex: escapeRegex(t), $options: 'i' } })) } : {});
+const textFilter = (terms, language) => (terms.length ? { $and: terms.map(t => ({ $or: ['title','name','text','description','shortDescription','summary','content','notes','formulas.title','blocks.content','blocks.title'].map(field => ({ [field + '.' + language]: { $regex: escapeRegex(t), $options: 'i' } })).concat([{ 'formulas.latex': { $regex: escapeRegex(t), $options: 'i' } }]) })) } : {});
 
 async function contextMaps() {
   const [classes, subjects] = await Promise.all([
@@ -75,7 +76,7 @@ async function contextMaps() {
   };
 }
 
-export async function search({ q, type, classNumber: classFilter, page = 1, limit = 20 }) {
+export async function search({ q, type, classNumber: classFilter, page = 1, limit = 20, language = 'en' }) {
   const parsed = parseQuery(q);
   const terms = await getTerms();
   if (!parsed.terms.length && !parsed.classNumber && !parsed.chapterNumber && !parsed.exerciseNumber && !parsed.questionNumber) {
@@ -90,7 +91,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
   const want = (t) => !type || type === t;
   const PER_TYPE = 40;
   const results = [];
-  const tf = textFilter(parsed.terms);
+  const tf = textFilter(parsed.terms, language);
 
   let chapterIds = null;
   if (parsed.chapterNumber) {
@@ -123,12 +124,13 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     const filter = onlyStructured ? { _id: { $in: classIds || [] } } : { ...tf, ...(classIds ? { _id: { $in: classIds } } : {}) };
     const items = await ClassLevel.find(ClassLevel.publicFilter(filter)).select('+searchText number name slug description subjects').limit(PER_TYPE).lean();
     for (const c of items) {
+      if (!localizedValue(c.name,language)) continue;
       const subject = c.subjects.map((id) => subjectById.get(String(id))).find(Boolean);
       results.push({
         type: 'class',
         id: c._id,
         title: c.name?.hi || c.name?.en ? c.name : term(terms, 'class', c.number),
-        snippet: snippetOf(c.description?.en || c.description?.hi, parsed.terms),
+        snippet: snippetOf(localizedValue(c.description,language), parsed.terms),
         ...ctxLabels(c),
         url: subject ? urls.subject(c, subject) : urls.class(c),
         score: TYPE_WEIGHT.class + (classNum === c.number ? 30 : 0),
@@ -140,6 +142,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     const filter = { ...classScope, ...tf, ...(parsed.chapterNumber ? { number: parsed.chapterNumber } : {}) };
     const items = await Chapter.find(Chapter.publicFilter(filter)).select('+searchText number title slug shortDescription class subject').sort({ number: 1 }).limit(PER_TYPE).lean();
     for (const ch of items) {
+      if (!localizedValue(ch.title,language)) continue;
       const cls = classById.get(String(ch.class));
       const subject = subjectById.get(String(ch.subject));
       if (!cls || !subject) continue;
@@ -147,7 +150,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         type: 'chapter',
         id: ch._id,
         title: ch.title,
-        snippet: snippetOf(ch.shortDescription?.hi || ch.shortDescription?.en || ch.searchText, parsed.terms),
+        snippet: snippetOf(localizedValue(ch.shortDescription,language), parsed.terms),
         ...ctxLabels(cls, ch),
         url: urls.chapter(cls, subject, ch),
         score: TYPE_WEIGHT.chapter + (parsed.chapterNumber === ch.number ? 25 : 0) + (onlyStructured && !parsed.chapterNumber ? -20 : 0),
@@ -159,6 +162,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     const filter = { ...classScope, ...chapterScope, ...tf };
     const items = await Topic.find(Topic.publicFilter(filter)).select('+searchText number title slug shortDescription difficulty estimatedTime chapter class subject').sort({ number: 1 }).limit(PER_TYPE).lean();
     for (const tp of items) {
+      if (!localizedValue(tp.title,language)) continue;
       const cls = classById.get(String(tp.class));
       const subject = subjectById.get(String(tp.subject));
       const chapter = await getChapter(tp.chapter);
@@ -169,7 +173,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         title: tp.title,
         difficulty: tp.difficulty,
         estimatedTime: tp.estimatedTime,
-        snippet: snippetOf(tp.shortDescription?.hi || tp.shortDescription?.en || tp.searchText, parsed.terms),
+        snippet: snippetOf(localizedValue(tp.shortDescription,language), parsed.terms),
         ...ctxLabels(cls, chapter),
         url: urls.topic(cls, subject, chapter, tp),
         score: TYPE_WEIGHT.topic,
@@ -190,7 +194,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         type: 'exercise',
         id: ex._id,
         title: term(terms, 'exercise', ex.number),
-        snippet: snippetOf(chapter.title?.hi ? `${chapter.title.hi} (${chapter.title.en || ''})` : ex.searchText, parsed.terms),
+        snippet: snippetOf(localizedValue(chapter.title,language), parsed.terms),
         ...ctxLabels(cls, chapter, ex),
         url: urls.exercise(cls, subject, chapter, ex),
         score: TYPE_WEIGHT.exercise + (parsed.exerciseNumber === ex.number ? 40 : 0),
@@ -207,6 +211,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     const filter = { ...classScope, ...chapterScope, ...exerciseScope, ...tf, ...(parsed.questionNumber ? { number: parsed.questionNumber } : {}) };
     const items = await Question.find(Question.publicFilter(filter)).select('+searchText number slug text exercise chapter class subject').limit(PER_TYPE).lean();
     for (const qn of items) {
+      if (!localizedValue(qn.text,language)) continue;
       const cls = classById.get(String(qn.class));
       const subject = subjectById.get(String(qn.subject));
       const [chapter, exercise] = await Promise.all([getChapter(qn.chapter), getExercise(qn.exercise)]);
@@ -215,7 +220,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         type: 'question',
         id: qn._id,
         title: term(terms, 'question', qn.number),
-        snippet: snippetOf(qn.text?.hi || qn.text?.en || qn.text?.mixed, parsed.terms),
+        snippet: snippetOf(localizedValue(qn.text,language), parsed.terms),
         ...ctxLabels(cls, chapter, exercise),
         url: urls.question(cls, subject, chapter, exercise, qn),
         score: TYPE_WEIGHT.question + (parsed.questionNumber === qn.number ? 40 : 0) + (parsed.exerciseNumber ? 10 : 0),
@@ -227,14 +232,15 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     if (want('formula')) {
       const or = parsed.terms.flatMap((t) => {
         const re = { $regex: escapeRegex(t), $options: 'i' };
-        return [{ 'formulas.latex': re }, { 'formulas.title.en': re }, { 'formulas.title.hi': re }];
+        return [{ 'formulas.latex': re }, { ['formulas.title.' + language]: re }];
       });
       const items = await Chapter.find(Chapter.publicFilter({ ...classScope, $or: or })).select('number title slug class subject formulas').limit(20).lean();
       for (const ch of items) {
+      if (!localizedValue(ch.title,language)) continue;
         const cls = classById.get(String(ch.class));
         const subject = subjectById.get(String(ch.subject));
         if (!cls || !subject) continue;
-        const formula = ch.formulas.find((f) => parsed.terms.some((t) => `${f.latex} ${f.title?.en} ${f.title?.hi}`.toLowerCase().includes(t)));
+        const formula = ch.formulas.find((f) => parsed.terms.some((t) => `${f.latex} ${localizedValue(f.title,language)}`.toLowerCase().includes(t)));
         if (!formula) continue;
         results.push({
           type: 'formula',
@@ -249,7 +255,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     }
 
     if (want('solution')) {
-      const sols = await Solution.find(tf).select('+searchText question').limit(PER_TYPE).lean();
+      const sols = await Solution.find(tf).select('+searchText question blocks').limit(PER_TYPE).lean();
       const qs = await Question.find(Question.publicFilter({ _id: { $in: sols.map((s) => s.question) }, ...classScope, ...chapterScope }))
         .select('number slug exercise chapter class subject')
         .lean();
@@ -266,7 +272,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
           id: sol._id,
           title: term(terms, 'solution'),
           subtitle: term(terms, 'question', qn.number),
-          snippet: snippetOf(sol.searchText, parsed.terms),
+          snippet: snippetOf((sol.blocks || []).map(block => localizedValue(block.content,language)).join(' '), parsed.terms),
           ...ctxLabels(cls, chapter, exercise),
           url: urls.question(cls, subject, chapter, exercise, qn),
           score: TYPE_WEIGHT.solution,
@@ -277,6 +283,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     if (want('note')) {
       const items = await Note.find(Note.publicFilter({ ...classScope, ...chapterScope, ...tf })).select('+searchText title summary slug class subject chapter').limit(PER_TYPE).lean();
       for (const n of items) {
+      if (!localizedValue(n.title,language)) continue;
         const cls = classById.get(String(n.class));
         const subject = subjectById.get(String(n.subject));
         if (!cls || !subject) continue;
@@ -285,7 +292,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
           type: 'note',
           id: n._id,
           title: n.title,
-          snippet: snippetOf(n.summary?.hi || n.summary?.en || n.searchText, parsed.terms),
+          snippet: snippetOf(localizedValue(n.summary,language), parsed.terms),
           ...ctxLabels(cls, chapter),
           url: urls.note(cls, subject, n),
           score: TYPE_WEIGHT.note,
@@ -300,6 +307,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         .limit(PER_TYPE)
         .lean();
       for (const r of items) {
+      if (!localizedValue(r.title,language)) continue;
         const cls = classById.get(String(r.class));
         const subject = classById.get(String(r.class))?.subjects?.map((id) => subjectById.get(String(id))).find(Boolean) || subjectById.get(String(r.subject));
         const chapter = r.chapter ? await getChapter(r.chapter) : null;
@@ -313,7 +321,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
           fileUrl,
           fileSize: r.fileSize || (r.file?.bytes ? `${(r.file.bytes / (1024 * 1024)).toFixed(1)} MB` : ''),
           downloadAllowed: r.downloadAllowed !== false,
-          snippet: snippetOf(r.description?.hi || r.description?.en || r.searchText, parsed.terms),
+          snippet: snippetOf(localizedValue(r.description,language), parsed.terms),
           ...ctxLabels(cls, chapter),
           url: chapter
             ? urls.chapter(cls, subject || { slug: 'maths' }, chapter)
@@ -332,6 +340,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
         .limit(PER_TYPE)
         .lean();
       for (const b of items) {
+      if (!localizedValue(b.title,language)) continue;
         const cls = classById.get(String(b.class));
         const subject = classById.get(String(b.class))?.subjects?.map((id) => subjectById.get(String(id))).find(Boolean) || subjectById.get(String(b.subject));
         const chapter = b.chapter ? await getChapter(b.chapter) : null;
@@ -347,7 +356,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
           price: b.price,
           purchaseUrl: b.purchaseUrl,
           coverUrl: b.coverImage?.url || b.coverUrl || '',
-          snippet: snippetOf(b.description?.hi || b.description?.en || b.author || b.searchText, parsed.terms),
+          snippet: snippetOf(localizedValue(b.description,language), parsed.terms),
           ...ctxLabels(cls, chapter),
           url: urls.books(cls, subject || { slug: 'maths' }),
           score: TYPE_WEIGHT.book,
@@ -358,6 +367,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     if (want('importantQuestion')) {
       const items = await ImportantQuestion.find(ImportantQuestion.publicFilter({ ...classScope, ...chapterScope, ...tf })).select('+searchText text slug class subject chapter marks').limit(PER_TYPE).lean();
       for (const iq of items) {
+      if (!localizedValue(iq.text,language)) continue;
         const cls = classById.get(String(iq.class));
         const subject = subjectById.get(String(iq.subject));
         if (!cls || !subject) continue;
@@ -366,7 +376,7 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
           type: 'importantQuestion',
           id: iq._id,
           title: term(terms, 'importantQuestions'),
-          snippet: snippetOf(iq.text?.hi || iq.text?.en || iq.text?.mixed, parsed.terms),
+          snippet: snippetOf(localizedValue(iq.text,language), parsed.terms),
           ...ctxLabels(cls, chapter),
           url: `${urls.importantQuestions(cls, subject)}#${iq.slug}`,
           score: TYPE_WEIGHT.importantQuestion,
@@ -378,7 +388,8 @@ export async function search({ q, type, classNumber: classFilter, page = 1, limi
     if (want('page') && !classIds) {
       const items = await Page.find(Page.publicFilter(tf)).select('+searchText title slug excerpt').limit(10).lean();
       for (const p of items) {
-        results.push({ type: 'page', id: p._id, title: p.title, snippet: snippetOf(p.excerpt?.en || p.searchText, parsed.terms), url: urls.page(p), score: TYPE_WEIGHT.page });
+      if (!localizedValue(p.title,language)) continue;
+        results.push({ type: 'page', id: p._id, title: p.title, snippet: snippetOf(localizedValue(p.excerpt,language), parsed.terms), url: urls.page(p), score: TYPE_WEIGHT.page });
       }
     }
   }

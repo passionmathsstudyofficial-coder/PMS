@@ -57,13 +57,10 @@ exerciseSchema.pre('save', function flagChildren() {
     !this.isNew && (this.isModified('number') || this.isModified('chapter') || this.isModified('class'));
 });
 
-exerciseSchema.post('save', function refreshQuestions(doc) {
+exerciseSchema.post('save', async function refreshQuestions(doc) {
   if (!doc.$locals.refreshChildren) return;
-  mongoose
-    .model('Question')
-    .find({ exercise: doc._id })
-    .then((items) => Promise.all(items.map((q) => q.save())))
-    .catch((err) => console.error('[exercise] failed to refresh questions', err.message));
+  const items = await mongoose.model('Question').find({ exercise: doc._id });
+  await Promise.all(items.map(q => q.save()));
 });
 
 export const Exercise = mongoose.model('Exercise', exerciseSchema);

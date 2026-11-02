@@ -1,3 +1,6 @@
+import { Media } from './models/index.js';
+import { prepareDocumentResponse } from './services/documents.js';
+import { mapLegacyLanguages } from '../../shared/languages.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import compression from 'compression';
@@ -12,9 +15,10 @@ import { errorHandler, notFound } from './middleware/error.js';
 import { apiLimiter } from './middleware/rateLimits.js';
 import { sanitizeInput } from './middleware/sanitizeInput.js';
 import api from './routes/index.js';
+import { recoveryRouter } from './routes/recovery.js';
 import { renderAppHtml, robotsTxt, sitemapXml } from './services/seoHtml.js';
 
-export function createApp() {
+export function createApp({ sendRecoveryEmail } = {}) {
   const app = express();
   app.set('trust proxy', env.TRUST_PROXY);
   app.disable('x-powered-by');
@@ -27,11 +31,12 @@ export function createApp() {
         directives: {
           'default-src': ["'self'"],
           'script-src': ["'self'"],
+          'worker-src': ["'self'"],
           'style-src': ["'self'", "'unsafe-inline'"],
           'img-src': imgSources,
           'font-src': ["'self'", 'data:'],
           'connect-src': ["'self'"],
-          'frame-src': ["'self'", 'https://www.youtube-nocookie.com', 'https://www.youtube.com'],
+          'frame-src': ["'self'", 'https://www.youtube-nocookie.com', 'https://www.youtube.com', 'https://res.cloudinary.com', 'https://drive.google.com'],
           'media-src': ["'self'"],
           'object-src': ["'none'"],
           'frame-ancestors': ["'self'"],
@@ -53,14 +58,6 @@ export function createApp() {
       ...(env.PUBLIC_SITE_URL ? [new URL(env.PUBLIC_SITE_URL).origin] : []),
     ]);
     if (allowed.has(origin)) return true;
-    try {
-      const parsed = new URL(origin);
-      if (parsed.hostname.endsWith('.vercel.app') || parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
-        return true;
-      }
-    } catch {
-      /* ignore invalid URL */
-    }
     return false;
   };
 
@@ -80,6 +77,24 @@ export function createApp() {
   app.use(express.urlencoded({ extended: false, limit: '256kb' }));
   app.use(cookieParser());
   app.use(sanitizeInput);
+  app.use((req, res, next) => {
+    const json = res.json.bind(res);
+    res.json = (body) => {
+      prepareDocumentResponse(mapLegacyLanguages(JSON.parse(JSON.stringify(body)))).then(json, next);
+      return res;
+    };
+    next();
+  });
+
+  // Old local document URLs remain valid aliases but can never bypass publication checks.
+  app.use('/uploads', async (req, res, next) => {
+    if (!/\.(pdf|docx?)$/i.test(req.path)) return next();
+    const key = req.path.replace(/^\//, '');
+    const media = await Media.findOne({ provider: 'local', publicId: key }).select('format').lean();
+    // Preserve pre-existing public disk URLs that have no Media record. New uploads always have records.
+    if (!media) return next();
+    return res.redirect(307, `/api/public/files/${media._id}/document.${media.format}${req.query.download === '1' ? '?download=1' : ''}`);
+  });
 
   // Locally stored uploads (development / no Cloudinary). SVGs can never execute scripts here.
   app.use(
@@ -91,7 +106,10 @@ export function createApp() {
       dotfiles: 'deny',
       setHeaders: (res, filePath) => {
         const lower = String(filePath || '').toLowerCase();
-        if (lower.endsWith('.pdf')) {
+        if (/\.docx?$/.test(lower)) {
+          res.setHeader('Content-Disposition', 'attachment');
+          res.setHeader('Content-Security-Policy', "default-src 'none'; sandbox");
+        } else if (lower.endsWith('.pdf')) {
           res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'self'; object-src 'self'");
         } else if (/\.(mp4|webm|mov|m4v|ogv)$/i.test(lower)) {
           res.setHeader('Content-Security-Policy', "default-src 'none'; media-src 'self'; frame-ancestors 'self'");
@@ -103,7 +121,10 @@ export function createApp() {
     }),
   );
 
-  app.use('/api', apiLimiter, csrfProtection, api);
+  app.use('/api', apiLimiter, csrfProtection);
+  app.use('/api/auth', recoveryRouter('admin', sendRecoveryEmail));
+  app.use('/api/student/auth', recoveryRouter('student', sendRecoveryEmail));
+  app.use('/api', api);
   app.use('/api', notFound);
 
   app.get('/robots.txt', async (req, res) => {

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import * as React from "react"
 import { cn } from "cn"
 import { Dialog as DialogPrimitive } from "radix-ui"
@@ -8,24 +10,28 @@ import { XIcon } from "lucide-react"
 function Dialog({
   ...props
 }) {
+  useUiLanguage();
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
 function DialogTrigger({
   ...props
 }) {
+  useUiLanguage();
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
 function DialogPortal({
   ...props
 }) {
+  useUiLanguage();
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
 }
 
 function DialogClose({
   ...props
 }) {
+  useUiLanguage();
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
 }
 
@@ -33,6 +39,7 @@ function DialogOverlay({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
@@ -51,6 +58,7 @@ function DialogContent({
   showCloseButton = true,
   ...props
 }) {
+  useUiLanguage();
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -72,7 +80,7 @@ function DialogContent({
             >
               <XIcon
               />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{uiText("Close")}</span>
             </Button>
           </DialogPrimitive.Close>
         )}
@@ -85,6 +93,7 @@ function DialogHeader({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <div
       data-slot="dialog-header"
@@ -100,6 +109,7 @@ function DialogFooter({
   children,
   ...props
 }) {
+  useUiLanguage();
   return (
     <div
       data-slot="dialog-footer"
@@ -112,7 +122,7 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+          <Button variant="outline">{uiText("Close")}</Button>
         </DialogPrimitive.Close>
       )}
     </div>
@@ -123,6 +133,7 @@ function DialogTitle({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
@@ -139,6 +150,7 @@ function DialogDescription({
   className,
   ...props
 }) {
+  useUiLanguage();
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"

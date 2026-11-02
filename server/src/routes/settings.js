@@ -1,3 +1,6 @@
+import { localizedValue } from '../../../shared/localization.js';
+import { requestLanguage } from '../middleware/language.js';
+import { mergeLanguageFields } from '../../../shared/localization.js';
 import express from 'express';
 import { cache } from '../lib/cache.js';
 import { asString } from '../lib/request.js';
@@ -20,6 +23,7 @@ import { labelOf, logActivity } from '../services/activity.js';
 import { crudRouter } from '../services/crud.js';
 import { MEDIA_SELECT } from '../services/populate.js';
 import { getSiteBootstrap } from '../services/site.js';
+import { validateReferences } from '../services/relationships.js';
 
 const router = express.Router();
 
@@ -47,12 +51,13 @@ router.put('/site-settings', requireAuth, requirePermission('settings:write'), a
   const changed = [];
   for (const key of SETTINGS_SECTIONS) {
     if (req.body?.[key] !== undefined) {
-      settings.set(key, req.body[key]);
+      settings.set(key, mergeLanguageFields(settings.toObject()[key],req.body[key]));
       changed.push(key);
     }
   }
   if (!changed.length) throw new ApiError(400, 'Nothing to update');
   settings.updatedBy = req.admin._id;
+  await validateReferences(settings);
   await settings.save();
   cache.invalidate();
   await logActivity(req, { action: 'settings_update', entityType: 'SiteSettings', entityId: settings._id, entityLabel: changed.join(', ') });
@@ -113,7 +118,7 @@ router.put('/seo-settings/:routeKey', requireAuth, requirePermission('settings:w
   let doc = await SeoSetting.findOne({ routeKey: known.routeKey });
   if (!doc) doc = new SeoSetting({ routeKey: known.routeKey, label: known.label });
   const { title, description, ogImage, robots, canonical } = req.body || {};
-  doc.set({ title, description, ogImage: ogImage?._id || ogImage || undefined, robots, canonical });
+  doc.set(mergeLanguageFields(doc.toObject(),{ title, description, ogImage: ogImage === null || ogImage === '' ? null : ogImage?._id || ogImage, robots, canonical }));
   doc.updatedBy = req.admin._id;
   await doc.save();
   cache.invalidate();
@@ -132,20 +137,24 @@ router.get('/seo/audit', requireAuth, requirePermission('content:read'), async (
     ['Page', Page, 'pages'],
   ];
   const type = asString(req.query.type, 20);
+  const language = requestLanguage(req);
   const items = [];
   for (const [name, Model, resource] of models) {
     if (type && type !== name) continue;
-    const docs = await Model.find({ status: 'published', $or: [{ 'seo.title': { $in: ['', null] } }, { 'seo.description': { $in: ['', null] } }] })
+    const docs = await Model.find({ status: 'published' })
       .select('title name number seo updatedAt')
       .limit(100)
       .lean();
     for (const d of docs) {
+      const missing = ['title','description'].filter(field => !localizedValue(d.seo?.translations?.[language]?.[field],language) && !localizedValue(d.seo?.[field],language));
+      if (!missing.length) continue;
       items.push({
         type: name,
         resource,
         id: d._id,
         label: labelOf(d),
-        missing: [!d.seo?.title && 'title', !d.seo?.description && 'description'].filter(Boolean),
+        localizedLabel: d.title || d.name || null,
+        missing,
         updatedAt: d.updatedAt,
       });
     }

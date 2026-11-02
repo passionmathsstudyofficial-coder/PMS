@@ -1,3 +1,8 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
+import { documentDownloadUrl } from '@/lib/media';
+import { DocumentAttachment } from '@/components/content/DocumentAttachment.jsx';
+import { resolveMediaUrl } from '@/lib/media';
 import {
   ArrowRight,
   BookOpen,
@@ -28,9 +33,10 @@ import { AdSlot } from '@/components/site/AdSlot.jsx';
 import { EmptyState } from '@/components/site/States.jsx';
 import { hasContent, useL10n, useLang } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
-import { ContentHeader, PrevNext, StatPills, otherLanguage } from './ContentHeader.jsx';
+import { ContentHeader, PrevNext, StatPills } from './ContentHeader.jsx';
 
 export default function ChapterPage({ data, breadcrumbs, related }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { lang } = useLang();
@@ -67,16 +73,16 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
           </div>
         }
         title={t(chapter.title, mode)}
-        subtitle={[otherLanguage(chapter.title, lang), t(chapter.shortDescription, mode)].filter(Boolean).join(' — ')}
+        subtitle={t(chapter.shortDescription, mode)}
         aside={<LanguageNotice />}
       >
         <StatPills
           items={[
-            ...(topics.length > 0 ? [{ value: topics.length, label: 'Topics' }] : []),
+            ...(topics.length > 0 ? [{ value: topics.length, get label() { return uiText("Topics"); } }] : []),
             { value: exercises.length, label: term('exercise') },
             { value: questionTotal, label: term('questions') },
-            ...(resources.length > 0 ? [{ value: resources.length, label: 'PDFs & Files' }] : []),
-            ...(books.length > 0 ? [{ value: books.length, label: 'Books' }] : []),
+            ...(resources.length > 0 ? [{ value: resources.length, get label() { return uiText("PDFs & Files"); } }] : []),
+            ...(books.length > 0 ? [{ value: books.length, get label() { return uiText("Books"); } }] : []),
           ]}
         />
       </ContentHeader>
@@ -86,6 +92,7 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
           {cover?.url && (
             <Figure media={cover} alt={t(cover.alt) || t(chapter.title)} priority onOpen={() => openViewer([toViewerImage(cover, { alt: t(cover.alt) })])} />
           )}
+          {(chapter.pdfFile?.url || chapter.pdfUrl) && <DocumentAttachment media={chapter.pdfFile?.url ? chapter.pdfFile : { url: chapter.pdfUrl, format: 'pdf' }} title={t(chapter.title) || uiText("Study document")} />}
           {chapter.introVideo && <YouTubeEmbed video={chapter.introVideo} />}
 
           {/* Chapter Topics Section */}
@@ -97,15 +104,12 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                     <Sparkles className="size-5" />
                   </span>
                   <div>
-                    <h2 id="topics-heading" className="font-heading text-xl font-bold text-foreground">
-                      Chapter Topics / अध्याय के विषय व वीडियो कक्षाएं
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Comprehensive concept learning: Videos, Notes, Formulas, Practice Questions & Solutions</p>
+                    <h2 id="topics-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Chapter Topics / अध्याय के विषय व वीडियो कक्षाएं")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Comprehensive concept learning: Videos, Notes, Formulas, Practice Questions & Solutions")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-brand-soft px-2.5 py-1 text-xs font-bold text-brand">
-                  {topics.length} Topics
-                </span>
+                  {topics.length}{uiText("Topics")}</span>
               </div>
 
               <div className="grid gap-3.5 sm:grid-cols-2">
@@ -117,8 +121,7 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                   >
                     <div>
                       <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-md bg-brand-soft px-2 py-0.5 text-[11px] font-bold text-brand">
-                          Topic {tp.number}
+                        <span className="inline-flex items-center gap-1 rounded-md bg-brand-soft px-2 py-0.5 text-[11px] font-bold text-brand">{uiText("Topic")}{' '}{tp.number}
                         </span>
                         {tp.estimatedTime && <span className="text-[11px] text-muted-foreground">{t(tp.estimatedTime)}</span>}
                       </div>
@@ -128,9 +131,7 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
 
                     <div className="mt-4 flex items-center justify-between border-t pt-3 text-xs font-bold text-brand">
                       <span className="inline-flex items-center gap-1.5">
-                        <Play className="size-3.5 fill-brand" />
-                        Start Learning / सीखें
-                      </span>
+                        <Play className="size-3.5 fill-brand" />{' '}{uiText("Start Learning / सीखें")}{' '}</span>
                       <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </Link>
@@ -179,9 +180,8 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                 </span>
                 <div>
                   <h2 id="exercises-heading" className="font-heading text-xl font-bold text-foreground">
-                    {term('exerciseWise')} (प्रश्नावली-वार हल)
-                  </h2>
-                  <p className="text-xs text-muted-foreground">Step-by-step textbook solutions in Hindi, English & Mixed</p>
+                    {term('exerciseWise')}{' '}{uiText("(प्रश्नावली-वार हल)")}{' '}</h2>
+                  <p className="text-xs text-muted-foreground">{uiText("Step-by-step textbook solutions in Hindi & English")}</p>
                 </div>
               </div>
               <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
@@ -229,28 +229,25 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                     <FileText className="size-5" />
                   </span>
                   <div>
-                    <h2 id="resources-heading" className="font-heading text-xl font-bold text-foreground">
-                      Chapter PDF Notes & Downloads / अध्ययन सामग्री
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Download PDF study material, formula sheets & worksheets for this chapter</p>
+                    <h2 id="resources-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Chapter PDF Notes & Downloads / अध्ययन सामग्री")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Download PDF study material, formula sheets & worksheets for this chapter")}</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
-                  {resources.length} Files
-                </span>
+                  {resources.length}{uiText("Files")}</span>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {resources.map((res) => {
                   const title = t(res.title) || 'Study Material PDF';
-                  const fileUrl = res.fileUrl || res.file?.url;
+                  const fileUrl = resolveMediaUrl(res.file?.url || res.fileUrl);
 
                   return (
                     <div key={res._id} className="flex flex-col justify-between rounded-2xl border bg-card p-4 shadow-sm">
                       <div>
                         <div className="mb-1 flex items-center justify-between">
                           <span className="rounded bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand uppercase">
-                            {res.resourceType?.replace(/_/g, ' ')}
+                            {uiText(res.resourceType)}
                           </span>
                           {res.fileSize && <span className="text-[11px] text-muted-foreground">{res.fileSize}</span>}
                         </div>
@@ -261,13 +258,11 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                         {fileUrl && (
                           <>
                             <Button size="sm" variant="outline" onClick={() => handleOpenPdf(fileUrl, title, res.downloadAllowed !== false)} className="flex-1 text-xs">
-                              <Eye className="mr-1.5 size-3.5" /> Preview
-                            </Button>
+                              <Eye className="mr-1.5 size-3.5" />{uiText("Preview")}</Button>
                             {res.downloadAllowed !== false && (
                               <Button size="sm" asChild className="flex-1 text-xs">
-                                <a href={fileUrl} download target="_blank" rel="noopener noreferrer">
-                                  <Download className="mr-1.5 size-3.5" /> Download
-                                </a>
+                                <a href={documentDownloadUrl(fileUrl)} download target="_blank" rel="noopener noreferrer">
+                                  <Download className="mr-1.5 size-3.5" />{uiText("Download")}</a>
                               </Button>
                             )}
                           </>
@@ -289,10 +284,8 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                     <BookOpen className="size-5" />
                   </span>
                   <div>
-                    <h2 id="books-heading" className="font-heading text-xl font-bold text-foreground">
-                      Recommended Reference Books / संदर्भ पुस्तकें
-                    </h2>
-                    <p className="text-xs text-muted-foreground">Expert recommended mathematics books for concept mastery and exams</p>
+                    <h2 id="books-heading" className="font-heading text-xl font-bold text-foreground">{' '}{uiText("Recommended Reference Books / संदर्भ पुस्तकें")}{' '}</h2>
+                    <p className="text-xs text-muted-foreground">{uiText("Expert recommended mathematics books for concept mastery and exams")}</p>
                   </div>
                 </div>
               </div>
@@ -317,14 +310,13 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
                         <div>
                           <span className="text-[10px] font-bold text-orange-600 uppercase">{b.category?.replace(/_/g, ' ')}</span>
                           <h4 className="line-clamp-2 font-heading text-sm font-bold text-foreground">{title}</h4>
-                          <p className="text-xs text-muted-foreground">By {b.author}</p>
+                          <p className="text-xs text-muted-foreground">{uiText("By")}{b.author}</p>
                           {b.price && <p className="mt-1 text-xs font-bold text-brand">{b.price}</p>}
                         </div>
                         {b.purchaseUrl && (
                           <Button size="sm" className="mt-2 w-full bg-orange-600 text-xs font-bold text-white hover:bg-orange-700" asChild>
                             <a href={b.purchaseUrl} target="_blank" rel="noopener noreferrer">
-                              <ShoppingBag className="mr-1.5 size-3.5" /> Buy Book ↗
-                            </a>
+                              <ShoppingBag className="mr-1.5 size-3.5" />{' '}{uiText("Buy Book ↗")}{' '}</a>
                           </Button>
                         )}
                       </div>
@@ -354,13 +346,13 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
         <aside className="space-y-4 lg:col-span-4">
           <div className="space-y-4 lg:sticky lg:top-[calc(var(--header-height)+1rem)]">
             {topics.length > 0 && (
-              <nav aria-label="Topics" className="rounded-2xl border bg-card p-4">
-                <p className="mb-2 text-xs font-extrabold tracking-wide text-muted-foreground uppercase">Chapter Topics ({topics.length})</p>
+              <nav aria-label={uiText("Topics")} className="rounded-2xl border bg-card p-4">
+                <p className="mb-2 text-xs font-extrabold tracking-wide text-muted-foreground uppercase">{uiText("Chapter Topics (")}{topics.length})</p>
                 <ul className="space-y-1">
                   {topics.map((tp) => (
                     <li key={tp._id}>
                       <Link to={tp.url} className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium hover:bg-muted hover:text-brand">
-                        <span className="truncate">Topic {tp.number}: {t(tp.title)}</span>
+                        <span className="truncate">{uiText("Topic")}{' '}{tp.number}: {t(tp.title)}</span>
                       </Link>
                     </li>
                   ))}

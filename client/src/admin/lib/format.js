@@ -1,10 +1,13 @@
+import { localizedValue, missingContent } from '../../../../shared/localization.js';
+export const adminText = value => localizedValue(value,getUiLanguage()) || (value ? missingContent(getUiLanguage()) : '');
+import { getUiLanguage, uiText } from '@/lib/uiLanguage.js';
 export const formatDate = (value, options = { dateStyle: 'medium', timeStyle: 'short' }) =>
-  value ? new Intl.DateTimeFormat('en-IN', options).format(new Date(value)) : '—';
+  value ? new Intl.DateTimeFormat(getUiLanguage() === 'hi' ? 'hi-IN' : 'en-IN', options).format(new Date(value)) : '—';
 
 export function timeAgo(value) {
   if (!value) return '—';
   const seconds = Math.round((Date.now() - new Date(value).getTime()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat(getUiLanguage(), { numeric: 'auto' });
   const units = [
     ['year', 31536000],
     ['month', 2592000],
@@ -14,7 +17,7 @@ export function timeAgo(value) {
     ['minute', 60],
   ];
   for (const [unit, size] of units) if (Math.abs(seconds) >= size) return rtf.format(-Math.round(seconds / size), unit);
-  return 'just now';
+  return uiText('just now');
 }
 
 export function formatBytes(bytes) {
@@ -32,7 +35,7 @@ export function formatBytes(bytes) {
 /** Best label for any document (localized title/name → number → email). */
 export function docLabel(doc, fallback = 'Untitled') {
   if (!doc) return fallback;
-  const pick = (v) => (v && typeof v === 'object' ? v.en || v.hi || v.mixed : v);
+  const pick = value => localizedValue(value,getUiLanguage());
   return pick(doc.title) || pick(doc.name) || doc.email || doc.originalName || (doc.number !== undefined ? `#${doc.number}` : '') || fallback;
 }
 

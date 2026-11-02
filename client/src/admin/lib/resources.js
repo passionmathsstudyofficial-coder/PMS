@@ -1,27 +1,29 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { api, errorMessage, get } from '@/lib/api';
 
 export const RESOURCES = {
-  classes: { endpoint: '/classes', singular: 'Class', plural: 'Classes', entityType: 'Class' },
-  subjects: { endpoint: '/subjects', singular: 'Subject', plural: 'Subjects', entityType: 'Subject' },
-  chapters: { endpoint: '/chapters', singular: 'अध्याय (Chapter)', plural: 'Chapters', entityType: 'Chapter' },
-  exercises: { endpoint: '/exercises', singular: 'प्रश्नावली (Exercise)', plural: 'Exercises', entityType: 'Exercise' },
-  questions: { endpoint: '/questions', singular: 'Question', plural: 'Questions', entityType: 'Question' },
-  solutions: { endpoint: '/solutions', singular: 'Solution', plural: 'Solutions', entityType: 'Solution' },
-  notes: { endpoint: '/notes', singular: 'Note', plural: 'Notes', entityType: 'Note' },
-  'important-questions': { endpoint: '/important-questions', singular: 'Important Question', plural: 'Important Questions', entityType: 'ImportantQuestion' },
-  pages: { endpoint: '/pages', singular: 'Page', plural: 'Pages', entityType: 'Page' },
-  sections: { endpoint: '/sections', singular: 'Section', plural: 'Homepage Sections', entityType: 'Section' },
-  'related-content': { endpoint: '/related-content', singular: 'Related Content', plural: 'Related Content', entityType: 'RelatedContent' },
-  templates: { endpoint: '/templates', singular: 'Template', plural: 'Templates', entityType: 'Template' },
-  'ad-slots': { endpoint: '/ad-slots', singular: 'Ad Space', plural: 'Ad Spaces', entityType: 'AdSlot' },
-  announcements: { endpoint: '/announcements', singular: 'Announcement', plural: 'Announcements', entityType: 'Announcement' },
-  videos: { endpoint: '/videos', singular: 'Video', plural: 'YouTube Videos', entityType: 'Video' },
-  media: { endpoint: '/media', singular: 'Media', plural: 'Media', entityType: 'Media' },
-  topics: { endpoint: '/topics', singular: 'Topic', plural: 'Topics', entityType: 'Topic' },
-  resources: { endpoint: '/resources', singular: 'Resource', plural: 'Resources', entityType: 'Resource' },
-  books: { endpoint: '/books', singular: 'Book', plural: 'Books', entityType: 'Book' },
+  classes: { endpoint: '/classes', get singular() { return uiText("Class"); }, get plural() { return uiText("Classes"); }, entityType: 'Class' },
+  subjects: { endpoint: '/subjects', get singular() { return uiText("Subject"); }, get plural() { return uiText("Subjects"); }, entityType: 'Subject' },
+  chapters: { endpoint: '/chapters', get singular() { return uiText("अध्याय (Chapter)"); }, get plural() { return uiText("Chapters"); }, entityType: 'Chapter' },
+  exercises: { endpoint: '/exercises', get singular() { return uiText("प्रश्नावली (Exercise)"); }, get plural() { return uiText("Exercises"); }, entityType: 'Exercise' },
+  questions: { endpoint: '/questions', get singular() { return uiText("Question"); }, get plural() { return uiText("Questions"); }, entityType: 'Question' },
+  solutions: { endpoint: '/solutions', get singular() { return uiText("Solution"); }, get plural() { return uiText("Solutions"); }, entityType: 'Solution' },
+  notes: { endpoint: '/notes', get singular() { return uiText("Note"); }, get plural() { return uiText("Notes"); }, entityType: 'Note' },
+  'important-questions': { endpoint: '/important-questions', get singular() { return uiText("Important Question"); }, get plural() { return uiText("Important Questions"); }, entityType: 'ImportantQuestion' },
+  pages: { endpoint: '/pages', get singular() { return uiText("Page"); }, get plural() { return uiText("Pages"); }, entityType: 'Page' },
+  sections: { endpoint: '/sections', get singular() { return uiText("Section"); }, get plural() { return uiText("Homepage Sections"); }, entityType: 'Section' },
+  'related-content': { endpoint: '/related-content', get singular() { return uiText("Related Content"); }, get plural() { return uiText("Related Content"); }, entityType: 'RelatedContent' },
+  templates: { endpoint: '/templates', get singular() { return uiText("Template"); }, get plural() { return uiText("Templates"); }, entityType: 'Template' },
+  'ad-slots': { endpoint: '/ad-slots', get singular() { return uiText("Ad Space"); }, get plural() { return uiText("Ad Spaces"); }, entityType: 'AdSlot' },
+  announcements: { endpoint: '/announcements', get singular() { return uiText("Announcement"); }, get plural() { return uiText("Announcements"); }, entityType: 'Announcement' },
+  videos: { endpoint: '/videos', get singular() { return uiText("Video"); }, get plural() { return uiText("YouTube Videos"); }, entityType: 'Video' },
+  media: { endpoint: '/media', get singular() { return uiText("Media"); }, get plural() { return uiText("Media"); }, entityType: 'Media' },
+  topics: { endpoint: '/topics', get singular() { return uiText("Topic"); }, get plural() { return uiText("Topics"); }, entityType: 'Topic' },
+  resources: { endpoint: '/resources', get singular() { return uiText("Resource"); }, get plural() { return uiText("Resources"); }, entityType: 'Resource' },
+  books: { endpoint: '/books', get singular() { return uiText("Book"); }, get plural() { return uiText("Books"); }, entityType: 'Book' },
 };
 
 const REF_KEYS = new Set([
@@ -79,8 +81,11 @@ export function useResourceMutations(resource) {
     queryClient.invalidateQueries({ queryKey: ['admin', resource] });
     queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
     queryClient.invalidateQueries({ queryKey: ['resolve'] });
+    queryClient.invalidateQueries({ queryKey: ['site'] });
+    queryClient.invalidateQueries({ queryKey: ['home'] });
+    queryClient.invalidateQueries({ queryKey: ['search'] });
   };
-  const onError = (error) => toast.error(errorMessage(error));
+  const onError = (error) => toast.apiError(error);
 
   const save = useMutation({
     mutationFn: ({ id, data }) => {
@@ -99,7 +104,7 @@ export function useResourceMutations(resource) {
     mutationFn: ({ id, status, publishedAt }) => api.patch(`${meta.endpoint}/${id}/status`, { status, publishedAt }).then((r) => r.data),
     onSuccess: (_, vars) => {
       invalidate();
-      toast.success(vars.status === 'published' ? 'Published' : vars.status === 'archived' ? 'Archived' : 'Moved to draft');
+      toast.success(vars.status === 'published' ? uiText("Published") : vars.status === 'archived' ? uiText("Archived") : uiText("Moved to draft"));
     },
     onError,
   });
@@ -108,7 +113,7 @@ export function useResourceMutations(resource) {
     mutationFn: (id) => api.post(`${meta.endpoint}/${id}/duplicate`).then((r) => r.data),
     onSuccess: () => {
       invalidate();
-      toast.success(`${meta.singular} duplicated as a draft`);
+      toast.success(uiTemplate`${meta.singular} duplicated as a draft`);
     },
     onError,
   });
@@ -117,7 +122,7 @@ export function useResourceMutations(resource) {
     mutationFn: ({ id, force }) => api.delete(`${meta.endpoint}/${id}`, { params: force ? { force: 'true' } : undefined }).then((r) => r.data),
     onSuccess: () => {
       invalidate();
-      toast.success(`${meta.singular} deleted`);
+      toast.success(uiTemplate`${meta.singular} deleted`);
     },
     onError,
   });
@@ -126,7 +131,7 @@ export function useResourceMutations(resource) {
     mutationFn: (ids) => api.put(`${meta.endpoint}/reorder`, { ids }).then((r) => r.data),
     onSuccess: () => {
       invalidate();
-      toast.success('Order saved');
+      toast.success(uiText("Order saved"));
     },
     onError,
   });

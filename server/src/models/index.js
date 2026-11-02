@@ -26,4 +26,6 @@ export { ActivityLog, ACTIVITY_ACTIONS } from './ActivityLog.js';
 export { Template } from './Template.js';
 export { AdSlot, AD_PLACEMENTS, AD_PAGE_TYPES } from './AdSlot.js';
 export { Backup } from './Backup.js';
+export { StudentSession } from './StudentSession.js';
+export { PasswordRecovery } from './PasswordRecovery.js';
 

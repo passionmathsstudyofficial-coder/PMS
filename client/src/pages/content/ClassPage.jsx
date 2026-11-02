@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { Icon } from '@/lib/icons';
@@ -6,6 +7,7 @@ import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
 
 export default function ClassPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, subjects } = data;

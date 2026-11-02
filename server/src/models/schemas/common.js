@@ -4,8 +4,8 @@ import { sanitizeRichText } from '../../lib/sanitize.js';
 const { Schema } = mongoose;
 export const ObjectId = Schema.Types.ObjectId;
 
-export const LANGUAGE_MODES = ['auto', 'hi', 'en', 'mixed'];
-export const languageMode = { type: String, enum: LANGUAGE_MODES, default: 'auto' };
+export const LANGUAGE_MODES = ['auto', 'hi', 'en'];
+export const languageMode = { type: String, enum: LANGUAGE_MODES, default: 'auto', set: value => value === 'mixed' ? 'auto' : value };
 
 const plain = (maxlength) => ({ type: String, default: '', trim: true, maxlength });
 const rich = { type: String, default: '', set: sanitizeRichText, maxlength: 300_000 };
@@ -31,9 +31,11 @@ export const richL10n = () => ({ type: RichL10nSchema, default: () => ({}) });
 
 export const ROBOTS = ['index,follow', 'noindex,follow', 'index,nofollow', 'noindex,nofollow'];
 
+const SeoTranslationSchema = new Schema({ title: plain(200), description: plain(400), ogTitle: plain(200), ogDescription: plain(400) }, { _id:false });
 export const SeoSchema = new Schema(
   {
     title: plain(200),
+    translations: { en: { type: SeoTranslationSchema, default: () => ({}) }, hi: { type: SeoTranslationSchema, default: () => ({}) } },
     description: plain(400),
     canonical: plain(500),
     ogTitle: plain(200),
@@ -42,6 +44,7 @@ export const SeoSchema = new Schema(
     robots: { type: String, enum: ROBOTS, default: 'index,follow' },
     h1: l10n(),
     keywords: [plain(80)],
+    keywordsByLanguage: { en: [plain(80)], hi: [plain(80)] },
   },
   { _id: false },
 );

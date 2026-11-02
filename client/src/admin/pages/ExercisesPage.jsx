@@ -1,7 +1,11 @@
+import { adminText } from '../lib/format.js';
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { toast } from 'sonner';
+import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
@@ -22,12 +26,13 @@ import { refId, useResourceItem, useResourceList } from '../lib/resources.js';
 import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 
 export function ExercisesList() {
+  useUiLanguage();
   const [filters, setFilter, active] = useQueryFilters(['class', 'chapter']);
   return (
     <ResourceListPage
       resource="exercises"
-      title="Exercises (प्रश्नावली)"
-      description="Each अध्याय can contain unlimited प्रश्नावली. Choose an अध्याय to reorder them."
+      title={uiText("Exercises (प्रश्नावली)")}
+      description={uiText("Each अध्याय can contain unlimited प्रश्नावली. Choose an अध्याय to reorder them.")}
       baseParams={active}
       filters={
         <>
@@ -36,31 +41,31 @@ export function ExercisesList() {
         </>
       }
       createPath={adminUrl(`exercises/new${filters.chapter ? `?chapter=${filters.chapter}` : ''}`)}
-      createLabel="New प्रश्नावली"
+      createLabel={uiText("New प्रश्नावली")}
       editPath={(item) => adminUrl(`exercises/${item._id}`)}
       reorderable
-      reorderDisabledReason={filters.chapter ? undefined : 'Choose a class and अध्याय to reorder प्रश्नावली.'}
-      rowLabel={(e) => `प्रश्नावली ${e.number}`}
+      reorderDisabledReason={filters.chapter ? undefined : uiText("Choose a class and अध्याय to reorder प्रश्नावली.")}
+      rowLabel={(e) => uiTemplate`प्रश्नावली ${e.number}`}
       columns={[
-        { header: 'प्रश्नावली', className: 'w-28', cell: (e) => <span className="font-heading font-extrabold text-brand">{e.number}</span> },
-        { header: 'अध्याय', cell: (e) => (e.chapter ? <LocalizedCell value={{ hi: `${e.chapter.number}. ${e.chapter.title?.hi || ''}`, en: e.chapter.title?.en }} /> : '—') },
-        { header: 'Title', className: 'hidden lg:table-cell', cell: (e) => <LocalizedCell value={e.title} /> },
-        { header: 'Class', className: 'hidden sm:table-cell', cell: (e) => (e.class ? `Class ${e.class.number}` : '—') },
+        { get header() { return uiText("प्रश्नावली"); }, className: 'w-28', cell: (e) => <span className="font-heading font-extrabold text-brand">{e.number}</span> },
+        { get header() { return uiText("अध्याय"); }, cell: (e) => (e.chapter ? <LocalizedCell value={{ hi: `${e.chapter.number}. ${e.chapter.title?.hi || ''}`, en: e.chapter.title?.en }} /> : '—') },
+        { get header() { return uiText("Title"); }, className: 'hidden lg:table-cell', cell: (e) => <LocalizedCell value={e.title} /> },
+        { get header() { return uiText("Class"); }, className: 'hidden sm:table-cell', cell: (e) => (e.class ? uiTemplate`Class ${e.class.number}` : '—') },
       ]}
     />
   );
 }
 
 function ExerciseQuestionsPanel({ exerciseId }) {
+  useUiLanguage();
   const list = useResourceList('questions', { exercise: exerciseId, limit: 200 });
   return (
     <Panel
-      title="Questions"
+      title={uiText("Questions")}
       actions={
         <Button asChild size="sm" variant="outline">
           <Link to={adminUrl(`questions/new?exercise=${exerciseId}`)}>
-            <Plus /> Add question
-          </Link>
+            <Plus />{uiText("Add question")}</Link>
         </Button>
       }
     >
@@ -69,19 +74,19 @@ function ExerciseQuestionsPanel({ exerciseId }) {
           {list.data.items.map((q) => (
             <li key={q._id}>
               <Link to={adminUrl(`questions/${q._id}`)} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-muted">
-                <span className="w-8 font-bold">Q{q.number}</span>
-                <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{stripTags(q.text?.hi || q.text?.en || q.text?.mixed)}</span>
+                <span className="w-8 font-bold">{uiText("Q")}{q.number}</span>
+                <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground">{stripTags(adminText(q.text))}</span>
                 <StatusBadge doc={q} />
               </Link>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-muted-foreground">No questions yet.</p>
+        <p className="text-sm text-muted-foreground">{uiText("No questions yet.")}</p>
       )}
       {list.data?.items?.length > 1 && (
         <Button asChild variant="link" size="sm" className="mt-2 px-0">
-          <Link to={adminUrl(`questions?class=${list.data.items[0].class?._id || ''}&chapter=${list.data.items[0].chapter?._id || ''}&exercise=${exerciseId}`)}>Reorder questions →</Link>
+          <Link to={adminUrl(`questions?class=${list.data.items[0].class?._id || ''}&chapter=${list.data.items[0].chapter?._id || ''}&exercise=${exerciseId}`)}>{uiText("Reorder questions →")}</Link>
         </Button>
       )}
     </Panel>
@@ -91,6 +96,7 @@ function ExerciseQuestionsPanel({ exerciseId }) {
 const EXERCISE_DEFAULTS = { chapter: null, number: '', title: {}, slug: '', description: {}, instructions: {}, introVideo: null, pdfFile: null, pdfUrl: '', notes: {}, languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function ExerciseEditor({ id }) {
+  useUiLanguage();
   const [params] = useSearchParams();
   const editor = useEditorForm({ resource: 'exercises', id, basePath: adminUrl('exercises'), defaults: { ...EXERCISE_DEFAULTS, chapter: params.get('chapter') || null } });
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -110,32 +116,32 @@ export function ExerciseEditor({ id }) {
       {() => (
         <>
           <EditorShell
-            title={editor.isNew ? 'New प्रश्नावली (exercise)' : `प्रश्नावली ${form.number}`}
-            description={chapter ? `Class ${chapter.class?.number} · अध्याय ${chapter.number} — ${chapter.title?.hi || chapter.title?.en}` : 'Choose the अध्याय this प्रश्नावली belongs to.'}
+            title={editor.isNew ? uiText("New प्रश्नावली (exercise)") : uiTemplate`प्रश्नावली ${form.number}`}
+            description={chapter ? uiTemplate`Class ${chapter.class?.number} · अध्याय ${chapter.number} — ${adminText(chapter.title)}` : uiText("Choose the अध्याय this प्रश्नावली belongs to.")}
             backTo={adminUrl('exercises')}
-            backLabel="All exercises"
+            backLabel={uiText("All exercises")}
             doc={editor.doc}
             form={form}
             setField={setField}
             dirty={editor.dirty}
             saving={editor.saving}
             onSave={editor.save}
-            onPreview={() => (path && !editor.isNew ? setPreviewOpen(true) : toast.info('Save once to preview.'))}
+            onPreview={() => (path && !editor.isNew ? setPreviewOpen(true) : toast.info(uiText("Save once to preview.")))}
             onDuplicate={editor.duplicate}
             onDelete={() => editor.remove()}
             sidebar={
               <>
-                <Panel title="Display">
+                <Panel title={uiText("Display")}>
                   <LanguageModeField value={form.languageMode} onChange={(v) => setField('languageMode', v)} />
                 </Panel>
                 {!editor.isNew && <ExerciseQuestionsPanel exerciseId={id} />}
               </>
             }
           >
-            <Panel title="Location & number">
+            <Panel title={uiText("Location & number")}>
               <div className="grid gap-4 sm:grid-cols-2">
                 <RefSelect
-                  label="Class"
+                  label={uiText("Class")}
                   resource="classes"
                   value={classId || null}
                   onChange={(v) => {
@@ -143,38 +149,38 @@ export function ExerciseEditor({ id }) {
                     setField('chapter', null);
                   }}
                 />
-                <RefSelect label="अध्याय" required resource="chapters" value={form.chapter} onChange={(v) => setField('chapter', v)} params={classId ? { class: classId } : {}} />
-                <TextField label="प्रश्नावली number" required value={form.number} onChange={(v) => setField('number', v)} placeholder="5.2" />
+                <RefSelect label={uiText("अध्याय")} required resource="chapters" value={form.chapter} onChange={(v) => setField('chapter', v)} params={classId ? { class: classId } : {}} />
+                <TextField label={uiText("प्रश्नावली number")} required value={form.number} onChange={(v) => setField('number', v)} placeholder="5.2" />
                 <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.number ? `prashnavali-${form.number}` : ''} />
-                <L10nField className="sm:col-span-2" label="Title (optional)" value={form.title} onChange={(v) => setField('title', v)} placeholder="AP का n वाँ पद / nth term of an AP" />
+                <L10nField className="sm:col-span-2" label={uiText("Title (optional)")} value={form.title} onChange={(v) => setField('title', v)} placeholder={uiText("AP का n वाँ पद / nth term of an AP")} />
               </div>
             </Panel>
-            <Panel title="Description & instructions">
+            <Panel title={uiText("Description & instructions")}>
               <div className="space-y-4">
-                <RichL10nField label="Description" value={form.description} onChange={(v) => setField('description', v)} minimal />
-                <RichL10nField label="Instructions" value={form.instructions} onChange={(v) => setField('instructions', v)} minimal />
+                <RichL10nField label={uiText("Description")} value={form.description} onChange={(v) => setField('description', v)} minimal />
+                <RichL10nField label={uiText("Instructions")} value={form.instructions} onChange={(v) => setField('instructions', v)} minimal />
               </div>
             </Panel>
-            <Panel title="Video">
-              <VideoField label="प्रश्नावली introduction video" value={form.introVideo} onChange={(v) => setField('introVideo', v)} />
+            <Panel title={uiText("Video")}>
+              <VideoField label={uiText("प्रश्नावली introduction video")} value={form.introVideo} onChange={(v) => setField('introVideo', v)} />
             </Panel>
-            <Panel title="PDF Solutions (Optional — समाधान पीडीएफ)">
+            <Panel title={uiText("PDF Solutions (Optional — समाधान पीडीएफ)")}>
               <div className="grid gap-4 sm:grid-cols-2">
-                <MediaField label="Exercise Solutions PDF" kind="pdf" value={form.pdfFile} onChange={(v) => setField('pdfFile', v)} hint="Upload step-by-step PDF solution for this exercise." />
-                <Field label="Or External Solution PDF URL">
+                <MediaField label={uiText("Exercise Solutions PDF")} kind="pdf" value={form.pdfFile} onChange={(v) => setField('pdfFile', v)} hint={uiText("Upload step-by-step PDF solution for this exercise.")} />
+                <Field label={uiText("Or External Solution PDF URL")}>
                   <input type="url" value={form.pdfUrl || ''} onChange={(e) => setField('pdfUrl', e.target.value)} placeholder="https://..." className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
                 </Field>
               </div>
             </Panel>
-            <Panel title="Notes">
+            <Panel title={uiText("Notes")}>
               <RichL10nField value={form.notes} onChange={(v) => setField('notes', v)} />
             </Panel>
-            <Panel title="SEO">
+            <Panel title={uiText("SEO")}>
               <SeoFields
                 value={form.seo}
                 onChange={(v) => setField('seo', v)}
                 fallbackTitle={chapter ? `Class ${chapter.class?.number} Maths अध्याय ${chapter.number} प्रश्नावली ${form.number}` : ''}
-                fallbackDescription={stripTags(form.description?.hi || form.description?.en)}
+                fallbackDescription={stripTags(adminText(form.description))}
                 path={path}
               />
             </Panel>

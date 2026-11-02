@@ -1,18 +1,21 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router';
 import { cn } from '@/lib/utils';
 
-export function PageHeader({ title, description, actions, backTo, backLabel = 'Back', className, children }) {
+export function PageHeader({ title, description, actions, backTo, backLabel = uiText("Back"), className, children }) {
+  useUiLanguage();
   return (
     <div className={cn('mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between', className)}>
       <div className="min-w-0">
         {backTo && (
           <Link to={backTo} className="mb-2 inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground">
-            <ChevronLeft className="size-4" /> {backLabel}
+            <ChevronLeft className="size-4" /> {typeof backLabel === 'string' ? uiText(backLabel) : backLabel}
           </Link>
         )}
-        <h1 className="truncate text-2xl font-extrabold tracking-tight">{title}</h1>
-        {description && <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{description}</p>}
+        <h1 className="truncate text-2xl font-extrabold tracking-tight">{typeof title === 'string' ? uiText(title) : title}</h1>
+        {description && <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{typeof description === 'string' ? uiText(description) : description}</p>}
         {children}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
@@ -21,13 +24,14 @@ export function PageHeader({ title, description, actions, backTo, backLabel = 'B
 }
 
 export function Panel({ title, description, actions, children, className, bodyClassName }) {
+  useUiLanguage();
   return (
     <section className={cn('rounded-2xl border bg-card', className)}>
       {(title || actions) && (
         <header className="flex flex-wrap items-start justify-between gap-3 border-b px-4 py-3 sm:px-5">
           <div>
-            {title && <h2 className="text-sm font-bold">{title}</h2>}
-            {description && <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>}
+            {title && <h2 className="text-sm font-bold">{typeof title === 'string' ? uiText(title) : title}</h2>}
+            {description && <p className="mt-0.5 text-xs text-muted-foreground">{typeof description === 'string' ? uiText(description) : description}</p>}
           </div>
           {actions}
         </header>

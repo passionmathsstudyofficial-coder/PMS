@@ -1,3 +1,6 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { CheckCircle2, Clock, ExternalLink, Play, User, Video as VideoIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useL10n } from '@/lib/i18n';
@@ -12,6 +15,7 @@ function formatDuration(secs) {
 }
 
 export function VideoPlayer({ video, playlist = [], activeIndex = 0, onSelectVideo, className }) {
+  useUiLanguage();
   const t = useL10n();
   const [isPlaying, setIsPlaying] = useState(false);
   const [localActiveIndex, setLocalActiveIndex] = useState(activeIndex);
@@ -67,16 +71,14 @@ export function VideoPlayer({ video, playlist = [], activeIndex = 0, onSelectVid
                 playsInline
                 poster={thumbnail}
                 className="absolute inset-0 size-full object-contain"
-              >
-                Your browser does not support HTML5 video.
-              </video>
+              >{uiText("Your browser does not support HTML5 video.")}</video>
             )
           ) : (
             <button
               type="button"
               onClick={() => setIsPlaying(true)}
               className="group relative flex size-full items-center justify-center focus:outline-none"
-              aria-label={`Play video: ${title}`}
+              aria-label={uiTemplate`Play video: ${title}`}
             >
               {thumbnail ? (
                 <img
@@ -96,9 +98,7 @@ export function VideoPlayer({ video, playlist = [], activeIndex = 0, onSelectVid
                 <span className="grid size-16 place-items-center rounded-full bg-brand text-white shadow-xl ring-4 ring-white/30 transition-transform duration-200 group-hover:scale-110">
                   <Play className="ml-1 size-8 fill-current" />
                 </span>
-                <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-                  Click to Watch Video
-                </span>
+                <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">{' '}{uiText("Click to Watch Video")}{' '}</span>
               </div>
               <div className="absolute right-4 bottom-3 left-4 text-left">
                 <p className="line-clamp-1 font-heading text-base font-bold text-white drop-shadow-sm">{title}</p>
@@ -127,11 +127,8 @@ export function VideoPlayer({ video, playlist = [], activeIndex = 0, onSelectVid
       {playlist.length > 1 && (
         <div className="rounded-2xl border bg-card p-4">
           <div className="mb-3 flex items-center justify-between">
-            <h4 className="font-heading text-sm font-bold text-foreground">
-              Video Playlist ({playlist.length} Lessons)
-            </h4>
-            <span className="text-xs text-muted-foreground">
-              Lesson {localActiveIndex + 1} of {playlist.length}
+            <h4 className="font-heading text-sm font-bold text-foreground">{' '}{uiText("Video Playlist (")}{playlist.length}{uiText("Lessons)")}</h4>
+            <span className="text-xs text-muted-foreground">{uiText("Lesson")}{localActiveIndex + 1}{uiText("of")}{playlist.length}
             </span>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

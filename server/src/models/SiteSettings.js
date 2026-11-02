@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { safeNavigationUrl } from '../../../shared/links.js';
 import { ObjectId, l10n, textL10n } from './schemas/common.js';
 
 const { Schema } = mongoose;
@@ -7,8 +8,8 @@ export const DEFAULT_TERMINOLOGY = [
   { key: 'home', hi: 'होम', en: 'Home' },
   { key: 'mathematics', hi: 'गणित', en: 'Mathematics' },
   { key: 'class', hi: 'कक्षा', en: 'Class' },
-  { key: 'chapter', hi: 'अध्याय', en: 'अध्याय' },
-  { key: 'exercise', hi: 'प्रश्नावली', en: 'प्रश्नावली' },
+  { key: 'chapter', hi: 'अध्याय', en: 'Chapter' },
+  { key: 'exercise', hi: 'प्रश्नावली', en: 'Exercise' },
   { key: 'question', hi: 'प्रश्न', en: 'Question' },
   { key: 'solution', hi: 'हल', en: 'Solution' },
   { key: 'hint', hi: 'संकेत', en: 'Hint' },
@@ -28,15 +29,15 @@ export const DEFAULT_TERMINOLOGY = [
   { key: 'notes', hi: 'गणित नोट्स', en: 'Maths Notes' },
   { key: 'importantQuestions', hi: 'महत्वपूर्ण प्रश्न', en: 'Important Questions' },
   { key: 'ncertSolutions', hi: 'NCERT हल', en: 'NCERT Solutions' },
-  { key: 'chapterWise', hi: 'अध्याय-wise हल', en: 'अध्याय-wise Solutions' },
-  { key: 'exerciseWise', hi: 'प्रश्नावली-wise हल', en: 'प्रश्नावली-wise Solutions' },
+  { key: 'chapterWise', hi: 'अध्यायवार हल', en: 'Chapter-wise Solutions' },
+  { key: 'exerciseWise', hi: 'प्रश्नावलीवार हल', en: 'Exercise-wise Solutions' },
   { key: 'search', hi: 'खोजें', en: 'Search' },
   { key: 'related', hi: 'संबंधित सामग्री', en: 'Related Content' },
   { key: 'video', hi: 'वीडियो', en: 'Video' },
   { key: 'watchVideo', hi: 'वीडियो देखें', en: 'Watch Video' },
   { key: 'viewSolution', hi: 'हल देखें', en: 'View Solution' },
   { key: 'hideSolution', hi: 'हल छिपाएँ', en: 'Hide Solution' },
-  { key: 'viewInHindi', hi: 'हिंदी में देखें', en: 'हिंदी में देखें' },
+  { key: 'viewInHindi', hi: 'हिंदी में देखें', en: 'View in Hindi' },
   { key: 'viewInEnglish', hi: 'View in English', en: 'View in English' },
   { key: 'loadMore', hi: 'और प्रश्न देखें', en: 'Load more questions' },
   { key: 'marks', hi: 'अंक', en: 'Marks' },
@@ -72,7 +73,7 @@ const siteSettingsSchema = new Schema(
       showThemeSwitch: { type: Boolean, default: true },
       showLoginButton: { type: Boolean, default: false },
       loginLabel: l10n(),
-      loginUrl: { type: String, default: '', maxlength: 500 },
+      loginUrl: { type: String, default: '', trim: true, maxlength: 500, validate: { validator: safeNavigationUrl, message: 'Use a valid website URL or local path.' } },
       showAnnouncement: { type: Boolean, default: true },
       showClassPills: { type: Boolean, default: true },
     },
@@ -99,7 +100,7 @@ const siteSettingsSchema = new Schema(
       },
     ],
     language: {
-      default: { type: String, enum: ['hi', 'en', 'mixed'], default: 'hi' },
+      default: { type: String, enum: ['hi', 'en'], default: 'hi', set: value => value === 'mixed' ? 'hi' : value },
       enableToggle: { type: Boolean, default: true },
       showLanguageNotice: { type: Boolean, default: true },
     },

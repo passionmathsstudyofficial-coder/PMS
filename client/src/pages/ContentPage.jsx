@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate, useLocation, useSearchParams } from 'react-router';
 import { PreviewBanner } from '@/components/site/PreviewBanner.jsx';
@@ -43,6 +45,7 @@ const ARTICLE_TYPES = new Set(['chapter', 'exercise', 'question', 'note', 'topic
 
 
 export default function ContentPage() {
+  useUiLanguage();
   const location = useLocation();
   const [params] = useSearchParams();
   const { lang } = useLang();
@@ -51,8 +54,8 @@ export default function ContentPage() {
   const path = location.pathname;
 
   const query = useQuery({
-    queryKey: ['resolve', path, preview, previewToken],
-    queryFn: () => get('/public/resolve', { path, preview: preview ? 1 : undefined, previewToken }),
+    queryKey: ['resolve', path, preview, previewToken, lang],
+    queryFn: () => get('/public/resolve', { path, lang, preview: preview ? 1 : undefined, previewToken }),
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
@@ -63,7 +66,7 @@ export default function ContentPage() {
     if (query.error.status === 404) {
       return (
         <>
-          <Seo title="Page not found" robots="noindex,follow" />
+          <Seo title={uiText("Page not found")} robots="noindex,follow" />
           <NotFoundContent />
         </>
       );
@@ -100,7 +103,7 @@ export default function ContentPage() {
         jsonLd={[breadcrumbSchema(result.breadcrumbs, lang), faq]}
       />
       {preview && <PreviewBanner />}
-      <Template key={path} data={result.data} breadcrumbs={result.breadcrumbs} related={result.related} seo={seo} path={path} preview={preview} previewToken={previewToken} />
+      <Template key={`${path}:${lang}`} data={result.data} breadcrumbs={result.breadcrumbs} related={result.related} seo={seo} path={path} preview={preview} previewToken={previewToken} />
     </>
   );
 }

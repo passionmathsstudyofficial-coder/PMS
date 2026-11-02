@@ -1,0 +1,571 @@
+{
+  "rawInterfaceText": [],
+  "unresolvedKeys": [],
+  "invalidEntries": [],
+  "dynamicBypasses": [],
+  "intentional": [
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 11,
+      "text": "a/b",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 12,
+      "text": "√x",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 13,
+      "text": "ⁿ√x",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 14,
+      "text": "x²",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 15,
+      "text": "xₙ",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 27,
+      "text": "sin",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 30,
+      "text": "lim",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 31,
+      "text": "d/dx",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 32,
+      "text": "vec",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaInput.jsx",
+      "line": 34,
+      "text": "|A|",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/ImageDialog.jsx",
+      "line": 28,
+      "text": "https://example.com/image.png",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/components/fields/MathNode.js",
+      "line": 11,
+      "text": "inline",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/RichL10nField.jsx",
+      "line": 62,
+      "text": "{v0} ({v1})",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/components/fields/RichTextEditor.jsx",
+      "line": 338,
+      "text": "A",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/RichTextEditor.jsx",
+      "line": 344,
+      "text": "#2563eb",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/fields/VideoField.jsx",
+      "line": 54,
+      "text": "youtu.be/",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/components/fields/VideoField.jsx",
+      "line": 69,
+      "text": "https://www.youtube.com/watch?v=XXXXXXXXXXX",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/components/media/MediaPicker.jsx",
+      "line": 73,
+      "text": "{v0}: {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/components/PreviewDialog.jsx",
+      "line": 93,
+      "text": "px ·",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/components/SolutionBuilder.jsx",
+      "line": 129,
+      "text": "{v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/components/SolutionBuilder.jsx",
+      "line": 292,
+      "text": "{v0}: {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 53,
+      "text": "{v0} — {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 231,
+      "text": "https://www.amazon.in/dp/...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 294,
+      "text": "https://images-na.ssl-images-amazon.com/images/...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 313,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/ChaptersPage.jsx",
+      "line": 220,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/ExercisesPage.jsx",
+      "line": 171,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HomepagePages.jsx",
+      "line": 211,
+      "text": "· {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/LoginPage.jsx",
+      "line": 86,
+      "text": "Passion Maths Study",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/admin/pages/LoginPage.jsx",
+      "line": 88,
+      "text": "Passion Maths Study",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 63,
+      "text": "{v0}. {v1}",
+      "reason": "Data-only numbering and authored title; no interface prose"
+    },
+    {
+      "file": "client/src/admin/pages/OverviewPage.jsx",
+      "line": 133,
+      "text": "· {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 256,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 266,
+      "text": "https://www.youtube.com/watch?v=...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 276,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 89,
+      "text": "X (Twitter)",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 126,
+      "text": "WhatsApp",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 141,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 529,
+      "text": "newTermKey",
+      "reason": "Technical identifier or filename"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 604,
+      "text": "sitemap.xml",
+      "reason": "Technical identifier or filename"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 609,
+      "text": "robots.txt",
+      "reason": "Technical identifier or filename"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 628,
+      "text": "@passionmaths",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/SettingsPages.jsx",
+      "line": 891,
+      "text": "#{v0}",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 228,
+      "text": "2FA",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 265,
+      "text": "{v0} · {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 570,
+      "text": "{v0} ({v1})",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 625,
+      "text": ": {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 632,
+      "text": "{v0} · {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/SystemPages.jsx",
+      "line": 819,
+      "text": "{v0} · {v1} · {v2}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/TopicsPage.jsx",
+      "line": 206,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/TopicsPage.jsx",
+      "line": 373,
+      "text": "{v0}: {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/admin/pages/TopicsPage.jsx",
+      "line": 382,
+      "text": "{v0} — {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/content/Callout.jsx",
+      "line": 6,
+      "text": "text-indigo",
+      "reason": "CSS token or editor format value"
+    },
+    {
+      "file": "client/src/components/content/Callout.jsx",
+      "line": 7,
+      "text": "text-warning",
+      "reason": "CSS token or editor format value"
+    },
+    {
+      "file": "client/src/components/content/Callout.jsx",
+      "line": 8,
+      "text": "text-brand",
+      "reason": "CSS token or editor format value"
+    },
+    {
+      "file": "client/src/components/content/Callout.jsx",
+      "line": 9,
+      "text": "text-warning",
+      "reason": "CSS token or editor format value"
+    },
+    {
+      "file": "client/src/components/content/Callout.jsx",
+      "line": 10,
+      "text": "text-success",
+      "reason": "CSS token or editor format value"
+    },
+    {
+      "file": "client/src/components/content/MathFormula.jsx",
+      "line": 52,
+      "text": "LaTeX",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/content/SolutionRenderer.jsx",
+      "line": 68,
+      "text": "· {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/home/ClassGridSection.jsx",
+      "line": 60,
+      "text": "{v0} {v1} · {v2} {v3}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 346,
+      "text": "KaTeX 0.16.8",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 411,
+      "text": "l",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 416,
+      "text": "m",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 119,
+      "text": "{v0} {v1}{v2}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 182,
+      "text": "· {v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 183,
+      "text": "· {v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 25,
+      "text": "WhatsApp",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 26,
+      "text": "YouTube",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 27,
+      "text": "Instagram",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 28,
+      "text": "Facebook",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 62,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/site/LanguageSwitcher.jsx",
+      "line": 9,
+      "text": "हिंदी",
+      "reason": "Native-language label for the Hindi selector"
+    },
+    {
+      "file": "client/src/components/site/LanguageSwitcher.jsx",
+      "line": 10,
+      "text": "ENG",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/components/site/StudySidebar.jsx",
+      "line": 32,
+      "text": "CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/components/site/StudySidebar.jsx",
+      "line": 33,
+      "text": "CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/components/site/StudySidebar.jsx",
+      "line": 34,
+      "text": "ICSE/CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/pages/content/BooksListPage.jsx",
+      "line": 126,
+      "text": "• {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ChapterPage.jsx",
+      "line": 205,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ClassPage.jsx",
+      "line": 16,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ExercisePage.jsx",
+      "line": 55,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ExercisePage.jsx",
+      "line": 102,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ExercisePage.jsx",
+      "line": 139,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ImportantQuestionsPage.jsx",
+      "line": 97,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/NotesPages.jsx",
+      "line": 26,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/QuestionPage.jsx",
+      "line": 42,
+      "text": "{v0} {v1} {v2} · {v3} {v4} – {v5}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
+      "line": 264,
+      "text": "PDF",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/pages/content/StudyMaterialsPage.jsx",
+      "line": 153,
+      "text": "· {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/SubjectExercisesPage.jsx",
+      "line": 22,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/SubjectExercisesPage.jsx",
+      "line": 24,
+      "text": "{v0} · {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/SubjectPage.jsx",
+      "line": 126,
+      "text": "{v0} — {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/TopicPage.jsx",
+      "line": 538,
+      "text": "• {v0}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/SearchPage.jsx",
+      "line": 62,
+      "text": "{v0}: {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    }
+  ],
+  "summary": {
+    "backlog": 143,
+    "backlogTranslated": 127,
+    "backlogIntentional": 16,
+    "applicationEntries": 1305,
+    "remainingEntries": 127,
+    "legacyEntries": 533,
+    "unresolved": 0,
+    "scannedFiles": 163,
+    "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
+  }
+}

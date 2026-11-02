@@ -1,12 +1,16 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { Globe, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { Logo } from './Logo.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { SOCIAL_ICONS } from './SocialIcons.jsx';
 
 function Column({ title, children }) {
+  useUiLanguage();
   return (
     <div>
       <h2 className="mb-4 text-xs font-extrabold tracking-[0.14em] text-white uppercase">{title}</h2>
@@ -32,8 +36,9 @@ const SOCIAL_STYLES = {
 };
 
 export function Footer() {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const settings = site?.settings || {};
   const footer = settings.footer || {};
@@ -56,16 +61,10 @@ export function Footer() {
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-heading text-base font-extrabold text-white sm:text-lg">
-                    Passion Maths Study WhatsApp Channel
-                  </h3>
-                  <span className="inline-flex items-center rounded-full bg-[#25D366]/20 px-2 py-0.5 text-[10px] font-bold text-[#25D366] ring-1 ring-[#25D366]/30">
-                    Official
-                  </span>
+                  <h3 className="font-heading text-base font-extrabold text-white sm:text-lg">{' '}{uiText("Passion Maths Study WhatsApp Channel")}{' '}</h3>
+                  <span className="inline-flex items-center rounded-full bg-[#25D366]/20 px-2 py-0.5 text-[10px] font-bold text-[#25D366] ring-1 ring-[#25D366]/30">{uiText("Official")}</span>
                 </div>
-                <p className="mt-1 text-xs sm:text-sm text-white/70">
-                  NCERT 2024-25 गणित के दैनिक सूत्र, नए हल, नोट्स और परीक्षा अपडेट्स सीधे अपने WhatsApp पर पाएँ।
-                </p>
+                <p className="mt-1 text-xs sm:text-sm text-white/70">{' '}{uiText("NCERT 2024-25 गणित के दैनिक सूत्र, नए हल, नोट्स और परीक्षा अपडेट्स सीधे अपने WhatsApp पर पाएँ।")}{' '}</p>
               </div>
             </div>
             <a
@@ -74,8 +73,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-[#20bd5a] hover:shadow-lg active:scale-95 sm:self-auto self-start"
             >
-              <SOCIAL_ICONS.whatsapp className="size-4" /> Follow on WhatsApp
-            </a>
+              <SOCIAL_ICONS.whatsapp className="size-4" />{uiText("Follow on WhatsApp")}</a>
           </div>
         </div>
 
@@ -94,8 +92,8 @@ export function Footer() {
             )}
             {footer.showSocial !== false && (
               <div className="mt-6">
-                <p className="mb-3 text-xs font-bold tracking-wider text-white/50 uppercase">Follow Us On Social Media</p>
-                <ul className="flex flex-wrap items-center gap-2.5" aria-label="Social media links">
+                <p className="mb-3 text-xs font-bold tracking-wider text-white/50 uppercase">{uiText("Follow Us On Social Media")}</p>
+                <ul className="flex flex-wrap items-center gap-2.5" aria-label={uiText("Social media links")}>
                   {socialList.map((s) => {
                     const IconComponent = SOCIAL_ICONS[s.platform] || Globe;
                     const hoverClass = SOCIAL_STYLES[s.platform] || 'hover:bg-brand hover:text-white';
@@ -106,7 +104,7 @@ export function Footer() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={s.platform}
-                          title={`Follow on ${s.platform.charAt(0).toUpperCase() + s.platform.slice(1)}`}
+                          title={uiTemplate`Follow on ${s.platform.charAt(0).toUpperCase() + s.platform.slice(1)}`}
                           className={`grid size-10 place-items-center rounded-xl border border-white/15 bg-white/10 text-white/80 transition-all active:scale-95 ${hoverClass}`}
                         >
                           <IconComponent className="size-5" />
@@ -145,7 +143,7 @@ export function Footer() {
 
           {looseLinks.length > 0 && (
             <div className="lg:col-span-2">
-              <Column title="Links">
+              <Column title={uiText("Links")}>
                 {looseLinks.map((link) => (
                   <li key={link._id}>
                     <SmartLink to={link.url} newTab={link.newTab} className={linkClass}>
@@ -159,7 +157,7 @@ export function Footer() {
 
           {(contact.email || contact.phone || t(contact.address)) && (
             <div className="lg:col-span-2">
-              <Column title="Contact">
+              <Column title={uiText("Contact")}>
                 {contact.email && (
                   <li>
                     <a href={`mailto:${contact.email}`} className={`${linkClass} inline-flex items-center gap-2 break-all`}>
@@ -196,11 +194,7 @@ export function Footer() {
                 </SmartLink>
               </li>
             ))}
-            <li>
-              <Link to="/login" className="text-white/40 hover:text-white transition-colors">
-                Admin
-              </Link>
-            </li>
+
           </ul>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight, BookOpen, Layers, ListOrdered, NotebookPen, Star } from 'lucide-react';
 import { Link } from 'react-router';
 import { Chip } from '@/components/content/badges.jsx';
@@ -6,9 +8,10 @@ import { EmptyState } from '@/components/site/States.jsx';
 import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { useL10n, useLang } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
-import { ContentHeader, StatPills, otherLanguage } from './ContentHeader.jsx';
+import { ContentHeader, StatPills } from './ContentHeader.jsx';
 
 export function ChapterRow({ chapter, showExercises = true }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { lang } = useLang();
@@ -27,7 +30,6 @@ export function ChapterRow({ chapter, showExercises = true }) {
               {t(chapter.title)}
             </Link>
           </h3>
-          {otherLanguage(chapter.title, lang) && <p className="text-sm text-muted-foreground">{otherLanguage(chapter.title, lang)}</p>}
           {t(chapter.shortDescription) && <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{t(chapter.shortDescription)}</p>}
           {showExercises && chapter.exercises?.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-2" aria-label={term('exercise')}>
@@ -55,6 +57,7 @@ export function ChapterRow({ chapter, showExercises = true }) {
 }
 
 export default function SubjectPage({ data, breadcrumbs }) {
+  useUiLanguage();
   const t = useL10n();
   const term = useTerm();
   const { class: cls, subject, chapters, noteCount, importantCount, links } = data;
@@ -99,7 +102,7 @@ export default function SubjectPage({ data, breadcrumbs }) {
       </ContentHeader>
 
       <div className="container-page py-8">
-        <nav aria-label="Study sections" className="grid grid-cols-2 gap-3 md:grid-cols-5">
+        <nav aria-label={uiText("Study sections")} className="grid grid-cols-2 gap-3 md:grid-cols-5">
           {quickLinks.map(({ icon: IconComponent, label, href, meta }) => (
             <SmartLink key={label + href} to={href} className="group flex flex-col gap-2 rounded-2xl border bg-card p-4 transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md">
               <IconComponent className="size-5 text-brand" aria-hidden="true" />

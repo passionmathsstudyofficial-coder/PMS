@@ -1,0 +1,212 @@
+{
+  "studentLoginReloadLogout": true,
+  "headerLiveDisable": true,
+  "headerLiveEnable": true,
+  "headerToggles": {
+    "language": false,
+    "loginUrl": "/login?from=audit",
+    "search": false,
+    "sticky": "static"
+  },
+  "adminRoutes": [
+    {
+      "name": "Overview",
+      "url": "http://127.0.0.1:5102/pms-control-room",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Classes",
+      "url": "http://127.0.0.1:5102/pms-control-room/classes",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Chapters",
+      "url": "http://127.0.0.1:5102/pms-control-room/chapters",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Topics",
+      "url": "http://127.0.0.1:5102/pms-control-room/topics",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Exercises",
+      "url": "http://127.0.0.1:5102/pms-control-room/exercises",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Questions",
+      "url": "http://127.0.0.1:5102/pms-control-room/questions",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Solutions",
+      "url": "http://127.0.0.1:5102/pms-control-room/solutions",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Notes",
+      "url": "http://127.0.0.1:5102/pms-control-room/notes",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "PDFs & Resources",
+      "url": "http://127.0.0.1:5102/pms-control-room/resources",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Reference Books",
+      "url": "http://127.0.0.1:5102/pms-control-room/books",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Important Questions",
+      "url": "http://127.0.0.1:5102/pms-control-room/important-questions",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Templates",
+      "url": "http://127.0.0.1:5102/pms-control-room/templates",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Images & Media",
+      "url": "http://127.0.0.1:5102/pms-control-room/media",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Video Lessons",
+      "url": "http://127.0.0.1:5102/pms-control-room/videos",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Diagrams & Graphs",
+      "url": "http://127.0.0.1:5102/pms-control-room/diagrams",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Announcements",
+      "url": "http://127.0.0.1:5102/pms-control-room/announcements",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Homepage",
+      "url": "http://127.0.0.1:5102/pms-control-room/homepage",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Website Settings",
+      "url": "http://127.0.0.1:5102/pms-control-room/settings",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Header",
+      "url": "http://127.0.0.1:5102/pms-control-room/header",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Navigation",
+      "url": "http://127.0.0.1:5102/pms-control-room/navigation",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Footer",
+      "url": "http://127.0.0.1:5102/pms-control-room/footer",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Pages",
+      "url": "http://127.0.0.1:5102/pms-control-room/pages",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Related Content",
+      "url": "http://127.0.0.1:5102/pms-control-room/related",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "SEO",
+      "url": "http://127.0.0.1:5102/pms-control-room/seo",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Language",
+      "url": "http://127.0.0.1:5102/pms-control-room/language",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Ad Spaces",
+      "url": "http://127.0.0.1:5102/pms-control-room/ads",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Students",
+      "url": "http://127.0.0.1:5102/pms-control-room/students",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Users / Admins",
+      "url": "http://127.0.0.1:5102/pms-control-room/admins",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Activity Logs",
+      "url": "http://127.0.0.1:5102/pms-control-room/activity",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "Backup / Settings",
+      "url": "http://127.0.0.1:5102/pms-control-room/backups",
+      "loaded": true,
+      "error": false
+    },
+    {
+      "name": "My Account & 2FA",
+      "url": "http://127.0.0.1:5102/pms-control-room/account",
+      "loaded": true,
+      "error": false
+    }
+  ],
+  "pdfDesktopRendered": true,
+  "pdfBrowserDownload": true,
+  "pdfMobileRendered": true,
+  "tablet": {
+    "login": true,
+    "scrollWidth": 768,
+    "width": 768
+  },
+  "hindiPublic": true,
+  "independentLanguages": {
+    "adminEnglish": true,
+    "publicHindi": true
+  }
+}

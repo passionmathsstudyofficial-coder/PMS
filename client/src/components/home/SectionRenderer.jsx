@@ -1,3 +1,4 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ClassGridSection } from './ClassGridSection.jsx';
 import { HeroSection } from './HeroSection.jsx';
 import {
@@ -35,6 +36,7 @@ const COMPONENTS = {
 };
 
 export function SectionRenderer({ sections }) {
+  useUiLanguage();
   return sections.map((section) => {
     const Component = COMPONENTS[section.type];
     return Component ? <Component key={section._id} section={section} /> : null;

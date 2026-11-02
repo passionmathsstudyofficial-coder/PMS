@@ -1,3 +1,6 @@
+import { presentApiError } from './apiErrorLanguage.js';
+import { uiText } from './uiLanguage.js';
+import { getUiLanguage } from './uiLanguage.js';
 import axios from 'axios';
 import { API_BASE } from './config';
 
@@ -14,15 +17,22 @@ export const setUnauthorizedHandler = (fn) => {
 export const api = axios.create({ baseURL: API_BASE, withCredentials: true, timeout: 60_000 });
 
 api.interceptors.request.use((config) => {
+  if (String(config.url || '').startsWith('/public/') && (config.method || 'get').toLowerCase() === 'get') config.params = { ...config.params, lang: config.params?.lang || getUiLanguage() };
   const method = (config.method || 'get').toLowerCase();
-  if (csrfToken && !['get', 'head', 'options'].includes(method)) {
+  if (csrfToken && !config.headers?.has?.('X-CSRF-Token') && !config.headers?.['X-CSRF-Token'] && !['get', 'head', 'options'].includes(method)) {
     config.headers['X-CSRF-Token'] = csrfToken;
   }
   return config;
 });
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (['post', 'put', 'patch', 'delete'].includes(response.config?.method) && typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('pms-content-updated'));
+      try { localStorage.setItem('pms-content-revision', `${Date.now()}:${Math.random()}`); } catch {}
+    }
+    return response;
+  },
   (error) => {
     const status = error.response?.status;
     error.status = status;
@@ -45,6 +55,6 @@ api.interceptors.response.use(
   },
 );
 
-export const errorMessage = (error, fallback = 'Something went wrong') => error?.userMessage || error?.message || fallback;
+export const errorMessage = (error, fallback = 'Something went wrong') => presentApiError(error, fallback);
 
 export const get = (url, params, config) => api.get(url, { params, ...config }).then((r) => r.data);

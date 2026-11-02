@@ -46,8 +46,8 @@ function describe(value, fallback = '') {
 
 function combine(...parts) {
   return {
-    hi: parts.map((p) => (typeof p === 'string' ? p : p?.hi || p?.en || '')).filter(Boolean).join(' '),
-    en: parts.map((p) => (typeof p === 'string' ? p : p?.en || p?.hi || '')).filter(Boolean).join(' '),
+    hi: parts.map((p) => (typeof p === 'string' ? p : p?.hi || '')).filter(Boolean).join(' '),
+    en: parts.map((p) => (typeof p === 'string' ? p : p?.en || '')).filter(Boolean).join(' '),
   };
 }
 
@@ -55,6 +55,9 @@ function seoFor(doc, { title, description, url, image }) {
   const s = doc?.seo || {};
   return {
     title: s.title || title,
+    translations: s.translations,
+    legacyTitle: s.title,
+    legacyDescription: s.description,
     description: s.description || description,
     canonical: s.canonical || url,
     robots: s.robots || 'index,follow',
@@ -1031,6 +1034,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     { path: 'image', select: MEDIA_SELECT },
     { path: 'featuredImage', select: MEDIA_SELECT },
     { path: 'introVideo', select: VIDEO_SELECT },
+    { path: 'pdfFile', select: MEDIA_SELECT },
     { path: 'seo.ogImage', select: MEDIA_SELECT },
   ]);
   if (!chapter) throw new ApiError(404, 'अध्याय not found');
@@ -1039,6 +1043,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
       { path: 'image', select: MEDIA_SELECT },
       { path: 'featuredImage', select: MEDIA_SELECT },
       { path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'pdfFile', select: MEDIA_SELECT },
     ]);
   }
   const ch = chapter.toObject();
@@ -1173,10 +1178,11 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     // 2. Is it an Exercise?
     const exercise = await Exercise.findOne(vis(Exercise, preview, { chapter: ch._id, slug: segments[3] })).populate([
       { path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'pdfFile', select: MEDIA_SELECT },
       { path: 'seo.ogImage', select: MEDIA_SELECT },
     ]);
     if (exercise) {
-      if (applyOverride(exercise, override, 'Exercise')) await exercise.populate({ path: 'introVideo', select: VIDEO_SELECT });
+      if (applyOverride(exercise, override, 'Exercise')) await exercise.populate([{ path: 'introVideo', select: VIDEO_SELECT }, { path: 'pdfFile', select: MEDIA_SELECT }]);
       const ex = exercise.toObject();
       const exerciseUrl = urls.exercise(cls, subject, ch, ex);
       const exerciseLabel = term(terms, 'exercise', ex.number);

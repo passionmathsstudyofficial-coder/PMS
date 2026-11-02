@@ -1,3 +1,5 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { cn } from '@/lib/utils';
 
 export function effectiveStatus(doc) {
@@ -18,12 +20,13 @@ const STYLES = {
 const LABELS = { published: 'Published', draft: 'Draft', scheduled: 'Scheduled', archived: 'Archived', hidden: 'Hidden' };
 
 export function StatusBadge({ doc, status: statusOverride, className }) {
+  useUiLanguage();
   const status = statusOverride || effectiveStatus(doc);
   if (!status) return null;
   return (
     <span className={cn('inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-[11px] font-bold ring-1', STYLES[status], className)}>
       <span className={cn('size-1.5 rounded-full bg-current')} aria-hidden="true" />
-      {LABELS[status]}
+      {uiText(LABELS[status] || status)}
     </span>
   );
 }

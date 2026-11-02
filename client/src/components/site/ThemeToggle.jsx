@@ -1,9 +1,12 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/lib/theme';
 import { Button } from '@/components/ui/button';
 
 export function ThemeToggle({ className }) {
+  useUiLanguage();
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === 'dark';
   return (
@@ -12,7 +15,7 @@ export function ThemeToggle({ className }) {
       size="icon-lg"
       className={className}
       onClick={() => setTheme(dark ? 'light' : 'dark')}
-      aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-label={dark ? uiText("Switch to light theme") : uiText("Switch to dark theme")}
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

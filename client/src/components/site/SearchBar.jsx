@@ -1,24 +1,26 @@
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, BookOpen, CircleHelp, FileText, GraduationCap, ListOrdered, Loader2, Search, Sigma, Sparkles, Star, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { get } from '@/lib/api';
-import { useL10n } from '@/lib/i18n';
+import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 export const RESULT_META = {
   class: { icon: GraduationCap, term: 'class' },
   chapter: { icon: BookOpen, term: 'chapter' },
-  topic: { icon: Sparkles, term: 'topic', label: 'Topic' },
+  topic: { icon: Sparkles, term: 'topic', get label() { return uiText("Topic"); } },
   exercise: { icon: ListOrdered, term: 'exercise' },
   question: { icon: CircleHelp, term: 'question' },
   solution: { icon: CircleHelp, term: 'solution' },
   formula: { icon: Sigma, term: 'formula' },
   note: { icon: FileText, term: 'notes' },
-  resource: { icon: FileText, term: 'resource', label: 'PDF / Resource' },
-  book: { icon: BookOpen, term: 'book', label: 'Reference Book' },
+  resource: { icon: FileText, term: 'resource', get label() { return uiText("PDF / Resource"); } },
+  book: { icon: BookOpen, term: 'book', get label() { return uiText("Reference Book"); } },
   importantQuestion: { icon: Star, term: 'importantQuestions' },
   page: { icon: FileText, term: 'page' },
 };
@@ -38,8 +40,10 @@ export function resultContext(result, t) {
 }
 
 export function SearchBar({ className, autoFocus = false, onNavigate, size = 'md', placeholder: placeholderOverride }) {
+  useUiLanguage();
   const site = useSite();
-  const t = useL10n();
+  const language = useUiLanguage();
+  const t = useInterfaceL10n();
   const term = useTerm();
   const navigate = useNavigate();
   const listId = useId();
@@ -50,8 +54,8 @@ export function SearchBar({ className, autoFocus = false, onNavigate, size = 'md
   const debounced = useDebounced(query.trim());
 
   const suggestions = useQuery({
-    queryKey: ['suggest', debounced],
-    queryFn: () => get('/public/suggest', { q: debounced }),
+    queryKey: ['suggest', debounced, language],
+    queryFn: () => get('/public/suggest', { q: debounced, lang:language }),
     enabled: debounced.length >= 2,
     staleTime: 60_000,
   });
@@ -94,7 +98,7 @@ export function SearchBar({ className, autoFocus = false, onNavigate, size = 'md
     }
   };
 
-  const placeholder = placeholderOverride || t(site?.settings?.header?.searchPlaceholder) || 'Search…';
+  const placeholder = placeholderOverride || t(site?.settings?.header?.searchPlaceholder) || uiText('Search…');
   const showPanel = open && debounced.length >= 2;
 
   return (
@@ -130,7 +134,7 @@ export function SearchBar({ className, autoFocus = false, onNavigate, size = 'md
           )}
         />
         {query && (
-          <button type="button" onClick={() => setQuery('')} className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground" aria-label="Clear search">
+          <button type="button" onClick={() => setQuery('')} className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 text-muted-foreground hover:text-foreground" aria-label={uiText("Clear search")}>
             {suggestions.isFetching ? <Loader2 className="size-4 animate-spin" /> : <X className="size-4" />}
           </button>
         )}

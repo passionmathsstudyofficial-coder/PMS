@@ -42,6 +42,8 @@ const schema = z.object({
   LOGIN_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
   LOGIN_LOCK_MINUTES: z.coerce.number().int().positive().default(15),
   REQUIRE_2FA: bool(false),
+  RESEND_API_KEY: z.string().optional(),
+  PASSWORD_RESET_FROM: z.string().optional(),
 
   STORAGE_PROVIDER: z.enum(['auto', 'local', 'cloudinary']).default('auto'),
   CLOUDINARY_CLOUD_NAME: z.string().optional(),

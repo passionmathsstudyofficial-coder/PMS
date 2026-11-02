@@ -1,12 +1,15 @@
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight, BookOpen, CircleHelp, FileText, Link2, ListOrdered, Star } from 'lucide-react';
-import { useL10n } from '@/lib/i18n';
+import { useL10n, useInterfaceL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { SmartLink } from '@/components/site/SmartLink.jsx';
 
 const ICONS = { chapter: BookOpen, exercise: ListOrdered, question: CircleHelp, note: FileText, importantQuestion: Star, page: FileText, url: Link2 };
 
 export function RelatedContent({ items, title }) {
+  useUiLanguage();
   const t = useL10n();
+  const interfaceL10n = useInterfaceL10n();
   const term = useTerm();
   if (!items?.length) return null;
   return (
@@ -25,7 +28,7 @@ export function RelatedContent({ items, title }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-semibold group-hover:text-brand">{t(item.title)}</span>
-                  {item.subtitle && <span className="mt-0.5 block text-xs text-muted-foreground">{t(item.subtitle)}</span>}
+                  {item.subtitle && <span className="mt-0.5 block text-xs text-muted-foreground">{interfaceL10n(item.subtitle)}</span>}
                 </span>
                 <ArrowRight className="mt-1 size-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-brand" aria-hidden="true" />
               </SmartLink>

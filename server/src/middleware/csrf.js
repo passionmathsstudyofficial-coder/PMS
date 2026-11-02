@@ -2,6 +2,7 @@ import { env } from '../config/env.js';
 import { hmac, safeEqual } from '../lib/crypto.js';
 import { ApiError } from './error.js';
 import { readSessionToken } from './auth.js';
+import { readStudentToken } from './studentAuth.js';
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 const EXEMPT_PATHS = new Set([
@@ -9,6 +10,9 @@ const EXEMPT_PATHS = new Set([
   '/auth/2fa/verify',
   '/api/auth/login',
   '/api/auth/2fa/verify',
+  '/api/student/auth/register', '/api/student/auth/login',
+  '/api/student/auth/forgot-password', '/api/student/auth/reset-password',
+  '/api/auth/forgot-password', '/api/auth/reset-password',
 ]);
 
 export const csrfTokenFor = (sid) => hmac(`csrf:${sid}`);
@@ -24,14 +28,6 @@ function allowedOrigin(req, origin) {
     ...(env.PUBLIC_SITE_URL ? [new URL(env.PUBLIC_SITE_URL).origin] : []),
   ]);
   if (allowed.has(origin)) return true;
-  try {
-    const parsed = new URL(origin);
-    if (parsed.hostname.endsWith('.vercel.app') || parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1') {
-      return true;
-    }
-  } catch {
-    /* ignore invalid URL */
-  }
   return false;
 }
 
@@ -43,7 +39,7 @@ export function csrfProtection(req, res, next) {
   const normalizedPath = req.originalUrl?.split('?')[0] || req.path;
   if (EXEMPT_PATHS.has(req.path) || EXEMPT_PATHS.has(normalizedPath)) return next();
 
-  const payload = readSessionToken(req);
+  const payload = normalizedPath?.startsWith('/api/student/') ? readStudentToken(req) : readSessionToken(req);
   if (!payload?.sid) return next();
 
   const provided = req.get('x-csrf-token');

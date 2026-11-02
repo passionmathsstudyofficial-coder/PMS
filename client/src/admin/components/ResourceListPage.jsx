@@ -1,3 +1,6 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
+import { uiText } from '@/lib/uiLanguage.js';
+import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowUpDown, Copy, Eye, EyeOff, Loader2, MoreHorizontal, Pencil, Plus, Search, Send, Trash2, Undo2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -31,6 +34,7 @@ function useDebounced(value, delay = 300) {
 }
 
 function ReorderPanel({ resource, params, rowLabel, onDone }) {
+  useUiLanguage();
   const { reorder } = useResourceMutations(resource);
   const list = useResourceList(resource, { ...params, limit: 200 });
   const [items, setItems] = useState(null);
@@ -42,14 +46,11 @@ function ReorderPanel({ resource, params, rowLabel, onDone }) {
   return (
     <div className="rounded-2xl border bg-card p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-muted-foreground">Drag items (or use the handle with arrow keys) to set the order shown on the website.</p>
+        <p className="text-sm text-muted-foreground">{uiText("Drag items (or use the handle with arrow keys) to set the order shown on the website.")}</p>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onDone}>
-            Cancel
-          </Button>
+          <Button variant="outline" onClick={onDone}>{uiText("Cancel")}</Button>
           <Button onClick={() => reorder.mutate(items.map((i) => i._id), { onSuccess: onDone })} disabled={reorder.isPending}>
-            {reorder.isPending && <Loader2 className="animate-spin" />} Save order
-          </Button>
+            {reorder.isPending && <Loader2 className="animate-spin" />}{uiText("Save order")}</Button>
         </div>
       </div>
       <SortableList
@@ -92,6 +93,7 @@ export function ResourceListPage({
   headerActions,
   children,
 }) {
+  useUiLanguage();
   const meta = RESOURCES[resource];
   const navigate = useNavigate();
   const confirm = useConfirm();
@@ -109,9 +111,9 @@ export function ResourceListPage({
 
   const onDelete = (item) =>
     confirm({
-      title: `Delete “${rowLabel(item)}”?`,
-      description: 'This permanently deletes only this item. Items that still contain other content are protected and cannot be deleted.',
-      confirmLabel: 'Delete',
+      get title() { return uiTemplate`Delete “${rowLabel(item)}”?`; },
+      get description() { return uiText("This permanently deletes only this item. Items that still contain other content are protected and cannot be deleted."); },
+      get confirmLabel() { return uiText("Delete"); },
       destructive: true,
       onConfirm: () => remove.mutateAsync({ id: item._id }),
     });
@@ -128,13 +130,13 @@ export function ResourceListPage({
             {headerActions}
             {reorderable && (
               <Button variant="outline" size="lg" onClick={() => setReordering((v) => !v)} disabled={Boolean(reorderDisabledReason)} title={reorderDisabledReason}>
-                <ArrowUpDown /> {reordering ? 'Close ordering' : 'Reorder'}
+                <ArrowUpDown /> {reordering ? uiText("Close ordering") : uiText("Reorder")}
               </Button>
             )}
             {createPath && (
               <Button asChild size="lg">
                 <Link to={createPath}>
-                  <Plus /> {createLabel || `New ${meta.singular}`}
+                  <Plus /> {createLabel || uiTemplate`New ${meta.singular}`}
                 </Link>
               </Button>
             )}
@@ -151,16 +153,16 @@ export function ResourceListPage({
           <div className="flex flex-col gap-2 border-b p-3 lg:flex-row lg:items-center">
             <label className="relative flex-1">
               <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" className="h-9 pl-8" aria-label={`Search ${meta.plural}`} />
+              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder={uiText("Search…")} className="h-9 pl-8" aria-label={uiTemplate`Search ${meta.plural}`} />
             </label>
             <div className="flex flex-wrap items-center gap-2">
               {filters}
               {hasStatus && (
-                <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-9 rounded-lg border bg-background px-2 text-sm" aria-label="Filter by status">
-                  <option value="">All statuses</option>
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="archived">Archived</option>
+                <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-9 rounded-lg border bg-background px-2 text-sm" aria-label={uiText("Filter by status")}>
+                  <option value="">{uiText("All statuses")}</option>
+                  <option value="published">{uiText("Published")}</option>
+                  <option value="draft">{uiText("Draft")}</option>
+                  <option value="archived">{uiText("Archived")}</option>
                 </select>
               )}
             </div>
@@ -179,13 +181,13 @@ export function ResourceListPage({
           ) : items.length === 0 ? (
             <div className="p-4">
               <EmptyState
-                title={emptyTitle || `No ${meta.plural.toLowerCase()} found`}
-                description={q || status ? 'Try clearing the search or filters.' : undefined}
+                title={emptyTitle || uiTemplate`No ${meta.plural.toLowerCase()} found`}
+                description={q || status ? uiText("Try clearing the search or filters.") : undefined}
                 action={
                   createPath && (
                     <Button asChild>
                       <Link to={createPath}>
-                        <Plus /> {createLabel || `New ${meta.singular}`}
+                        <Plus /> {createLabel || uiTemplate`New ${meta.singular}`}
                       </Link>
                     </Button>
                   )
@@ -202,10 +204,10 @@ export function ResourceListPage({
                         {col.header}
                       </TableHead>
                     ))}
-                    {hasStatus && <TableHead>Status</TableHead>}
-                    <TableHead className="hidden md:table-cell">Updated</TableHead>
+                    {hasStatus && <TableHead>{uiText("Status")}</TableHead>}
+                    <TableHead className="hidden md:table-cell">{uiText("Updated")}</TableHead>
                     <TableHead className="w-12">
-                      <span className="sr-only">Actions</span>
+                      <span className="sr-only">{uiText("Actions")}</span>
                     </TableHead>
                   </TableRow>
                 </TableHeader>
@@ -226,45 +228,40 @@ export function ResourceListPage({
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${rowLabel(item)}`}>
+                            <Button variant="ghost" size="icon-sm" aria-label={uiTemplate`Actions for ${rowLabel(item)}`}>
                               <MoreHorizontal />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             {editPath && (
                               <DropdownMenuItem onSelect={() => navigate(editPath(item))}>
-                                <Pencil /> Edit
-                              </DropdownMenuItem>
+                                <Pencil />{uiText("Edit")}</DropdownMenuItem>
                             )}
                             {canDuplicate && (
                               <DropdownMenuItem onSelect={() => duplicate.mutate(item._id)}>
-                                <Copy /> Duplicate
-                              </DropdownMenuItem>
+                                <Copy />{uiText("Duplicate")}</DropdownMenuItem>
                             )}
                             {hasStatus && can('content:publish') && (
                               <>
                                 {item.status !== 'published' ? (
                                   <DropdownMenuItem onSelect={() => changeStatus.mutate({ id: item._id, status: 'published' })}>
-                                    <Send /> Publish
-                                  </DropdownMenuItem>
+                                    <Send />{uiText("Publish")}</DropdownMenuItem>
                                 ) : (
                                   <DropdownMenuItem onSelect={() => changeStatus.mutate({ id: item._id, status: 'draft' })}>
-                                    <Undo2 /> Unpublish
-                                  </DropdownMenuItem>
+                                    <Undo2 />{uiText("Unpublish")}</DropdownMenuItem>
                                 )}
                               </>
                             )}
                             {item.isVisible !== undefined && (
-                              <DropdownMenuItem disabled title="Open the item to change visibility">
-                                {item.isVisible ? <Eye /> : <EyeOff />} {item.isVisible ? 'Visible' : 'Hidden'}
+                              <DropdownMenuItem disabled title={uiText("Open the item to change visibility")}>
+                                {item.isVisible ? <Eye /> : <EyeOff />} {item.isVisible ? uiText("Visible") : uiText("Hidden")}
                               </DropdownMenuItem>
                             )}
                             {can('content:delete') && (
                               <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem variant="destructive" onSelect={() => onDelete(item)}>
-                                  <Trash2 /> Delete
-                                </DropdownMenuItem>
+                                  <Trash2 />{uiText("Delete")}</DropdownMenuItem>
                               </>
                             )}
                           </DropdownMenuContent>
@@ -279,17 +276,13 @@ export function ResourceListPage({
 
           {list.data?.pages > 1 && (
             <div className="flex items-center justify-between gap-3 border-t px-4 py-3 text-sm">
-              <span className="text-muted-foreground">{list.data.total} total</span>
+              <span className="text-muted-foreground">{list.data.total}{uiText("total")}</span>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-                  Previous
-                </Button>
+                <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>{uiText("Previous")}</Button>
                 <span>
                   {page} / {list.data.pages}
                 </span>
-                <Button variant="outline" size="sm" disabled={page >= list.data.pages} onClick={() => setPage(page + 1)}>
-                  Next
-                </Button>
+                <Button variant="outline" size="sm" disabled={page >= list.data.pages} onClick={() => setPage(page + 1)}>{uiText("Next")}</Button>
               </div>
             </div>
           )}
