@@ -76,11 +76,9 @@ function StudyMaterialsMenu() {
   const items = [
     { get title() { return uiText("NCERT Solutions"); }, get sub() { return uiText("Class 6–12 step-by-step solutions"); }, url: '/study-materials/ncert-solutions' },
     { get title() { return uiText("NCERT Books"); }, get sub() { return uiText("Latest edition textbook PDFs"); }, url: '/study-materials/ncert-books' },
-    { get title() { return uiText("NCERT Notes"); }, get sub() { return uiText("Key formulas & chapter summaries"); }, url: '/study-materials/ncert-notes' },
-    { get title() { return uiText("CBSE Sample Papers"); }, get sub() { return uiText("Model papers & PYQ with solutions"); }, url: '/study-materials/cbse-sample-papers' },
+    { get title() { return uiText("Sample Papers"); }, get sub() { return uiText("Model papers with solutions"); }, url: '/study-materials/cbse-sample-papers' },
     { get title() { return uiText("Extra Questions"); }, get sub() { return uiText("Practice questions with steps"); }, url: '/study-materials/extra-questions' },
-    { get title() { return uiText("Important Questions"); }, get sub() { return uiText("High-scoring board questions"); }, url: '/study-materials/important-questions' },
-    { get title() { return uiText("English Summaries"); }, get sub() { return uiText("Concept summaries & proof guides"); }, url: '/study-materials/english-summaries' },
+    { get title() { return uiText("Important Questions (PYQ)"); }, get sub() { return uiText("High-scoring board questions"); }, url: '/study-materials/important-questions' },
     { get title() { return uiText("Syllabus"); }, get sub() { return uiText("Updated CBSE curriculum & marking"); }, url: '/study-materials/syllabus' },
   ];
 
@@ -108,14 +106,14 @@ function StudyMaterialsMenu() {
 function ReferenceSolutionsMenu() {
   useUiLanguage();
   const items = [
-    { get title() { return uiText("RS Aggarwal Solutions"); }, author: 'R.S. Aggarwal', get sub() { return uiText("Classes 6 to 12 solutions"); }, url: '/reference-solutions/rs-aggarwal' },
-    { get title() { return uiText("RD Sharma Solutions"); }, author: 'Dr. R.D. Sharma', get sub() { return uiText("Detailed question steps & proofs"); }, url: '/reference-solutions/rd-sharma' },
-    { get title() { return uiText("ML Aggarwal Solutions"); }, author: 'M.L. Aggarwal', get sub() { return uiText("Understanding Mathematics solutions"); }, url: '/reference-solutions/ml-aggarwal' },
+    { get title() { return uiText("RS Aggarwal Solutions"); }, get sub() { return uiText("Classes 6 to 12 solutions"); }, url: '/reference-solutions/rs-aggarwal' },
+    { get title() { return uiText("RD Sharma Solutions"); }, get sub() { return uiText("Detailed question steps & proofs"); }, url: '/reference-solutions/rd-sharma' },
+    { get title() { return uiText("KC Sinha Solutions"); }, get sub() { return uiText("Comprehensive maths solutions"); }, url: '/reference-solutions/kc-sinha' },
   ];
 
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("Reference Solutions")}</NavigationMenuTrigger>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("Reference Books / Solutions")}</NavigationMenuTrigger>
       <NavigationMenuContent>
         <div className="w-80 p-2 space-y-1">
           {items.map((item) => (
@@ -140,14 +138,46 @@ function ReferenceSolutionsMenu() {
   );
 }
 
+function NotesFormulasMenu() {
+  useUiLanguage();
+  const items = [
+    { get title() { return uiText("NCERT Chapter-wise Notes"); }, get sub() { return uiText("Chapter summaries & key concepts"); }, url: '/study-materials/ncert-notes' },
+    { get title() { return uiText("All Maths Formula Sheets"); }, get sub() { return uiText("Complete formula collection"); }, url: '/study-materials/formula-sheets' },
+    { get title() { return uiText("RS Aggarwal Formulas & Notes"); }, get sub() { return uiText("RS Aggarwal formula book"); }, url: '/notes-formulas/rs-aggarwal' },
+    { get title() { return uiText("RD Sharma Formulas & Notes"); }, get sub() { return uiText("RD Sharma formula book"); }, url: '/notes-formulas/rd-sharma' },
+    { get title() { return uiText("KC Sinha Formulas & Notes"); }, get sub() { return uiText("KC Sinha formula book"); }, url: '/notes-formulas/kc-sinha' },
+    { get title() { return uiText("VVI Questions & Short Notes"); }, get sub() { return uiText("Board special quick revision"); }, url: '/study-materials/vvi-short-notes' },
+  ];
+
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">{uiText("Notes & Formulas")}</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <div className="w-[26rem] grid grid-cols-1 gap-1 p-2">
+          {items.map((item) => (
+            <Link key={item.url} to={item.url} className="group rounded-xl p-2.5 transition hover:bg-muted/80">
+              <span className="block text-sm font-bold text-foreground group-hover:text-brand">
+                {item.title}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                {item.sub}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+}
+
 function MoreMenu() {
   useUiLanguage();
   const items = [
-    { get title() { return uiText("Search Website"); }, url: '/search' },
-    { get title() { return uiText("Important Formulas"); }, url: '/class-10/maths/prashnavali' },
-    { get title() { return uiText("About Passion Maths"); }, url: '/about-us' },
+    { get title() { return uiText("About Us"); }, url: '/about-us' },
     { get title() { return uiText("Contact Us"); }, url: '/contact' },
     { get title() { return uiText("Privacy Policy"); }, url: '/privacy-policy' },
+    { get title() { return uiText("Terms & Conditions"); }, url: '/terms-conditions' },
+    { get title() { return uiText("Disclaimer"); }, url: '/disclaimer' },
   ];
 
   return (
@@ -189,6 +219,112 @@ function MobileSearch() {
   );
 }
 
+// Detect if a CMS nav item label matches "Important Questions" or "Notes"
+const IMP_Q_KEYS = ['important questions', 'important question', 'महत्वपूर्ण प्रश्न'];
+const NOTES_KEYS = ['notes', 'maths notes', 'notes & formulas', 'नोट्स'];
+
+function isImpQItem(label = '') { return IMP_Q_KEYS.some(k => label.toLowerCase().includes(k)); }
+function isNotesItem(label = '') { return NOTES_KEYS.some(k => label.toLowerCase().includes(k)); }
+
+function CmsNavItem({ item }) {
+  const t = useInterfaceL10n();
+  const label = t(item.label) || '';
+
+  // If CMS item has no children but matches a known pattern → use built-in dropdown
+  if (!item.children?.length && isImpQItem(label)) {
+    return <ImportantQuestionsDropdown label={label} />;
+  }
+  if (!item.children?.length && isNotesItem(label)) {
+    return <NotesDropdown label={label} />;
+  }
+  // Has CMS children → generic dropdown
+  if (item.children?.length) {
+    return (
+      <NavigationMenuItem>
+        <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
+          {label}
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <div className="w-64 p-2">
+            {item.children.map(child => (
+              <SmartLink key={child._id} to={child.url} newTab={child.newTab} className="block rounded-lg p-3 text-sm hover:bg-muted">
+                {t(child.label)}
+              </SmartLink>
+            ))}
+          </div>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+    );
+  }
+  // Plain link
+  return (
+    <NavigationMenuItem>
+      <SmartLink to={item.url} newTab={item.newTab} className="inline-flex h-9 items-center rounded-lg px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:bg-muted hover:text-brand whitespace-nowrap">
+        {label}
+      </SmartLink>
+    </NavigationMenuItem>
+  );
+}
+
+function ImportantQuestionsDropdown({ label }) {
+  useUiLanguage();
+  const items = [
+    { get title() { return uiText("Previous Year Questions (PYQ)"); }, url: '/study-materials/important-questions/pyq' },
+    { get title() { return uiText("Sample Papers"); }, url: '/study-materials/cbse-sample-papers' },
+    { get title() { return uiText("CBSE Extra Questions"); }, url: '/study-materials/extra-questions' },
+    { get title() { return uiText("VVI Questions (Board Special)"); }, url: '/study-materials/vvi-questions' },
+    { get title() { return uiText("Maths Syllabus"); }, url: '/study-materials/syllabus' },
+  ];
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
+        {label || uiText("Important Questions")}
+      </NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="w-60 p-2 space-y-0.5">
+          {items.map((item) => (
+            <li key={item.url}>
+              <Link to={item.url} className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted hover:text-brand">
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+}
+
+function NotesDropdown({ label }) {
+  useUiLanguage();
+  const items = [
+    { get title() { return uiText("NCERT Chapter-wise Notes"); }, url: '/study-materials/ncert-notes' },
+    { get title() { return uiText("All Maths Formula Sheets"); }, url: '/study-materials/formula-sheets' },
+    { get title() { return uiText("RS Aggarwal Formulas & Notes"); }, url: '/notes-formulas/rs-aggarwal' },
+    { get title() { return uiText("RD Sharma Formulas & Notes"); }, url: '/notes-formulas/rd-sharma' },
+    { get title() { return uiText("KC Sinha Formulas & Notes"); }, url: '/notes-formulas/kc-sinha' },
+    { get title() { return uiText("VVI Questions & Short Notes"); }, url: '/study-materials/vvi-short-notes' },
+  ];
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger className="h-9 bg-transparent px-2 xl:px-3 text-xs xl:text-sm font-semibold text-foreground/75 hover:text-brand whitespace-nowrap">
+        {label || uiText("Notes")}
+      </NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <ul className="w-64 p-2 space-y-0.5">
+          {items.map((item) => (
+            <li key={item.url}>
+              <Link to={item.url} className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted hover:text-brand">
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+}
+
 export function Header() {
   useUiLanguage();
   const site = useSite();
@@ -213,14 +349,11 @@ export function Header() {
           <NavigationMenuList className="gap-0.5 xl:gap-1">
             {site?.navigationConfigured?.header ? items.map((item) => item.type === 'classes' ? (
               header.showClassPills !== false && <ClassesMenu key={item._id} label={t(item.label)} />
-            ) : item.children?.length ? (
-              <NavigationMenuItem key={item._id}>
-                <NavigationMenuTrigger>{t(item.label)}</NavigationMenuTrigger>
-                <NavigationMenuContent><div className="w-64 p-2">{item.children.map(child => <SmartLink key={child._id} to={child.url} newTab={child.newTab} className="block rounded-lg p-3 text-sm hover:bg-muted">{t(child.label)}</SmartLink>)}</div></NavigationMenuContent>
-              </NavigationMenuItem>
-            ) : <NavigationMenuItem key={item._id}><SmartLink to={item.url} newTab={item.newTab} className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-semibold hover:bg-muted">{t(item.label)}</SmartLink></NavigationMenuItem>) : <>
+            ) : (
+              <CmsNavItem key={item._id} item={item} />
+            )) : <>
               {header.showClassPills !== false && <ClassesMenu label={term('class')} />}
-              <StudyMaterialsMenu /><ReferenceSolutionsMenu /><MoreMenu />
+              <StudyMaterialsMenu /><ReferenceSolutionsMenu /><NotesFormulasMenu /><MoreMenu />
             </>}
           </NavigationMenuList>
         </NavigationMenu>

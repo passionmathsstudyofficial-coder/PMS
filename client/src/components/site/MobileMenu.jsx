@@ -13,7 +13,111 @@ import { Logo } from './Logo.jsx';
 import { SearchBar } from './SearchBar.jsx';
 import { SmartLink } from './SmartLink.jsx';
 
-function ClassAccordion({ cls, open, onToggle }) {
+// Sub-accordion for Important Questions dropdown inside ClassAccordion
+function ImportantQuestionsSubMenu({ baseUrl, onClose }) {
+  useUiLanguage();
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const subLinks = [
+    { label: uiText("Previous Year Questions (PYQ)"), url: `${baseUrl}/important-questions/pyq` },
+    { label: uiText("Sample Papers"), url: `${baseUrl}/important-questions/sample-papers` },
+    { label: uiText("CBSE Extra Questions"), url: `${baseUrl}/important-questions/cbse-extra` },
+    { label: uiText("VVI Questions (Board Special)"), url: `${baseUrl}/important-questions/vvi` },
+    { label: uiText("Maths Syllabus"), url: `${baseUrl}/syllabus` },
+  ];
+  return (
+    <li className="border-b last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand"
+        aria-expanded={open}
+      >
+        <span>{uiText("Important Questions")}</span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
+          <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.ul
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="overflow-hidden pl-3 space-y-0.5 pb-1"
+          >
+            {subLinks.map((link) => (
+              <li key={link.url}>
+                <Link
+                  to={link.url}
+                  onClick={onClose}
+                  className="block rounded-md px-2 py-1.5 text-xs text-foreground/75 hover:bg-muted hover:text-brand"
+                >
+                  ▸ {link.label}
+                </Link>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </li>
+  );
+}
+
+// Sub-accordion for Notes dropdown inside ClassAccordion
+function NotesSubMenu({ baseUrl, onClose }) {
+  useUiLanguage();
+  const [open, setOpen] = useState(false);
+  const subLinks = [
+    { label: uiText("NCERT Chapter-wise Notes"), url: `${baseUrl}/notes/ncert` },
+    { label: uiText("All Maths Formula Sheets"), url: `${baseUrl}/notes/formula-sheets` },
+    { label: uiText("RS Aggarwal Formulas & Notes"), url: `${baseUrl}/notes/rs-aggarwal` },
+    { label: uiText("RD Sharma Formulas & Notes"), url: `${baseUrl}/notes/rd-sharma` },
+    { label: uiText("KC Sinha Formulas & Notes"), url: `${baseUrl}/notes/kc-sinha` },
+    { label: uiText("VVI Questions & Short Notes"), url: `${baseUrl}/notes/vvi-short` },
+  ];
+  return (
+    <li className="border-b last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand"
+        aria-expanded={open}
+      >
+        <span>{uiText("Notes")}</span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
+          <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.ul
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="overflow-hidden pl-3 space-y-0.5 pb-1"
+          >
+            {subLinks.map((link) => (
+              <li key={link.url}>
+                <Link
+                  to={link.url}
+                  onClick={onClose}
+                  className="block rounded-md px-2 py-1.5 text-xs text-foreground/75 hover:bg-muted hover:text-brand"
+                >
+                  ▸ {link.label}
+                </Link>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </li>
+  );
+}
+
+function ClassAccordion({ cls, open, onToggle, onClose }) {
   useUiLanguage();
   const t = useInterfaceL10n();
   const term = useTerm();
@@ -50,23 +154,26 @@ function ClassAccordion({ cls, open, onToggle }) {
             className="overflow-hidden"
           >
             {cls.subjects.map((subject) => {
-              const links = [
-                { label: term('ncertSolutions'), url: subject.url },
-                { label: term('chapterWise'), url: `${subject.url}#chapters` },
-                { label: term('exerciseWise'), url: `${subject.url}/prashnavali` },
-                { label: term('importantQuestions'), url: `${subject.url}/important-questions` },
-                { label: term('notes'), url: `${subject.url}/notes` },
+              const baseUrl = subject.url;
+              const staticLinks = [
+                { label: term('ncertSolutions'), url: baseUrl },
+                { label: term('chapterWise'), url: `${baseUrl}#chapters` },
+                { label: term('exerciseWise'), url: `${baseUrl}/prashnavali` },
               ];
               return (
                 <ul key={subject._id} className="mb-3 ml-4 space-y-0.5 border-l-2 border-brand/20 pl-4">
                   {cls.subjects.length > 1 && <li className="pb-1 text-xs font-bold text-muted-foreground uppercase">{t(subject.name)}</li>}
-                  {links.map((link) => (
+                  {staticLinks.map((link) => (
                     <li key={link.url}>
-                      <Link to={link.url} className="block rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand">
+                      <Link to={link.url} onClick={onClose} className="block rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand">
                         {link.label}
                       </Link>
                     </li>
                   ))}
+                  {/* Important Questions — expandable sub-menu */}
+                  <ImportantQuestionsSubMenu baseUrl={baseUrl} onClose={onClose} />
+                  {/* Notes — expandable sub-menu */}
+                  <NotesSubMenu baseUrl={baseUrl} onClose={onClose} />
                 </ul>
               );
             })}
@@ -139,8 +246,6 @@ export function MobileMenu() {
                 <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
                   {site?.settings?.header?.showSearch !== false && <SearchBar onNavigate={() => setOpen(false)} />}
 
-
-
                   {links.length > 0 && (
                     <nav aria-label={uiText("Main")} className="mt-4 grid grid-cols-2 gap-2">
                       {links.flatMap(item => [item, ...(item.children || [])]).filter(item => item.url).map((item) => (
@@ -164,11 +269,9 @@ export function MobileMenu() {
                       {[
                         { get title() { return uiText("NCERT Solutions"); }, url: '/study-materials/ncert-solutions' },
                         { get title() { return uiText("NCERT Books"); }, url: '/study-materials/ncert-books' },
-                        { get title() { return uiText("NCERT Notes"); }, url: '/study-materials/ncert-notes' },
-                        { get title() { return uiText("CBSE Sample Papers"); }, url: '/study-materials/cbse-sample-papers' },
+                        { get title() { return uiText("Sample Papers"); }, url: '/study-materials/cbse-sample-papers' },
                         { get title() { return uiText("Extra Questions"); }, url: '/study-materials/extra-questions' },
-                        { get title() { return uiText("Important Questions"); }, url: '/study-materials/important-questions' },
-                        { get title() { return uiText("English Summaries"); }, url: '/study-materials/english-summaries' },
+                        { get title() { return uiText("Important Questions (PYQ)"); }, url: '/study-materials/important-questions' },
                         { get title() { return uiText("Syllabus"); }, url: '/study-materials/syllabus' },
                       ].map((item) => (
                         <Link
@@ -183,14 +286,14 @@ export function MobileMenu() {
                     </div>
                   </div>
 
-                  {/* Reference Solutions Mobile Links */}
+                  {/* Reference Books / Solutions Mobile Links */}
                   <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Reference Solutions")}</p>
+                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Reference Books / Solutions")}</p>
                     <div className="space-y-1.5">
                       {[
                         { get title() { return uiText("RS Aggarwal Solutions"); }, url: '/reference-solutions/rs-aggarwal' },
                         { get title() { return uiText("RD Sharma Solutions"); }, url: '/reference-solutions/rd-sharma' },
-                        { get title() { return uiText("ML Aggarwal Solutions"); }, url: '/reference-solutions/ml-aggarwal' },
+                        { get title() { return uiText("KC Sinha Solutions"); }, url: '/reference-solutions/kc-sinha' },
                       ].map((b) => (
                         <Link
                           key={b.url}
@@ -205,11 +308,64 @@ export function MobileMenu() {
                     </div>
                   </div>
 
+                  {/* Notes & Formulas Mobile Links */}
+                  <div className="mt-6">
+                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Notes & Formulas")}</p>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        { get title() { return uiText("NCERT Chapter-wise Notes"); }, url: '/study-materials/ncert-notes' },
+                        { get title() { return uiText("All Maths Formula Sheets"); }, url: '/study-materials/formula-sheets' },
+                        { get title() { return uiText("RS Aggarwal Formulas & Notes"); }, url: '/notes-formulas/rs-aggarwal' },
+                        { get title() { return uiText("RD Sharma Formulas & Notes"); }, url: '/notes-formulas/rd-sharma' },
+                        { get title() { return uiText("KC Sinha Formulas & Notes"); }, url: '/notes-formulas/kc-sinha' },
+                        { get title() { return uiText("VVI Questions & Short Notes"); }, url: '/study-materials/vvi-short-notes' },
+                      ].map((item) => (
+                        <Link
+                          key={item.url}
+                          to={item.url}
+                          onClick={() => setOpen(false)}
+                          className="rounded-lg border bg-card p-2 text-xs font-semibold text-foreground/90 hover:border-brand hover:text-brand"
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* More Links */}
+                  <div className="mt-6">
+                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("More")}</p>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        { get title() { return uiText("About Us"); }, url: '/about-us' },
+                        { get title() { return uiText("Contact Us"); }, url: '/contact' },
+                        { get title() { return uiText("Privacy Policy"); }, url: '/privacy-policy' },
+                        { get title() { return uiText("Terms & Conditions"); }, url: '/terms-conditions' },
+                        { get title() { return uiText("Disclaimer"); }, url: '/disclaimer' },
+                      ].map((item) => (
+                        <Link
+                          key={item.url}
+                          to={item.url}
+                          onClick={() => setOpen(false)}
+                          className="rounded-lg border bg-card p-2 text-xs font-semibold text-foreground/90 hover:border-brand hover:text-brand"
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
                   </>}
                   {site?.settings?.header?.showClassPills !== false && (!site?.navigationConfigured?.header || site.navigation.header.some(item => item.type === 'classes')) && <>
                   <p className="mt-6 mb-1 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{term('class')} 6–12 {term('mathematics')}</p><ul>
                     {classes.map((cls) => (
-                      <ClassAccordion key={cls._id} cls={cls} open={expanded === cls._id} onToggle={() => setExpanded((id) => (id === cls._id ? null : cls._id))} />
+                      <ClassAccordion
+                        key={cls._id}
+                        cls={cls}
+                        open={expanded === cls._id}
+                        onToggle={() => setExpanded((id) => (id === cls._id ? null : cls._id))}
+                        onClose={() => setOpen(false)}
+                      />
                     ))}
                   </ul></>}
 
