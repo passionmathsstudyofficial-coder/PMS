@@ -5153,12 +5153,12 @@ export const application = {
     "hi": "NCERT हल"
   },
   "chapterWise": {
-    "en": "Chapter-wise Solutions",
-    "hi": "अध्यायवार हल"
+    "en": "Chapter Solutions",
+    "hi": "अध्याय हल"
   },
   "exerciseWise": {
-    "en": "Exercise-wise Solutions",
-    "hi": "प्रश्नावलीवार हल"
+    "en": "Exercise Solutions",
+    "hi": "प्रश्नावली हल"
   },
   "search": {
     "en": "Search",
