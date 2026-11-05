@@ -11,7 +11,7 @@ import { LanguageNotice } from '@/components/content/LanguageNotice.jsx';
 import { QuestionCard } from '@/components/content/QuestionCard.jsx';
 import { RelatedContent } from '@/components/content/RelatedContent.jsx';
 import { RichContent } from '@/components/content/RichContent.jsx';
-import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
+import { BilingualYouTubeEmbed } from '@/components/content/BilingualYouTubeEmbed.jsx';
 import { AdSlot } from '@/components/site/AdSlot.jsx';
 import { EmptyState } from '@/components/site/States.jsx';
 import { errorMessage, get } from '@/lib/api';
@@ -112,7 +112,7 @@ export default function ExercisePage({ data, breadcrumbs, related, path, preview
 
         <div className="min-w-0 space-y-6 lg:col-span-9">
           {(exercise.pdfFile?.url || exercise.pdfUrl) && <DocumentAttachment media={exercise.pdfFile?.url ? exercise.pdfFile : { url: exercise.pdfUrl, format: 'pdf' }} title={t(exercise.title) || uiText("Study document")} />}
-          {exercise.introVideo && <YouTubeEmbed video={exercise.introVideo} />}
+          <BilingualYouTubeEmbed exercise={exercise} />
           {(hasContent(exercise.description) || hasContent(exercise.instructions)) && (
             <div className="space-y-3 rounded-2xl border bg-card p-5">
               {hasContent(exercise.description) && <RichContent html={t(exercise.description, mode)} />}

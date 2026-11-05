@@ -78,6 +78,34 @@ test('YouTube URLs are validated and stored once', async () => {
   assert.equal(again.body._id, ids.video);
 });
 
+test('exercise introduction videos persist independently without assigning legacy language', async () => {
+  const hindi = await owner.post('/api/videos/resolve').send({ url: '12345678901' });
+  assert.ok([200, 201].includes(hindi.status));
+  const endpoint = `/api/exercises/${ids.exercise}`;
+  const english = await owner.put(endpoint).send({ introVideo: ids.video, introVideoEn: ids.video });
+  assert.equal(english.status, 200);
+  const saved = await owner.put(endpoint).send({ introVideoHi: hindi.body._id });
+  assert.equal(saved.status, 200);
+  assert.equal(saved.body.introVideoEn._id, ids.video);
+  assert.equal(saved.body.introVideoHi._id, hindi.body._id);
+  for (const lang of ['en', 'hi']) {
+    const page = await resolve(app, '/class-10/maths/adhyay-5/prashnavali-5-2', `&lang=${lang}`);
+    assert.equal(page.status, 200);
+    assert.equal(page.body.data.exercise.introVideoEn.youtubeId, 'abcdefghijk');
+    assert.equal(page.body.data.exercise.introVideoHi.youtubeId, '12345678901');
+  }
+  const removed = await owner.put(endpoint).send({ introVideoEn: null });
+  assert.equal(removed.status, 200);
+  const refreshed = await owner.get(endpoint);
+  assert.equal(refreshed.body.introVideoEn, null);
+  assert.equal(refreshed.body.introVideoHi._id, hindi.body._id);
+  assert.equal(refreshed.body.introVideo._id, ids.video);
+  const bad = await owner.put(endpoint).send({ introVideoEn: ids.chapter });
+  assert.equal(bad.status, 400);
+  const anonymous = await request(app).put(endpoint).send({ introVideoHi: null });
+  assert.ok([401, 403].includes(anonymous.status));
+});
+
 test('question with ordered solution blocks is sanitized, hidden as draft and visible once published', async () => {
   const created = await owner.post('/api/questions').send({
     exercise: ids.exercise,

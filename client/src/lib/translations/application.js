@@ -5219,5 +5219,11 @@ export const application = {
   "next": {
     "en": "Next",
     "hi": "अगला"
-  }
+  },
+  "English YouTube Video URL": {"en": "English YouTube Video URL", "hi": "अंग्रेज़ी YouTube वीडियो URL"},
+  "Hindi YouTube Video URL": {"en": "Hindi YouTube Video URL", "hi": "हिंदी YouTube वीडियो URL"},
+  "Video saved": {"en": "Video saved", "hi": "वीडियो सहेजा गया"},
+  "Legacy video preserved. Confirm its spoken language and assign it below.": {"en": "Legacy video preserved. Confirm its spoken language and assign it below.", "hi": "पुराना वीडियो सुरक्षित है। भाषा की पुष्टि करके नीचे सही भाषा में जोड़ें।"},
+  "Video not available in English": {"en": "Video not available in English", "hi": "वीडियो हिंदी में उपलब्ध नहीं है।"},
+  "Exercise introduction video": {"en": "Exercise introduction video", "hi": "प्रश्नावली परिचय वीडियो"}
 };

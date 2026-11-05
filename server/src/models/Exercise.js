@@ -4,6 +4,12 @@ import { contentPlugin } from './plugins/content.js';
 import { ObjectId, languageMode, l10n, richL10n, seo } from './schemas/common.js';
 import { joinSearch, l10nText, labels } from '../services/searchText.js';
 
+async function validIntroVideo(id) {
+  if (!id) return true;
+  const video = await mongoose.model('Video').findById(id).select('provider youtubeId').lean();
+  return Boolean(video && video.provider === 'youtube' && /^[A-Za-z0-9_-]{11}$/.test(video.youtubeId));
+}
+
 const exerciseSchema = new mongoose.Schema(
   {
     chapter: { type: ObjectId, ref: 'Chapter', required: true, index: true },
@@ -14,7 +20,9 @@ const exerciseSchema = new mongoose.Schema(
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 120 },
     description: richL10n(),
     instructions: richL10n(),
-    introVideo: { type: ObjectId, ref: 'Video' },
+    introVideo: { type: ObjectId, ref: 'Video' }, // Retained for manual language assignment.
+    introVideoEn: { type: ObjectId, ref: 'Video', validate: validIntroVideo },
+    introVideoHi: { type: ObjectId, ref: 'Video', validate: validIntroVideo },
     pdfFile: { type: ObjectId, ref: 'Media' },
     pdfUrl: { type: String, default: '', trim: true, maxlength: 2000 },
     notes: richL10n(),

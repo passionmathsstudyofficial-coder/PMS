@@ -655,6 +655,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   }))
     .populate([
       { path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'introVideoEn', select: VIDEO_SELECT },
+      { path: 'introVideoHi', select: VIDEO_SELECT },
       { path: 'pdfFile', select: MEDIA_SELECT },
     ])
     .lean();
@@ -1178,11 +1180,15 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     // 2. Is it an Exercise?
     const exercise = await Exercise.findOne(vis(Exercise, preview, { chapter: ch._id, slug: segments[3] })).populate([
       { path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'introVideoEn', select: VIDEO_SELECT },
+      { path: 'introVideoHi', select: VIDEO_SELECT },
       { path: 'pdfFile', select: MEDIA_SELECT },
       { path: 'seo.ogImage', select: MEDIA_SELECT },
     ]);
     if (exercise) {
-      if (applyOverride(exercise, override, 'Exercise')) await exercise.populate([{ path: 'introVideo', select: VIDEO_SELECT }, { path: 'pdfFile', select: MEDIA_SELECT }]);
+      if (applyOverride(exercise, override, 'Exercise')) await exercise.populate([{ path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'introVideoEn', select: VIDEO_SELECT },
+      { path: 'introVideoHi', select: VIDEO_SELECT }, { path: 'pdfFile', select: MEDIA_SELECT }]);
       const ex = exercise.toObject();
       const exerciseUrl = urls.exercise(cls, subject, ch, ex);
       const exerciseLabel = term(terms, 'exercise', ex.number);

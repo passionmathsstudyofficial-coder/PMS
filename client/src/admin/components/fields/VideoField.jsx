@@ -17,7 +17,7 @@ export const VIDEO_PLACEMENT_OPTIONS = [
 ];
 
 /** Paste a YouTube URL → validated & stored once in the Video library → rendered automatically on the site. */
-export function VideoField({ label = uiText("YouTube video"), hint, value, onChange, placement, onPlacementChange }) {
+export function VideoField({ label = uiText("YouTube video"), hint, value, onChange, placement, onPlacementChange, allowReplace = false }) {
   useUiLanguage();
   const t = useL10n();
   const [url, setUrl] = useState('');
@@ -46,7 +46,7 @@ export function VideoField({ label = uiText("YouTube video"), hint, value, onCha
 
   return (
     <Field label={label} hint={hint || uiText("Paste a YouTube link. The player appears exactly where this field is placed.")} error={error}>
-      {video ? (
+      {video && (
         <div className="flex items-center gap-3 rounded-xl border bg-background p-2">
           <img src={video.thumbnailUrl || youTubeThumb(video.youtubeId, 'mqdefault')} alt="" className="aspect-video w-28 shrink-0 rounded-md object-cover" />
           <div className="min-w-0 flex-1">
@@ -60,7 +60,8 @@ export function VideoField({ label = uiText("YouTube video"), hint, value, onCha
             <Trash2 />
           </Button>
         </div>
-      ) : (
+      )}
+      {(!video || allowReplace) && (
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Youtube className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-red-600" aria-hidden="true" />

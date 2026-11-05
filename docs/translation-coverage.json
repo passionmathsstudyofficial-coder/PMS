@@ -1,6 +1,277 @@
 {
   "rawInterfaceText": [],
-  "unresolvedKeys": [],
+  "unresolvedKeys": [
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 79,
+      "key": "Sample Papers"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 79,
+      "key": "Model papers with solutions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 81,
+      "key": "Important Questions (PYQ)"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 111,
+      "key": "KC Sinha Solutions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 111,
+      "key": "Comprehensive maths solutions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 116,
+      "key": "Reference Books / Solutions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 144,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 144,
+      "key": "Chapter summaries & key concepts"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 145,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 145,
+      "key": "Complete formula collection"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 146,
+      "key": "RS Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 146,
+      "key": "RS Aggarwal formula book"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 147,
+      "key": "RD Sharma Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 147,
+      "key": "RD Sharma formula book"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 148,
+      "key": "KC Sinha Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 148,
+      "key": "KC Sinha formula book"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 149,
+      "key": "VVI Questions & Short Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 149,
+      "key": "Board special quick revision"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 154,
+      "key": "Notes & Formulas"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 179,
+      "key": "Terms & Conditions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 272,
+      "key": "Previous Year Questions (PYQ)"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 273,
+      "key": "Sample Papers"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 274,
+      "key": "CBSE Extra Questions"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 275,
+      "key": "VVI Questions (Board Special)"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 276,
+      "key": "Maths Syllabus"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 301,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 302,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 303,
+      "key": "RS Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 304,
+      "key": "RD Sharma Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 305,
+      "key": "KC Sinha Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/Header.jsx",
+      "line": 306,
+      "key": "VVI Questions & Short Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 22,
+      "key": "Previous Year Questions (PYQ)"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 23,
+      "key": "Sample Papers"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 24,
+      "key": "CBSE Extra Questions"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 25,
+      "key": "VVI Questions (Board Special)"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 26,
+      "key": "Maths Syllabus"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 73,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 74,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 75,
+      "key": "RS Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 76,
+      "key": "RD Sharma Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 77,
+      "key": "KC Sinha Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 78,
+      "key": "VVI Questions & Short Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 272,
+      "key": "Sample Papers"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 274,
+      "key": "Important Questions (PYQ)"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 291,
+      "key": "Reference Books / Solutions"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 296,
+      "key": "KC Sinha Solutions"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 313,
+      "key": "Notes & Formulas"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 316,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 317,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 318,
+      "key": "RS Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 319,
+      "key": "RD Sharma Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 320,
+      "key": "KC Sinha Formulas & Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 321,
+      "key": "VVI Questions & Short Notes"
+    },
+    {
+      "file": "client/src/components/site/MobileMenu.jsx",
+      "line": 343,
+      "key": "Terms & Conditions"
+    }
+  ],
   "invalidEntries": [],
   "dynamicBypasses": [],
   "intentional": [
@@ -102,7 +373,7 @@
     },
     {
       "file": "client/src/admin/components/fields/VideoField.jsx",
-      "line": 69,
+      "line": 70,
       "text": "https://www.youtube.com/watch?v=XXXXXXXXXXX",
       "reason": "Literal URL, path, or account handle"
     },
@@ -468,7 +739,7 @@
     },
     {
       "file": "client/src/pages/content/ChapterPage.jsx",
-      "line": 205,
+      "line": 191,
       "text": "{v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
@@ -561,11 +832,11 @@
     "backlog": 143,
     "backlogTranslated": 127,
     "backlogIntentional": 16,
-    "applicationEntries": 1305,
+    "applicationEntries": 1311,
     "remainingEntries": 127,
     "legacyEntries": 533,
-    "unresolved": 0,
-    "scannedFiles": 163,
+    "unresolved": 54,
+    "scannedFiles": 165,
     "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
   }
 }

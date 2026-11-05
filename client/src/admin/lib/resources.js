@@ -27,7 +27,7 @@ export const RESOURCES = {
 };
 
 const REF_KEYS = new Set([
-  'media', 'video', 'ogImage', 'image', 'featuredImage', 'introVideo', 'thumbnail', 'logo', 'footerLogo', 'favicon',
+  'media', 'video', 'ogImage', 'image', 'featuredImage', 'introVideo', 'introVideoEn', 'introVideoHi', 'thumbnail', 'logo', 'footerLogo', 'favicon',
   'defaultOgImage', 'class', 'subject', 'chapter', 'exercise', 'question', 'linkedQuestion', 'template', 'target', 'source',
   'topic', 'resource', 'book',
 ]);

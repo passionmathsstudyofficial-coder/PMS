@@ -173,21 +173,7 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
 
           {/* Exercise-wise NCERT Solutions */}
           <section id="exercises" aria-labelledby="exercises-heading" className="scroll-mt-24 space-y-4">
-            <div className="flex items-center justify-between border-b pb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="grid size-9 place-items-center rounded-xl bg-indigo-soft text-indigo">
-                  <ListOrdered className="size-5" />
-                </span>
-                <div>
-                  <h2 id="exercises-heading" className="font-heading text-xl font-bold text-foreground">
-                    {term('exerciseWise')}{' '}{uiText("(प्रश्नावली-वार हल)")}{' '}</h2>
-                  <p className="text-xs text-muted-foreground">{uiText("Step-by-step textbook solutions in Hindi & English")}</p>
-                </div>
-              </div>
-              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-bold text-muted-foreground">
-                {exercises.length} {term('exercise')}
-              </span>
-            </div>
+            <h2 id="exercises-heading" className="sr-only">{term('exercise')}</h2>
 
             {exercises.length ? (
               <ul className="grid gap-3 sm:grid-cols-2">

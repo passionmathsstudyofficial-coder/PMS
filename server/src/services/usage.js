@@ -38,7 +38,7 @@ const MEDIA_REFS = [
 
 const VIDEO_REFS = [
   [Chapter, 'Chapter', ['introVideo']],
-  [Exercise, 'Exercise', ['introVideo']],
+  [Exercise, 'Exercise', ['introVideo', 'introVideoEn', 'introVideoHi']],
   [Question, 'Question', ['video.video']],
   [Solution, 'Solution', ['blocks.video']],
   [Note, 'Note', ['video']],

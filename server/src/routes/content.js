@@ -279,6 +279,8 @@ router.use(
       detail: [
         { path: 'chapter', select: 'number title slug class subject', populate: [classPopulate, subjectPopulate] },
         { path: 'introVideo', select: VIDEO_SELECT },
+      { path: 'introVideoEn', select: VIDEO_SELECT },
+      { path: 'introVideoHi', select: VIDEO_SELECT },
         { path: 'pdfFile', select: MEDIA_SELECT },
         seoImage,
       ],

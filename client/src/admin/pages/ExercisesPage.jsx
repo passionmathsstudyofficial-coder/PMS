@@ -13,7 +13,7 @@ import { ChapterFilter, ClassFilter, useQueryFilters } from '../components/filte
 import { Field, L10nField, LanguageModeField, SlugField, TextField } from '../components/fields/Fields.jsx';
 import { RefSelect } from '../components/fields/RefSelect.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
-import { VideoField } from '../components/fields/VideoField.jsx';
+import { ExerciseVideoFields } from '../components/fields/ExerciseVideoFields.jsx';
 import { LocalizedCell } from '../components/LocalizedCell.jsx';
 import { MediaField } from '../components/media/MediaFields.jsx';
 import { Panel } from '../components/PageHeader.jsx';
@@ -93,7 +93,7 @@ function ExerciseQuestionsPanel({ exerciseId }) {
   );
 }
 
-const EXERCISE_DEFAULTS = { chapter: null, number: '', title: {}, slug: '', description: {}, instructions: {}, introVideo: null, pdfFile: null, pdfUrl: '', notes: {}, languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
+const EXERCISE_DEFAULTS = { chapter: null, number: '', title: {}, slug: '', description: {}, instructions: {}, introVideo: null, introVideoEn: null, introVideoHi: null, pdfFile: null, pdfUrl: '', notes: {}, languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function ExerciseEditor({ id }) {
   useUiLanguage();
@@ -162,7 +162,7 @@ export function ExerciseEditor({ id }) {
               </div>
             </Panel>
             <Panel title={uiText("Video")}>
-              <VideoField label={uiText("प्रश्नावली introduction video")} value={form.introVideo} onChange={(v) => setField('introVideo', v)} />
+              <ExerciseVideoFields id={id} form={form} setField={setField} isNew={editor.isNew} />
             </Panel>
             <Panel title={uiText("PDF Solutions (Optional — समाधान पीडीएफ)")}>
               <div className="grid gap-4 sm:grid-cols-2">

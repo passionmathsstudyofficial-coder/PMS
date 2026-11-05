@@ -20,6 +20,27 @@ globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const vite=await createServer({root:path.resolve(import.meta.dirname,'..'),configFile:path.resolve(import.meta.dirname,'../vite.config.js'),server:{middlewareMode:true},appType:'custom'});
 after(async()=>{await vite.close();dom.window.close();});
 
+test('exercise video switches language, resets playback and never falls back to legacy or the other language', async()=>{
+ const {LanguageProvider}=await vite.ssrLoadModule('/src/lib/i18n.jsx');
+ const {setUiLanguage}=await vite.ssrLoadModule('/src/lib/uiLanguage.js');
+ const {BilingualYouTubeEmbed}=await vite.ssrLoadModule('/src/components/content/BilingualYouTubeEmbed.jsx');
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ const exercise={introVideo:{youtubeId:'legacy12345'},introVideoEn:{youtubeId:'abcdefghijk'},introVideoHi:{youtubeId:'12345678901'}};
+ const render=async()=>act(async()=>root.render(React.createElement(LanguageProvider,null,React.createElement(BilingualYouTubeEmbed,{exercise}))));
+ await act(async()=>setUiLanguage('en'));await render();
+ assert.match(host.querySelector('img').src,/abcdefghijk/);
+ await act(async()=>host.querySelector('button').click());
+ assert.match(host.querySelector('iframe').src,/youtube-nocookie.com\/embed\/abcdefghijk/);
+ await act(async()=>setUiLanguage('hi'));
+ assert.equal(host.querySelector('iframe'),null);assert.match(host.querySelector('img').src,/12345678901/);
+ exercise.introVideoHi=null;await render();
+ assert.match(host.textContent,/वीडियो हिंदी में उपलब्ध नहीं है/);assert.equal(host.querySelector('img,iframe'),null);
+ await act(async()=>setUiLanguage('en'));assert.match(host.querySelector('img').src,/abcdefghijk/);
+ exercise.introVideoEn={youtubeId:'javascript:bad'};await render();
+ assert.match(host.textContent,/Video not available in English/);assert.equal(host.querySelector('img,iframe'),null);
+ await act(async()=>root.unmount());host.remove();
+});
+
 test('selected English/Hindi text color survives serialization, server sanitizer and editor reopen',()=>{
  for(const text of ['English words','हिंदी निर्देश']){
   const editor=new Editor({extensions:[StarterKit,TextStyle,Color],content:`<p><strong>${text}</strong> unchanged</p>`});
