@@ -144,3 +144,29 @@ test('actual header renders configured login link and toggles without changing i
   assert.doesNotMatch(host.textContent,/View in Hindi/);client.clear();
  }
 });
+
+
+test('homepage hero supplies complete English lessons with missing CMS translations and preserves Hindi', async()=>{
+ globalThis.requestAnimationFrame=()=>0;globalThis.cancelAnimationFrame=()=>{};
+ window.matchMedia=()=>({matches:true,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});
+ const {HeroSection}=await vite.ssrLoadModule('/src/components/home/HeroSection.jsx');
+ const {gsap,ScrollTrigger}=await vite.ssrLoadModule('/src/lib/motion.js');
+ after(()=>{ScrollTrigger.disable();gsap.ticker.sleep();});
+ const {LanguageProvider}=await vite.ssrLoadModule('/src/lib/i18n.jsx');
+ const {setUiLanguage}=await vite.ssrLoadModule('/src/lib/uiLanguage.js');
+ const {MemoryRouter}=await import('react-router');
+ const section={_id:'hero',title:{hi:'NCERT गणित हल'},description:{hi:'मूल हिंदी विवरण'},badge:{_translationMissing:true},buttons:[{_id:'choose',label:{_translationMissing:true},url:'#classes'}],config:{searchPlaceholder:{_translationMissing:true},searchButtonLabel:{_translationMissing:true},popularLabel:{_translationMissing:true}}};
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ await act(async()=>{setUiLanguage('en');root.render(React.createElement(MemoryRouter,null,React.createElement(LanguageProvider,null,React.createElement(HeroSection,{section}))));});
+ for(const text of ['NCERT Mathematics for Classes 6 to 12','Simple, accurate','Learn mathematics with step-by-step explanations','Example Question','Euclid','Live Geometry Diagram Simulation','Choose your class']) assert.ok(host.textContent.includes(text),text);
+ assert.doesNotMatch(host.textContent,/Content not available|[\u0900-\u097f]/);
+ assert.ok(host.querySelector('.katex'));assert.equal(host.querySelector('.katex-error'),null);
+ assert.equal(host.querySelector('input[type="search"]').placeholder,'e.g. Class 10 Ex 5.2, Triangle, Formula...');
+ for(const lang of ['hi','en','hi','en']){
+  await act(async()=>setUiLanguage(lang));
+  assert.ok(host.textContent.includes(lang==='hi'?'यूक्लिड की 5वीं':'Euclid'));
+  assert.doesNotMatch(host.textContent,/Content not available/);
+  assert.ok(host.querySelector('.katex'));
+ }
+ await act(async()=>root.unmount());host.remove();
+});

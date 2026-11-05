@@ -1,16 +1,15 @@
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
-import { ArrowRight, ChevronDown, Compass, Download, MessageSquare, Search, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown, Compass, Download, Search } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Figure } from '@/components/content/Figure.jsx';
-import { LanguageContent } from '@/components/content/LanguageContent.jsx';
 import { toViewerImage, useImageViewer } from '@/components/content/ImageViewer.jsx';
 import { MathFormula } from '@/components/content/MathFormula.jsx';
 import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
-import { useInterfaceL10n } from '@/lib/i18n';
+import { pickL10n, useInterfaceL10n, useLang } from '@/lib/i18n';
+import { ENGLISH_LESSONS } from './heroEnglish.js';
 import { gsap, prefersReducedMotion, useEntrance, useGSAP } from '@/lib/motion';
-import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { SectionButtons } from './SectionShell.jsx';
 
@@ -54,15 +53,18 @@ const KNOWLEDGE_BASE = {
 
 export function HeroSection({ section }) {
   useUiLanguage();
+  const { lang } = useLang();
+  const english = lang === 'en';
+  const heroText = (hindi, en) => english ? en : uiText(hindi);
   const ref = useRef(null);
   const t = useInterfaceL10n();
-  const term = useTerm();
+  const heroValue = (value, fallback) => pickL10n(value, lang) ? t(value) : fallback;
   const navigate = useNavigate();
   const { openViewer } = useImageViewer();
   const [query, setQuery] = useState('');
   const [botPrompt, setBotPrompt] = useState('');
   const [activeBotKey, setActiveBotKey] = useState('euclid');
-  const [customBotChat, setCustomBotChat] = useState(null);
+  const [transversalX, setTransversalX] = useState(120);
   const [activeTab, setActiveTab] = useState('ai'); // 'ai' | 'media'
 
   const cfg = section.config || {};
@@ -90,40 +92,37 @@ export function HeroSection({ section }) {
     if (!clean) return;
 
     const lower = clean.toLowerCase();
-    if (lower.includes('पाइथागोरस') || lower.includes('pythagoras') || lower.includes('कर्ण')) {
+    if (lower.includes('पाइथागोरस') || lower.includes('pythagoras') || lower.includes('pythagorean') || lower.includes('कर्ण')) {
       setActiveBotKey('pythagoras');
-      setCustomBotChat(null);
     } else if (lower.includes('त्रिकोणमिति') || lower.includes('trigo') || lower.includes('sin') || lower.includes('cos')) {
       setActiveBotKey('trigo');
-      setCustomBotChat(null);
-    } else if (lower.includes('समाकलन') || lower.includes('कलन') || lower.includes('integral') || lower.includes('dx')) {
+    } else if (lower.includes('समाकलन') || lower.includes('कलन') || lower.includes('integral') || lower.includes('integration') || lower.includes('calculus') || lower.includes('dx')) {
       setActiveBotKey('calculus');
-      setCustomBotChat(null);
     } else if (lower.includes('यूक्लिड') || lower.includes('euclid') || lower.includes('अभिधारणा') || lower.includes('postulate')) {
       setActiveBotKey('euclid');
-      setCustomBotChat(null);
     } else {
       navigate(`/search?q=${encodeURIComponent(clean)}`);
     }
     setBotPrompt('');
   };
 
-  const currentChat = customBotChat || KNOWLEDGE_BASE[activeBotKey] || KNOWLEDGE_BASE.euclid;
+  const diagramX = english ? transversalX : 120;
+  const currentChat = (english ? ENGLISH_LESSONS : KNOWLEDGE_BASE)[activeBotKey];
 
   // Rich copy defaults matching template
   const defaultTitle = uiText("कक्षा 6 से 12 तक NCERT गणित का");
   const defaultHighlight = uiText("सबसे सरल, सटीक");
   const defaultSuffix = uiText("एवं सम्पूर्ण समाधान");
   const isDefaultSeedTitle = !section.title || t(section.title) === 'NCERT गणित हल' || t(section.title) === 'NCERT Mathematics Solutions';
-  const titleText = isDefaultSeedTitle ? defaultTitle : t(section.title);
-  const highlightText = isDefaultSeedTitle ? defaultHighlight : (t(section.highlight) || defaultHighlight);
-  const suffixText = isDefaultSeedTitle ? defaultSuffix : (t(section.suffix) || '');
+  const titleText = english ? 'NCERT Mathematics for Classes 6 to 12' : (isDefaultSeedTitle ? defaultTitle : t(section.title));
+  const highlightText = english ? 'Simple, accurate' : (isDefaultSeedTitle ? defaultHighlight : (t(section.highlight) || defaultHighlight));
+  const suffixText = english ? 'and complete solutions' : (isDefaultSeedTitle ? defaultSuffix : (t(section.suffix) || ''));
 
   const defaultDescription =
     uiText("प्रश्नावली (Exercise) अनुसार चरणबद्ध हल, जीवंत ज्यामितीय आरेख, LaTeX सूत्र और आपके साथ 24x7 AI गणित मित्र। हर एक प्रमेय और उपपत्ति की संपूर्ण वैज्ञानिक व्याख्या।");
   const isDefaultSeedDesc =
     !section.description || (typeof section.description === 'object' && t(section.description)?.includes('Class 6 to 12 Mathematics'));
-  const descriptionText = isDefaultSeedDesc ? defaultDescription : t(section.description);
+  const descriptionText = english ? 'Learn mathematics with step-by-step explanations, solved examples, important questions and interactive AI assistance.' : (isDefaultSeedDesc ? defaultDescription : t(section.description));
 
   const defaultPopularTags = [
     { get label() { return uiText("कक्षा 10 प्रश्नावली 5.2"); }, get query() { return uiText('कक्षा 10 प्रश्नावली 5.2'); } },
@@ -132,7 +131,7 @@ export function HeroSection({ section }) {
     { get label() { return uiText("रचना"); }, get query() { return uiText('रचना'); } },
   ];
   const popularTags =
-    cfg.popularSearches && cfg.popularSearches.length > 0
+    english ? ['Class 10 Ex 5.2', 'Arithmetic Progression', 'Triangle', 'Construction'].map(label => ({ label, query: label })) : cfg.popularSearches && cfg.popularSearches.length > 0
       ? cfg.popularSearches.map((p) => ({ label: t(p.label) || p.query, query: p.query }))
       : defaultPopularTags;
 
@@ -169,7 +168,7 @@ export function HeroSection({ section }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Column: Value Proposition and Action Trigger */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left">
+          <div className="lg:col-span-7 min-w-0 flex flex-col items-start text-left">
             {/* Badge */}
             <div
               data-enter
@@ -177,7 +176,7 @@ export function HeroSection({ section }) {
               data-purpose="hero-badge"
             >
               <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-              <span>{t(section.badge) || uiText("NCERT 2024-25 • हिंदी & English Medium")}</span>
+              <span>{heroValue(section.badge, heroText("NCERT 2024-25 • हिंदी & English Medium", "NCERT • Hindi & English Medium"))}</span>
             </div>
 
             {/* Main Headline */}
@@ -185,7 +184,7 @@ export function HeroSection({ section }) {
               data-enter
               className="heading-font text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-foreground tracking-tight leading-[1.2] mb-4"
             >
-              {titleText}{' '}
+              {titleText}{english ? <br /> : ' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500 dark:from-brand-400 dark:via-brand-300 dark:to-amber-300">
                 {highlightText}
               </span>{' '}
@@ -213,7 +212,7 @@ export function HeroSection({ section }) {
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder={t(cfg.searchPlaceholder) || uiText("जैसे: कक्षा 10 प्रश्नावली 5.2, त्रिभुज, सूत्र…")}
+                      placeholder={english ? "e.g. Class 10 Ex 5.2, Triangle, Formula..." : (t(cfg.searchPlaceholder) || uiText("जैसे: कक्षा 10 प्रश्नावली 5.2, त्रिभुज, सूत्र…"))}
                       className="w-full pl-10 pr-3 py-2.5 text-sm bg-transparent border-0 text-slate-800 dark:text-foreground placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none"
                     />
                   </div>
@@ -221,7 +220,7 @@ export function HeroSection({ section }) {
                     type="submit"
                     className="bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm px-6 py-2.5 rounded-lg shadow-sm flex items-center justify-center gap-2 transition-transform active:scale-95 cursor-pointer"
                   >
-                    <span>{t(cfg.searchButtonLabel) || uiText("हल खोजें")}</span>
+                    <span>{heroValue(cfg.searchButtonLabel, uiText("हल खोजें"))}</span>
                     <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </form>
@@ -230,7 +229,7 @@ export function HeroSection({ section }) {
 
             {/* Quick Search Topic Tags */}
             <div data-enter className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-muted-foreground mb-8" data-purpose="quick-search-tags">
-              <span className="font-semibold text-slate-700 dark:text-foreground">{t(cfg.popularLabel) || uiText("लोकप्रिय खोजें:")}</span>
+              <span className="font-semibold text-slate-700 dark:text-foreground">{heroValue(cfg.popularLabel, uiText("लोकप्रिय खोजें:"))}</span>
               {popularTags.map((tag) => (
                 <button
                   key={tag.query}
@@ -249,25 +248,25 @@ export function HeroSection({ section }) {
                 href="#classes"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-bold px-6 py-3 rounded-lg text-sm shadow-md shadow-brand-500/25 transition-all active:scale-95 cursor-pointer"
               >
-                <span>{uiText("कक्षा चुनें और पढ़ना शुरू करें")}</span>
+                <span>{heroText("कक्षा चुनें और पढ़ना शुरू करें", "Choose a class and start learning")}</span>
                 <ChevronDown className="w-4 h-4" />
               </a>
               <button
                 type="button"
-                onClick={() => navigate('/search?q=' + encodeURIComponent('सूत्र बैंक'))}
+                onClick={() => navigate('/search?q=' + encodeURIComponent(english ? 'NCERT Formula Bank PDF' : 'सूत्र बैंक'))}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white dark:bg-card hover:bg-slate-50 dark:hover:bg-accent text-slate-700 dark:text-foreground border border-slate-300 dark:border-border font-semibold px-5 py-3 rounded-lg text-sm shadow-2xs hover:border-slate-400 transition-all active:scale-95 cursor-pointer"
               >
                 <Download className="w-4 h-4 text-brand-500" />
-                <span>{uiText("NCERT सूत्र बैंक डाउनलोड करें (PDF)")}</span>
+                <span>{heroText("NCERT सूत्र बैंक डाउनलोड करें (PDF)", "Download the NCERT Formula Bank (PDF)")}</span>
               </button>
-              {section.buttons?.length > 0 ? (
-                <SectionButtons buttons={section.buttons} className="w-full sm:w-auto" />
+              {section.buttons?.some(button => pickL10n(button.label, lang)) ? (
+                <SectionButtons buttons={section.buttons.filter(button => pickL10n(button.label, lang))} className="w-full sm:w-auto" />
               ) : (
                 <a
                   href="#classes"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#991b1b] hover:bg-[#7f1d1d] text-white font-bold px-6 py-3 rounded-lg text-sm shadow-md transition-all active:scale-95 cursor-pointer"
                 >
-                  <span>{uiText("अपनी कक्षा चुनें")}</span>
+                  <span>{heroText("अपनी कक्षा चुनें", "Choose your class")}</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
               )}
@@ -275,7 +274,7 @@ export function HeroSection({ section }) {
           </div>
 
           {/* Right Column: Interactive AI Tutor Companion & Geometry Showcase */}
-          <div data-enter className="lg:col-span-5" data-purpose="hero-visual-card">
+          <div data-enter className="min-w-0 lg:col-span-5" data-purpose="hero-visual-card">
             <div className="relative mx-auto max-w-md lg:max-w-none">
               {/* Media Switcher Tab if Admin uploaded Media */}
               {hasMedia && (
@@ -289,7 +288,7 @@ export function HeroSection({ section }) {
                         ? 'bg-brand-500 text-white border-brand-500 shadow-xs'
                         : 'bg-white dark:bg-card text-slate-600 dark:text-slate-300 border-slate-200 dark:border-border hover:border-brand-300',
                     )}
-                  >{' '}{uiText("Maths companion · examples & search")}{' '}</button>
+                  >{' '}{heroText("Maths companion · examples & search", "Maths Companion – Examples & Search")}{' '}</button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('media')}
@@ -324,8 +323,8 @@ export function HeroSection({ section }) {
                   {/* Card Container */}
                   <div className="relative bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl shadow-card overflow-hidden">
                     {/* Card Header */}
-                    <div className="bg-gradient-to-r from-slate-900 to-slate-850 px-5 py-3.5 text-white flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
+                    <div className="bg-gradient-to-r from-slate-900 to-slate-850 px-5 py-3.5 text-white flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex items-center gap-2.5">
                         <div className="relative shrink-0">
                           <img
                             alt={uiText("AI Ganit Mitra 3D Mascot")}
@@ -337,27 +336,27 @@ export function HeroSection({ section }) {
                           />
                           <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-900 rounded-full" />
                         </div>
-                        <div>
-                          <h3 className="text-sm font-bold flex items-center gap-1.5 text-white">{' '}{uiText("Maths companion · examples & search")}{' '}<span className="bg-brand-500/30 text-amber-300 text-[10px] px-1.5 py-0.5 rounded border border-brand-500/40">{' '}{uiText("Practice")}{' '}</span>
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-bold leading-snug text-white">{' '}{heroText("Maths companion · examples & search", "Maths Companion – Examples & Search")}{' '}<span className="bg-brand-500/30 text-amber-300 text-[10px] px-1.5 py-0.5 rounded border border-brand-500/40">{' '}{uiText("Practice")}{' '}</span>
                           </h3>
-                          <p className="text-[11px] text-slate-300">{uiText("Worked examples and website search")}</p>
+                          <p className="text-[11px] text-slate-300">{heroText("Worked examples and website search", "Solved Examples & Website Search")}</p>
                         </div>
                       </div>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
+                      <span className="shrink-0 whitespace-nowrap text-[11px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/30 px-2 py-0.5 rounded">
                         KaTeX 0.16.8
                       </span>
                     </div>
 
                     {/* Card Body: Interactive Dialogue Preview */}
                     <div className="p-5 space-y-4">
-                      <LanguageContent languages={['hi']}>
-                      <p className="text-xs text-muted-foreground">{uiText('Sample lesson (Hindi)')}</p>
+
+                      <p className="text-xs text-muted-foreground">{heroText('Sample lesson (Hindi)', 'Example Question')}</p>
                       {/* Chat Bubble 1 (User) */}
                       <div className="flex items-start gap-2.5 justify-end">
                         <div className="bg-brand-50 dark:bg-brand-soft/70 border border-brand-200 dark:border-brand/30 text-brand-950 dark:text-foreground text-xs rounded-2xl rounded-tr-none px-3.5 py-2 max-w-[85%] font-medium">
                           "{currentChat.question}"
                         </div>
-                        <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-muted flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-muted-foreground shrink-0">{' '}{uiText("छात्र")}{' '}</div>
+                        <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-muted flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-muted-foreground shrink-0">{' '}{heroText("छात्र", "Student")}{' '}</div>
                       </div>
 
                       {/* Chat Bubble 2 (AI Bot Response) */}
@@ -373,7 +372,7 @@ export function HeroSection({ section }) {
                           />
                         </div>
                         <div className="bg-slate-50 dark:bg-muted/40 border border-slate-200 dark:border-border text-slate-800 dark:text-foreground text-xs rounded-2xl rounded-tl-none p-3 space-y-2 max-w-[90%]">
-                          <p className="font-medium text-slate-900 dark:text-foreground">{' '}{uiText("याद रखें यह गोल्डन ट्रिक:")}{' '}
+                          <p className="font-medium text-slate-900 dark:text-foreground">{' '}{heroText("याद रखें यह गोल्डन ट्रिक:", "Remember This Useful Method: ")}{' '}
                             <span className="bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-bold px-1.5 py-0.5 rounded">
                               "{currentChat.trick}"
                             </span>
@@ -382,7 +381,7 @@ export function HeroSection({ section }) {
                             {currentChat.explanation}
                           </p>
                           {/* LaTeX Inline Visual Box */}
-                          <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded p-2 text-center text-xs font-mono text-slate-900 dark:text-foreground shadow-2xs">
+                          <div className="max-w-full overflow-x-auto bg-white dark:bg-card border border-slate-200 dark:border-border rounded p-2 text-center text-xs font-mono text-slate-900 dark:text-foreground shadow-2xs">
                             <MathFormula latex={currentChat.latex} display={true} />
                           </div>
 
@@ -398,10 +397,10 @@ export function HeroSection({ section }) {
 
                       {/* Interactive Mini Geometry Sketch / Canvas Replica */}
                       <div className="border border-slate-200 dark:border-border rounded-xl p-3 bg-white dark:bg-card">
-                        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-muted-foreground mb-2">
+                        <div className="flex flex-wrap gap-2 items-center justify-between text-[11px] text-slate-500 dark:text-muted-foreground mb-2 flex-wrap gap-2">
                           <span className="font-bold text-slate-700 dark:text-foreground flex items-center gap-1">
-                            <Compass className="w-3.5 h-3.5 text-brand-500" />{' '}{uiText("लाइव ज्यामितीय आरेख सिमुलेशन")}{' '}</span>
-                          <span className="text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded text-[10px] font-bold">{' '}{uiText("• इंटरैक्टिव 2D")}{' '}</span>
+                            <Compass className="w-3.5 h-3.5 text-brand-500" />{' '}{heroText("लाइव ज्यामितीय आरेख सिमुलेशन", "Live Geometry Diagram Simulation")}{' '}</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded text-[10px] font-bold">{' '}{heroText("• इंटरैक्टिव 2D", "Interactive Geometry")}{' '}</span>
                         </div>
                         {/* Geometric SVG Representation */}
                         <div className="w-full h-32 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-100 dark:border-slate-800 flex items-center justify-center relative overflow-hidden">
@@ -417,27 +416,31 @@ export function HeroSection({ section }) {
                               m
                             </text>
                             {/* Transversal Line n */}
-                            <line stroke="#ea580c" strokeDasharray="4" strokeLinecap="round" strokeWidth="2.5" x1="120" x2="160" y1="10" y2="115" />
-                            <text fill="#ea580c" fontSize="11" fontWeight="bold" x="110" y="20">{' '}{uiText("n (तिर्यक)")}{' '}</text>
+                            <line stroke="#ea580c" strokeDasharray="4" strokeLinecap="round" strokeWidth="2.5" x1={diagramX} x2={diagramX + 40} y1="10" y2="115" />
+                            <text fill="#ea580c" fontSize="11" fontWeight="bold" x={diagramX - 10} y="20">{' '}{heroText("n (तिर्यक)", "n (transversal)")}{' '}</text>
                             {/* Intersection Point on Right */}
                             <circle cx="345" cy="65" fill="#dc2626" r="4" />
-                            <text fill="#dc2626" fontSize="9" fontWeight="bold" x="305" y="85">{' '}{uiText("प्रतिच्छेद बिंदु")}{' '}</text>
+                            <text fill="#dc2626" fontSize="9" fontWeight="bold" x="305" y="85">{' '}{heroText("प्रतिच्छेद बिंदु", "Intersection")}{' '}</text>
                             {/* Angle arc and markers */}
-                            <path d="M 145,55 A 15 15 0 0 1 155,50" fill="none" stroke="#ff7a00" strokeWidth="2" />
-                            <text fill="#ff7a00" fontSize="9" fontWeight="bold" x="160" y="52">
+                            <path transform={`translate(${diagramX - 120} 0)`} d="M 145,55 A 15 15 0 0 1 155,50" fill="none" stroke="#ff7a00" strokeWidth="2" />
+                            <text fill="#ff7a00" fontSize="9" fontWeight="bold" x={diagramX + 40} y="52">
                               ∠1 + ∠2 &lt; 180°
                             </text>
                           </svg>
                         </div>
+                        {english && <label className="mt-2 flex items-center gap-2 text-[11px] text-slate-600">
+                          Move transversal
+                          <input aria-label="Move transversal" type="range" min="70" max="190" value={transversalX} onChange={(event) => setTransversalX(Number(event.target.value))} className="min-w-0 flex-1 accent-orange-500" />
+                        </label>}
                       </div>
 
-                      </LanguageContent>
+
                       {/* Bot Interactive Prompt Bar */}
                       <form onSubmit={handleBotSubmit} className="relative">
                         <input
                           value={botPrompt}
                           onChange={(e) => setBotPrompt(e.target.value)}
-                          placeholder={uiText("AI गणित मित्र से कोई भी सवाल पूछें (जैसे 'पाइथागोरस', 'त्रिकोणमिति')...")}
+                          placeholder={heroText("AI गणित मित्र से कोई भी सवाल पूछें (जैसे 'पाइथागोरस', 'त्रिकोणमिति')...", "Ask the Maths Companion (e.g. Pythagoras, trigonometry)...")}
                           className="w-full pl-3 pr-20 py-2 bg-slate-50 dark:bg-muted/40 border border-slate-200 dark:border-border rounded-lg text-xs text-slate-800 dark:text-foreground focus:ring-1 focus:ring-brand-500 focus:outline-none"
                           type="text"
                         />
@@ -449,7 +452,7 @@ export function HeroSection({ section }) {
                     </div>
 
                     {/* Card Footer / Status */}
-                    <div className="bg-slate-50 dark:bg-muted/30 px-5 py-2.5 border-t border-slate-200 dark:border-border flex items-center justify-between text-[11px] text-slate-500 dark:text-muted-foreground">
+                    <div className="bg-slate-50 dark:bg-muted/30 px-5 py-2.5 border-t border-slate-200 dark:border-border flex flex-wrap gap-2 items-center justify-between text-[11px] text-slate-500 dark:text-muted-foreground">
                       <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-medium">
                         <svg className="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                           <path
@@ -460,9 +463,9 @@ export function HeroSection({ section }) {
                         </svg>{' '}{uiText("100% NCERT पाठ्यपुस्तक अनुसार सत्यापित")}{' '}</span>
                       <button
                         type="button"
-                        onClick={() => navigate('/search?q=' + encodeURIComponent('AI गणित मित्र'))}
+                        onClick={() => navigate('/search?q=' + encodeURIComponent(english ? 'AI Maths Companion' : 'AI गणित मित्र'))}
                         className="text-brand-600 dark:text-brand-400 font-bold hover:underline cursor-pointer"
-                      >{' '}{uiText("विस्तृत बॉट खोलें →")}{' '}</button>
+                      >{' '}{heroText("विस्तृत बॉट खोलें →", "Open Full Assistant →")}{' '}</button>
                     </div>
                   </div>
                 </>
