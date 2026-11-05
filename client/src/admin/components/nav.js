@@ -69,6 +69,8 @@ export const NAV_GROUPS = [
       { to: 'announcements', get label() { return uiText("Announcements"); }, icon: Megaphone },
       { to: 'homepage', get label() { return uiText("Homepage"); }, icon: LayoutTemplate },
       { to: 'settings', get label() { return uiText("Website Settings"); }, icon: Settings, permission: 'settings:write' },
+      { to: 'header-footer', get label() { return uiText("Header & Footer Settings"); }, icon: PanelTop, permission: 'settings:write' },
+      { to: 'reference-books', get label() { return uiText("Reference Books"); }, icon: Library },
 
       { to: 'header', get label() { return uiText("Header"); }, icon: PanelTop, permission: 'settings:write' },
       { to: 'navigation', get label() { return uiText("Navigation"); }, icon: Menu, permission: 'settings:write' },

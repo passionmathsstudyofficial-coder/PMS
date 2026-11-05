@@ -63,6 +63,7 @@ const VideoEditor = named(media, 'VideoEditor');
 const HomepagePage = named(homepage, 'HomepagePage');
 const SectionEditor = named(homepage, 'SectionEditor');
 const WebsiteSettingsPage = named(settings, 'WebsiteSettingsPage');
+const HeaderFooterSettingsPage = lazy(() => import('./pages/HeaderFooterSettingsPage.jsx').then((m) => ({ default: m.HeaderFooterSettingsPage })));
 const HeaderSettingsPage = named(settings, 'HeaderSettingsPage');
 const NavigationPage = named(settings, 'NavigationPage');
 const FooterSettingsPage = named(settings, 'FooterSettingsPage');
@@ -135,6 +136,8 @@ export default function AdminApp() {
               <Route path="resources/:id" element={<EditorRoute component={ResourceEditor} />} />
               <Route path="books" element={<BooksList />} />
               <Route path="books/:id" element={<EditorRoute component={BookEditor} />} />
+              <Route path="reference-books" element={<BooksList />} />
+              <Route path="reference-books/:id" element={<EditorRoute component={BookEditor} />} />
               <Route path="announcements" element={<AnnouncementsList />} />
               <Route path="announcements/:id" element={<EditorRoute component={AnnouncementEditor} />} />
               <Route path="important-questions" element={<ImportantQuestionsList />} />
@@ -155,9 +158,10 @@ export default function AdminApp() {
               <Route path="related" element={<RelatedContentPage />} />
               <Route path="seo" element={<SeoPage />} />
               <Route path="settings" element={guarded('settings:write', <WebsiteSettingsPage />)} />
-              <Route path="header" element={guarded('settings:write', <HeaderSettingsPage />)} />
-              <Route path="navigation" element={guarded('settings:write', <NavigationPage />)} />
-              <Route path="footer" element={guarded('settings:write', <FooterSettingsPage />)} />
+              <Route path="header-footer" element={guarded('settings:write', <HeaderFooterSettingsPage />)} />
+              <Route path="header" element={guarded('settings:write', <HeaderFooterSettingsPage />)} />
+              <Route path="navigation" element={guarded('settings:write', <HeaderFooterSettingsPage />)} />
+              <Route path="footer" element={guarded('settings:write', <HeaderFooterSettingsPage />)} />
               <Route path="language" element={guarded('settings:write', <LanguageSettingsPage />)} />
               <Route path="ads" element={guarded('settings:write', <AdsPage />)} />
 

@@ -27,12 +27,13 @@ import { validateReferences } from '../services/relationships.js';
 
 const router = express.Router();
 
-const SETTINGS_SECTIONS = ['brand', 'header', 'footer', 'contact', 'social', 'language', 'terminology', 'theme', 'seo', 'ads'];
+const SETTINGS_SECTIONS = ['brand', 'header', 'footer', 'contact', 'social', 'language', 'terminology', 'theme', 'seo', 'ads', 'whatsappBanner', 'sponsoredBar'];
 const SETTINGS_POPULATE = [
   { path: 'brand.logo', select: MEDIA_SELECT },
   { path: 'brand.footerLogo', select: MEDIA_SELECT },
   { path: 'brand.favicon', select: MEDIA_SELECT },
   { path: 'seo.defaultOgImage', select: MEDIA_SELECT },
+  { path: 'whatsappBanner.icon', select: MEDIA_SELECT },
 ];
 
 router.get('/site-settings', async (req, res) => {

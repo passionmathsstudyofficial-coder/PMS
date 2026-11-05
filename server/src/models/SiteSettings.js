@@ -80,9 +80,28 @@ const siteSettingsSchema = new Schema(
     footer: {
       description: textL10n(),
       copyright: l10n(),
+      copyrightYear: { type: String, default: 'auto', maxlength: 20 },
       disclaimer: textL10n(),
       badges: [l10n()],
       showSocial: { type: Boolean, default: true },
+    },
+    whatsappBanner: {
+      enabled: { type: Boolean, default: true },
+      title: l10n(),
+      badge: l10n(),
+      description: textL10n(),
+      url: { type: String, default: 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N', trim: true, maxlength: 500 },
+      buttonText: l10n(),
+      icon: { type: ObjectId, ref: 'Media' },
+      iconUrl: { type: String, default: '', maxlength: 500 },
+    },
+    sponsoredBar: {
+      enabled: { type: Boolean, default: true },
+      badge: l10n(),
+      text: l10n(),
+      linkLabel: l10n(),
+      linkUrl: { type: String, default: '/#classes', trim: true, maxlength: 500 },
+      isExternal: { type: Boolean, default: false },
     },
     contact: {
       email: { type: String, default: '', maxlength: 200 },
@@ -97,6 +116,7 @@ const siteSettingsSchema = new Schema(
           enum: ['youtube', 'facebook', 'instagram', 'x', 'telegram', 'whatsapp', 'linkedin', 'website'],
         },
         url: { type: String, maxlength: 500 },
+        isEnabled: { type: Boolean, default: true },
       },
     ],
     language: {

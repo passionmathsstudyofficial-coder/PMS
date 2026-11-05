@@ -1,5 +1,478 @@
 // Reviewed interface labels, dynamic messages and API errors.
 export const application = {
+  "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.": {
+    "en": "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.",
+    "hi": "हेडर नेविगेशन बार, संदर्भ पुस्तक फुटर, व्हाट्सएप बैनर और कॉपीराइट के लिए पूर्ण गतिशील सामग्री प्रबंधन।"
+  },
+  "Logo, sticky behavior, search bar visibility, and toggle controls.": {
+    "en": "Logo, sticky behavior, search bar visibility, and toggle controls.",
+    "hi": "लोगो, स्टिकी व्यवहार, खोज बार दृश्यता, और टॉगल नियंत्रण।"
+  },
+  "Explore Board Solutions": {
+    "en": "Explore Board Solutions",
+    "hi": "बोर्ड समाधान देखें"
+  },
+
+  "State Boards": {
+    "en": "State Boards",
+    "hi": "राज्य बोर्ड"
+  },
+
+  "Other State Boards": {
+    "en": "Other State Boards",
+    "hi": "अन्य राज्य बोर्ड"
+  },
+
+  "View Solutions": {
+    "en": "View Solutions",
+    "hi": "हल देखें"
+  },
+
+  "NCERT एवं राज्य बोर्ड समाधान, अध्याय-वार हल एवं सूत्र": {
+    "en": "NCERT & State Board solutions, chapter-wise solutions & formulas",
+    "hi": "NCERT एवं राज्य बोर्ड समाधान, अध्याय-वार हल एवं सूत्र"
+  },
+
+  "Select Class (Class 6 to 12 Mathematics)": {
+    "en": "Select Class (Class 6 to 12 Mathematics)",
+    "hi": "कक्षा चुनें (कक्षा 6 से 12 गणित)"
+  },
+
+  "State Board Solutions": {
+    "en": "State Board Solutions",
+    "hi": "राज्य बोर्ड समाधान"
+  },
+
+  "Preferences": {
+    "en": "Preferences",
+    "hi": "प्राथमिकताएं"
+  },
+
+  "Follow": {
+    "en": "Follow",
+    "hi": "फॉलो करें"
+  },
+
+  "Get daily formulas & notes": {
+    "en": "Get daily formulas & notes",
+    "hi": "दैनिक सूत्र और नोट्स प्राप्त करें"
+  },
+
+  "Mobile navigation": {
+    "en": "Mobile navigation",
+    "hi": "मोबाइल नेविगेशन"
+  },
+
+  "Passion Maths Study navigation menu": {
+    "en": "Passion Maths Study navigation menu",
+    "hi": "पैशन मैथ्स स्टडी नेविगेशन मेनू"
+  },
+
+  "Get daily NCERT 2024–25 maths formulas, new solutions, notes and exam updates on WhatsApp.": {
+    "en": "Get daily NCERT 2024–25 maths formulas, new solutions, notes and exam updates on WhatsApp.",
+    "hi": "NCERT 2024-25 गणित के दैनिक सूत्र, नए हल, नोट्स और परीक्षा अपडेट्स सीधे अपने WhatsApp पर पाएँ।"
+  },
+
+  "Copyright & bottom links saved successfully": {
+    "en": "Copyright & bottom links saved successfully",
+    "hi": "कॉपीराइट और निचले लिंक सफलतापूर्वक सहेजे गए"
+  },
+
+  "Add Bottom Link": {
+    "en": "Add Bottom Link",
+    "hi": "निचला लिंक जोड़ें"
+  },
+
+  "Remove bottom link": {
+    "en": "Remove bottom link",
+    "hi": "निचला लिंक हटाएं"
+  },
+
+  "Privacy Policy, Terms & Conditions, Contact, and other legal links.": {
+    "en": "Privacy Policy, Terms & Conditions, Contact, and other legal links.",
+    "hi": "गोपनीयता नीति, नियम एवं शर्तें, संपर्क और अन्य कानूनी लिंक।"
+  },
+
+  "Footer Bottom Links (Right Side)": {
+    "en": "Footer Bottom Links (Right Side)",
+    "hi": "फुटर नीचे लिंक (दाईं ओर)"
+  },
+
+  "Disclaimer Text": {
+    "en": "Disclaimer Text",
+    "hi": "अस्वीकरण पाठ"
+  },
+
+  "Show Social Media Links Bar": {
+    "en": "Show Social Media Links Bar",
+    "hi": "सोशल मीडिया लिंक बार दिखाएं"
+  },
+
+  "Type 'auto' to use the current calendar year automatically, or enter a fixed year like '2026'": {
+    "en": "Type 'auto' to use the current calendar year automatically, or enter a fixed year like '2026'",
+    "hi": "वर्तमान कैलेंडर वर्ष का स्वतः उपयोग करने के लिए 'auto' टाइप करें, या '2026' जैसा निश्चित वर्ष दर्ज करें"
+  },
+
+  "Copyright Year": {
+    "en": "Copyright Year",
+    "hi": "कॉपीराइट वर्ष"
+  },
+
+  "Use {year} to dynamically insert the active year (e.g. '© {year} Passion Maths Study (PMS). All rights reserved.')": {
+    "en": "Use {year} to dynamically insert the active year (e.g. '© {year} Passion Maths Study (PMS). All rights reserved.')",
+    "hi": "सक्रिय वर्ष को स्वचालित रूप से जोड़ने के लिए {year} का उपयोग करें।"
+  },
+
+  "Copyright Notice": {
+    "en": "Copyright Notice",
+    "hi": "कॉपीराइट सूचना"
+  },
+
+  "Save Copyright & Links": {
+    "en": "Save Copyright & Links",
+    "hi": "कॉपीराइट और लिंक सहेजें"
+  },
+
+  "Configure copyright text, year behavior, disclaimer and social links.": {
+    "en": "Configure copyright text, year behavior, disclaimer and social links.",
+    "hi": "कॉपीराइट पाठ, वर्ष व्यवहार, अस्वीकरण और सोशल लिंक कॉन्फ़िगर करें।"
+  },
+
+  "Footer Copyright & Disclaimer": {
+    "en": "Footer Copyright & Disclaimer",
+    "hi": "फुटर कॉपीराइट और अस्वीकरण"
+  },
+
+  "Live Banner Preview": {
+    "en": "Live Banner Preview",
+    "hi": "लाइव बैनर पूर्वावलोकन"
+  },
+
+  "Upload custom icon. If empty, default official WhatsApp logo is used.": {
+    "en": "Upload custom icon. If empty, default official WhatsApp logo is used.",
+    "hi": "कस्टम आइकन अपलोड करें। यदि खाली है, तो डिफ़ॉल्ट व्हाट्सएप लोगो का उपयोग किया जाता है।"
+  },
+
+  "Promotional Icon (Optional)": {
+    "en": "Promotional Icon (Optional)",
+    "hi": "प्रचार आइकन (वैकल्पिक)"
+  },
+
+  "Button Text": {
+    "en": "Button Text",
+    "hi": "बटन पाठ"
+  },
+
+  "WhatsApp Channel URL": {
+    "en": "WhatsApp Channel URL",
+    "hi": "व्हाट्सएप चैनल यूआरएल"
+  },
+
+  "Official Badge Text": {
+    "en": "Official Badge Text",
+    "hi": "आधिकारिक बैज पाठ"
+  },
+
+  "Banner Title": {
+    "en": "Banner Title",
+    "hi": "बैनर शीर्षक"
+  },
+
+  "Display callout banner at the top of the footer": {
+    "en": "Display callout banner at the top of the footer",
+    "hi": "फुटर के शीर्ष पर कॉलआउट बैनर प्रदर्शित करें"
+  },
+
+  "Enable WhatsApp Promotional Banner": {
+    "en": "Enable WhatsApp Promotional Banner",
+    "hi": "व्हाट्सएप प्रचार बैनर सक्षम करें"
+  },
+
+  "Save Banner": {
+    "en": "Save Banner",
+    "hi": "बैनर सहेजें"
+  },
+
+  "Configure the callout strip displayed at the top of the footer. 100% dynamic and editable.": {
+    "en": "Configure the callout strip displayed at the top of the footer. 100% dynamic and editable.",
+    "hi": "फुटर के शीर्ष पर प्रदर्शित कॉलआउट पट्टी को कॉन्फ़िगर करें। 100% गतिशील और संपादन योग्य।"
+  },
+
+  "WhatsApp Channel Promotional Banner": {
+    "en": "WhatsApp Channel Promotional Banner",
+    "hi": "व्हाट्सएप चैनल प्रचार बैनर"
+  },
+
+  "Footer columns saved successfully": {
+    "en": "Footer columns saved successfully",
+    "hi": "फुटर कॉलम सफलतापूर्वक सहेजे गए"
+  },
+
+  "Add Footer Column": {
+    "en": "Add Footer Column",
+    "hi": "फुटर कॉलम जोड़ें"
+  },
+
+  "Delete column": {
+    "en": "Delete column",
+    "hi": "कॉलम हटाएं"
+  },
+
+  "No links in this column yet. Click 'Add Link' or 'Add Classes 6–12'.": {
+    "en": "No links in this column yet. Click 'Add Link' or 'Add Classes 6–12'.",
+    "hi": "इस कॉलम में अभी तक कोई लिंक नहीं है। 'लिंक जोड़ें' पर क्लिक करें।"
+  },
+
+  "Add Link": {
+    "en": "Add Link",
+    "hi": "लिंक जोड़ें"
+  },
+
+  "Add Classes 6–12": {
+    "en": "Add Classes 6–12",
+    "hi": "कक्षा 6–12 जोड़ें"
+  },
+
+  "Column Links": {
+    "en": "Column Links",
+    "hi": "कॉलम लिंक"
+  },
+
+  "This column automatically renders all active Class 6–12 mathematics links from your database.": {
+    "en": "This column automatically renders all active Class 6–12 mathematics links from your database.",
+    "hi": "यह कॉलम आपके डेटाबेस से सभी सक्रिय कक्षा 6-12 गणित लिंक स्वचालित रूप से प्रदर्शित करता है।"
+  },
+
+  "Custom links column": {
+    "en": "Custom links column",
+    "hi": "कस्टम लिंक कॉलम"
+  },
+
+  "Column Mode": {
+    "en": "Column Mode",
+    "hi": "कॉलम मोड"
+  },
+
+  "Column Heading": {
+    "en": "Column Heading",
+    "hi": "कॉलम शीर्षक"
+  },
+
+  "Save Footer Columns": {
+    "en": "Save Footer Columns",
+    "hi": "फुटर कॉलम सहेजें"
+  },
+
+  "Load Screenshot Preset": {
+    "en": "Load Screenshot Preset",
+    "hi": "स्क्रीनशॉट प्रीसेट लोड करें"
+  },
+
+  "Load 6 Columns": {
+    "en": "Load 6 Columns",
+    "hi": "6 कॉलम लोड करें"
+  },
+
+  "This will load the exact 6 columns from the reference screenshot: NCERT Solutions, R.S. Aggarwal, R.D. Sharma, K.C. Sinha, State Boards, and Important Links.": {
+    "en": "This will load the exact 6 columns from the reference screenshot: NCERT Solutions, R.S. Aggarwal, R.D. Sharma, K.C. Sinha, State Boards, and Important Links.",
+    "hi": "यह संदर्भ स्क्रीनशॉट से सटीक 6 कॉलम लोड करेगा: एनसीईआरटी, आर.एस. अग्रवाल, आर.डी. शर्मा, के.सी. सिन्हा, राज्य बोर्ड और महत्वपूर्ण लिंक।"
+  },
+
+  "Load Screenshot 6-Column Layout?": {
+    "en": "Load Screenshot 6-Column Layout?",
+    "hi": "स्क्रीनशॉट 6-कॉलम लेआउट लोड करें?"
+  },
+
+  "Manage column titles, reorder with drag & drop, add new columns, and manage links inside each column.": {
+    "en": "Manage column titles, reorder with drag & drop, add new columns, and manage links inside each column.",
+    "hi": "कॉलम शीर्षक प्रबंधित करें, ड्रैग एंड ड्रॉप से पुनर्व्यवस्थित करें, नए कॉलम जोड़ें और प्रत्येक कॉलम के लिंक प्रबंधित करें।"
+  },
+
+  "Footer Content Columns (Desktop 6-Column Layout)": {
+    "en": "Footer Content Columns (Desktop 6-Column Layout)",
+    "hi": "फुटर सामग्री कॉलम (डेस्कटॉप 6-कॉलम लेआउट)"
+  },
+
+  "Header navigation & options saved successfully": {
+    "en": "Header navigation & options saved successfully",
+    "hi": "हेडर नेविगेशन और विकल्प सफलतापूर्वक सहेजे गए"
+  },
+
+  "Add Navigation Item": {
+    "en": "Add Navigation Item",
+    "hi": "नेविगेशन आइटम जोड़ें"
+  },
+
+  "Delete navigation item": {
+    "en": "Delete navigation item",
+    "hi": "नेविगेशन आइटम हटाएं"
+  },
+
+  "Remove link": {
+    "en": "Remove link",
+    "hi": "लिंक हटाएं"
+  },
+
+  "No child links yet. Click 'Add Dropdown Link' or use the Class generator.": {
+    "en": "No child links yet. Click 'Add Dropdown Link' or use the Class generator.",
+    "hi": "अभी तक कोई सब-लिंक नहीं है। 'ड्रॉपडाउन लिंक जोड़ें' पर क्लिक करें।"
+  },
+
+  "Add Dropdown Link": {
+    "en": "Add Dropdown Link",
+    "hi": "ड्रॉपडाउन लिंक जोड़ें"
+  },
+
+  "Auto-generate Class 6 to 12 links": {
+    "en": "Auto-generate Class 6 to 12 links",
+    "hi": "कक्षा 6 से 12 लिंक स्वचालित रूप से बनाएं"
+  },
+
+  "Dropdown Links (Classes / Sub-pages)": {
+    "en": "Dropdown Links (Classes / Sub-pages)",
+    "hi": "ड्रॉपडाउन लिंक (कक्षाएं / उप-पृष्ठ)"
+  },
+
+  "Destination URL": {
+    "en": "Destination URL",
+    "hi": "गंतव्य यूआरएल"
+  },
+
+  "Dropdown menu (with child links)": {
+    "en": "Dropdown menu (with child links)",
+    "hi": "ड्रॉपडाउन मेनू (सब-लिंक के साथ)"
+  },
+
+  "Direct link": {
+    "en": "Direct link",
+    "hi": "सीधा लिंक"
+  },
+
+  "Menu Label": {
+    "en": "Menu Label",
+    "hi": "मेनू लेबल"
+  },
+
+  "Save Header": {
+    "en": "Save Header",
+    "hi": "हेडर सहेजें"
+  },
+
+  "Load PMS Preset": {
+    "en": "Load PMS Preset",
+    "hi": "पीएमएस प्रीसेट लोड करें"
+  },
+
+  "Load Recommended": {
+    "en": "Load Recommended",
+    "hi": "अनुशंसित लोड करें"
+  },
+
+  "This will replace current header items with the standard PMS navigation (Home, NCERT Maths, RS Aggarwal, RD Sharma, KC Sinha, State Boards, Important Links, About Us, Contact).": {
+    "en": "This will replace current header items with the standard PMS navigation (Home, NCERT Maths, RS Aggarwal, RD Sharma, KC Sinha, State Boards, Important Links, About Us, Contact).",
+    "hi": "यह वर्तमान हेडर आइटम को मानक पीएमएस नेविगेशन से बदल देगा।"
+  },
+
+  "Load Recommended Header Navigation?": {
+    "en": "Load Recommended Header Navigation?",
+    "hi": "अनुशंसित हेडर नेविगेशन लोड करें?"
+  },
+
+  "Add, edit, reorder via drag & drop, and create dropdown menus for NCERT, reference books, state boards, or custom links.": {
+    "en": "Add, edit, reorder via drag & drop, and create dropdown menus for NCERT, reference books, state boards, or custom links.",
+    "hi": "ड्रैग एंड ड्रॉप द्वारा जोड़ें, संपादित करें, पुनर्व्यवस्थित करें, और एनसीईआरटी, संदर्भ पुस्तकों, राज्य बोर्डों या कस्टम लिंक के लिए ड्रॉपडाउन मेनू बनाएं।"
+  },
+
+  "Header Navigation Menu Items": {
+    "en": "Header Navigation Menu Items",
+    "hi": "हेडर नेविगेशन मेनू आइटम"
+  },
+
+  "Search Placeholder": {
+    "en": "Search Placeholder",
+    "hi": "खोज प्लेसहोल्डर"
+  },
+
+  "Login Button URL": {
+    "en": "Login Button URL",
+    "hi": "लॉगिन बटन यूआरएल"
+  },
+
+  "Show Login Button": {
+    "en": "Show Login Button",
+    "hi": "लॉगिन बटन दिखाएं"
+  },
+
+  "Show Theme Toggle (Light/Dark)": {
+    "en": "Show Theme Toggle (Light/Dark)",
+    "hi": "थीम टॉगल (लाइट/डार्क) दिखाएं"
+  },
+
+  "Show Language Switcher": {
+    "en": "Show Language Switcher",
+    "hi": "भाषा स्विचर दिखाएं"
+  },
+
+  "Display search in header on desktop & mobile": {
+    "en": "Display search in header on desktop & mobile",
+    "hi": "डेस्कटॉप और मोबाइल पर हेडर में खोज दिखाएं"
+  },
+
+  "Show Search Bar / Icon": {
+    "en": "Show Search Bar / Icon",
+    "hi": "सर्च बार / आइकन दिखाएं"
+  },
+
+  "Keep header visible at the top while scrolling": {
+    "en": "Keep header visible at the top while scrolling",
+    "hi": "स्क्रॉल करते समय हेडर को ऊपर स्थिर रखें"
+  },
+
+  "Sticky Navigation": {
+    "en": "Sticky Navigation",
+    "hi": "स्टिकी नेविगेशन"
+  },
+
+  "Primary website logo displayed on the left side of the navigation bar.": {
+    "en": "Primary website logo displayed on the left side of the navigation bar.",
+    "hi": "नेविगेशन बार के बाईं ओर प्रदर्शित मुख्य वेबसाइट लोगो।"
+  },
+
+  "Header Logo": {
+    "en": "Header Logo",
+    "hi": "हेडर लोगो"
+  },
+
+  "Header Options & Branding": {
+    "en": "Header Options & Branding",
+    "hi": "हेडर विकल्प और ब्रांडिंग"
+  },
+
+  "Copyright & Bottom": {
+    "en": "Copyright & Bottom",
+    "hi": "कॉपीराइट और निचला भाग"
+  },
+
+  "WhatsApp Banner": {
+    "en": "WhatsApp Banner",
+    "hi": "व्हाट्सएप बैनर"
+  },
+
+  "Footer Columns (6 Col)": {
+    "en": "Footer Columns (6 Col)",
+    "hi": "फुटर कॉलम (6 कॉलम)"
+  },
+
+  "Header Navigation": {
+    "en": "Header Navigation",
+    "hi": "हेडर नेविगेशन"
+  },
+
+  "Header & Footer Settings": {
+    "en": "Header & Footer Settings",
+    "hi": "हेडर और फुटर सेटिंग्स"
+  },
+
   "%s is replaced by the page title.": {
     "en": "%s is replaced by the page title.",
     "hi": "%s के स्थान पर पृष्ठ का शीर्षक आता है।"

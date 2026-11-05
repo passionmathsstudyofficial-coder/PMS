@@ -1,381 +1,472 @@
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronDown, Menu, X } from 'lucide-react';
-import { Dialog as DialogPrimitive } from 'radix-ui';
-import { useEffect, useId, useState } from 'react';
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  GraduationCap,
+  Home,
+  Info,
+  Library,
+  Mail,
+  Search,
+  Sparkles,
+  X,
+} from 'lucide-react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { Button } from '@/components/ui/button';
 import { useInterfaceL10n } from '@/lib/i18n';
-import { useSite, useTerm } from '@/lib/site';
+import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { LanguageSwitcher } from './LanguageSwitcher.jsx';
 import { Logo } from './Logo.jsx';
 import { SearchBar } from './SearchBar.jsx';
 import { SmartLink } from './SmartLink.jsx';
+import { ThemeToggle } from './ThemeToggle.jsx';
 
-// Sub-accordion for Important Questions dropdown inside ClassAccordion
-function ImportantQuestionsSubMenu({ baseUrl, onClose }) {
-  useUiLanguage();
-  const [open, setOpen] = useState(false);
-  const id = useId();
-  const subLinks = [
-    { label: uiText("Previous Year Questions (PYQ)"), url: `${baseUrl}/important-questions/pyq` },
-    { label: uiText("Sample Papers"), url: `${baseUrl}/important-questions/sample-papers` },
-    { label: uiText("CBSE Extra Questions"), url: `${baseUrl}/important-questions/cbse-extra` },
-    { label: uiText("VVI Questions (Board Special)"), url: `${baseUrl}/important-questions/vvi` },
-    { label: uiText("Maths Syllabus"), url: `${baseUrl}/syllabus` },
-  ];
-  return (
-    <li className="border-b last:border-b-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand"
-        aria-expanded={open}
-      >
-        <span>{uiText("Important Questions")}</span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
-          <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
-        </motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.ul
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="overflow-hidden pl-3 space-y-0.5 pb-1"
-          >
-            {subLinks.map((link) => (
-              <li key={link.url}>
-                <Link
-                  to={link.url}
-                  onClick={onClose}
-                  className="block rounded-md px-2 py-1.5 text-xs text-foreground/75 hover:bg-muted hover:text-brand"
-                >
-                  ▸ {link.label}
-                </Link>
-              </li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </li>
-  );
+const DEFAULT_BOOKS = [
+  {
+    slug: 'rs-aggarwal',
+    title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'R.S. Aggarwal Solutions' },
+    author: 'R.S. Aggarwal',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'rd-sharma',
+    title: { hi: 'आर.डी. शर्मा समाधान', en: 'R.D. Sharma Solutions' },
+    author: 'Dr. R.D. Sharma',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'kc-sinha',
+    title: { hi: 'के.सी. सिन्हा समाधान', en: 'K.C. Sinha Solutions' },
+    author: 'Dr. K.C. Sinha',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'ml-aggarwal',
+    title: { hi: 'एम.एल. अग्रवाल समाधान', en: 'M.L. Aggarwal Solutions' },
+    author: 'M.L. Aggarwal',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+  },
+];
+
+function isPathActive(targetUrl, currentPath) {
+  if (!targetUrl) return false;
+  const cleanTarget = targetUrl.split('?')[0].split('#')[0];
+  if (cleanTarget === '/') return currentPath === '/';
+  return currentPath === cleanTarget || currentPath.startsWith(cleanTarget + '/');
 }
 
-// Sub-accordion for Notes dropdown inside ClassAccordion
-function NotesSubMenu({ baseUrl, onClose }) {
+// Multi-level accordion for Reference Books on Mobile:
+// Reference Books -> expands to Books -> expands to Classes (6-12)
+function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose }) {
   useUiLanguage();
-  const [open, setOpen] = useState(false);
-  const subLinks = [
-    { label: uiText("NCERT Chapter-wise Notes"), url: `${baseUrl}/notes/ncert` },
-    { label: uiText("All Maths Formula Sheets"), url: `${baseUrl}/notes/formula-sheets` },
-    { label: uiText("RS Aggarwal Formulas & Notes"), url: `${baseUrl}/notes/rs-aggarwal` },
-    { label: uiText("RD Sharma Formulas & Notes"), url: `${baseUrl}/notes/rd-sharma` },
-    { label: uiText("KC Sinha Formulas & Notes"), url: `${baseUrl}/notes/kc-sinha` },
-    { label: uiText("VVI Questions & Short Notes"), url: `${baseUrl}/notes/vvi-short` },
-  ];
-  return (
-    <li className="border-b last:border-b-0">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand"
-        aria-expanded={open}
-      >
-        <span>{uiText("Notes")}</span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
-          <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
-        </motion.span>
-      </button>
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.ul
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="overflow-hidden pl-3 space-y-0.5 pb-1"
-          >
-            {subLinks.map((link) => (
-              <li key={link.url}>
-                <Link
-                  to={link.url}
-                  onClick={onClose}
-                  className="block rounded-md px-2 py-1.5 text-xs text-foreground/75 hover:bg-muted hover:text-brand"
-                >
-                  ▸ {link.label}
-                </Link>
-              </li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </li>
-  );
-}
-
-function ClassAccordion({ cls, open, onToggle, onClose }) {
-  useUiLanguage();
+  const site = useSite();
   const t = useInterfaceL10n();
-  const term = useTerm();
-  const id = useId();
-  const title = t(cls.name) || `${term('class')} ${cls.number} ${term('mathematics')}`;
+
+  const [expandedBook, setExpandedBook] = useState('rs-aggarwal');
+
+  const books = (site?.referenceBooks && site.referenceBooks.length > 0)
+    ? site.referenceBooks
+    : DEFAULT_BOOKS;
+
+  const isMainActive =
+    currentPath.startsWith('/reference-books') ||
+    currentPath.startsWith('/reference-solutions');
+
   return (
-    <li className="border-b last:border-b-0">
+    <div className="border-b border-border/50 last:border-b-0 py-1">
       <button
-        id={`${id}-trigger`}
         type="button"
         onClick={onToggle}
-        aria-expanded={open}
-        aria-controls={`${id}-panel`}
-        className="flex w-full items-center justify-between gap-3 px-1 py-3.5 text-left text-[15px] font-semibold"
+        className={cn(
+          'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
+          isMainActive ? 'text-brand bg-brand/5' : 'text-foreground',
+        )}
       >
-        <span className="flex items-center gap-3">
-          <span className="grid size-8 place-items-center rounded-lg bg-brand-soft text-xs font-extrabold text-brand">{cls.number}</span>
-          {title}
+        <span className="flex items-center gap-2">
+          <Library className="size-4 text-brand" />
+          <span>{uiText("संदर्भ पुस्तकें (Reference Books)")}</span>
         </span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown className="size-5 text-muted-foreground" aria-hidden="true" />
-        </motion.span>
+        <ChevronDown
+          className={cn(
+            'size-4 text-muted-foreground transition-transform duration-200',
+            isOpen && 'rotate-180 text-brand',
+          )}
+        />
       </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden pl-4 pr-1 pt-1 pb-2 space-y-2"
+          >
+            {books.map((book) => {
+              const bookTitle = t(book.title) || book.author || 'Book';
+              const classes =
+                book.availableClasses && book.availableClasses.length > 0
+                  ? book.availableClasses
+                  : [6, 7, 8, 9, 10, 11, 12];
+              const isBookOpen = expandedBook === book.slug;
+              const isBookActive = currentPath.includes(book.slug);
+
+              return (
+                <div
+                  key={book.slug || book._id}
+                  className="rounded-xl border border-border/60 bg-muted/30 overflow-hidden"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setExpandedBook(isBookOpen ? null : book.slug)}
+                    className={cn(
+                      'flex w-full items-center justify-between px-3 py-2 text-left text-xs font-bold transition-colors hover:bg-muted/60',
+                      isBookActive ? 'text-brand font-extrabold' : 'text-foreground',
+                    )}
+                  >
+                    <span className="flex items-center gap-2">
+                      <BookOpen className="size-3.5 text-brand" />
+                      <span>{bookTitle}</span>
+                    </span>
+                    <ChevronDown
+                      className={cn(
+                        'size-3.5 text-muted-foreground transition-transform duration-200',
+                        isBookOpen && 'rotate-180 text-brand',
+                      )}
+                    />
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isBookOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.16 }}
+                        className="overflow-hidden px-3 pt-1 pb-3 space-y-2 border-t border-border/40 bg-background/50"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase">
+                            {uiText("कक्षा चुनें:")}
+                          </span>
+                          <Link
+                            to={`/reference-solutions/${book.slug}`}
+                            onClick={onClose}
+                            className="text-[11px] font-bold text-brand hover:underline inline-flex items-center gap-0.5"
+                          >
+                            <span>{uiText("संपूर्ण पुस्तक")}</span>
+                            <ChevronRight className="size-3" />
+                          </Link>
+                        </div>
+
+                        {/* Class buttons */}
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {classes.map((clsNum) => {
+                            const classUrl = `/reference-solutions/${book.slug}/class-${clsNum}`;
+                            const isClassActive = currentPath === classUrl;
+                            return (
+                              <Link
+                                key={clsNum}
+                                to={classUrl}
+                                onClick={onClose}
+                                className={cn(
+                                  'flex items-center justify-center rounded-lg border py-1.5 text-center text-xs font-bold transition-colors',
+                                  isClassActive
+                                    ? 'bg-brand text-white border-brand'
+                                    : 'bg-card text-foreground/80 hover:bg-brand/10 hover:text-brand border-border/60',
+                                )}
+                              >
+                                {uiText("कक्षा")}{' '}{clsNum}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+
+            <Link
+              to="/reference-solutions"
+              onClick={onClose}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-bold text-brand hover:bg-brand/10 transition-colors"
+            >
+              <span>{uiText("सभी संदर्भ पुस्तकें देखें →")}</span>
+              <ChevronRight className="size-3.5" />
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Standard dropdown accordion for NCERT, State Boards, Important Links
+function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose }) {
+  useUiLanguage();
+  const t = useInterfaceL10n();
+  const label = t(item.label) || '';
+  const children = (item.children || []).filter((c) => c.isVisible !== false);
+
+  const isTriggerActive =
+    isPathActive(item.url, currentPath) ||
+    children.some((child) => isPathActive(child.url, currentPath));
+
+  return (
+    <div className="border-b border-border/50 last:border-b-0 py-1">
+      <button
+        type="button"
+        onClick={onToggle}
+        className={cn(
+          'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
+          isTriggerActive ? 'text-brand bg-brand/5' : 'text-foreground',
+        )}
+      >
+        <span>{label}</span>
+        <ChevronDown
+          className={cn(
+            'size-4 text-muted-foreground transition-transform duration-200',
+            open && 'rotate-180 text-brand',
+          )}
+        />
+      </button>
+
       <AnimatePresence initial={false}>
         {open && (
           <motion.div
-            id={`${id}-panel`}
-            role="region"
-            aria-labelledby={`${id}-trigger`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-            className="overflow-hidden"
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden pl-3 pr-1 pt-1 pb-2 space-y-1"
           >
-            {cls.subjects.map((subject) => {
-              const baseUrl = subject.url;
-              const staticLinks = [
-                { label: term('ncertSolutions'), url: baseUrl },
-                { label: term('chapterWise'), url: `${baseUrl}#chapters` },
-                { label: term('exerciseWise'), url: `${baseUrl}/prashnavali` },
-              ];
+            {children.map((child) => {
+              const childActive = isPathActive(child.url, currentPath);
               return (
-                <ul key={subject._id} className="mb-3 ml-4 space-y-0.5 border-l-2 border-brand/20 pl-4">
-                  {cls.subjects.length > 1 && <li className="pb-1 text-xs font-bold text-muted-foreground uppercase">{t(subject.name)}</li>}
-                  {staticLinks.map((link) => (
-                    <li key={link.url}>
-                      <Link to={link.url} onClick={onClose} className="block rounded-md px-2 py-2 text-sm text-foreground/85 hover:bg-muted hover:text-brand">
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                  {/* Important Questions — expandable sub-menu */}
-                  <ImportantQuestionsSubMenu baseUrl={baseUrl} onClose={onClose} />
-                  {/* Notes — expandable sub-menu */}
-                  <NotesSubMenu baseUrl={baseUrl} onClose={onClose} />
-                </ul>
+                <SmartLink
+                  key={child._id || child.url}
+                  to={child.url}
+                  newTab={child.newTab}
+                  onClick={onClose}
+                  className={cn(
+                    'flex items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold transition-colors',
+                    childActive
+                      ? 'bg-brand/10 font-bold text-brand'
+                      : 'text-foreground/80 hover:bg-muted hover:text-brand',
+                  )}
+                >
+                  <span>{t(child.label)}</span>
+                  <ChevronRight className="size-3.5 text-muted-foreground" />
+                </SmartLink>
               );
             })}
           </motion.div>
         )}
       </AnimatePresence>
-    </li>
+    </div>
   );
 }
 
-export function MobileMenu() {
+export function MobileMenu({ open, onClose }) {
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
-  const term = useTerm();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
-  const [expanded, setExpanded] = useState(null);
+  const currentPath = location.pathname;
 
-  useEffect(() => {
-    setOpen(false);
-  }, [location.pathname, location.hash]);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
-  const rawClasses = site?.classes?.length
-    ? site.classes
-    : [
-        { _id: 'c12', number: 12, url: '/class-12/maths', subjects: [{ _id: 's12', url: '/class-12/maths' }] },
-        { _id: 'c11', number: 11, url: '/class-11/maths', subjects: [{ _id: 's11', url: '/class-11/maths' }] },
-        { _id: 'c10', number: 10, url: '/class-10/maths', subjects: [{ _id: 's10', url: '/class-10/maths' }] },
-        { _id: 'c9', number: 9, url: '/class-9/maths', subjects: [{ _id: 's9', url: '/class-9/maths' }] },
-        { _id: 'c8', number: 8, url: '/class-8/maths', subjects: [{ _id: 's8', url: '/class-8/maths' }] },
-        { _id: 'c7', number: 7, url: '/class-7/maths', subjects: [{ _id: 's7', url: '/class-7/maths' }] },
-        { _id: 'c6', number: 6, url: '/class-6/maths', subjects: [{ _id: 's6', url: '/class-6/maths' }] },
-      ];
-  const classes = [...rawClasses].sort((a, b) => b.number - a.number);
-  const links = (site?.navigation?.header || []).filter((item) => item.type !== 'classes');
+  // Group raw items into clean mobile list
+  const rawItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
+
+  const navItems = [];
+  let hasRefBooks = false;
+
+  for (const item of rawItems) {
+    const enLabel = (item.label?.en || '').toLowerCase();
+    const hiLabel = item.label?.hi || '';
+    const isStateBoards =
+      enLabel.includes('state board') ||
+      hiLabel.includes('राज्य बोर्ड') ||
+      item.url?.includes('state-boards');
+
+    if (isStateBoards) continue;
+
+    const isBookSpecific =
+      enLabel.includes('aggarwal') ||
+      enLabel.includes('rd sharma') ||
+      enLabel.includes('sinha') ||
+      hiLabel.includes('अग्रवाल') ||
+      hiLabel.includes('शर्मा') ||
+      hiLabel.includes('सिन्हा');
+
+    if (isBookSpecific || item.type === 'mega' || enLabel.includes('reference book')) {
+      if (!hasRefBooks) {
+        navItems.push({
+          _id: 'nav-reference-books',
+          label: { hi: 'संदर्भ पुस्तकें', en: 'Reference Books' },
+          url: '/reference-solutions',
+          type: 'mega',
+        });
+        hasRefBooks = true;
+      }
+    } else {
+      navItems.push(item);
+    }
+  }
+
+  if (!hasRefBooks) {
+    const ncertIdx = navItems.findIndex((i) => (i.label?.en || '').toLowerCase().includes('ncert'));
+    const insertAt = ncertIdx >= 0 ? ncertIdx + 1 : Math.min(2, navItems.length);
+    navItems.splice(insertAt, 0, {
+      _id: 'nav-reference-books',
+      label: { hi: 'संदर्भ पुस्तकें', en: 'Reference Books' },
+      url: '/reference-solutions',
+      type: 'mega',
+    });
+  }
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
-      <DialogPrimitive.Trigger asChild>
-        <Button variant="ghost" size="icon-lg" className="lg:hidden" aria-label={uiText("Open menu / मेनू खोलें")}>
-          <Menu className="size-6" />
-        </Button>
-      </DialogPrimitive.Trigger>
-      <AnimatePresence>
-        {open && (
-          <DialogPrimitive.Portal forceMount>
-            <DialogPrimitive.Overlay asChild forceMount>
-              <motion.div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            </DialogPrimitive.Overlay>
-            <DialogPrimitive.Content asChild forceMount>
-              <motion.aside
-                initial={{ x: '-100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ type: 'spring', stiffness: 380, damping: 38 }}
-                className="fixed inset-y-0 left-0 z-50 flex w-[88%] max-w-sm flex-col bg-background shadow-2xl outline-none"
+    <AnimatePresence>
+      {open && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs lg:hidden"
+          />
+
+          {/* Drawer */}
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-background shadow-2xl border-l border-border/80 lg:hidden"
+          >
+            {/* Header */}
+            <div className="flex h-16 items-center justify-between border-b px-4 shrink-0">
+              <Logo showText={true} />
+              <button
+                type="button"
+                onClick={onClose}
+                className="grid size-9 place-items-center rounded-lg border border-border text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                aria-label={uiText("Close menu")}
               >
-                <div className="flex items-center justify-between gap-2 border-b px-4 py-3">
-                  <DialogPrimitive.Title className="sr-only">{uiText("Navigation menu")}</DialogPrimitive.Title>
-                  <DialogPrimitive.Description className="sr-only">{uiText("Mathematics classes and links")}</DialogPrimitive.Description>
-                  <Logo textClassName="max-w-[11rem]" />
-                  <DialogPrimitive.Close asChild>
-                    <Button variant="outline" size="lg" className="shrink-0 gap-1.5" aria-label={uiText("Close menu / बंद करें")}>
-                      <X className="size-5" /> <span className="text-xs font-semibold">{uiText("Close")}</span>
-                    </Button>
-                  </DialogPrimitive.Close>
+                <X className="size-5" />
+              </button>
+            </div>
+
+            {/* Quick Search */}
+            <div className="p-4 border-b shrink-0">
+              <SearchBar autoFocus={false} onSelect={onClose} />
+            </div>
+
+            {/* Navigation List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-1">
+              {navItems.map((item) => {
+                const enLabel = (item.label?.en || '').toLowerCase();
+                const isReference =
+                  item.type === 'mega' ||
+                  enLabel.includes('reference') ||
+                  item.url === '/reference-solutions' ||
+                  item.url === '/reference-books';
+
+                // 1. Reference Books Multi-level Accordion
+                if (isReference) {
+                  return (
+                    <MobileReferenceBooksAccordion
+                      key={item._id || 'nav-ref-books'}
+                      currentPath={currentPath}
+                      isOpen={openDropdown === 'reference-books'}
+                      onToggle={() =>
+                        setOpenDropdown(
+                          openDropdown === 'reference-books' ? null : 'reference-books',
+                        )
+                      }
+                      onClose={onClose}
+                    />
+                  );
+                }
+
+                // 2. Dropdowns (NCERT, State Boards, Important Links)
+                if (item.type === 'dropdown' || item.type === 'classes') {
+                  const id = item._id || item.url || item.label?.en;
+                  return (
+                    <MobileDropdownAccordion
+                      key={id}
+                      item={item}
+                      currentPath={currentPath}
+                      open={openDropdown === id}
+                      onToggle={() => setOpenDropdown(openDropdown === id ? null : id)}
+                      onClose={onClose}
+                    />
+                  );
+                }
+
+                // 3. Direct Link
+                const active = isPathActive(item.url, currentPath);
+                return (
+                  <div key={item._id || item.url} className="border-b border-border/50 last:border-b-0 py-1">
+                    <SmartLink
+                      to={item.url}
+                      newTab={item.newTab}
+                      onClick={onClose}
+                      className={cn(
+                        'flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-bold transition-colors',
+                        active
+                          ? 'bg-brand/10 text-brand font-bold'
+                          : 'text-foreground hover:bg-muted',
+                      )}
+                    >
+                      <span>{t(item.label)}</span>
+                      <ChevronRight className="size-4 text-muted-foreground" />
+                    </SmartLink>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Footer Utilities */}
+            <div className="border-t p-4 bg-muted/20 shrink-0 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  {uiText("भाषा / Language & Theme")}
+                </span>
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <LanguageSwitcher />
                 </div>
+              </div>
 
-                <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-                  {site?.settings?.header?.showSearch !== false && <SearchBar onNavigate={() => setOpen(false)} />}
-
-                  {links.length > 0 && (
-                    <nav aria-label={uiText("Main")} className="mt-4 grid grid-cols-2 gap-2">
-                      {links.flatMap(item => [item, ...(item.children || [])]).filter(item => item.url).map((item) => (
-                        <SmartLink
-                          key={item._id}
-                          to={item.url}
-                          newTab={item.newTab}
-                          className={cn('rounded-lg border bg-card px-3 py-2.5 text-sm font-medium hover:border-brand/40 hover:text-brand', location.pathname === item.url && 'border-brand/50 text-brand')}
-                        >
-                          {t(item.label)}
-                        </SmartLink>
-                      ))}
-                    </nav>
-                  )}
-
-                  {!site?.navigationConfigured?.header && <>
-                  {/* Study Materials Mobile Links */}
-                  <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Study Materials")}</p>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {[
-                        { get title() { return uiText("NCERT Solutions"); }, url: '/study-materials/ncert-solutions' },
-                        { get title() { return uiText("NCERT Books"); }, url: '/study-materials/ncert-books' },
-                        { get title() { return uiText("Sample Papers"); }, url: '/study-materials/cbse-sample-papers' },
-                        { get title() { return uiText("Extra Questions"); }, url: '/study-materials/extra-questions' },
-                        { get title() { return uiText("Important Questions (PYQ)"); }, url: '/study-materials/important-questions' },
-                        { get title() { return uiText("Syllabus"); }, url: '/study-materials/syllabus' },
-                      ].map((item) => (
-                        <Link
-                          key={item.url}
-                          to={item.url}
-                          onClick={() => setOpen(false)}
-                          className="rounded-lg border bg-card p-2 text-xs font-semibold text-foreground/90 hover:border-brand hover:text-brand"
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Reference Books / Solutions Mobile Links */}
-                  <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Reference Books / Solutions")}</p>
-                    <div className="space-y-1.5">
-                      {[
-                        { get title() { return uiText("RS Aggarwal Solutions"); }, url: '/reference-solutions/rs-aggarwal' },
-                        { get title() { return uiText("RD Sharma Solutions"); }, url: '/reference-solutions/rd-sharma' },
-                        { get title() { return uiText("KC Sinha Solutions"); }, url: '/reference-solutions/kc-sinha' },
-                      ].map((b) => (
-                        <Link
-                          key={b.url}
-                          to={b.url}
-                          onClick={() => setOpen(false)}
-                          className="flex items-center justify-between rounded-lg border bg-card p-2.5 text-xs font-bold text-foreground/90 hover:border-brand hover:text-brand"
-                        >
-                          <span>{b.title}</span>
-                          <span className="text-[10px] text-muted-foreground">{uiText("Class 6–12")}</span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Notes & Formulas Mobile Links */}
-                  <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("Notes & Formulas")}</p>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {[
-                        { get title() { return uiText("NCERT Chapter-wise Notes"); }, url: '/study-materials/ncert-notes' },
-                        { get title() { return uiText("All Maths Formula Sheets"); }, url: '/study-materials/formula-sheets' },
-                        { get title() { return uiText("RS Aggarwal Formulas & Notes"); }, url: '/notes-formulas/rs-aggarwal' },
-                        { get title() { return uiText("RD Sharma Formulas & Notes"); }, url: '/notes-formulas/rd-sharma' },
-                        { get title() { return uiText("KC Sinha Formulas & Notes"); }, url: '/notes-formulas/kc-sinha' },
-                        { get title() { return uiText("VVI Questions & Short Notes"); }, url: '/study-materials/vvi-short-notes' },
-                      ].map((item) => (
-                        <Link
-                          key={item.url}
-                          to={item.url}
-                          onClick={() => setOpen(false)}
-                          className="rounded-lg border bg-card p-2 text-xs font-semibold text-foreground/90 hover:border-brand hover:text-brand"
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* More Links */}
-                  <div className="mt-6">
-                    <p className="mb-2 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{uiText("More")}</p>
-                    <div className="grid grid-cols-2 gap-1.5">
-                      {[
-                        { get title() { return uiText("About Us"); }, url: '/about-us' },
-                        { get title() { return uiText("Contact Us"); }, url: '/contact' },
-                        { get title() { return uiText("Privacy Policy"); }, url: '/privacy-policy' },
-                        { get title() { return uiText("Terms & Conditions"); }, url: '/terms-conditions' },
-                        { get title() { return uiText("Disclaimer"); }, url: '/disclaimer' },
-                      ].map((item) => (
-                        <Link
-                          key={item.url}
-                          to={item.url}
-                          onClick={() => setOpen(false)}
-                          className="rounded-lg border bg-card p-2 text-xs font-semibold text-foreground/90 hover:border-brand hover:text-brand"
-                        >
-                          {item.title}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  </>}
-                  {site?.settings?.header?.showClassPills !== false && (!site?.navigationConfigured?.header || site.navigation.header.some(item => item.type === 'classes')) && <>
-                  <p className="mt-6 mb-1 text-xs font-extrabold tracking-[0.14em] text-brand uppercase">{term('class')} 6–12 {term('mathematics')}</p><ul>
-                    {classes.map((cls) => (
-                      <ClassAccordion
-                        key={cls._id}
-                        cls={cls}
-                        open={expanded === cls._id}
-                        onToggle={() => setExpanded((id) => (id === cls._id ? null : cls._id))}
-                        onClose={() => setOpen(false)}
-                      />
-                    ))}
-                  </ul></>}
-
-
-                </div>
-              </motion.aside>
-            </DialogPrimitive.Content>
-          </DialogPrimitive.Portal>
-        )}
-      </AnimatePresence>
-    </DialogPrimitive.Root>
+              {/* WhatsApp follow button */}
+              {site?.settings?.whatsappBanner?.enabled !== false && (
+                <a
+                  href={site?.settings?.whatsappBanner?.url || 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#20ba59] transition-colors"
+                >
+                  <span>{uiText("Follow on WhatsApp")}</span>
+                </a>
+              )}
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }
+
+export const MobileNavigation = MobileMenu;
+export default MobileMenu;

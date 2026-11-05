@@ -16,7 +16,7 @@ const NavChildSchema = new Schema({
 const NavItemSchema = new Schema({
   label: l10n(),
   url: { type: String, default: '', trim: true, maxlength: 500, validate: safeNavigationUrl },
-  type: { type: String, enum: ['link', 'classes', 'column'], default: 'link' },
+  type: { type: String, enum: ['link', 'classes', 'column', 'dropdown', 'mega'], default: 'link' },
   newTab: { type: Boolean, default: false },
   isVisible: { type: Boolean, default: true },
   icon: { type: String, default: '', maxlength: 60 },

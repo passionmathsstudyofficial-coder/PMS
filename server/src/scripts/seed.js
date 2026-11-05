@@ -131,6 +131,17 @@ async function run() {
       },
       badges: [{ hi: 'NCERT 2024-25', en: 'NCERT 2024-25' }, { hi: 'हिंदी & English', en: 'Hindi & English' }],
     },
+    whatsappBanner: {
+      enabled: true,
+      title: { hi: 'Passion Maths Study WhatsApp Channel', en: 'Passion Maths Study WhatsApp Channel' },
+      badge: { hi: 'Official', en: 'Official' },
+      description: {
+        hi: 'NCERT 2024-25 गणित के दैनिक सूत्र, नए हल, नोट्स और परीक्षा अपडेट्स सीधे अपने WhatsApp पर पाएँ।',
+        en: 'Get daily NCERT 2024–25 maths formulas, new solutions, notes and exam updates on WhatsApp.',
+      },
+      url: 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N',
+      buttonText: { hi: 'Follow on WhatsApp', en: 'Follow on WhatsApp' },
+    },
     terminology: DEFAULT_TERMINOLOGY,
     social: [
       { platform: 'whatsapp', url: 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N' },

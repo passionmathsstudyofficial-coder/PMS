@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { get } from './api';
 import { useLang } from './i18n';
+import { resolveMediaUrl } from './media.js';
 
 const SiteContext = createContext(null);
 
@@ -72,7 +73,7 @@ export function useBrand() {
   const brand = site?.settings?.brand || {};
   return {
     ...brand,
-    logoSrc: brand.logo?.url || brand.logoUrl || '/brand/pms-logo.png',
-    footerLogoSrc: brand.footerLogo?.url || brand.logo?.url || brand.logoUrl || '/brand/pms-logo.png',
+    logoSrc: resolveMediaUrl(brand.logo?.url) || brand.logoUrl || '/brand/pms-logo.png',
+    footerLogoSrc: resolveMediaUrl(brand.footerLogo?.url) || resolveMediaUrl(brand.logo?.url) || brand.logoUrl || '/brand/pms-logo.png',
   };
 }

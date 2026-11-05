@@ -6,7 +6,7 @@ import { ImageViewerProvider } from '@/components/content/ImageViewer.jsx';
 import { failSafe, gsap, shouldAnimate, useGSAP } from '@/lib/motion';
 import { useSiteQuery } from '@/lib/site';
 import { AdSlot } from './AdSlot.jsx';
-import { AnnouncementBar } from './AnnouncementBar.jsx';
+
 import { FloatingLanguageWidget } from './FloatingLanguageWidget.jsx';
 import { Footer } from './Footer.jsx';
 import { Header } from './Header.jsx';
@@ -46,7 +46,7 @@ export default function PublicLayout() {
           </div>
         ) : (
           <>
-            <AnnouncementBar />
+
             <Header />
             <AdSlot placement="belowHeader" />
             <main id="main" className="flex-1">

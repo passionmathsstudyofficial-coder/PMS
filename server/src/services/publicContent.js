@@ -309,6 +309,19 @@ export const CANONICAL_REFERENCE_BOOKS = [
     classes: [6, 7, 8, 9, 10, 11, 12],
     featured: true,
   },
+  {
+    slug: 'kc-sinha',
+    title: { hi: 'के.सी. सिन्हा समाधान', en: 'KC Sinha Solutions' },
+    author: 'Dr. K.C. Sinha',
+    publisher: 'Students Friends / Rastogi Publications',
+    category: 'reference',
+    description: {
+      hi: 'कक्षा 6 से 12 के विद्यार्थियों के लिए के.सी. सिन्हा गणित के संपूर्ण और विस्तृत चरणबद्ध हल।',
+      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for KC Sinha Mathematics Classes 6 to 12.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+    featured: true,
+  },
 ];
 
 function formatResource(r) {
@@ -477,10 +490,19 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
     .populate({ path: 'coverImage', select: MEDIA_SELECT })
     .lean();
 
+  const rootSlug = segments[0] || 'reference-solutions';
   const allBooksMap = new Map();
-  for (const b of CANONICAL_REFERENCE_BOOKS) allBooksMap.set(b.slug, { ...b, url: urls.referenceBook(b) });
+  for (const b of CANONICAL_REFERENCE_BOOKS) allBooksMap.set(b.slug, { ...b, classes: b.classes || [6, 7, 8, 9, 10, 11, 12], url: `/${rootSlug}/${b.slug}` });
   for (const b of dbBooks) {
-    if (b.slug) allBooksMap.set(b.slug, { ...b, url: urls.referenceBook(b) });
+    if (b.slug) {
+      const existing = allBooksMap.get(b.slug) || {};
+      allBooksMap.set(b.slug, {
+        ...existing,
+        ...b,
+        classes: (b.availableClasses && b.availableClasses.length > 0) ? b.availableClasses : (existing.classes || [6, 7, 8, 9, 10, 11, 12]),
+        url: `/${rootSlug}/${b.slug}`,
+      });
+    }
   }
   const allBooks = Array.from(allBooksMap.values());
 
@@ -731,6 +753,111 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
  * Resolves any public URL path to structured page data (+ breadcrumbs, related, SEO).
  * Used by the React site and by the server for SEO meta rendering.
  */
+
+export const STATE_BOARDS = [
+  {
+    slug: 'bihar-board',
+    name: { hi: 'बिहार बोर्ड (BSEB)', en: 'Bihar Board (BSEB)' },
+    title: { hi: 'बिहार बोर्ड कक्षा 6–12 गणित समाधान', en: 'Bihar Board Class 6–12 Maths Solutions' },
+    description: {
+      hi: 'बिहार बोर्ड (BSEB) कक्षा 6 से 12 के लिए NCERT एवं राज्य पाठ्यपुस्तक गणित के विस्तृत हल, नोट्स और मॉडल पेपर।',
+      en: 'Bihar School Examination Board (BSEB) Classes 6 to 12 complete Mathematics solutions, notes, formulas and model question papers.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'jharkhand-board',
+    name: { hi: 'झारखंड बोर्ड (JAC)', en: 'Jharkhand Board (JAC)' },
+    title: { hi: 'झारखंड बोर्ड कक्षा 6–12 गणित समाधान', en: 'Jharkhand Board Class 6–12 Maths Solutions' },
+    description: {
+      hi: 'झारखंड अधिविद्य परिषद (JAC) कक्षा 6 से 12 गणित समाधान, अध्याय-वार नोट्स और महत्वपूर्ण प्रश्न।',
+      en: 'Jharkhand Academic Council (JAC) Classes 6 to 12 Maths step-by-step solutions, revision notes and question bank.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'up-board',
+    name: { hi: 'यूपी बोर्ड (UPMSP)', en: 'UP Board (UPMSP)' },
+    title: { hi: 'यूपी बोर्ड कक्षा 6–12 गणित समाधान', en: 'UP Board Class 6–12 Maths Solutions' },
+    description: {
+      hi: 'उत्तर प्रदेश माध्यमिक शिक्षा परिषद् (UPMSP) कक्षा 6 से 12 हिंदी माध्यम NCERT गणित समाधान।',
+      en: 'Uttar Pradesh Madhyamik Shiksha Parishad (UPMSP) Classes 6 to 12 Hindi & English medium Mathematics solutions.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'mp-board',
+    name: { hi: 'एमपी बोर्ड (MPBSE)', en: 'MP Board (MPBSE)' },
+    title: { hi: 'एमपी बोर्ड कक्षा 6–12 गणित समाधान', en: 'MP Board Class 6–12 Maths Solutions' },
+    description: {
+      hi: 'मध्य प्रदेश माध्यमिक शिक्षा मंडल (MPBSE) कक्षा 6 से 12 गणित हल, सूत्र और अभ्यास प्रश्न।',
+      en: 'Madhya Pradesh Board of Secondary Education (MPBSE) Classes 6 to 12 Maths textbook solutions and formulas.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  },
+  {
+    slug: 'rajasthan-board',
+    name: { hi: 'राजस्थान बोर्ड (RBSE)', en: 'Rajasthan Board (RBSE)' },
+    title: { hi: 'राजस्थान बोर्ड कक्षा 6–12 गणित समाधान', en: 'Rajasthan Board Class 6–12 Maths Solutions' },
+    description: {
+      hi: 'माध्यमिक शिक्षा बोर्ड राजस्थान (RBSE) कक्षा 6 से 12 गणित के संपूर्ण हल, महत्वपूर्ण प्रश्न और नोट्स।',
+      en: 'Board of Secondary Education Rajasthan (RBSE) Classes 6 to 12 complete Mathematics solutions and study material.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  },
+];
+
+async function resolveStateBoardsPath(segments, { preview, terms, home }) {
+  const classes = await ClassLevel.find(vis(ClassLevel, preview))
+    .sort({ number: -1 })
+    .select('number name slug')
+    .lean();
+
+  const boardCrumb = { label: { hi: 'राज्य बोर्ड', en: 'State Boards' }, url: '/state-boards' };
+
+  if (segments.length === 1) {
+    return {
+      type: 'stateBoards',
+      data: {
+        level: 'hub',
+        boards: STATE_BOARDS,
+        classes: classes.map((c) => ({ ...c, url: urls.class(c) })),
+      },
+      breadcrumbs: [home, boardCrumb],
+      seo: {
+        title: 'State Boards Maths Solutions: Bihar, Jharkhand, UP, MP, Rajasthan | Passion Maths Study',
+        description: 'Class 6 to 12 State Board Mathematics solutions, syllabus, NCERT mapping and revision notes for Bihar, UP, Jharkhand, MP, and Rajasthan boards.',
+        canonical: '/state-boards',
+      },
+    };
+  }
+
+  const boardSlug = segments[1];
+  const board = STATE_BOARDS.find((b) => b.slug === boardSlug) || {
+    slug: boardSlug,
+    name: { hi: boardSlug.replace(/-/g, ' ').toUpperCase(), en: boardSlug.replace(/-/g, ' ').toUpperCase() },
+    title: { hi: `${boardSlug.replace(/-/g, ' ').toUpperCase()} गणित समाधान`, en: `${boardSlug.replace(/-/g, ' ').toUpperCase()} Maths Solutions` },
+    description: { hi: 'राज्य बोर्ड गणित समाधान एवं नोट्स', en: 'State board mathematics solutions and notes.' },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+  };
+
+  return {
+    type: 'stateBoards',
+    data: {
+      level: 'board',
+      board,
+      boards: STATE_BOARDS,
+      classes: classes.map((c) => ({ ...c, url: urls.class(c) })),
+    },
+    breadcrumbs: [home, boardCrumb, { label: board.name, url: `/state-boards/${board.slug}` }],
+    seo: {
+      title: `${board.title?.en || board.name?.en} | Passion Maths Study`,
+      description: board.description?.en || 'Complete state board mathematics solutions and notes for Classes 6 to 12.',
+      canonical: `/state-boards/${board.slug}`,
+    },
+  };
+}
+
 export async function resolvePath(pathname, { preview = false, page = 1, limit = 15, previewToken } = {}) {
   const segments = String(pathname || '/')
     .split('?')[0]
@@ -748,7 +875,11 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     return resolveStudyMaterialsPath(segments, { preview, page, limit, terms, home });
   }
 
-  if (segments[0] === 'reference-solutions') {
+  if (segments[0] === 'state-boards') {
+    return resolveStateBoardsPath(segments, { preview, terms, home });
+  }
+
+  if (segments[0] === 'reference-solutions' || segments[0] === 'reference-books') {
     return resolveReferenceSolutionsPath(segments, { preview, page, limit, previewToken, override, terms, home });
   }
 

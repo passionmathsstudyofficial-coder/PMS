@@ -152,7 +152,7 @@ export function HeroSection({ section }) {
       </div>
 
       {/* Reserved Sponsored / Announcement Strip */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8" data-purpose="ad-slot-reserved-top">
+      <div className="hidden" data-purpose="ad-slot-reserved-top">
         <div className="w-full bg-slate-100/90 dark:bg-card/90 border border-dashed border-slate-300 dark:border-border rounded-lg py-2.5 px-4 text-center flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
             <span className="bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800">{' '}{uiText("प्रायोजित संसाधन")}{' '}</span>

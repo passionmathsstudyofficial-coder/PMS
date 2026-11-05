@@ -1,7 +1,7 @@
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
@@ -41,23 +41,55 @@ export function AnnouncementBar() {
     }
   };
 
+  const badgeText = t(announcement.badge) || uiText("नया सत्र 2026-27");
+  const mainText = t(announcement.text) || uiText("नए शैक्षणिक सत्र 2026-27 में आपका स्वागत है! नए सत्र की सभी कक्षाएं और स्टडी मटेरियल अब उपलब्ध हैं।");
+  const linkLabel = t(announcement.linkLabel) || uiText("पढ़ाई शुरू करें");
+  const linkUrl = announcement.linkUrl || '/#classes';
+
   return (
     <AnimatePresence initial={false}>
       {!dismissed && (
-        <motion.div initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }} className="overflow-hidden">
-          <div className={cn('relative px-10 py-2 text-center text-xs font-medium sm:text-sm', VARIANTS[announcement.variant] || VARIANTS.brand)}>
-            <p className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-2 gap-y-1">
-              {t(announcement.badge) && (
-                <span className="rounded bg-white/20 px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase">{t(announcement.badge)}</span>
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="overflow-hidden"
+          data-purpose="header-announcement-row"
+        >
+          <div
+            className={cn(
+              'relative py-2 pr-12 pl-4 sm:px-12 text-xs sm:text-sm font-medium',
+              VARIANTS[announcement.variant] || VARIANTS.brand,
+            )}
+          >
+            <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap text-center">
+              {badgeText && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2 py-0.5 text-[10.5px] sm:text-[11px] font-extrabold tracking-wide uppercase text-white shrink-0 shadow-2xs">
+                  <Sparkles className="size-3 text-amber-200" />
+                  {badgeText}
+                </span>
               )}
-              <span>{t(announcement.text)}</span>
-              {announcement.linkUrl && t(announcement.linkLabel) && (
-                <SmartLink to={announcement.linkUrl} className="font-bold underline underline-offset-4 hover:opacity-90">
-                  {t(announcement.linkLabel)} →
+              <span className="text-white/95 line-clamp-1 sm:line-clamp-none font-medium">
+                {mainText}
+              </span>
+              {linkUrl && linkLabel && (
+                <SmartLink
+                  to={linkUrl}
+                  className="inline-flex items-center gap-1 rounded-full bg-white/15 hover:bg-white/25 px-2.5 py-0.5 text-xs font-bold text-white transition-colors shrink-0 underline-offset-4 hover:underline"
+                >
+                  <span>{linkLabel}</span>
+                  <span aria-hidden="true">→</span>
                 </SmartLink>
               )}
-            </p>
-            <button type="button" onClick={dismiss} className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1 hover:bg-white/15" aria-label={uiText("Dismiss announcement")}>
+            </div>
+
+            <button
+              type="button"
+              onClick={dismiss}
+              className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full p-1 text-white/80 hover:bg-white/20 hover:text-white transition-colors"
+              aria-label={uiText("Dismiss announcement")}
+            >
               <X className="size-4" />
             </button>
           </div>
@@ -66,3 +98,5 @@ export function AnnouncementBar() {
     </AnimatePresence>
   );
 }
+
+export default AnnouncementBar;

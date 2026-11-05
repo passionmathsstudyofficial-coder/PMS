@@ -19,6 +19,7 @@ export const urls = {
   studyMaterialCategory: (cat) => `/study-materials/${cat}`,
   studyMaterialCategoryClass: (cat, cls) => `/study-materials/${cat}/${cls?.slug || `class-${cls?.number || cls}`}`,
   referenceSolutions: () => '/reference-solutions',
+  referenceBooks: () => '/reference-books',
   referenceBook: (b) => `/reference-solutions/${b?.slug || b}`,
   referenceBookClass: (b, cls) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}`,
   referenceChapter: (b, cls, ch) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${ch?.slug || ch}`,

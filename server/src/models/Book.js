@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { contentPlugin } from './plugins/content.js';
-import { ObjectId, l10n, textL10n } from './schemas/common.js';
+import { ObjectId, l10n, seo, textL10n } from './schemas/common.js';
 import { joinSearch, l10nText, labels } from '../services/searchText.js';
 
 const { Schema } = mongoose;
@@ -49,6 +49,8 @@ const bookSchema = new Schema(
     },
     featured: { type: Boolean, default: false },
     rating: { type: Number, default: 4.8, min: 1, max: 5 },
+    availableClasses: [{ type: Number }],
+    seo: seo(),
     tags: [{ type: String, trim: true, lowercase: true, maxlength: 60 }],
     searchText: { type: String, select: false },
   },

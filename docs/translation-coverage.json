@@ -1,277 +1,25 @@
 {
-  "rawInterfaceText": [],
-  "unresolvedKeys": [
+  "rawInterfaceText": [
     {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 79,
-      "key": "Sample Papers"
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 215,
+      "kind": "expression",
+      "text": "e.g. Class 10 Ex 5.2, Triangle, Formula..."
     },
     {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 79,
-      "key": "Model papers with solutions"
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 431,
+      "kind": "jsx",
+      "text": "Move transversal"
     },
     {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 81,
-      "key": "Important Questions (PYQ)"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 111,
-      "key": "KC Sinha Solutions"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 111,
-      "key": "Comprehensive maths solutions"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 116,
-      "key": "Reference Books / Solutions"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 144,
-      "key": "NCERT Chapter-wise Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 144,
-      "key": "Chapter summaries & key concepts"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 145,
-      "key": "All Maths Formula Sheets"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 145,
-      "key": "Complete formula collection"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 146,
-      "key": "RS Aggarwal Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 146,
-      "key": "RS Aggarwal formula book"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 147,
-      "key": "RD Sharma Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 147,
-      "key": "RD Sharma formula book"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 148,
-      "key": "KC Sinha Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 148,
-      "key": "KC Sinha formula book"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 149,
-      "key": "VVI Questions & Short Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 149,
-      "key": "Board special quick revision"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 154,
-      "key": "Notes & Formulas"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 179,
-      "key": "Terms & Conditions"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 272,
-      "key": "Previous Year Questions (PYQ)"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 273,
-      "key": "Sample Papers"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 274,
-      "key": "CBSE Extra Questions"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 275,
-      "key": "VVI Questions (Board Special)"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 276,
-      "key": "Maths Syllabus"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 301,
-      "key": "NCERT Chapter-wise Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 302,
-      "key": "All Maths Formula Sheets"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 303,
-      "key": "RS Aggarwal Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 304,
-      "key": "RD Sharma Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 305,
-      "key": "KC Sinha Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 306,
-      "key": "VVI Questions & Short Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 22,
-      "key": "Previous Year Questions (PYQ)"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 23,
-      "key": "Sample Papers"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 24,
-      "key": "CBSE Extra Questions"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 25,
-      "key": "VVI Questions (Board Special)"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 26,
-      "key": "Maths Syllabus"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 73,
-      "key": "NCERT Chapter-wise Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 74,
-      "key": "All Maths Formula Sheets"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 75,
-      "key": "RS Aggarwal Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 76,
-      "key": "RD Sharma Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 77,
-      "key": "KC Sinha Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 78,
-      "key": "VVI Questions & Short Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 272,
-      "key": "Sample Papers"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 274,
-      "key": "Important Questions (PYQ)"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 291,
-      "key": "Reference Books / Solutions"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 296,
-      "key": "KC Sinha Solutions"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 313,
-      "key": "Notes & Formulas"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 316,
-      "key": "NCERT Chapter-wise Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 317,
-      "key": "All Maths Formula Sheets"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 318,
-      "key": "RS Aggarwal Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 319,
-      "key": "RD Sharma Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 320,
-      "key": "KC Sinha Formulas & Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 321,
-      "key": "VVI Questions & Short Notes"
-    },
-    {
-      "file": "client/src/components/site/MobileMenu.jsx",
-      "line": 343,
-      "key": "Terms & Conditions"
+      "file": "client/src/components/home/HeroSection.jsx",
+      "line": 433,
+      "kind": "attribute",
+      "text": "Move transversal"
     }
   ],
+  "unresolvedKeys": [],
   "invalidEntries": [],
   "dynamicBypasses": [],
   "intentional": [
@@ -435,6 +183,42 @@
       "file": "client/src/admin/pages/ExercisesPage.jsx",
       "line": 171,
       "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 568,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 675,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 951,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 1090,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 1118,
+      "text": "WhatsApp",
+      "reason": "Brand, product or established proper name"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 1233,
+      "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
@@ -637,19 +421,19 @@
     },
     {
       "file": "client/src/components/home/HeroSection.jsx",
-      "line": 346,
+      "line": 345,
       "text": "KaTeX 0.16.8",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/home/HeroSection.jsx",
-      "line": 411,
+      "line": 410,
       "text": "l",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
     {
       "file": "client/src/components/home/HeroSection.jsx",
-      "line": 416,
+      "line": 415,
       "text": "m",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
@@ -673,33 +457,33 @@
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 25,
+      "line": 26,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 26,
+      "line": 27,
       "text": "YouTube",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 27,
+      "line": 28,
       "text": "Instagram",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 28,
+      "line": 29,
       "text": "Facebook",
       "reason": "Brand, product or established proper name"
     },
     {
-      "file": "client/src/components/site/Header.jsx",
-      "line": 62,
-      "text": "{v0} {v1}",
-      "reason": "Data-only formatting template; values retain their own language"
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 172,
+      "text": "WhatsApp",
+      "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/LanguageSwitcher.jsx",
@@ -832,11 +616,11 @@
     "backlog": 143,
     "backlogTranslated": 127,
     "backlogIntentional": 16,
-    "applicationEntries": 1311,
+    "applicationEntries": 1406,
     "remainingEntries": 127,
     "legacyEntries": 533,
-    "unresolved": 54,
-    "scannedFiles": 165,
+    "unresolved": 3,
+    "scannedFiles": 168,
     "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
   }
 }

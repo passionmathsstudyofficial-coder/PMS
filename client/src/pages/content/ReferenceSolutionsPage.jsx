@@ -38,6 +38,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
   const t = useL10n();
   const interfaceL10n = useInterfaceL10n();
   const term = useTerm();
+  const rootPrefix = path?.startsWith('/reference-books') ? '/reference-books' : '/reference-solutions';
   const {
     level = 'hub',
     book,
@@ -130,7 +131,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                           {(b.classes || [6, 7, 8, 9, 10, 11, 12]).map((cNum) => (
                             <Link
                               key={cNum}
-                              to={`/reference-solutions/${b.slug}/class-${cNum}`}
+                              to={`${rootPrefix}/${b.slug}/class-${cNum}`}
                               className="rounded-xl border bg-background px-3.5 py-1.5 text-xs font-bold text-foreground transition hover:border-brand hover:bg-brand hover:text-white"
                             >{uiText("Class")}{' '}{cNum}
                             </Link>
@@ -141,7 +142,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
 
                     <div className="mt-6 border-t pt-4">
                       <Link
-                        to={`/reference-solutions/${b.slug}`}
+                        to={`${rootPrefix}/${b.slug}`}
                         className="inline-flex items-center text-sm font-bold text-brand hover:underline"
                       >{' '}{uiText("View All Chapters & Exercises for")}{' '}{interfaceL10n(b.title)} <ArrowRight className="ml-1.5 size-4" />
                       </Link>
@@ -184,7 +185,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                   {(book.classes || [10, 9, 8, 7, 6, 11, 12]).map((cNum) => (
                     <Link
                       key={cNum}
-                      to={`/reference-solutions/${book.slug}/class-${cNum}`}
+                      to={`${rootPrefix}/${book.slug}/class-${cNum}`}
                       className="group flex items-center justify-between rounded-2xl border bg-background p-4 shadow-xs transition hover:border-brand hover:shadow-md"
                     >
                       <div className="flex items-center gap-3.5">

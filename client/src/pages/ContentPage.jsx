@@ -22,6 +22,7 @@ import BooksListPage from './content/BooksListPage.jsx';
 import ResourcesListPage from './content/ResourcesListPage.jsx';
 import StudyMaterialsPage from './content/StudyMaterialsPage.jsx';
 import ReferenceSolutionsPage from './content/ReferenceSolutionsPage.jsx';
+import StateBoardsPage from './content/StateBoardsPage.jsx';
 
 // API page type → template. Every URL below "/" is resolved from the database; no routes are hardcoded.
 const TEMPLATES = {
@@ -34,6 +35,7 @@ const TEMPLATES = {
   booksList: BooksListPage,
   studyMaterials: StudyMaterialsPage,
   referenceSolutions: ReferenceSolutionsPage,
+  stateBoards: StateBoardsPage,
   topic: TopicPage,
   importantQuestions: ImportantQuestionsPage,
   chapter: ChapterPage,
