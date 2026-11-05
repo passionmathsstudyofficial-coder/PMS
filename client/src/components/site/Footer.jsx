@@ -14,7 +14,7 @@ function Column({ title, children }) {
   useUiLanguage();
   return (
     <div className="min-w-0">
-      <h2 className="mb-3 text-sm font-black tracking-[0.14em] text-white uppercase">{title}</h2>
+      <h2 className="mb-3 text-base font-bold leading-snug text-white sm:text-lg">{title}</h2>
       <ul className="space-y-1 text-sm leading-relaxed">{children}</ul>
     </div>
   );
@@ -55,26 +55,31 @@ export function Footer() {
     const configured = configuredLinks.find(item => item.url === url);
     return { ...configured, label: { en, hi }, url };
   };
+  const classes = [6, 7, 8, 9, 10, 11, 12];
   const columns = [
-    { label: { en: 'Quick Links', hi: 'त्वरित लिंक' }, children: [
+    { label: { en: 'NCERT Class 6 to 12 Math Solution', hi: 'NCERT कक्षा 6 से 12 गणित हल' }, children: classes.map(number =>
+      link(`NCERT Class ${number} Mathematics`, `NCERT कक्षा ${number} गणित`, site?.classes?.find(cls => cls.number === number)?.url || `/class-${number}/maths`)) },
+    ...[['rs-aggarwal', 'R.S. Aggarwal', 'आर.एस. अग्रवाल'], ['rd-sharma', 'R.D. Sharma', 'आर.डी. शर्मा'], ['kc-sinha', 'K.C. Sinha', 'के.सी. सिन्हा']].map(([slug, en, hi]) => ({
+      label: { en: `${en} Solutions`, hi: `${hi} हल` },
+      children: classes.map(number => link(`${en} Class ${number}`, `${hi} कक्षा ${number}`, `/reference-solutions/${slug}/class-${number}`)),
+    })),
+    { label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' }, children: [
       link('Home', 'होम', '/'),
+      link('Mathematics', 'गणित', '/study-materials/ncert-solutions'),
+      link('Search', 'खोजें', '/search'),
       link('About Us', 'हमारे बारे में', '/about-us'),
-      link('Contact Us', 'संपर्क करें', '/contact'),
-    ] },
-    { label: { en: 'Study Materials', hi: 'अध्ययन सामग्री' }, children: [
-      link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
-      link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
-      link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
-      link('Solutions', 'हल', '/study-materials/ncert-solutions'),
-    ] },
-    { label: { en: 'Reference Books', hi: 'संदर्भ पुस्तकें' }, children: getReferenceBooks(site).map(book => ({
-      label: book.title || { en: book.author || book.name || book.slug, hi: book.author || book.name || book.slug }, url: referenceBookUrl(book),
-    })) },
-    { label: { en: 'Other Information', hi: 'अन्य जानकारी' }, children: [
+      link('Contact', 'संपर्क करें', '/contact'),
       link('Privacy Policy', 'गोपनीयता नीति', '/privacy-policy'),
       link('Terms & Conditions', 'नियम एवं शर्तें', '/terms-and-conditions'),
-      link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
     ] },
+  ];
+  const retainedLinks = [
+    link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
+    link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
+    link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
+    link('Solutions', 'हल', '/study-materials/ncert-solutions'),
+    ...getReferenceBooks(site).map(book => ({ label: book.title, url: referenceBookUrl(book) })),
+    link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
   ];
 
   const socialList = settings.social?.length ? settings.social : DEFAULT_SOCIAL;
@@ -94,11 +99,11 @@ export function Footer() {
   const bannerIconUrl = resolveMediaUrl(whatsappBanner.icon) || whatsappBanner.iconUrl;
 
   return (
-    <footer className="mt-12 bg-[#0f111a] text-white border-t border-white/5">
+    <footer className="mt-12 bg-[#090909] text-white border-t border-white/5">
       <div className="container-page pt-10 pb-24 lg:pt-12">
         {/* WhatsApp Channel Promotion Banner */}
         {showBanner && (
-          <div className="mb-10 rounded-2xl border border-[#25D366]/30 bg-gradient-to-r from-[#25D366]/15 via-[#25D366]/5 to-white/5 p-5 sm:p-6 backdrop-blur-md shadow-lg shadow-black/20">
+          <div className="mb-10 rounded-2xl border border-white/15 bg-white/5 p-5 sm:p-6 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex min-w-0 items-start gap-3.5">
                 <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#25D366] text-white shadow-lg shadow-[#25D366]/25">
@@ -114,7 +119,7 @@ export function Footer() {
                       {bannerTitle}
                     </h3>
                     {bannerBadge && (
-                      <span className="inline-flex items-center rounded-full bg-[#25D366]/20 px-2 py-0.5 text-[10px] font-bold text-[#25D366] ring-1 ring-[#25D366]/30">
+                      <span className="inline-flex items-center rounded-full bg-[#08c429] px-2.5 py-1 text-xs font-bold text-white ring-1 ring-[#25D366]/30">
                         {bannerBadge}
                       </span>
                     )}
@@ -128,7 +133,7 @@ export function Footer() {
                 href={bannerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-[#20bd5a] hover:shadow-lg active:scale-95 shrink-0 sm:self-auto self-start"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#08c429] px-6 py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#20bd5a] hover:shadow-lg active:scale-95 shrink-0 sm:self-auto self-start"
               >
                 <SOCIAL_ICONS.whatsapp className="size-4" />
                 <span>{bannerButtonText}</span>
@@ -137,7 +142,7 @@ export function Footer() {
           </div>
         )}
 
-        <nav aria-label={uiText("Footer navigation")} className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10">
+        <nav aria-label={uiText("Footer navigation")} className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 xl:grid-cols-5 xl:gap-x-8">
           {columns.map(column => (
             <Column key={column.label.en} title={t(column.label)}>
               {column.children.map(child => (
@@ -149,6 +154,10 @@ export function Footer() {
               ))}
             </Column>
           ))}
+        </nav>
+
+        <nav aria-label={uiText("More resources")} className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/60">
+          {retainedLinks.map(child => <SmartLink key={child.url} to={child.url} className="py-2 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
         </nav>
 
         {/* Brand, Description & Social Bar */}
@@ -208,14 +217,16 @@ export function Footer() {
         </p>
 
         {/* Copyright */}
-        <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs leading-relaxed text-white/55 sm:text-left">
+        <div className="mt-8 border-t border-white/10 pt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between text-xs leading-relaxed text-white/65">
           <p>
             {(t(footer.copyright) || `© {year} Passion Maths Study (PMS). All rights reserved.`).replace(
               '{year}',
               resolvedYear,
             )}
           </p>
-
+          <nav aria-label={uiText("Legal links")} className="flex flex-wrap gap-x-4 gap-y-2">
+            {columns[4].children.slice(-3).map(child => <SmartLink key={child.url} to={child.url} className="py-1 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
+          </nav>
         </div>
       </div>
     </footer>

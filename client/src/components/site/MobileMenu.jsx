@@ -1,3 +1,4 @@
+import { studyNavigationItem } from '@/lib/studyNavigation.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -82,6 +83,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
       <button
         type="button"
         onClick={onToggle}
+        aria-expanded={isOpen}
         className={cn(
           'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
           isMainActive ? 'text-brand bg-brand/5' : 'text-foreground',
@@ -225,6 +227,7 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
       <button
         type="button"
         onClick={onToggle}
+        aria-expanded={open}
         className={cn(
           'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
           isTriggerActive ? 'text-brand bg-brand/5' : 'text-foreground',
@@ -252,7 +255,7 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
               const childActive = isPathActive(child.url, currentPath);
               return (
                 <SmartLink
-                  key={child._id || child.url}
+                  key={child._id || child.label?.en || child.url}
                   to={child.url}
                   newTab={child.newTab}
                   onClick={onClose}
@@ -285,7 +288,14 @@ export function MobileMenu({ open, onClose }) {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   // Group raw items into clean mobile list
-  const rawItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
+  const configuredItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
+  const rawItems = configuredItems.length ? configuredItems : [
+    { label: { en: 'Home', hi: 'होम' }, url: '/', type: 'link' },
+    { label: { en: 'Mathematics', hi: 'गणित' }, type: 'classes', children: [6, 7, 8, 9, 10, 11, 12].map(number => ({ label: { en: `Class ${number} Maths`, hi: `कक्षा ${number} गणित` }, url: `/class-${number}/maths` })) },
+    { label: { en: 'Important Questions', hi: 'महत्वपूर्ण प्रश्न' }, url: '/study-materials/important-questions' },
+    { label: { en: 'Notes', hi: 'नोट्स' }, url: '/study-materials/ncert-notes' },
+    { label: { en: 'About Us', hi: 'हमारे बारे में' }, url: '/about-us', type: 'link' },
+  ];
 
   const navItems = [];
   let hasRefBooks = false;
@@ -319,7 +329,7 @@ export function MobileMenu({ open, onClose }) {
         hasRefBooks = true;
       }
     } else {
-      navItems.push(item);
+      navItems.push(studyNavigationItem(item));
     }
   }
 

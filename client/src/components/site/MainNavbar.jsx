@@ -1,8 +1,9 @@
+import { studyNavigationItem } from '@/lib/studyNavigation.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ChevronDown, ChevronRight, Menu, Search } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { useInterfaceL10n } from '@/lib/i18n';
@@ -23,7 +24,8 @@ function isPathActive(targetUrl, currentPath) {
   return currentPath === cleanTarget || currentPath.startsWith(cleanTarget + '/');
 }
 
-function DropdownMenuItemComponent({ item, currentPath }) {
+function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu }) {
+  item = studyNavigationItem(item);
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -31,13 +33,35 @@ function DropdownMenuItemComponent({ item, currentPath }) {
   const location = useLocation();
   const label = t(item.label) || '';
 
-  const [isOpen, setIsOpen] = useState(false);
+  const menuId = item._id || item.label?.en || item.url;
+  const isOpen = openMenu === menuId;
+  const setIsOpen = value => setOpenMenu(previous => {
+    const next = typeof value === 'function' ? value(previous === menuId) : value;
+    return next ? menuId : previous === menuId ? null : previous;
+  });
   const containerRef = useRef(null);
   const timeoutRef = useRef(null);
+  const panelRef = useRef(null);
+  const clickedOpen = useRef(false);
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const align = () => {
+      const panel = panelRef.current;
+      if (!panel) return;
+      panel.style.marginLeft = '0px';
+      const bounds = panel.getBoundingClientRect();
+      panel.style.marginLeft = `${Math.max(16 - bounds.left, Math.min(0, window.innerWidth - 16 - bounds.right))}px`;
+    };
+    align();
+    window.addEventListener('resize', align);
+    return () => window.removeEventListener('resize', align);
+  }, [isOpen]);
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
+    setOpenMenu(null);
+  }, [location.pathname, setOpenMenu]);
+
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -49,6 +73,7 @@ function DropdownMenuItemComponent({ item, currentPath }) {
     function handleKeyDown(e) {
       if (e.key === 'Escape') {
         setIsOpen(false);
+        containerRef.current?.querySelector('button')?.focus();
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -61,7 +86,10 @@ function DropdownMenuItemComponent({ item, currentPath }) {
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsOpen(true);
+    if (window.matchMedia('(hover: hover)').matches) {
+      if (!isOpen) clickedOpen.current = false;
+      setIsOpen(true);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -116,12 +144,36 @@ function DropdownMenuItemComponent({ item, currentPath }) {
       className="relative inline-block"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setIsOpen(false); }}
+      onKeyDown={event => {
+        const links = [...containerRef.current.querySelectorAll('[role="menuitem"]')];
+        const index = links.indexOf(document.activeElement);
+        if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+          event.preventDefault();
+          if (!isOpen) {
+            setIsOpen(true);
+            requestAnimationFrame(() => {
+              const items = containerRef.current?.querySelectorAll('[role="menuitem"]');
+              items?.[event.key === 'ArrowUp' ? items.length - 1 : 0]?.focus();
+            });
+          } else {
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1
+              : (index + (event.key === 'ArrowUp' ? -1 : 1) + links.length) % links.length;
+            links[next]?.focus();
+          }
+        }
+      }}
     >
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          const next = !isOpen || !clickedOpen.current;
+          clickedOpen.current = next;
+          setIsOpen(next);
+        }}
         aria-expanded={isOpen}
         aria-haspopup="menu"
+        aria-controls={isOpen ? `dropdown-${menuId}` : undefined}
         className={cn(
           'inline-flex h-8 xl:h-9 items-center gap-1 rounded-md px-2 xl:px-2.5 text-xs xl:text-sm font-semibold transition-colors duration-150 hover:text-brand hover:bg-muted/60 whitespace-nowrap cursor-pointer',
           isTriggerActive || isOpen
@@ -140,25 +192,28 @@ function DropdownMenuItemComponent({ item, currentPath }) {
 
       {isOpen && (
         <div
+          ref={panelRef}
+          id={`dropdown-${menuId}`}
           role="menu"
           aria-label={label}
-          className="absolute left-0 top-full mt-1 z-50 w-64 min-w-[16rem] rounded-xl border border-border bg-popover/98 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-150"
+          className="absolute left-0 top-full z-50 w-80 max-w-[calc(100vw-2rem)] rounded-2xl border border-gray-200 bg-white p-2 text-gray-800 shadow-lg"
         >
-          <div className="space-y-0.5 max-h-80 overflow-y-auto">
+          <div className="space-y-0.5 max-h-[min(28rem,70vh)] overflow-y-auto">
             {children.map((child) => {
               const childActive = isPathActive(child.url, currentPath);
               return (
                 <SmartLink
-                  key={child._id || child.url}
+                  key={child._id || child.label?.en || child.url}
+                  role="menuitem"
                   to={child.url}
                   newTab={child.newTab}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    'flex items-center justify-between rounded-lg px-3 py-2 text-xs xl:text-sm font-medium transition-colors hover:bg-muted hover:text-brand',
-                    childActive ? 'bg-brand/10 font-bold text-brand' : 'text-foreground/80',
+                    'flex items-center justify-between rounded-xl px-5 py-3 text-sm xl:text-base font-medium transition-colors hover:bg-orange-50 hover:text-brand focus-visible:bg-orange-50 focus-visible:outline-2 focus-visible:outline-brand',
+                    childActive ? 'bg-brand/10 font-bold text-brand' : 'text-gray-700',
                   )}
                 >
-                  <span className="truncate">{t(child.label)}</span>
+                  <span className="whitespace-normal">{t(child.label)}</span>
                   <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
                 </SmartLink>
               );
@@ -178,6 +233,7 @@ export function MainNavbar({ onOpenMobileMenu }) {
   const currentPath = location.pathname;
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
 
   const rawItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
 
@@ -281,7 +337,8 @@ export function MainNavbar({ onOpenMobileMenu }) {
             aria-label={uiText("Main Navigation")}
             className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-nowrap"
           >
-            {navItems.map((item) => {
+            {navItems.map((rawItem) => {
+              const item = studyNavigationItem(rawItem);
               const enLabel = (item.label?.en || '').toLowerCase();
               const isReference =
                 item.type === 'reference-books' ||
@@ -322,6 +379,8 @@ export function MainNavbar({ onOpenMobileMenu }) {
                   <DropdownMenuItemComponent
                     key={item._id || item.url || item.label?.en}
                     item={item}
+                    openMenu={openMenu}
+                    setOpenMenu={setOpenMenu}
                     currentPath={currentPath}
                   />
                 );

@@ -145,7 +145,7 @@ test('actual header renders configured login link and toggles without changing i
  }
 });
 
-test('footer keeps required navigation while omitted reference books never regain default links',async()=>{
+test('footer includes five requested columns and preserves additional published resources',async()=>{
  const {Footer}=await vite.ssrLoadModule('/src/components/site/Footer.jsx');
  const {ReferenceBooksDropdown}=await vite.ssrLoadModule('/src/components/site/ReferenceBooksDropdown.jsx');
  const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
@@ -158,10 +158,12 @@ test('footer keeps required navigation while omitted reference books never regai
   await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}))))));
   const button=host.querySelector('button');await act(async()=>button.click());
   assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));
- assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,1);
+ assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,2);
+ assert.equal(host.querySelectorAll('footer h2').length,5);
+ assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
  assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
-  assert.equal(host.querySelector('a[href*="rs-aggarwal"]'),null);
-  assert.equal(host.querySelector('a[href*="rd-sharma"]'),null);
+  assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,7);
+  assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,7);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);
   await act(async()=>root.unmount());host.remove();client.clear();
  }
@@ -285,4 +287,40 @@ test('homepage hero supplies complete English lessons with missing CMS translati
   assert.ok(host.querySelector('.katex'));
  }
  await act(async()=>root.unmount());host.remove();
+});
+
+
+test('study dropdowns show requested destinations and support exclusive opening, keyboard and dismissal', async()=>{
+ const {MainNavbar}=await vite.ssrLoadModule('/src/components/site/MainNavbar.jsx');
+ const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {MemoryRouter}=await import('react-router');
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ client.setQueryData(['site','en'],{settings:{header:{showSearch:false,showThemeSwitch:false,showLanguageSwitch:false}},navigation:{header:[
+  {label:{en:'Important Questions'},type:'dropdown',url:'/study-materials/important-questions'},
+  {label:{en:'Notes'},type:'dropdown',url:'/study-materials/ncert-notes'},
+ ]},referenceBooks:[],terms:{}});
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(MainNavbar))))));
+ const button=label=>[...host.querySelectorAll('button')].find(el=>el.textContent===label);
+ await act(async()=>button('Important Questions').click());
+ assert.equal(host.querySelectorAll('[role="menuitem"]').length,5);
+ assert.equal(host.querySelector('[role="menuitem"]').getAttribute('href'),'/study-materials/cbse-sample-papers');
+ await act(async()=>button('Notes').click());
+ assert.equal(button('Important Questions').getAttribute('aria-expanded'),'false');
+ assert.equal(host.querySelectorAll('[role="menuitem"]').length,6);
+ assert.match(host.textContent,/RS Aggarwal Formulas & Notes/);
+ await act(async()=>host.querySelector('[role="menuitem"]').focus());
+ await act(async()=>document.activeElement.dispatchEvent(new window.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true})));
+ assert.equal(document.activeElement.textContent,'All Maths Formula Sheets');
+ await act(async()=>document.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
+ assert.equal(host.querySelector('[role="menu"]'),null);
+ assert.equal(document.activeElement,button('Notes'));
+ await act(async()=>button('Notes').click());
+ await act(async()=>document.body.dispatchEvent(new window.MouseEvent('mousedown',{bubbles:true})));
+ assert.equal(host.querySelector('[role="menu"]'),null);
+ await act(async()=>button('Notes').click());
+ await act(async()=>host.querySelector('[role="menuitem"]').click());
+ assert.equal(host.querySelector('[role="menu"]'),null);
+ await act(async()=>root.unmount());host.remove();client.clear();
 });
