@@ -145,7 +145,7 @@ test('actual header renders configured login link and toggles without changing i
  }
 });
 
-test('configured empty footer menus and omitted reference books never regain default links',async()=>{
+test('footer keeps required navigation while omitted reference books never regain default links',async()=>{
  const {Footer}=await vite.ssrLoadModule('/src/components/site/Footer.jsx');
  const {ReferenceBooksDropdown}=await vite.ssrLoadModule('/src/components/site/ReferenceBooksDropdown.jsx');
  const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
@@ -157,7 +157,9 @@ test('configured empty footer menus and omitted reference books never regain def
   const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
   await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}))))));
   const button=host.querySelector('button');await act(async()=>button.click());
-  assert.equal(host.querySelector('a[href="/privacy-policy"]'),null);
+  assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));
+ assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,1);
+ assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
   assert.equal(host.querySelector('a[href*="rs-aggarwal"]'),null);
   assert.equal(host.querySelector('a[href*="rd-sharma"]'),null);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);

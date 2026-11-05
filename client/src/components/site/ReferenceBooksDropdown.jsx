@@ -1,3 +1,4 @@
+import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
@@ -7,29 +8,6 @@ import { Link, useLocation } from 'react-router';
 import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
-
-const DEFAULT_REFERENCE_BOOKS = [
-  {
-    slug: 'rs-aggarwal',
-    title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'R.S. Aggarwal Solutions' },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'rd-sharma',
-    title: { hi: 'आर.डी. शर्मा समाधान', en: 'R.D. Sharma Solutions' },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'kc-sinha',
-    title: { hi: 'के.सी. सिन्हा समाधान', en: 'K.C. Sinha Solutions' },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'ml-aggarwal',
-    title: { hi: 'एम.एल. अग्रवाल समाधान', en: 'M.L. Aggarwal Solutions' },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-];
 
 export function ReferenceBooksDropdown({ label, currentPath }) {
   useUiLanguage();
@@ -44,24 +22,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
   const containerRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  // Fetch dynamically configured books from backend or fallback to canonical 4
-  const rawBooks = Array.isArray(site?.referenceBooks) ? site.referenceBooks : DEFAULT_REFERENCE_BOOKS;
-
-  // The API already merges defaults and publication overrides; never restore omitted books.
-  const bookMap = new Map();
-  for (const b of rawBooks) {
-    if (b.slug) {
-      const existing = bookMap.get(b.slug) || {};
-      bookMap.set(b.slug, {
-        ...existing,
-        ...b,
-        availableClasses: (b.availableClasses && b.availableClasses.length > 0)
-          ? b.availableClasses
-          : (existing.availableClasses || [6, 7, 8, 9, 10, 11, 12]),
-      });
-    }
-  }
-  const books = Array.from(bookMap.values()).filter((b) => b.isVisible !== false);
+  const books = getReferenceBooks(site);
 
   const isCurrentActive =
     path.startsWith('/reference-books') ||
@@ -156,7 +117,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                   onMouseEnter={() => setActiveBookSlug(book.slug)}
                 >
                   <Link
-                    to={`/reference-solutions/${book.slug}`}
+                    to={referenceBookUrl(book)}
                     onClick={() => {
                       setIsOpen(false);
                       setActiveBookSlug(null);

@@ -1,0 +1,199 @@
+{
+  "layouts": [
+    {
+      "width": 1440,
+      "columns": "274px 274px 274px 274px",
+      "overflow": [],
+      "sections": [
+        {
+          "x": 112,
+          "y": 304.546875
+        },
+        {
+          "x": 426,
+          "y": 304.546875
+        },
+        {
+          "x": 740,
+          "y": 304.546875
+        },
+        {
+          "x": 1054,
+          "y": 304.546875
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "columns": "210px 210px 210px 210px",
+      "overflow": [],
+      "sections": [
+        {
+          "x": 32,
+          "y": 273.546875
+        },
+        {
+          "x": 282,
+          "y": 273.546875
+        },
+        {
+          "x": 532,
+          "y": 273.546875
+        },
+        {
+          "x": 782,
+          "y": 273.546875
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "columns": "344px 344px",
+      "overflow": [],
+      "sections": [
+        {
+          "x": 24,
+          "y": 340.078125
+        },
+        {
+          "x": 400,
+          "y": 340.078125
+        },
+        {
+          "x": 24,
+          "y": 576.078125
+        },
+        {
+          "x": 400,
+          "y": 576.078125
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "columns": "358px",
+      "overflow": [],
+      "sections": [
+        {
+          "x": 16,
+          "y": 392.796875
+        },
+        {
+          "x": 16,
+          "y": 584.796875
+        },
+        {
+          "x": 16,
+          "y": 820.796875
+        },
+        {
+          "x": 16,
+          "y": 1100.796875
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "columns": "288px",
+      "overflow": [],
+      "sections": [
+        {
+          "x": 16,
+          "y": 411.53125
+        },
+        {
+          "x": 16,
+          "y": 603.53125
+        },
+        {
+          "x": 16,
+          "y": 839.53125
+        },
+        {
+          "x": 16,
+          "y": 1119.53125
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "label": "Home",
+      "href": "/",
+      "status": "passed"
+    },
+    {
+      "label": "About Us",
+      "href": "/about-us",
+      "status": "passed"
+    },
+    {
+      "label": "Contact Us",
+      "href": "/contact",
+      "status": "passed"
+    },
+    {
+      "label": "Important Questions",
+      "href": "/study-materials/important-questions",
+      "status": "passed"
+    },
+    {
+      "label": "Notes",
+      "href": "/study-materials/ncert-notes",
+      "status": "passed"
+    },
+    {
+      "label": "Exercises",
+      "href": "/class-10/maths/prashnavali",
+      "status": "passed"
+    },
+    {
+      "label": "Solutions",
+      "href": "/study-materials/ncert-solutions",
+      "status": "passed"
+    },
+    {
+      "label": "RS Aggarwal Solutions",
+      "href": "/reference-solutions/rs-aggarwal",
+      "status": "passed"
+    },
+    {
+      "label": "RD Sharma Solutions",
+      "href": "/reference-solutions/rd-sharma",
+      "status": "passed"
+    },
+    {
+      "label": "ML Aggarwal Solutions",
+      "href": "/reference-solutions/ml-aggarwal",
+      "status": "passed"
+    },
+    {
+      "label": "KC Sinha Solutions",
+      "href": "/reference-solutions/kc-sinha",
+      "status": "passed"
+    },
+    {
+      "label": "Mathematics for Class 10 by R.D. Sharma",
+      "href": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma",
+      "status": "passed"
+    },
+    {
+      "label": "Privacy Policy",
+      "href": "/privacy-policy",
+      "status": "passed"
+    },
+    {
+      "label": "Terms & Conditions",
+      "href": "/terms-and-conditions",
+      "status": "passed"
+    },
+    {
+      "label": "Disclaimer",
+      "href": "#footer-disclaimer",
+      "status": "anchor found"
+    }
+  ],
+  "navbar": "all five destinations match; dropdown opens and Escape closes",
+  "errors": [],
+  "consoleErrors": []
+}

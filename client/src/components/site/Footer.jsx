@@ -1,27 +1,26 @@
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
-import { Globe, Mail, MapPin, Phone } from 'lucide-react';
-import { Link } from 'react-router';
+import { Globe, Mail, Phone } from 'lucide-react';
 import { useInterfaceL10n } from '@/lib/i18n';
-import { useSite, useTerm } from '@/lib/site';
+import { useSite } from '@/lib/site';
 import { resolveMediaUrl } from '@/lib/media';
 import { Logo } from './Logo.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { SOCIAL_ICONS } from './SocialIcons.jsx';
-import { cn } from '@/lib/utils';
+import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
 
 function Column({ title, children }) {
   useUiLanguage();
   return (
-    <div className="flex flex-col">
-      <h2 className="mb-4 text-xs font-black tracking-[0.14em] text-white uppercase">{title}</h2>
-      <ul className="space-y-2.5 text-xs sm:text-sm">{children}</ul>
+    <div className="min-w-0">
+      <h2 className="mb-3 text-sm font-black tracking-[0.14em] text-white uppercase">{title}</h2>
+      <ul className="space-y-1 text-sm leading-relaxed">{children}</ul>
     </div>
   );
 }
 
-const linkClass = 'text-white/70 transition-colors hover:text-white hover:underline decoration-white/30 underline-offset-2';
+const linkClass = 'block min-h-10 max-w-full rounded-sm py-2 break-words focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white text-white/70 transition-colors hover:text-white hover:underline decoration-white/30 underline-offset-2';
 
 const DEFAULT_SOCIAL = [
   { platform: 'whatsapp', url: 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N', label: 'WhatsApp' },
@@ -37,106 +36,47 @@ const SOCIAL_STYLES = {
   whatsapp: 'hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:shadow-lg hover:shadow-[#25D366]/25',
 };
 
-const FALLBACK_FOOTER_COLUMNS = [
-  {
-    _id: 'col-ncert',
-    label: { hi: 'NCERT Class 6 to 12 Math Solutions', en: 'NCERT Class 6 to 12 Math Solutions' },
-    type: 'column',
-    children: [
-      { _id: 'c1-6', label: { hi: 'NCERT Class 6 Mathematics', en: 'NCERT Class 6 Mathematics' }, url: '/class-6/maths' },
-      { _id: 'c1-7', label: { hi: 'NCERT Class 7 Mathematics', en: 'NCERT Class 7 Mathematics' }, url: '/class-7/maths' },
-      { _id: 'c1-8', label: { hi: 'NCERT Class 8 Mathematics', en: 'NCERT Class 8 Mathematics' }, url: '/class-8/maths' },
-      { _id: 'c1-9', label: { hi: 'NCERT Class 9 Mathematics', en: 'NCERT Class 9 Mathematics' }, url: '/class-9/maths' },
-      { _id: 'c1-10', label: { hi: 'NCERT Class 10 Mathematics', en: 'NCERT Class 10 Mathematics' }, url: '/class-10/maths' },
-      { _id: 'c1-11', label: { hi: 'NCERT Class 11 Mathematics', en: 'NCERT Class 11 Mathematics' }, url: '/class-11/maths' },
-      { _id: 'c1-12', label: { hi: 'NCERT Class 12 Mathematics', en: 'NCERT Class 12 Mathematics' }, url: '/class-12/maths' },
-    ],
-  },
-  {
-    _id: 'col-rs',
-    label: { hi: 'R.S. Aggarwal Solutions', en: 'R.S. Aggarwal Solutions' },
-    type: 'column',
-    children: [
-      { _id: 'c2-6', label: { hi: 'R.S. Aggarwal Class 6', en: 'R.S. Aggarwal Class 6' }, url: '/reference-solutions/rs-aggarwal/class-6' },
-      { _id: 'c2-7', label: { hi: 'R.S. Aggarwal Class 7', en: 'R.S. Aggarwal Class 7' }, url: '/reference-solutions/rs-aggarwal/class-7' },
-      { _id: 'c2-8', label: { hi: 'R.S. Aggarwal Class 8', en: 'R.S. Aggarwal Class 8' }, url: '/reference-solutions/rs-aggarwal/class-8' },
-      { _id: 'c2-9', label: { hi: 'R.S. Aggarwal Class 9', en: 'R.S. Aggarwal Class 9' }, url: '/reference-solutions/rs-aggarwal/class-9' },
-      { _id: 'c2-10', label: { hi: 'R.S. Aggarwal Class 10', en: 'R.S. Aggarwal Class 10' }, url: '/reference-solutions/rs-aggarwal/class-10' },
-      { _id: 'c2-11', label: { hi: 'R.S. Aggarwal Class 11', en: 'R.S. Aggarwal Class 11' }, url: '/reference-solutions/rs-aggarwal/class-11' },
-      { _id: 'c2-12', label: { hi: 'R.S. Aggarwal Class 12', en: 'R.S. Aggarwal Class 12' }, url: '/reference-solutions/rs-aggarwal/class-12' },
-    ],
-  },
-  {
-    _id: 'col-rd',
-    label: { hi: 'R.D. Sharma Solutions', en: 'R.D. Sharma Solutions' },
-    type: 'column',
-    children: [
-      { _id: 'c3-6', label: { hi: 'R.D. Sharma Class 6', en: 'R.D. Sharma Class 6' }, url: '/reference-solutions/rd-sharma/class-6' },
-      { _id: 'c3-7', label: { hi: 'R.D. Sharma Class 7', en: 'R.D. Sharma Class 7' }, url: '/reference-solutions/rd-sharma/class-7' },
-      { _id: 'c3-8', label: { hi: 'R.D. Sharma Class 8', en: 'R.D. Sharma Class 8' }, url: '/reference-solutions/rd-sharma/class-8' },
-      { _id: 'c3-9', label: { hi: 'R.D. Sharma Class 9', en: 'R.D. Sharma Class 9' }, url: '/reference-solutions/rd-sharma/class-9' },
-      { _id: 'c3-10', label: { hi: 'R.D. Sharma Class 10', en: 'R.D. Sharma Class 10' }, url: '/reference-solutions/rd-sharma/class-10' },
-      { _id: 'c3-11', label: { hi: 'R.D. Sharma Class 11', en: 'R.D. Sharma Class 11' }, url: '/reference-solutions/rd-sharma/class-11' },
-      { _id: 'c3-12', label: { hi: 'R.D. Sharma Class 12', en: 'R.D. Sharma Class 12' }, url: '/reference-solutions/rd-sharma/class-12' },
-    ],
-  },
-  {
-    _id: 'col-kc',
-    label: { hi: 'K.C. Sinha Solutions', en: 'K.C. Sinha Solutions' },
-    type: 'column',
-    children: [
-      { _id: 'c4-6', label: { hi: 'K.C. Sinha Class 6', en: 'K.C. Sinha Class 6' }, url: '/reference-solutions/kc-sinha/class-6' },
-      { _id: 'c4-7', label: { hi: 'K.C. Sinha Class 7', en: 'K.C. Sinha Class 7' }, url: '/reference-solutions/kc-sinha/class-7' },
-      { _id: 'c4-8', label: { hi: 'K.C. Sinha Class 8', en: 'K.C. Sinha Class 8' }, url: '/reference-solutions/kc-sinha/class-8' },
-      { _id: 'c4-9', label: { hi: 'K.C. Sinha Class 9', en: 'K.C. Sinha Class 9' }, url: '/reference-solutions/kc-sinha/class-9' },
-      { _id: 'c4-10', label: { hi: 'K.C. Sinha Class 10', en: 'K.C. Sinha Class 10' }, url: '/reference-solutions/kc-sinha/class-10' },
-      { _id: 'c4-11', label: { hi: 'K.C. Sinha Class 11', en: 'K.C. Sinha Class 11' }, url: '/reference-solutions/kc-sinha/class-11' },
-      { _id: 'c4-12', label: { hi: 'K.C. Sinha Class 12', en: 'K.C. Sinha Class 12' }, url: '/reference-solutions/kc-sinha/class-12' },
-    ],
-  },
-  {
-    _id: 'col-links',
-    label: { hi: 'Important Links', en: 'Important Links' },
-    type: 'column',
-    children: [
-      { _id: 'c6-home', label: { hi: 'Home', en: 'Home' }, url: '/' },
-      { _id: 'c6-maths', label: { hi: 'Mathematics', en: 'Mathematics' }, url: '/#classes' },
-      { _id: 'c6-search', label: { hi: 'Search', en: 'Search' }, url: '/search' },
-      { _id: 'c6-about', label: { hi: 'About Us', en: 'About Us' }, url: '/about-us' },
-      { _id: 'c6-contact', label: { hi: 'Contact', en: 'Contact' }, url: '/contact' },
-      { _id: 'c6-privacy', label: { hi: 'Privacy Policy', en: 'Privacy Policy' }, url: '/privacy-policy' },
-      { _id: 'c6-terms', label: { hi: 'Terms & Conditions', en: 'Terms & Conditions' }, url: '/terms-and-conditions' },
-    ],
-  },
-];
-
-const FALLBACK_FOOTER_BOTTOM = [
-  { _id: 'fb-privacy', label: { hi: 'गोपनीयता नीति', en: 'Privacy Policy' }, url: '/privacy-policy' },
-  { _id: 'fb-terms', label: { hi: 'नियम एवं शर्तें', en: 'Terms & Conditions' }, url: '/terms-and-conditions' },
-  { _id: 'fb-contact', label: { hi: 'संपर्क', en: 'Contact' }, url: '/contact' },
-];
-
 export function Footer() {
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
-  const term = useTerm();
   const settings = site?.settings || {};
   const footer = settings.footer || {};
   const contact = settings.contact || {};
   const whatsappBanner = settings.whatsappBanner || {};
-  const classes = [...(site?.classes || [])].sort((a, b) => a.number - b.number);
+  // Reuse configured destinations for ordinary links and the navbar's live book list.
+  const configuredLinks = [
+    ...(site?.navigation?.header || []),
+    ...(site?.navigation?.footer || []),
+    ...(site?.navigation?.footerBottom || []),
+  ].filter(item => item.isVisible !== false).flatMap(item => [item, ...(item.children || [])])
+    .filter(item => item.isVisible !== false && item.url);
+  const link = (en, hi, url) => {
+    const configured = configuredLinks.find(item => item.url === url);
+    return { ...configured, label: { en, hi }, url };
+  };
+  const columns = [
+    { label: { en: 'Quick Links', hi: 'त्वरित लिंक' }, children: [
+      link('Home', 'होम', '/'),
+      link('About Us', 'हमारे बारे में', '/about-us'),
+      link('Contact Us', 'संपर्क करें', '/contact'),
+    ] },
+    { label: { en: 'Study Materials', hi: 'अध्ययन सामग्री' }, children: [
+      link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
+      link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
+      link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
+      link('Solutions', 'हल', '/study-materials/ncert-solutions'),
+    ] },
+    { label: { en: 'Reference Books', hi: 'संदर्भ पुस्तकें' }, children: getReferenceBooks(site).map(book => ({
+      label: book.title || { en: book.author || book.name || book.slug, hi: book.author || book.name || book.slug }, url: referenceBookUrl(book),
+    })) },
+    { label: { en: 'Other Information', hi: 'अन्य जानकारी' }, children: [
+      link('Privacy Policy', 'गोपनीयता नीति', '/privacy-policy'),
+      link('Terms & Conditions', 'नियम एवं शर्तें', '/terms-and-conditions'),
+      link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
+    ] },
+  ];
 
-  const rawColumns = site?.navigationConfigured?.footer ? (site.navigation?.footer || []) : (site?.navigation?.footer?.length ? site.navigation.footer : FALLBACK_FOOTER_COLUMNS);
-  const columns = rawColumns.filter((c) => {
-    if (c.isVisible === false) return false;
-    const en = (c.label?.en || '').toLowerCase();
-    const hi = c.label?.hi || '';
-    return !en.includes('state board') && !hi.includes('राज्य बोर्ड');
-  });
-  const looseLinks = columns.filter((c) => c.type === 'link');
-
-  const bottomLinks = site?.navigationConfigured?.footerBottom ? (site.navigation?.footerBottom || []) : (site?.navigation?.footerBottom?.length ? site.navigation.footerBottom : FALLBACK_FOOTER_BOTTOM);
   const socialList = settings.social?.length ? settings.social : DEFAULT_SOCIAL;
 
   const currentYear = new Date().getFullYear();
@@ -154,13 +94,13 @@ export function Footer() {
   const bannerIconUrl = resolveMediaUrl(whatsappBanner.icon) || whatsappBanner.iconUrl;
 
   return (
-    <footer className="mt-16 bg-[#0f111a] text-white border-t border-white/5">
-      <div className="container-page py-12 lg:py-16">
+    <footer className="mt-12 bg-[#0f111a] text-white border-t border-white/5">
+      <div className="container-page pt-10 pb-24 lg:pt-12">
         {/* WhatsApp Channel Promotion Banner */}
         {showBanner && (
-          <div className="mb-12 rounded-2xl border border-[#25D366]/30 bg-gradient-to-r from-[#25D366]/15 via-[#25D366]/5 to-white/5 p-5 sm:p-6 backdrop-blur-md shadow-lg shadow-black/20">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3.5">
+          <div className="mb-10 rounded-2xl border border-[#25D366]/30 bg-gradient-to-r from-[#25D366]/15 via-[#25D366]/5 to-white/5 p-5 sm:p-6 backdrop-blur-md shadow-lg shadow-black/20">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex min-w-0 items-start gap-3.5">
                 <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#25D366] text-white shadow-lg shadow-[#25D366]/25">
                   {bannerIconUrl ? (
                     <img src={bannerIconUrl} alt="WhatsApp" className="size-6 object-contain" />
@@ -168,7 +108,7 @@ export function Footer() {
                     <SOCIAL_ICONS.whatsapp className="size-6" />
                   )}
                 </span>
-                <div>
+                <div className="min-w-0 break-words">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-heading text-base font-extrabold text-white sm:text-lg">
                       {bannerTitle}
@@ -197,67 +137,39 @@ export function Footer() {
           </div>
         )}
 
-        {/* Multi-Column Footer Layout on Desktop */}
-        <div className={cn(
-          'grid grid-cols-2 md:grid-cols-3 gap-8 lg:gap-6',
-          columns.filter((c) => c.type !== 'link').length <= 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-6',
-        )}>
-          {columns
-            .filter((c) => c.type !== 'link')
-            .map((column) => (
-              <Column key={column._id || column.label?.en} title={t(column.label)}>
-                {column.type === 'classes'
-                  ? classes.map((cls) => (
-                      <li key={cls._id || cls.number}>
-                        <Link to={cls.url || `/class-${cls.number}/maths`} className={linkClass}>
-                          {term('class')} {cls.number} {term('mathematics')}
-                        </Link>
-                      </li>
-                    ))
-                  : (column.children || [])
-                      .filter((child) => child.isVisible !== false)
-                      .map((child) => (
-                        <li key={child._id || child.url}>
-                          <SmartLink to={child.url} newTab={child.newTab} className={linkClass}>
-                            {t(child.label)}
-                          </SmartLink>
-                        </li>
-                      ))}
-              </Column>
-            ))}
-
-          {looseLinks.length > 0 && (
-            <Column title={uiText("Links")}>
-              {looseLinks.map((link) => (
-                <li key={link._id || link.url}>
-                  <SmartLink to={link.url} newTab={link.newTab} className={linkClass}>
-                    {t(link.label)}
+        <nav aria-label={uiText("Footer navigation")} className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10">
+          {columns.map(column => (
+            <Column key={column.label.en} title={t(column.label)}>
+              {column.children.map(child => (
+                <li key={child.url}>
+                  <SmartLink to={child.url} newTab={child.newTab} className={linkClass}>
+                    {t(child.label)}
                   </SmartLink>
                 </li>
               ))}
             </Column>
-          )}
-        </div>
+          ))}
+        </nav>
 
         {/* Brand, Description & Social Bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-center sm:text-left">
-            <Logo variant="footer" />
-            <p className="max-w-md text-xs sm:text-[13px] leading-relaxed text-[#A1A1AA] sm:border-l sm:border-white/15 sm:pl-6 text-left">
+          <div className="flex min-w-0 flex-col xl:flex-row xl:items-center gap-4 sm:gap-6 text-left">
+            <Logo variant="footer" className="min-w-0 max-w-full shrink" textClassName="min-w-0 shrink" />
+            <p className="max-w-md text-xs sm:text-[13px] leading-relaxed text-[#A1A1AA] xl:border-l xl:border-white/15 xl:pl-6 text-left">
               {t(footer.description) || uiText("A free, step-by-step and bilingual NCERT Mathematics study platform for Class 6–12 students.")}
             </p>
           </div>
 
           <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-start lg:justify-end">
             {(contact.email || contact.phone) && (
-              <div className="flex items-center gap-3 text-xs text-white/70">
+              <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2 text-xs text-white/70">
                 {contact.email && (
-                  <a href={`mailto:${contact.email}`} className="inline-flex items-center gap-1.5 hover:text-white transition">
+                  <a href={`mailto:${contact.email}`} className="inline-flex max-w-full items-center gap-1.5 break-all hover:text-white transition">
                     <Mail className="size-3.5 text-brand" /> {contact.email}
                   </a>
                 )}
                 {contact.phone && (
-                  <a href={`tel:${contact.phone}`} className="inline-flex items-center gap-1.5 hover:text-white transition">
+                  <a href={`tel:${contact.phone}`} className="inline-flex max-w-full items-center gap-1.5 break-all hover:text-white transition">
                     <Phone className="size-3.5 text-brand" /> {contact.phone}
                   </a>
                 )}
@@ -265,7 +177,7 @@ export function Footer() {
             )}
 
             {footer.showSocial !== false && (
-              <ul className="flex items-center gap-2.5" aria-label={uiText("Social media links")}>
+              <ul className="flex flex-wrap items-center gap-2.5" aria-label={uiText("Social media links")}>
                 {socialList
                   .filter((s) => s.isEnabled !== false)
                   .map((s) => {
@@ -291,31 +203,19 @@ export function Footer() {
           </div>
         </div>
 
-        {t(footer.disclaimer) && (
-          <p className="mt-6 text-center sm:text-left text-[11px] leading-relaxed text-white/40">
-            {t(footer.disclaimer)}
-          </p>
-        )}
+        <p id="footer-disclaimer" tabIndex={-1} className="mt-6 scroll-mt-32 rounded-sm text-left text-xs leading-relaxed text-white/60 focus-visible:outline-2 focus-visible:outline-white">
+          {t(footer.disclaimer) || t({ en: "This is an independent educational platform.", hi: "यह एक स्वतंत्र शैक्षिक मंच है।" })}
+        </p>
 
-        {/* Footer Bottom Section: Horizontal Divider, Copyright on Left, Links on Right */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/55 sm:flex-row">
+        {/* Copyright */}
+        <div className="mt-8 border-t border-white/10 pt-6 text-center text-xs leading-relaxed text-white/55 sm:text-left">
           <p>
             {(t(footer.copyright) || `© {year} Passion Maths Study (PMS). All rights reserved.`).replace(
               '{year}',
               resolvedYear,
             )}
           </p>
-          <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-            {bottomLinks
-              .filter((link) => link.isVisible !== false)
-              .map((link) => (
-                <li key={link._id || link.url}>
-                  <SmartLink to={link.url} newTab={link.newTab} className="hover:text-white transition">
-                    {t(link.label)}
-                  </SmartLink>
-                </li>
-              ))}
-          </ul>
+
         </div>
       </div>
     </footer>
