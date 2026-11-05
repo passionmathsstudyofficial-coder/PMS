@@ -1,6 +1,7 @@
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Dialog as DialogPrimitive } from 'radix-ui';
 import {
   BookOpen,
   ChevronDown,
@@ -68,7 +69,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
 
   const [expandedBook, setExpandedBook] = useState('rs-aggarwal');
 
-  const books = (site?.referenceBooks && site.referenceBooks.length > 0)
+  const books = Array.isArray(site?.referenceBooks)
     ? site.referenceBooks
     : DEFAULT_BOOKS;
 
@@ -334,26 +335,28 @@ export function MobileMenu({ open, onClose }) {
   }
 
   return (
+    <DialogPrimitive.Root open={open} onOpenChange={(value) => { if (!value) onClose(); }}>
     <AnimatePresence>
       {open && (
-        <>
+        <DialogPrimitive.Portal forceMount>
           {/* Backdrop */}
-          <motion.div
+          <DialogPrimitive.Overlay asChild forceMount><motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs lg:hidden"
-          />
+          /></DialogPrimitive.Overlay>
 
           {/* Drawer */}
-          <motion.div
+          <DialogPrimitive.Content asChild forceMount aria-modal="true" aria-describedby={undefined}><motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-background shadow-2xl border-l border-border/80 lg:hidden"
           >
+            <DialogPrimitive.Title className="sr-only">{uiText("Main Navigation")}</DialogPrimitive.Title>
             {/* Header */}
             <div className="flex h-16 items-center justify-between border-b px-4 shrink-0">
               <Logo showText={true} />
@@ -461,10 +464,11 @@ export function MobileMenu({ open, onClose }) {
                 </a>
               )}
             </div>
-          </motion.div>
-        </>
+          </motion.div></DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
       )}
     </AnimatePresence>
+    </DialogPrimitive.Root>
   );
 }
 

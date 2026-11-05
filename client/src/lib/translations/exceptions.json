@@ -59,5 +59,8 @@
   "• {v0}": "Data-only formatting template; values retain their own language",
   "ⁿ√x": "Mathematical notation, unit, acronym or language selector identifier",
   "√x": "Mathematical notation, unit, acronym or language selector identifier",
-  "{v0}. {v1}": "Data-only numbering and authored title; no interface prose"
+  "{v0}. {v1}": "Data-only numbering and authored title; no interface prose",
+  "/reference-solutions/": "Literal URL or route pattern; must remain unchanged in either language",
+  "/class-[6-12]": "Literal URL or route pattern; must remain unchanged in either language",
+  "https://{v0}.com/...": "Literal URL or route pattern; must remain unchanged in either language"
 }

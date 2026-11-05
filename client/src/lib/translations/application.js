@@ -1,5 +1,9 @@
+import { production } from './production.js';
 // Reviewed interface labels, dynamic messages and API errors.
 export const application = {
+  ...production,
+  "Starts at": { "en": "Starts at", "hi": "शुरू होने का समय" },
+  "Ends at": { "en": "Ends at", "hi": "समाप्त होने का समय" },
   "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.": {
     "en": "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.",
     "hi": "हेडर नेविगेशन बार, संदर्भ पुस्तक फुटर, व्हाट्सएप बैनर और कॉपीराइट के लिए पूर्ण गतिशील सामग्री प्रबंधन।"

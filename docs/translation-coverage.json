@@ -1,24 +1,5 @@
 {
-  "rawInterfaceText": [
-    {
-      "file": "client/src/components/home/HeroSection.jsx",
-      "line": 215,
-      "kind": "expression",
-      "text": "e.g. Class 10 Ex 5.2, Triangle, Formula..."
-    },
-    {
-      "file": "client/src/components/home/HeroSection.jsx",
-      "line": 431,
-      "kind": "jsx",
-      "text": "Move transversal"
-    },
-    {
-      "file": "client/src/components/home/HeroSection.jsx",
-      "line": 433,
-      "kind": "attribute",
-      "text": "Move transversal"
-    }
-  ],
+  "rawInterfaceText": [],
   "unresolvedKeys": [],
   "invalidEntries": [],
   "dynamicBypasses": [],
@@ -151,26 +132,26 @@
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 53,
+      "line": 55,
       "text": "{v0} — {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 231,
-      "text": "https://www.amazon.in/dp/...",
-      "reason": "Literal URL, path, or account handle"
+      "line": 392,
+      "text": "/reference-solutions/",
+      "reason": "Literal URL or route pattern; must remain unchanged in either language"
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 294,
-      "text": "https://images-na.ssl-images-amazon.com/images/...",
-      "reason": "Literal URL, path, or account handle"
+      "line": 395,
+      "text": "/class-[6-12]",
+      "reason": "Literal URL or route pattern; must remain unchanged in either language"
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 313,
-      "text": "https://...",
+      "line": 414,
+      "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
@@ -187,37 +168,49 @@
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 568,
+      "line": 524,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 675,
+      "line": 631,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 951,
+      "line": 762,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1090,
+      "line": 996,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1118,
+      "line": 1135,
+      "text": "https://",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 1163,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1233,
+      "line": 1293,
+      "text": "https://{v0}.com/...",
+      "reason": "Literal URL or route pattern; must remain unchanged in either language"
+    },
+    {
+      "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
+      "line": 1376,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
@@ -457,31 +450,31 @@
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 26,
+      "line": 27,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 27,
+      "line": 28,
       "text": "YouTube",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 28,
+      "line": 29,
       "text": "Instagram",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 29,
+      "line": 30,
       "text": "Facebook",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 172,
+      "line": 166,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
@@ -571,7 +564,7 @@
     },
     {
       "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
-      "line": 264,
+      "line": 265,
       "text": "PDF",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
@@ -616,11 +609,11 @@
     "backlog": 143,
     "backlogTranslated": 127,
     "backlogIntentional": 16,
-    "applicationEntries": 1406,
+    "applicationEntries": 1503,
     "remainingEntries": 127,
     "legacyEntries": 533,
-    "unresolved": 3,
-    "scannedFiles": 168,
+    "unresolved": 0,
+    "scannedFiles": 174,
     "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
   }
 }

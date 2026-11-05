@@ -127,7 +127,7 @@ export function Footer() {
   const whatsappBanner = settings.whatsappBanner || {};
   const classes = [...(site?.classes || [])].sort((a, b) => a.number - b.number);
 
-  const rawColumns = site?.navigation?.footer?.length ? site.navigation.footer : FALLBACK_FOOTER_COLUMNS;
+  const rawColumns = site?.navigationConfigured?.footer ? (site.navigation?.footer || []) : (site?.navigation?.footer?.length ? site.navigation.footer : FALLBACK_FOOTER_COLUMNS);
   const columns = rawColumns.filter((c) => {
     if (c.isVisible === false) return false;
     const en = (c.label?.en || '').toLowerCase();
@@ -136,7 +136,7 @@ export function Footer() {
   });
   const looseLinks = columns.filter((c) => c.type === 'link');
 
-  const bottomLinks = site?.navigation?.footerBottom?.length ? site.navigation.footerBottom : FALLBACK_FOOTER_BOTTOM;
+  const bottomLinks = site?.navigationConfigured?.footerBottom ? (site.navigation?.footerBottom || []) : (site?.navigation?.footerBottom?.length ? site.navigation.footerBottom : FALLBACK_FOOTER_BOTTOM);
   const socialList = settings.social?.length ? settings.social : DEFAULT_SOCIAL;
 
   const currentYear = new Date().getFullYear();

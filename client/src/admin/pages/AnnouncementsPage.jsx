@@ -6,7 +6,7 @@ import { Megaphone, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
-import { Field, L10nField, SelectField, SwitchField } from '../components/fields/Fields.jsx';
+import { DateTimeField, Field, L10nField, SelectField, SwitchField } from '../components/fields/Fields.jsx';
 import { LocalizedCell } from '../components/LocalizedCell.jsx';
 import { Panel } from '../components/PageHeader.jsx';
 import { ResourceListPage } from '../components/ResourceListPage.jsx';
@@ -17,6 +17,7 @@ export function AnnouncementsList() {
   return (
     <ResourceListPage
       resource="announcements"
+      hasStatus={false}
       title={uiText("Announcements (सूचनाएं व घोषणाएं)")}
       description={uiText("Create and broadcast urgent announcements, exam alerts, and updates to students on the website header and homepage.")}
       createPath={adminUrl('announcements/new')}
@@ -46,6 +47,7 @@ export function AnnouncementEditor({ id }) {
   const form = useEditorForm({
     resource: 'announcements',
     id,
+    basePath: adminUrl('announcements'),
     entityType: 'Announcement',
     defaults: () => ({
       badge: { hi: 'सूचना', en: 'New Alert', mixed: 'New' },
@@ -64,8 +66,10 @@ export function AnnouncementEditor({ id }) {
 
   return (
     <EditorGate form={form}>
+      {() => (
       <EditorShell
         form={form}
+        hasStatus={false}
         title={isNew ? uiText("New Announcement") : uiTemplate`Announcement — ${adminText(doc.text) || ''}`}
       >
         <div className="grid gap-6">
@@ -106,9 +110,12 @@ export function AnnouncementEditor({ id }) {
               checked={doc.isVisible !== false}
               onChange={(isVisible) => set('isVisible', isVisible)}
             />
+            <DateTimeField label={uiText("Starts at")} value={doc.startsAt} onChange={(value) => set('startsAt', value || null)} />
+            <DateTimeField label={uiText("Ends at")} value={doc.endsAt} onChange={(value) => set('endsAt', value || null)} />
           </Panel>
         </div>
       </EditorShell>
+      )}
     </EditorGate>
   );
 }

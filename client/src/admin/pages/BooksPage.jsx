@@ -15,6 +15,7 @@ import { LocalizedCell } from '../components/LocalizedCell.jsx';
 import { MediaField } from '../components/media/MediaFields.jsx';
 import { Panel } from '../components/PageHeader.jsx';
 import { ResourceListPage } from '../components/ResourceListPage.jsx';
+import { SeoFields } from '../components/SeoFields.jsx';
 import { refId, useResourceList } from '../lib/resources.js';
 import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 import { cn } from '@/lib/utils';
@@ -60,7 +61,7 @@ export function BooksList() {
               {b.coverImage?.url ? (
                 <img
                   src={b.coverImage.url}
-                  alt={adminText(b.title) || 'Cover'}
+                  alt={adminText(b.title) || uiText('Cover')}
                   className="size-8 rounded object-cover border shrink-0"
                 />
               ) : (
@@ -182,15 +183,11 @@ export function BookEditor({ id }) {
       availability: 'available',
       featured: false,
       rating: 4.8,
-      status: 'published',
+      status: 'draft',
       isVisible: true,
       sortOrder: 0,
       tags: [],
-      seo: {
-        metaTitle: { hi: '', en: '', mixed: '' },
-        metaDescription: { hi: '', en: '', mixed: '' },
-        canonical: '',
-      },
+      seo: {},
     }),
   });
 
@@ -209,7 +206,7 @@ export function BookEditor({ id }) {
     }
   }, [mathSubject, doc?.subject, set]);
 
-  const currentClasses = Array.isArray(doc.availableClasses)
+  const currentClasses = Array.isArray(doc?.availableClasses)
     ? doc.availableClasses
     : [6, 7, 8, 9, 10, 11, 12];
 
@@ -422,27 +419,7 @@ export function BookEditor({ id }) {
 
           {/* Panel 4: SEO Settings */}
           <Panel title={uiText("SEO Settings (खोज इंजन अनुकूलन)")}>
-            <L10nField
-              label={uiText("SEO Meta Title")}
-              value={doc.seo?.metaTitle}
-              onChange={(metaTitle) => set('seo.metaTitle', metaTitle)}
-              placeholder={uiText("e.g. RS Aggarwal Mathematics Solutions for Classes 6 to 12 | PMS")}
-            />
-            <L10nField
-              label={uiText("SEO Meta Description")}
-              value={doc.seo?.metaDescription}
-              onChange={(metaDescription) => set('seo.metaDescription', metaDescription)}
-              placeholder={uiText("Free step-by-step chapter-wise exercise solutions with formulas and explanations")}
-            />
-            <Field label={uiText("Canonical URL Override (Optional)")}>
-              <input
-                type="text"
-                value={doc.seo?.canonical || ''}
-                onChange={(e) => set('seo.canonical', e.target.value)}
-                placeholder="https://"
-                className="h-9 w-full rounded-md border bg-transparent px-3 text-xs font-mono"
-              />
-            </Field>
+            <SeoFields value={doc.seo} onChange={(seo) => set('seo', seo)} path={`/reference-solutions/${doc.slug || ''}`} />
           </Panel>
 
           {/* Panel 5: Visibility & Publication Status */}

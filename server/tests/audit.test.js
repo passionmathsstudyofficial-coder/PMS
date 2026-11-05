@@ -27,6 +27,97 @@ before(async () => {
 });
 after(stopServer);
 
+// Warm anonymous caches before each write, then verify exact authored values rather than only HTTP success.
+for (const [resource, field] of [
+  ['classes', 'name'], ['subjects', 'name'], ['chapters', 'title'], ['exercises', 'title'],
+  ['questions', 'text'], ['topics', 'title'], ['resources', 'title'], ['books', 'title'],
+  ['notes', 'content'], ['important-questions', 'text'], ['pages', 'content'],
+]) test(`${resource}: published edits reach anonymous readers and preserve the other language`, async () => {
+  const existing = { classes: cls, subjects: subject, chapters: chapter, exercises: exercise, questions: question }[resource];
+  const item = existing || await create(resource, { ...bodies[resource](), status: 'published' });
+  const endpoint = `/api/${resource}/${item._id}`;
+  assert.equal((await request(app).get(`${endpoint}?lang=en`)).status, 200);
+  const revision = (await request(app).get('/api/public/revision')).body.revision;
+  const english = `Updated ${resource} content`;
+  const saved = await owner.put(endpoint).send({ [field]: { en: english } });
+  assert.equal(saved.status, 200, JSON.stringify(saved.body));
+  assert.equal(saved.body[field].en, english);
+  assert.equal(saved.body[field].hi, title.hi);
+  for (const lang of ['en', 'hi']) {
+    const read = await request(app).get(`${endpoint}?lang=${lang}`);
+    assert.equal(read.status, 200);
+    assert.equal(read.body[field][lang], lang === 'en' ? english : title.hi);
+    assert.equal(read.body[field][lang === 'en' ? 'hi' : 'en'], undefined);
+  }
+  assert.notEqual((await request(app).get('/api/public/revision')).body.revision, revision);
+  if (resource === 'pages') {
+    const path = `/api/public/resolve?path=/${item.slug}&lang=en`;
+    assert.equal((await request(app).get(path)).body.data.page.content.en, english);
+    await owner.put(endpoint).send({ content: { en: '<p>Second saved page edit</p>' } });
+    assert.equal((await request(app).get(path)).body.data.page.content.en, '<p>Second saved page edit</p>');
+    await owner.patch(`${endpoint}/status`).send({ status: 'draft' });
+    assert.equal((await request(app).get(path)).status, 404);
+  }
+  if (!existing) assert.equal((await owner.del(endpoint)).status, 200);
+});
+
+test('reference menu excludes archived, scheduled, draft and hidden books', async () => {
+  const item = await create('books', { title, author: 'Audit Author', slug: 'visibility-audit-book', category: 'reference', status: 'published' });
+  const appears = async () => (await request(app).get('/api/public/site?lang=en')).body.referenceBooks.some(book => book._id === item._id);
+  assert.equal(await appears(), true);
+  for (const update of [
+    { status: 'archived' }, { status: 'draft' },
+    { status: 'published', publishedAt: new Date(Date.now() + 86400000).toISOString() },
+    { publishedAt: new Date(Date.now() - 1000).toISOString(), isVisible: false },
+  ]) {
+    assert.equal((await owner.put(`/api/books/${item._id}`).send(update)).status, 200);
+    assert.equal(await appears(), false, JSON.stringify(update));
+  }
+  await owner.put(`/api/books/${item._id}`).send({ isVisible: true });
+  assert.equal(await appears(), true);
+  await owner.del(`/api/books/${item._id}`);
+});
+
+test('a private canonical reference book suppresses its default menu entry', async () => {
+  const initial = (await request(app).get('/api/public/site?lang=en')).body.referenceBooks[0];
+  assert.ok(initial?.slug);
+  const item = await create('books', { title, author: 'Audit Author', slug: initial.slug, category: 'reference', status: 'published' });
+  for (const update of [{ isVisible: false }, { isVisible: true, status: 'archived' }, { status: 'draft' }]) {
+    await owner.put(`/api/books/${item._id}`).send(update);
+    const books = (await request(app).get('/api/public/site?lang=en')).body.referenceBooks;
+    assert.equal(books.some(book => book.slug === initial.slug), false);
+  }
+  await owner.del(`/api/books/${item._id}`);
+});
+
+test('advertisement edits revalidate and disabled slots stop serving code', async () => {
+  await owner.put('/api/site-settings').send({ ads: { enabled: true } });
+  const item = await create('ad-slots', { name: 'Fresh ad', placement: 'belowHeader', isEnabled: true, code: '<p>Original ad</p>' });
+  const path = `/api/public/ad-frame/${item._id}`;
+  const before = await request(app).get(path);
+  assert.equal(before.status, 200);
+  assert.match(before.headers['cache-control'], /no-cache|no-store/);
+  await owner.put(`/api/ad-slots/${item._id}`).send({ code: '<p>Updated ad</p>' });
+  assert.match((await request(app).get(path)).text, /Updated ad/);
+  await owner.put(`/api/ad-slots/${item._id}`).send({ isEnabled: false });
+  assert.equal((await request(app).get(path)).status, 404);
+  await owner.del(`/api/ad-slots/${item._id}`);
+});
+
+for (const [resource, field, path, collection] of [
+  ['announcements', 'text', '/api/public/site?lang=en', 'announcements'],
+  ['sections', 'title', '/api/public/home?lang=en', 'sections'],
+]) test(`${resource}: warmed student responses refresh after edits and visibility changes`, async () => {
+  const item = await create(resource, { ...bodies[resource](), status: 'published' });
+  const read = async () => (await request(app).get(path)).body[collection].find(value => value._id === item._id);
+  assert.ok(await read());
+  await owner.put(`/api/${resource}/${item._id}`).send({ [field]: { en: 'Updated student banner' } });
+  assert.equal((await read())[field].en, 'Updated student banner');
+  await owner.put(`/api/${resource}/${item._id}`).send({ isVisible: false });
+  assert.equal(await read(), undefined);
+  await owner.del(`/api/${resource}/${item._id}`);
+});
+
 test('header toggles, label and configured URL persist independently and invalidate public bootstrap cache', async () => {
   await request(app).get('/api/public/site?lang=en');
   const prior = (await SiteSettings.getSingleton()).toObject();

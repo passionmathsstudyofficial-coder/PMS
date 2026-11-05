@@ -101,7 +101,7 @@ router.get('/ad-frame/:id', async (req, res) => {
     'Content-Security-Policy',
     "default-src 'none'; script-src https: 'unsafe-inline'; img-src https: data:; style-src https: 'unsafe-inline'; frame-src https:; connect-src https:; font-src https: data:",
   );
-  res.set('Cache-Control', 'public, max-age=300');
+  res.set('Cache-Control', FRESH);
   res.set('X-Robots-Tag', 'noindex');
   res
     .type('html')

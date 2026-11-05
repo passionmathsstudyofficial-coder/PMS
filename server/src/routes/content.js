@@ -86,6 +86,7 @@ router.use(
   '/subjects',
   crudRouter(Subject, {
     entityType: 'Subject',
+    publicFilters: () => ({ isPublic: true }),
     defaultSort: { sortOrder: 1 },
     beforeDelete: async (doc) => {
       await assertNoChildren(Chapter, { subject: doc._id }, 'This subject still has {count} अध्याय.');

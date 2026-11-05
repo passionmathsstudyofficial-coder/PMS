@@ -18,6 +18,7 @@ import {
   Plus,
   RotateCcw,
   Save,
+  Sparkles,
   Trash2,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -796,14 +797,14 @@ export function HeaderFooterSettingsPage() {
                 <div className="rounded-lg border border-slate-200 dark:border-border/60 bg-slate-50 dark:bg-card/75 p-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="rounded bg-amber-100 dark:bg-amber-950/80 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 uppercase">
-                      {form.sponsoredBar?.badge?.en || form.sponsoredBar?.badge?.hi || 'SPONSORED'}
+                      {form.sponsoredBar?.badge?.en || form.sponsoredBar?.badge?.hi || uiText('SPONSORED')}
                     </span>
                     <span className="font-medium text-slate-700 dark:text-slate-200">
-                      {form.sponsoredBar?.text?.en || form.sponsoredBar?.text?.hi || 'IIT-JEE Foundation & NTSE 2026: Mathematics Test Series Live'}
+                      {form.sponsoredBar?.text?.en || form.sponsoredBar?.text?.hi || uiText('IIT-JEE Foundation & NTSE 2026: Mathematics Test Series Live')}
                     </span>
                   </div>
                   <span className="font-bold text-brand">
-                    {form.sponsoredBar?.linkLabel?.en || form.sponsoredBar?.linkLabel?.hi || 'Explore Now →'}
+                    {form.sponsoredBar?.linkLabel?.en || form.sponsoredBar?.linkLabel?.hi || uiText('Explore Now →')}
                   </span>
                 </div>
               </div>

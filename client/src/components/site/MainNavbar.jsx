@@ -270,8 +270,8 @@ export function MainNavbar({ onOpenMobileMenu }) {
     >
       <div className="container-page h-full flex items-center justify-between gap-2 xl:gap-4 flex-nowrap">
         {/* Left Side: PMS Logo, Passion Maths Study, Subtitle */}
-        <div className="flex items-center shrink-0 min-w-0">
-          <Logo className="shrink-0" />
+        <div className="flex min-w-0 flex-1 items-center lg:flex-none">
+          <Logo className="min-w-0 shrink gap-2 sm:gap-3" textClassName="min-w-0 shrink" />
         </div>
 
         {/* Right Side: Desktop Nav (Exactly 1 row) + Utility Controls */}

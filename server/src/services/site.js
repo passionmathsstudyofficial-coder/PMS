@@ -42,8 +42,8 @@ export async function publicClasses(preview = false) {
 }
 
 export async function publicReferenceBooks(preview = false) {
-  const filter = preview ? { category: 'reference' } : { category: 'reference', isVisible: { $ne: false }, status: { $ne: 'draft' } };
-  const dbBooks = await Book.find(filter)
+  // Read configured entries even when private, so a hidden override suppresses its default menu entry.
+  const dbBooks = await Book.find({ category: 'reference' })
     .sort({ sortOrder: 1, createdAt: 1 })
     .populate({ path: 'coverImage', select: MEDIA_SELECT })
     .lean();
@@ -58,6 +58,10 @@ export async function publicReferenceBooks(preview = false) {
   }
   for (const b of dbBooks) {
     if (b.slug) {
+      if (!preview && (b.status !== 'published' || !b.isVisible || !b.publishedAt || new Date(b.publishedAt) > new Date())) {
+        allMap.delete(b.slug);
+        continue;
+      }
       const existing = allMap.get(b.slug) || {};
       allMap.set(b.slug, {
         ...existing,
@@ -94,7 +98,7 @@ export async function getSiteBootstrap() {
       getTerms(),
       SeoSetting.find().populate({ path: 'ogImage', select: MEDIA_SELECT }).lean(),
       settings.ads?.enabled
-        ? AdSlot.find({ isEnabled: true }).sort({ sortOrder: 1 }).select('name placement device pageTypes minHeightMobile minHeightDesktop').lean()
+        ? AdSlot.find({ isEnabled: true }).sort({ sortOrder: 1 }).select('name placement device pageTypes minHeightMobile minHeightDesktop updatedAt').lean()
         : [],
       publicReferenceBooks(),
     ]);

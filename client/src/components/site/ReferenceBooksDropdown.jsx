@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ChevronDown, ChevronRight } from 'lucide-react';
@@ -44,11 +45,10 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
   const timeoutRef = useRef(null);
 
   // Fetch dynamically configured books from backend or fallback to canonical 4
-  const rawBooks = site?.referenceBooks?.length ? site.referenceBooks : DEFAULT_REFERENCE_BOOKS;
+  const rawBooks = Array.isArray(site?.referenceBooks) ? site.referenceBooks : DEFAULT_REFERENCE_BOOKS;
 
-  // Guarantee all 4 required canonical books exist in order
+  // The API already merges defaults and publication overrides; never restore omitted books.
   const bookMap = new Map();
-  for (const b of DEFAULT_REFERENCE_BOOKS) bookMap.set(b.slug, b);
   for (const b of rawBooks) {
     if (b.slug) {
       const existing = bookMap.get(b.slug) || {};
@@ -181,7 +181,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                   {isHovered && (
                     <div
                       role="menu"
-                      aria-label={`${bookTitle} Classes`}
+                      aria-label={uiTemplate`${bookTitle} Classes`}
                       className="absolute left-full top-0 ml-1 z-50 w-36 sm:w-40 rounded-xl border border-border bg-popover/98 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-0 slide-in-from-left-2 duration-150"
                     >
                       <div className="px-2.5 py-1 text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">

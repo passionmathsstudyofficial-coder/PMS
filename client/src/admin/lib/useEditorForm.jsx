@@ -21,8 +21,9 @@ export function useEditorForm({ resource, id, defaults, basePath, toForm = ident
   const isNew = !id || id === 'new';
   const item = useResourceItem(resource, isNew ? null : id);
   const mutations = useResourceMutations(resource);
-  const [form, setFormState] = useState(() => (isNew ? defaults : null));
-  const [baseline, setBaseline] = useState(() => (isNew ? JSON.stringify(defaults) : null));
+  const [initialDefaults] = useState(() => (typeof defaults === 'function' ? defaults() : defaults));
+  const [form, setFormState] = useState(() => (isNew ? initialDefaults : null));
+  const [baseline, setBaseline] = useState(() => (isNew ? JSON.stringify(initialDefaults) : null));
   const [redirect, setRedirect] = useState(null);
   const dirty = form !== null && JSON.stringify(form) !== baseline;
 

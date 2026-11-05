@@ -117,7 +117,7 @@ export function ResourceEditor({ id }) {
       thumbnail: null,
       downloadAllowed: true,
       featured: false,
-      status: 'published',
+      status: 'draft',
       isVisible: true,
       sortOrder: 0,
       tags: [],

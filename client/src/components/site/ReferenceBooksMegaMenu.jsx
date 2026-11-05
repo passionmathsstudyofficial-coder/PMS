@@ -42,7 +42,7 @@ const DEFAULT_BOOKS = [
   },
 ];
 
-export function ReferenceBooksMegaMenu({ label = 'Reference Books', currentPath = '' }) {
+export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), currentPath = '' }) {
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -98,7 +98,7 @@ export function ReferenceBooksMegaMenu({ label = 'Reference Books', currentPath 
   };
 
   // Merge dynamic books from backend with default fallbacks
-  const books = (site?.referenceBooks && site.referenceBooks.length > 0)
+  const books = Array.isArray(site?.referenceBooks)
     ? site.referenceBooks
     : DEFAULT_BOOKS;
 

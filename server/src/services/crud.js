@@ -146,6 +146,10 @@ export function crudRouter(Model, options = {}) {
       if (!publicRead) throw new ApiError(401, 'Authentication required');
       const visible = !hasStatus || (doc.status === 'published' && doc.isVisible && (!doc.publishedAt || doc.publishedAt <= new Date()));
       if (!visible) throw new ApiError(404, `${entityType} not found`);
+      if (Model.modelName === 'Subject' && !doc.isPublic) throw new ApiError(404, `${entityType} not found`);
+      if (doc.isVisible === false || !await Model.exists({ _id: doc._id, ...await publicFilters(req.query, req) })) {
+        throw new ApiError(404, `${entityType} not found`);
+      }
       if (!await visibleParents(doc.toObject())) throw new ApiError(404, `${entityType} not found`);
     }
     const result = await serialize(doc, req);

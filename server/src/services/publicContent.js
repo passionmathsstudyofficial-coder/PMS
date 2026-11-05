@@ -485,7 +485,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   const refCrumb = { label: { hi: 'संदर्भ समाधान', en: 'Reference Solutions' }, url: urls.referenceSolutions() };
 
   // Load registered reference books from DB + canonical list
-  const dbBooks = await Book.find(vis(Book, preview, { category: 'reference' }))
+  const dbBooks = await Book.find({ category: 'reference' })
     .sort({ sortOrder: 1, createdAt: -1 })
     .populate({ path: 'coverImage', select: MEDIA_SELECT })
     .lean();
@@ -495,6 +495,10 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   for (const b of CANONICAL_REFERENCE_BOOKS) allBooksMap.set(b.slug, { ...b, classes: b.classes || [6, 7, 8, 9, 10, 11, 12], url: `/${rootSlug}/${b.slug}` });
   for (const b of dbBooks) {
     if (b.slug) {
+      if (!preview && (b.status !== 'published' || !b.isVisible || !b.publishedAt || new Date(b.publishedAt) > new Date())) {
+        allBooksMap.delete(b.slug);
+        continue;
+      }
       const existing = allBooksMap.get(b.slug) || {};
       allBooksMap.set(b.slug, {
         ...existing,
@@ -530,12 +534,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   }
 
   const bookSlug = segments[1];
-  const book = allBooksMap.get(bookSlug) || {
-    slug: bookSlug,
-    title: { hi: `${bookSlug.toUpperCase()} समाधान`, en: `${bookSlug.toUpperCase()} Solutions` },
-    author: bookSlug.replace(/-/g, ' ').toUpperCase(),
-    url: urls.referenceBook(bookSlug),
-  };
+  const book = allBooksMap.get(bookSlug);
+  if (!book) throw new ApiError(404, 'Reference book not found');
   const bookCrumb = { label: book.title, url: urls.referenceBook(book) };
 
   // 2. Book Hub: /reference-solutions/:bookSlug
@@ -549,11 +549,11 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
         books: allBooks,
       },
       breadcrumbs: [home, refCrumb, bookCrumb],
-      seo: {
+      seo: seoFor(book, {
         title: `${pick(book.title, 'en')} for Classes 6 to 12 Maths | Passion Maths Study`,
         description: describe(book.description, `Chapter-wise and exercise-wise solutions for ${pick(book.title, 'en')}.`),
-        canonical: urls.referenceBook(book),
-      },
+        url: urls.referenceBook(book),
+      }),
     };
   }
 

@@ -54,6 +54,11 @@ async function loadAdmin(req) {
 
 export async function optionalAuth(req, res, next) {
   await loadAdmin(req);
+  // A password-only enrollment session must not gain draft-read or preview privileges.
+  if (req.admin && twoFactorPending(req, req.admin)) {
+    req.admin = null;
+    req.adminSession = null;
+  }
   next();
 }
 
@@ -83,6 +88,7 @@ export const requirePermission = (permission) => async (req, res, next) => {
 export const requireRole = (...roles) => async (req, res, next) => {
   const admin = await loadAdmin(req);
   if (!admin) return next(new ApiError(401, 'Authentication required'));
+  if (twoFactorPending(req, admin)) return next(new ApiError(403, 'Set up two-factor authentication to continue'));
   if (!roles.includes(admin.role)) return next(new ApiError(403, 'Insufficient role'));
   next();
 };

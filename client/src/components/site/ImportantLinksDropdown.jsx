@@ -28,7 +28,7 @@ const DEFAULT_LINKS = [
   { _id: 'il-terms', label: { hi: 'नियम एवं शर्तें', en: 'Terms & Conditions' }, url: '/terms-and-conditions', icon: FileCheck2 },
 ];
 
-export function ImportantLinksDropdown({ item, label = 'Important Links', currentPath = '' }) {
+export function ImportantLinksDropdown({ item, label = uiText('Important Links'), currentPath = '' }) {
   useUiLanguage();
   const t = useInterfaceL10n();
   const location = useLocation();

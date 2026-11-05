@@ -14,7 +14,7 @@ import { mapLegacyLanguages } from '../../shared/languages.js';
 import { resolveMediaUrl, documentType, imageUrl } from '../src/lib/media.js';
 
 const dom = new JSDOM('<!doctype html><html><body></body></html>',{url:'https://pms.example'});
-for(const key of ['window','document','DOMParser','NodeFilter','Node','Element','HTMLElement','MutationObserver','getComputedStyle','localStorage']) globalThis[key]=dom.window[key];
+for(const key of ['window','document','DOMParser','NodeFilter','Node','Element','HTMLElement','HTMLFormElement','HTMLInputElement','DocumentFragment','CustomEvent','Event','MutationObserver','getComputedStyle','localStorage']) globalThis[key]=dom.window[key];
 Object.defineProperty(globalThis,'navigator',{value:dom.window.navigator,configurable:true});
 globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const vite=await createServer({root:path.resolve(import.meta.dirname,'..'),configFile:path.resolve(import.meta.dirname,'../vite.config.js'),server:{middlewareMode:true},appType:'custom'});
@@ -136,13 +136,127 @@ test('actual header renders configured login link and toggles without changing i
  const {MemoryRouter}=await import('react-router');
  const host=document.createElement('div');
  for(const enabled of [true,false]){
-  const client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+  const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
   client.setQueryData(['site','en'],{settings:{header:{showLoginButton:enabled,loginUrl:'/login?source=header',loginLabel:{en:'Student sign in'},showSearch:false,showThemeSwitch:false,showLanguageSwitch:false,showClassPills:false}},navigation:{header:[{_id:'a',type:'link',url:'/audit-page',label:{en:'Audit navigation'}}]},navigationConfigured:{header:true},terms:{}});
   host.innerHTML=renderToStaticMarkup(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Header)))));
   assert.equal(Boolean(host.querySelector('a[href="/login?source=header"]')),enabled);
   assert.ok(host.querySelector('a[href="/audit-page"]'));assert.equal(host.querySelector('input'),null);
   assert.doesNotMatch(host.textContent,/View in Hindi/);client.clear();
  }
+});
+
+test('configured empty footer menus and omitted reference books never regain default links',async()=>{
+ const {Footer}=await vite.ssrLoadModule('/src/components/site/Footer.jsx');
+ const {ReferenceBooksDropdown}=await vite.ssrLoadModule('/src/components/site/ReferenceBooksDropdown.jsx');
+ const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {MemoryRouter}=await import('react-router');
+ for(const books of [[],[{slug:'audit-only',title:{en:'Only published book'},availableClasses:[10]}]]){
+  const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+  client.setQueryData(['site','en'],{settings:{whatsappBanner:{enabled:false}},navigation:{footer:[],footerBottom:[]},navigationConfigured:{footer:true,footerBottom:true},referenceBooks:books,terms:{}});
+  const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+  await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}))))));
+  const button=host.querySelector('button');await act(async()=>button.click());
+  assert.equal(host.querySelector('a[href="/privacy-policy"]'),null);
+  assert.equal(host.querySelector('a[href*="rs-aggarwal"]'),null);
+  assert.equal(host.querySelector('a[href*="rd-sharma"]'),null);
+  assert.equal(host.textContent.includes('Only published book'),books.length>0);
+  await act(async()=>root.unmount());host.remove();client.clear();
+ }
+});
+
+test('advertisement iframe reloads when the saved code revision changes',async()=>{
+ const {AdSlot}=await vite.ssrLoadModule('/src/components/site/AdSlot.jsx');
+ const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ const host=document.createElement('div');
+ const sources=[];
+ for(const updatedAt of ['2026-11-05T10:00:00Z','2026-11-05T10:01:00Z']){
+  client.setQueryData(['site','en'],{settings:{ads:{enabled:true}},adSlots:[{_id:'audit-ad',name:'Audit ad',placement:'belowHeader',updatedAt}]});
+  host.innerHTML=renderToStaticMarkup(React.createElement(QueryClientProvider,{client},React.createElement(SiteProvider,null,React.createElement(AdSlot,{placement:'belowHeader',pageType:'home'}))));
+  const frame=host.querySelector('iframe');assert.ok(frame);sources.push(frame.getAttribute('src'));
+  assert.match(frame.getAttribute('src'),/public\/ad-frame\/audit-ad\?v=/);
+ }
+ assert.notEqual(sources[0],sources[1]);client.clear();
+});
+
+test('editor hook evaluates lazy defaults once and tracks real initial values',async()=>{
+ const {useEditorForm}=await vite.ssrLoadModule('/src/admin/lib/useEditorForm.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {MemoryRouter}=await import('react-router');
+ let calls=0,editor;
+ function Probe(){editor=useEditorForm({resource:'books',id:'new',basePath:'/books',defaults:()=>{calls++;return {title:{en:'New book'},availableClasses:[10],status:'draft'};}});return React.createElement('p',null,editor.form.title.en);}
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(Probe)))));
+ assert.equal(host.textContent,'New book');assert.equal(editor.dirty,false);assert.equal(calls,1);
+ await act(async()=>editor.set('title',{en:'Edited book'}));
+ assert.equal(host.textContent,'Edited book');assert.equal(editor.dirty,true);assert.equal(calls,1);
+ await act(async()=>root.unmount());host.remove();client.clear();
+});
+
+test('book editor handles an uncached pending document and new book defaults without crashing',async()=>{
+ const {BookEditor}=await vite.ssrLoadModule('/src/admin/pages/BooksPage.jsx');
+ const {AdminAuthProvider}=await vite.ssrLoadModule('/src/admin/lib/auth.jsx');
+ const {ConfirmProvider}=await vite.ssrLoadModule('/src/admin/components/ConfirmDialog.jsx');
+ const {api}=await vite.ssrLoadModule('/src/lib/api.js');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {createMemoryRouter,RouterProvider}=await import('react-router');
+ const original=api.defaults.adapter;
+ const pending=[];
+ api.defaults.adapter=async config=>config.url.includes('uncached-book')?new Promise(resolve=>pending.push(()=>resolve({data:{_id:'uncached-book',title:{en:'Loaded book'},author:'Audit',availableClasses:[10],status:'draft'},status:200,statusText:'OK',headers:{},config}))):({data:{items:[],total:0},status:200,statusText:'OK',headers:{},config});
+ try{
+  for(const id of ['new','uncached-book']){
+   const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+   client.setQueryData(['admin-me'],{admin:{name:'Audit Owner',role:'superadmin'},permissions:['content:read','content:write','content:publish','content:delete']});
+   if(id!=='new') client.setQueryDefaults(['admin','books','item',id],{queryFn:()=>new Promise(()=>{})});
+   const host=document.createElement('div');document.body.append(host);const errors=[];const root=createRoot(host,{onUncaughtError:error=>errors.push(error)});
+   const router=createMemoryRouter([{path:'*',element:React.createElement(AdminAuthProvider,null,React.createElement(ConfirmProvider,null,React.createElement(BookEditor,{id})))}]);
+   await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(RouterProvider,{router}))));
+   assert.deepEqual(errors,[]);
+   if(id==='new'){
+    assert.ok(host.textContent.includes('New Reference Book'));
+    assert.ok(host.textContent.includes('Draft'));
+    assert.ok(host.querySelector('input[id]'));
+    assert.ok(host.textContent.includes('SEO title'));
+   }else {assert.equal(host.querySelector('h1'),null);await act(async()=>pending.splice(0).forEach(resolve=>resolve()));}
+   await act(async()=>root.unmount());host.remove();router.dispose();client.clear();
+  }
+ }finally{api.defaults.adapter=original;}
+});
+
+test('announcement editor waits for data and uses visibility scheduling instead of unsupported publish actions',async()=>{
+ const {AnnouncementEditor}=await vite.ssrLoadModule('/src/admin/pages/AnnouncementsPage.jsx');
+ const {AdminAuthProvider}=await vite.ssrLoadModule('/src/admin/lib/auth.jsx');
+ const {ConfirmProvider}=await vite.ssrLoadModule('/src/admin/components/ConfirmDialog.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {createMemoryRouter,RouterProvider}=await import('react-router');
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ client.setQueryData(['admin-me'],{admin:{name:'Audit Owner'},permissions:['content:write','content:publish']});
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ const router=createMemoryRouter([{path:'*',element:React.createElement(AdminAuthProvider,null,React.createElement(ConfirmProvider,null,React.createElement(AnnouncementEditor,{id:'new'})))}]);
+ await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(RouterProvider,{router}))));
+ assert.ok(host.textContent.includes('New Announcement'));
+ assert.ok(host.textContent.includes('Starts at'));assert.ok(host.textContent.includes('Ends at'));
+ assert.equal([...host.querySelectorAll('button')].some(button=>['Publish','Save draft','Unpublish'].includes(button.textContent.trim())),false);
+ await act(async()=>root.unmount());host.remove();router.dispose();client.clear();
+});
+
+test('mobile navigation is an accessible modal and Escape closes it',async()=>{
+ const {MobileMenu}=await vite.ssrLoadModule('/src/components/site/MobileMenu.jsx');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {MemoryRouter}=await import('react-router');
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ let closes=0;
+ function Probe(){const [open,setOpen]=React.useState(true);return React.createElement(React.Fragment,null,React.createElement('p',null,open?'drawer-open':'drawer-closed'),React.createElement(MobileMenu,{open,onClose:()=>{closes++;setOpen(false);}}));}
+ await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(Probe)))));
+ try{
+  const dialog=document.querySelector('[role="dialog"]');assert.ok(dialog);assert.equal(dialog.getAttribute('aria-modal'),'true');
+  await act(async()=>document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
+  assert.equal(closes,1);assert.ok(host.textContent.includes('drawer-closed'));
+ }finally{await act(async()=>root.unmount());host.remove();client.clear();}
 });
 
 

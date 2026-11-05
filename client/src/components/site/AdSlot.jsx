@@ -3,6 +3,7 @@ import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
+import { API_BASE } from '@/lib/config.js';
 
 /**
  * Reserved advertising space. Renders nothing unless the admin enabled ads + this slot.
@@ -35,7 +36,7 @@ export function AdSlot({ placement, pageType, className }) {
       >
         <iframe
           title={uiTemplate`Advertisement: ${slot.name}`}
-          src={`/api/public/ad-frame/${slot._id}`}
+          src={`${API_BASE.replace(/\/$/, '')}/public/ad-frame/${slot._id}?v=${encodeURIComponent(slot.updatedAt || '')}`}
           sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
           loading="lazy"
           className="block h-[var(--ad-mobile)] w-full border-0 md:h-[var(--ad-desktop)]"

@@ -1,0 +1,302 @@
+{
+  "date": "2026-11-05",
+  "localOrigin": "http://127.0.0.1:5055",
+  "contentEdits": [
+    {
+      "module": "Chapters",
+      "saved": "Browser updated Chapters"
+    },
+    {
+      "module": "Topics",
+      "saved": "Browser updated Topics"
+    },
+    {
+      "module": "Exercises",
+      "saved": "Browser updated Exercises"
+    },
+    {
+      "module": "Notes",
+      "saved": "Browser updated Notes"
+    },
+    {
+      "module": "PDFs & Resources",
+      "saved": "Browser updated PDFs & Resources"
+    },
+    {
+      "module": "Important Questions",
+      "saved": ""
+    },
+    {
+      "module": "Templates",
+      "saved": "Browser updated Templates"
+    },
+    {
+      "module": "Video Lessons",
+      "saved": "Browser updated Video Lessons"
+    }
+  ],
+  "editors": [
+    {
+      "module": "Chapters",
+      "url": "http://127.0.0.1:5055/pms-control-room/chapters/6aec7ac6d08199fca71ee883"
+    },
+    {
+      "module": "Topics",
+      "url": "http://127.0.0.1:5055/pms-control-room/topics/6aec7ac6d08199fca71ee88e"
+    },
+    {
+      "module": "Exercises",
+      "url": "http://127.0.0.1:5055/pms-control-room/exercises/6aec7ac6d08199fca71ee886"
+    },
+    {
+      "module": "Notes",
+      "url": "http://127.0.0.1:5055/pms-control-room/notes/6aec7ac6d08199fca71ee891"
+    },
+    {
+      "module": "PDFs & Resources",
+      "url": "http://127.0.0.1:5055/pms-control-room/resources/6aec7ac6d08199fca71ee897"
+    }
+  ],
+  "modulesInspected": [
+    {
+      "module": "Questions",
+      "heading": "Questions",
+      "initialObservation": true
+    },
+    {
+      "module": "Solutions",
+      "heading": "Solutions",
+      "initialObservation": true
+    },
+    {
+      "module": "Important Questions",
+      "heading": "Important Questions",
+      "initialObservation": true
+    },
+    {
+      "module": "Templates",
+      "heading": "Templates",
+      "initialObservation": true
+    },
+    {
+      "module": "Announcements",
+      "heading": "Announcements",
+      "initialObservation": true
+    },
+    {
+      "module": "Homepage",
+      "heading": "Homepage",
+      "initialObservation": true
+    },
+    {
+      "module": "Website Settings",
+      "heading": "Website Settings",
+      "initialObservation": true
+    },
+    {
+      "module": "Header & Footer Settings",
+      "heading": "This page failed to load",
+      "initialObservation": true
+    },
+    {
+      "module": "Header",
+      "heading": "This page failed to load",
+      "initialObservation": true
+    },
+    {
+      "module": "Navigation",
+      "heading": "This page failed to load",
+      "initialObservation": true
+    },
+    {
+      "module": "Footer",
+      "heading": "This page failed to load",
+      "initialObservation": true
+    },
+    {
+      "module": "Related Content",
+      "heading": "Related Content",
+      "initialObservation": true
+    },
+    {
+      "module": "SEO",
+      "heading": "SEO",
+      "initialObservation": true
+    },
+    {
+      "module": "Language",
+      "heading": "Language",
+      "initialObservation": true
+    },
+    {
+      "module": "Ad Spaces",
+      "heading": "Ad Spaces",
+      "initialObservation": true
+    },
+    {
+      "module": "Images & Media",
+      "heading": "Images & Media",
+      "initialObservation": true
+    },
+    {
+      "module": "Diagrams & Graphs",
+      "heading": "Diagrams & Graphs",
+      "initialObservation": true
+    },
+    {
+      "module": "Students",
+      "heading": "Students",
+      "initialObservation": true
+    },
+    {
+      "module": "Users / Admins",
+      "heading": "Users / Admins",
+      "initialObservation": true
+    },
+    {
+      "module": "Activity Logs",
+      "heading": "Activity Logs",
+      "initialObservation": true
+    },
+    {
+      "module": "Backup / Settings",
+      "heading": "Backup & Recovery",
+      "initialObservation": true
+    },
+    {
+      "module": "My Account & 2FA",
+      "heading": "My Account",
+      "initialObservation": true
+    }
+  ],
+  "localResponsive": [
+    {
+      "name": "iphone",
+      "width": 390,
+      "height": 844,
+      "clientWidth": 375,
+      "mathErrors": 0,
+      "measuredWidth": 390,
+      "scrollWidth": 375
+    },
+    {
+      "name": "android",
+      "width": 360,
+      "height": 800,
+      "clientWidth": 345,
+      "mathErrors": 0,
+      "measuredWidth": 360,
+      "scrollWidth": 345
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024,
+      "clientWidth": 753,
+      "mathErrors": 0,
+      "measuredWidth": 768,
+      "scrollWidth": 753
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 768,
+      "clientWidth": 1351,
+      "mathErrors": 0,
+      "measuredWidth": 1366,
+      "scrollWidth": 1351
+    },
+    {
+      "name": "desktop",
+      "width": 1920,
+      "height": 1080,
+      "clientWidth": 1905,
+      "mathErrors": 0,
+      "measuredWidth": 1920,
+      "scrollWidth": 1905
+    }
+  ],
+  "liveResponsive": [
+    {
+      "name": "iphone",
+      "width": 390,
+      "height": 844,
+      "brokenImages": [],
+      "clientWidth": 375,
+      "mathErrors": 0,
+      "scrollWidth": 375
+    },
+    {
+      "name": "android",
+      "width": 360,
+      "height": 800,
+      "brokenImages": [],
+      "clientWidth": 345,
+      "mathErrors": 0,
+      "scrollWidth": 345
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024,
+      "brokenImages": [],
+      "clientWidth": 753,
+      "mathErrors": 0,
+      "scrollWidth": 753
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 768,
+      "brokenImages": [],
+      "clientWidth": 1351,
+      "mathErrors": 0,
+      "scrollWidth": 1351
+    },
+    {
+      "name": "desktop",
+      "width": 1920,
+      "height": 1080,
+      "brokenImages": [],
+      "clientWidth": 1905,
+      "mathErrors": 0,
+      "scrollWidth": 1905
+    }
+  ],
+  "backupRestore": "Browser restored 18 collections and created a pre-restore safety backup",
+  "productionAdminLogin": "Configured credentials rejected; user sign-in requested",
+  "limitations": [
+    "Module inspection is not a complete lifecycle pass",
+    "Live admin CRUD and deployment pending access"
+  ],
+  "repairedScreens": [
+    {
+      "module": "Header & Footer Settings",
+      "result": "Shared editor renders after missing-import fix"
+    },
+    {
+      "module": "Header",
+      "result": "Shared editor renders after missing-import fix"
+    },
+    {
+      "module": "Navigation",
+      "result": "Shared editor renders after missing-import fix"
+    },
+    {
+      "module": "Footer",
+      "result": "Shared editor renders after missing-import fix"
+    }
+  ],
+  "additionalVerifiedActions": [
+    "Class name and subject description saved and refreshed",
+    "Question text and formula saved and rendered on student page",
+    "Book title and SEO saved and refreshed; title visible on student hub",
+    "Announcement text saved and refreshed",
+    "Homepage heading saved and visible on student homepage",
+    "Header search placeholder saved and refreshed",
+    "Footer description saved and visible on student website",
+    "Real image uploaded with title/alt metadata and persisted after refresh",
+    "Backup created, verified and restored 18 collections with automatic safety backup",
+    "Phone menu trigger fits; dialog opens and Escape closes it"
+  ]
+}

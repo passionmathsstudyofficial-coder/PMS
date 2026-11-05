@@ -46,7 +46,7 @@ export function Logo({ className, showText = true, textClassName, variant = 'hea
         <span className={cn('flex flex-col leading-tight shrink-0', textClassName)}>
           <span
             className={cn(
-              'font-heading tracking-tight whitespace-nowrap',
+              'font-heading tracking-tight truncate',
               isFooter
                 ? 'text-[18px] sm:text-[20px] font-bold text-white'
                 : 'text-[14px] sm:text-[15px] xl:text-base font-extrabold text-foreground',
@@ -57,7 +57,7 @@ export function Logo({ className, showText = true, textClassName, variant = 'hea
           {tagline && (
             <span
               className={cn(
-                'whitespace-nowrap',
+                'truncate',
                 isFooter
                   ? 'text-[13px] sm:text-[14px] font-medium text-[#A1A1AA] mt-0.5'
                   : 'text-[10.5px] sm:text-[11px] font-medium text-muted-foreground',

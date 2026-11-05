@@ -19,10 +19,7 @@ export const csrfTokenFor = (sid) => hmac(`csrf:${sid}`);
 
 function allowedOrigin(req, origin) {
   if (!origin) return true;
-  const host = req.get('x-forwarded-host') || req.get('host');
-  if (host && (origin === `https://${host}` || origin === `http://${host}`)) {
-    return true;
-  }
+  // Host and forwarding headers are request input, never an origin allowlist.
   const allowed = new Set([
     ...env.clientOrigins,
     ...(env.PUBLIC_SITE_URL ? [new URL(env.PUBLIC_SITE_URL).origin] : []),

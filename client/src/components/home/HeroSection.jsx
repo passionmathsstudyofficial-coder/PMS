@@ -212,7 +212,7 @@ export function HeroSection({ section }) {
                       type="search"
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
-                      placeholder={english ? "e.g. Class 10 Ex 5.2, Triangle, Formula..." : (t(cfg.searchPlaceholder) || uiText("जैसे: कक्षा 10 प्रश्नावली 5.2, त्रिभुज, सूत्र…"))}
+                      placeholder={english ? uiText("e.g. Class 10 Ex 5.2, Triangle, Formula...") : (t(cfg.searchPlaceholder) || uiText("जैसे: कक्षा 10 प्रश्नावली 5.2, त्रिभुज, सूत्र…"))}
                       className="w-full pl-10 pr-3 py-2.5 text-sm bg-transparent border-0 text-slate-800 dark:text-foreground placeholder-slate-400 dark:placeholder-slate-500 focus:ring-0 focus:outline-none"
                     />
                   </div>
@@ -428,9 +428,7 @@ export function HeroSection({ section }) {
                             </text>
                           </svg>
                         </div>
-                        {english && <label className="mt-2 flex items-center gap-2 text-[11px] text-slate-600">
-                          Move transversal
-                          <input aria-label="Move transversal" type="range" min="70" max="190" value={transversalX} onChange={(event) => setTransversalX(Number(event.target.value))} className="min-w-0 flex-1 accent-orange-500" />
+                        {english && <label className="mt-2 flex items-center gap-2 text-[11px] text-slate-600">{uiText("Move transversal")}<input aria-label={uiText("Move transversal")} type="range" min="70" max="190" value={transversalX} onChange={(event) => setTransversalX(Number(event.target.value))} className="min-w-0 flex-1 accent-orange-500" />
                         </label>}
                       </div>
 
