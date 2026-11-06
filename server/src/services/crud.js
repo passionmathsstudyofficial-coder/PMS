@@ -146,7 +146,7 @@ export function crudRouter(Model, options = {}) {
     const isAdmin = req.admin && hasPermission(req.admin.role, readPermission);
     if (!isAdmin) {
       if (!publicRead) throw new ApiError(401, 'Authentication required');
-      const visible = !hasStatus || (doc.status === 'published' && doc.isVisible && (!doc.publishedAt || doc.publishedAt <= new Date()));
+      const visible = !hasStatus || (doc.status === 'published' && doc.isVisible !== false && (!doc.publishedAt || doc.publishedAt <= new Date()));
       if (!visible) throw new ApiError(404, `${entityType} not found`);
       if (Model.modelName === 'Subject' && !doc.isPublic) throw new ApiError(404, `${entityType} not found`);
       if (doc.isVisible === false || !await Model.exists({ _id: doc._id, ...await publicFilters(req.query, req) })) {
@@ -165,6 +165,7 @@ export function crudRouter(Model, options = {}) {
     await assertSolutionRights(req, doc);
     if (Model.schema.path('createdBy')) doc.createdBy = req.admin._id;
     if (Model.schema.path('updatedBy')) doc.updatedBy = req.admin._id;
+    if (hasStatus && doc.status === 'published' && !doc.publishedAt) doc.publishedAt = new Date();
     if (beforeWrite) await beforeWrite(doc, req, { isNew: true, body: req.body });
     await doc.validate();
     await validateReferences(doc);
@@ -189,6 +190,7 @@ export function crudRouter(Model, options = {}) {
     await assertSolutionRights(req, doc);
     if (['class', 'subject', 'chapter', 'exercise'].some(field => doc.isModified(field))) await protectParent(doc);
     if (Model.schema.path('updatedBy')) doc.updatedBy = req.admin._id;
+    if (hasStatus && doc.status === 'published' && !doc.publishedAt) doc.publishedAt = new Date();
     if (beforeWrite) await beforeWrite(doc, req, { isNew: false, body: req.body });
     await doc.validate();
     await validateReferences(doc);

@@ -34,7 +34,7 @@ export default function NotesManagerPage({ fixedCategory }) {
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('2026–27');
   const [loading, setLoading] = useState(true);
-  const bookSlug = ['rs-aggarwal', 'rd-sharma', 'kc-sinha'].includes(activeCategory) ? activeCategory : null;
+  const bookSlug = ['rs-aggarwal', 'rd-sharma', 'kc-sinha', 'ml-aggarwal'].includes(activeCategory) ? activeCategory : null;
   const selectedBook = books.find((book) => book.slug === bookSlug) || null;
 
   // Modal
@@ -45,7 +45,7 @@ export default function NotesManagerPage({ fixedCategory }) {
     summary: { en: '', hi: '' },
     content: { en: '', hi: '' },
     chapter: '',
-    category: activeCategory === 'ncert' ? 'ncert_notes' : activeCategory === 'formulas' ? 'formula_sheet' : `${activeCategory}_notes`,
+    category: activeCategory === 'ncert' ? 'ncert_notes' : activeCategory === 'formulas' ? 'formula_sheet' : `${activeCategory.replace(/-/g, '_')}_notes`,
   });
 
   const CATEGORY_MAP = {
@@ -54,6 +54,7 @@ export default function NotesManagerPage({ fixedCategory }) {
     'rs-aggarwal': { label: 'RS Aggarwal Formulas & Notes', dbCat: 'rs_aggarwal_notes' },
     'rd-sharma': { label: 'RD Sharma Formulas & Notes', dbCat: 'rd_sharma_notes' },
     'kc-sinha': { label: 'KC Sinha Formulas & Notes', dbCat: 'kc_sinha_notes' },
+    'ml-aggarwal': { label: 'ML Aggarwal Formulas & Notes', dbCat: 'ml_aggarwal_notes' },
     vvi: { label: 'VVI Questions & Short Notes', dbCat: 'vvi_short_notes' },
   };
 

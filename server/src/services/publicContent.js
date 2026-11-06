@@ -43,8 +43,29 @@ function sessionVis(Model, preview, extra = {}, session) {
   const selected = String(session || '2026-27').trim();
   const normalized = selected.replace(/[–—]/g, '-').toLowerCase();
   const labels = [selected, normalized, normalized.replace(/-(\d{2})$/, (match, yy) => `–${yy}`)];
-  return vis(Model, preview, { ...extra, academicSession: { $in: [...new Set(labels)] } });
+  const sessionCondition = {
+    $or: [
+      { academicSession: { $in: [...new Set(labels)] } },
+      { academicSession: null },
+      { academicSession: '' },
+      { academicSession: { $exists: false } },
+    ],
+  };
+  if (extra.$or) {
+    return vis(Model, preview, {
+      $and: [sessionCondition, { $or: extra.$or }],
+      ...Object.fromEntries(Object.entries(extra).filter(([k]) => k !== '$or')),
+    });
+  }
+  return vis(Model, preview, { ...extra, ...sessionCondition });
 }
+
+export const isSubjectMatch = (sub, seg) => {
+  if (!sub || !seg) return false;
+  if (sub.slug === seg) return true;
+  const isMath = (val) => val === 'maths' || val === 'mathematics';
+  return isMath(sub.slug) && isMath(seg);
+};
 
 async function attachLanding(result, key, preview, override) {
   if (!result?.data || !key) return result;
@@ -52,8 +73,11 @@ async function attachLanding(result, key, preview, override) {
   const candidateKeys = [
     normalizedKey,
     LANDING_KEY_ALIASES[normalizedKey],
-    normalizedKey.replace(/\/mathematics$/, ''),
+    normalizedKey.replace(/\/mathematics$/, '/maths'),
+    normalizedKey.replace(/\/maths$/, '/mathematics'),
+    normalizedKey.replace(/\/(maths|mathematics)$/, ''),
     normalizedKey.replace(/^class-(\d+)$/, 'class-$1/mathematics'),
+    normalizedKey.replace(/^class-(\d+)$/, 'class-$1/maths'),
   ].filter(Boolean);
   const landingPage = await Page.findOne(vis(Page, preview, { landingKey: { $in: candidateKeys } }))
     .populate([
@@ -224,12 +248,17 @@ async function loadSubjectContext(segments, preview) {
     .populate({ path: 'seo.ogImage', select: MEDIA_SELECT })
     .lean();
   if (!cls) return null;
-  const subjects = await Subject.find({
+  let subjects = await Subject.find({
     _id: { $in: cls.subjects },
     ...(preview ? {} : { ...Subject.publicFilter(), isPublic: true }),
   })
     .sort({ sortOrder: 1 })
     .lean();
+  if (!subjects.length) {
+    subjects = await Subject.find(preview ? {} : { ...Subject.publicFilter(), isPublic: true })
+      .sort({ sortOrder: 1 })
+      .lean();
+  }
   return { cls, subjects };
 }
 
@@ -1434,7 +1463,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     };
   }
 
-  const subject = subjects.find((s) => s.slug === segments[1]);
+  const subject = subjects.find((s) => isSubjectMatch(s, segments[1]));
   if (!subject) throw new ApiError(404, 'Subject not found');
   const subjectUrl = urls.subject(cls, subject);
   const subjectCrumb = { label: subject.name, url: subjectUrl };

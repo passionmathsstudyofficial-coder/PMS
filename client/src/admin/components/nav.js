@@ -79,6 +79,7 @@ export const NAV_GROUPS = [
       { to: 'notes-manager/rs-aggarwal', get label() { return uiText("RS Aggarwal Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/rd-sharma', get label() { return uiText("RD Sharma Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/kc-sinha', get label() { return uiText("KC Sinha Notes"); }, icon: NotebookPen },
+      { to: 'notes-manager/ml-aggarwal', get label() { return uiText("ML Aggarwal Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/vvi', get label() { return uiText("VVI Short Notes"); }, icon: Sparkles },
     ],
   },

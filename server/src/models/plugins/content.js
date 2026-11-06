@@ -15,12 +15,32 @@ export function contentPlugin(schema) {
   });
 
   schema.pre('save', function setPublishedAt() {
-    if (this.isModified('status') && this.status === 'published' && !this.publishedAt) {
+    if (this.status === 'published' && !this.publishedAt) {
       this.publishedAt = new Date();
     }
   });
 
   schema.statics.publicFilter = function publicFilter(extra = {}) {
-    return { status: 'published', isVisible: true, publishedAt: { $lte: new Date() }, ...extra };
+    const publishWindow = {
+      status: 'published',
+      isVisible: true,
+      $or: [
+        { publishedAt: { $lte: new Date() } },
+        { publishedAt: null },
+        { publishedAt: { $exists: false } },
+      ],
+    };
+    if (extra.$or) {
+      return {
+        status: 'published',
+        isVisible: true,
+        $and: [
+          { $or: publishWindow.$or },
+          { $or: extra.$or },
+        ],
+        ...Object.fromEntries(Object.entries(extra).filter(([k]) => k !== '$or')),
+      };
+    }
+    return { ...publishWindow, ...extra };
   };
 }

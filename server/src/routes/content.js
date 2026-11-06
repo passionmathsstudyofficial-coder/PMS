@@ -444,11 +444,6 @@ router.use(
           if (!doc.academicSession) doc.academicSession = ch.academicSession;
         }
       }
-    },
-    beforeDelete: async (doc) => {
-      await assertNoChildren(Question, { exercise: doc._id }, 'This प्रश्नावली still has {count} questions. Delete them first.');
-    },
-    beforeWrite: async (doc) => {
       if (!doc.subject && doc.class) {
         const cls = await ClassLevel.findById(doc.class).select('subjects').lean();
         if (cls?.subjects?.length) doc.subject = cls.subjects[0];
@@ -457,6 +452,9 @@ router.use(
           if (defaultSub) doc.subject = defaultSub._id;
         }
       }
+    },
+    beforeDelete: async (doc) => {
+      await assertNoChildren(Question, { exercise: doc._id }, 'This प्रश्नावली still has {count} questions. Delete them first.');
     },
     afterDelete: async (doc) => RelatedContent.deleteMany({ source: doc._id }),
     prepareDuplicate: (plain) => ({ ...plain, slug: `${plain.slug}-${copySuffix()}` }),
@@ -551,20 +549,26 @@ router.use(
     entityType: 'Question',
     defaultSort: { sortOrder: 1, createdAt: 1 },
     adminFilters: (q) => ({
-      ...idFilter(q, ['exercise', 'chapter', 'class']),
+      ...idFilter(q, ['exercise', 'chapter', 'class', 'subject', 'book', 'topic']),
       ...(['easy', 'medium', 'hard'].includes(q.difficulty) ? { difficulty: q.difficulty } : {}),
+      ...(q.questionType ? { questionType: String(q.questionType) } : {}),
       ...(q.isImportant === 'true' ? { isImportant: true } : {}),
+      ...(q.featured === 'true' ? { featured: true } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
-      ...idFilter(q, ['exercise', 'chapter']),
+      ...idFilter(q, ['exercise', 'chapter', 'book', 'topic']),
+      ...(q.questionType ? { questionType: String(q.questionType) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     }),
     populate: {
       list: [
         { path: 'exercise', select: 'number slug' },
         { path: 'chapter', select: 'number title slug' },
+        { path: 'book', select: 'title slug' },
+        { path: 'topic', select: 'number title' },
+        { path: 'pdfFile', select: MEDIA_SELECT },
         { path: 'attachments.media', select: MEDIA_SELECT },
         classPopulate,
       ],
@@ -573,6 +577,13 @@ router.use(
         seoImage,
         { path: 'exercise', select: 'number slug title chapter' },
         { path: 'chapter', select: 'number title slug' },
+        { path: 'book', select: 'title slug author' },
+        { path: 'topic', select: 'number title slug' },
+        { path: 'pdfFile', select: MEDIA_SELECT },
+        { path: 'image', select: MEDIA_SELECT },
+        { path: 'featuredImage', select: MEDIA_SELECT },
+        { path: 'introVideo', select: VIDEO_SELECT },
+        { path: 'video.video', select: VIDEO_SELECT },
         classPopulate,
         subjectPopulate,
       ],
@@ -681,29 +692,42 @@ router.use(
     entityType: 'Note',
     defaultSort: { sortOrder: 1, createdAt: -1 },
     adminFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'chapter', 'book']),
+      ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
-      ...idFilter(q, ['class', 'chapter', 'book']),
+      ...idFilter(q, ['class', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     }),
     populate: {
-      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'book', select: 'title author slug' }],
+      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
       detail: [
         classPopulate,
         subjectPopulate,
         { path: 'chapter', select: 'number title slug' },
+        { path: 'topic', select: 'number title slug' },
         { path: 'book', select: 'title author slug' },
+        { path: 'pdfFile', select: MEDIA_SELECT },
+        { path: 'image', select: MEDIA_SELECT },
+        { path: 'featuredImage', select: MEDIA_SELECT },
+        { path: 'introVideo', select: VIDEO_SELECT },
         { path: 'attachments.media', select: MEDIA_SELECT },
         { path: 'video', select: VIDEO_SELECT },
         seoImage,
       ],
     },
     beforeWrite: async (doc) => {
+      if (doc.chapter && (!doc.class || !doc.subject || !doc.academicSession)) {
+        const ch = await Chapter.findById(doc.chapter).select('class subject academicSession').lean();
+        if (ch) {
+          if (!doc.class) doc.class = ch.class;
+          if (!doc.subject) doc.subject = ch.subject;
+          if (!doc.academicSession) doc.academicSession = ch.academicSession;
+        }
+      }
       if (!doc.subject && doc.class) {
         const cls = await ClassLevel.findById(doc.class).select('subjects').lean();
         if (cls?.subjects?.length) doc.subject = cls.subjects[0];
@@ -724,31 +748,59 @@ router.use(
     entityType: 'ImportantQuestion',
     defaultSort: { sortOrder: 1, createdAt: -1 },
     adminFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'chapter']),
+      ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.year ? { year: Number(q.year) } : {}),
+      ...(q.difficulty ? { difficulty: String(q.difficulty) } : {}),
+      ...(q.questionType ? { questionType: String(q.questionType) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
-      ...idFilter(q, ['class', 'chapter']),
+      ...idFilter(q, ['class', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.year ? { year: Number(q.year) } : {}),
+      ...(q.difficulty ? { difficulty: String(q.difficulty) } : {}),
+      ...(q.questionType ? { questionType: String(q.questionType) } : {}),
     }),
     populate: {
-      list: [classPopulate, { path: 'chapter', select: 'number title' }],
+      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
       detail: [
         classPopulate,
         subjectPopulate,
         { path: 'chapter', select: 'number title slug' },
+        { path: 'topic', select: 'number title slug' },
+        { path: 'book', select: 'title author slug' },
         { path: 'linkedQuestion', select: 'number slug' },
+        { path: 'pdfFile', select: MEDIA_SELECT },
+        { path: 'image', select: MEDIA_SELECT },
+        { path: 'featuredImage', select: MEDIA_SELECT },
+        { path: 'introVideo', select: VIDEO_SELECT },
         { path: 'attachments.media', select: MEDIA_SELECT },
         ...blockPopulate(),
         seoImage,
       ],
     },
-    prepareDuplicate: (plain) => ({ ...plain, slug: `${plain.slug}-${copySuffix()}` }),
+    beforeWrite: async (doc) => {
+      if (doc.chapter && (!doc.class || !doc.subject || !doc.academicSession)) {
+        const ch = await Chapter.findById(doc.chapter).select('class subject academicSession').lean();
+        if (ch) {
+          if (!doc.class) doc.class = ch.class;
+          if (!doc.subject) doc.subject = ch.subject;
+          if (!doc.academicSession) doc.academicSession = ch.academicSession;
+        }
+      }
+      if (!doc.subject && doc.class) {
+        const cls = await ClassLevel.findById(doc.class).select('subjects').lean();
+        if (cls?.subjects?.length) doc.subject = cls.subjects[0];
+        else {
+          const defaultSub = await Subject.findOne().select('_id').lean();
+          if (defaultSub) doc.subject = defaultSub._id;
+        }
+      }
+    },
+    prepareDuplicate: (plain) => ({ ...plain, slug: `${plain.slug}-${copySuffix()}`, title: copyTitle(plain.title) }),
   }),
 );
 

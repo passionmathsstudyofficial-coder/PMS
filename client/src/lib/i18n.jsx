@@ -23,9 +23,17 @@ export function hasContent(value) {
   return ['hi', 'en', 'mixed'].some((k) => hasContent(value[k]));
 }
 
-/** Strict selection. Legacy per-record display modes never override the visitor's preference. */
+/** Strict selection with graceful fallback to prevent falsely hiding content when single-language authoring is used. */
 export function pickL10n(value, lang, mode = 'auto') {
-  return localizedValue(value, lang);
+  const direct = localizedValue(value, lang);
+  if (direct) return direct;
+  if (isLocalized(value)) {
+    const siblingLang = lang === 'hi' ? 'en' : 'hi';
+    const siblingVal = localizedValue(value, siblingLang) || value[siblingLang] || value.mixed;
+    if (typeof siblingVal === 'string' && siblingVal.trim()) return siblingVal;
+  }
+  if (typeof value === 'string' && value.trim()) return value;
+  return '';
 }
 
 /** Which languages a localized value is available in. */
@@ -36,10 +44,20 @@ export function availableLanguages(value) {
 
 export function useL10n() {
   const { lang } = useContentLang();
-  return useCallback((value, mode) => pickL10n(value, lang) || (value?._translationMissing || isLocalized(value) && Object.values(value).some(item => typeof item === 'string' && item.trim()) || typeof value === 'string' && value.trim() ? missingContent(lang) : ''), [lang]);
+  return useCallback((value, mode) => {
+    const picked = pickL10n(value, lang, mode);
+    if (picked) return picked;
+    if (value?._translationMissing) return missingContent(lang);
+    return '';
+  }, [lang]);
 }
 
 export function useInterfaceL10n() {
   const { lang } = useLang();
-  return useCallback((value, mode) => translateUi(pickL10n(value, lang), lang) || (value?._translationMissing ? missingContent(lang) : ''), [lang]);
+  return useCallback((value, mode) => {
+    const picked = pickL10n(value, lang, mode);
+    if (picked) return translateUi(picked, lang);
+    if (value?._translationMissing) return missingContent(lang);
+    return '';
+  }, [lang]);
 }

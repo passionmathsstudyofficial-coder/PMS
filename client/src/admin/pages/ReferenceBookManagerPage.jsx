@@ -31,7 +31,6 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Panel } from '../components/PageHeader.jsx';
-import { MediaPicker } from '../components/media/MediaPicker.jsx';
 import { RichContent } from '@/components/content/RichContent.jsx';
 import { toast } from '@/lib/notifications.jsx';
 import { get, post, put, patch, del } from '@/lib/api';
@@ -40,26 +39,6 @@ import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { cn } from '@/lib/utils';
 import { adminUrl } from '@/lib/config';
 
-// Math symbol toolbar shortcuts for rapid formula insertion
-const MATH_SHORTCUTS = [
-  { label: 'x/y', snippet: '\\frac{a}{b}', title: 'Fraction' },
-  { label: '√x', snippet: '\\sqrt{x}', title: 'Square Root' },
-  { label: 'x²', snippet: 'x^2', title: 'Power' },
-  { label: 'xₙ', snippet: 'x_n', title: 'Subscript' },
-  { label: '∫', snippet: '\\int f(x)\\,dx', title: 'Integral' },
-  { label: '∑', snippet: '\\sum_{i=1}^{n}', title: 'Summation' },
-  { label: '±', snippet: '\\pm', title: 'Plus-minus' },
-  { label: '≠', snippet: '\\ne', title: 'Not equal' },
-  { label: '≤', snippet: '\\le', title: 'Less or equal' },
-  { label: '≥', snippet: '\\ge', title: 'Greater or equal' },
-  { label: '∞', snippet: '\\infty', title: 'Infinity' },
-  { label: 'π', snippet: '\\pi', title: 'Pi' },
-  { label: 'θ', snippet: '\\theta', title: 'Theta' },
-  { label: 'α', snippet: '\\alpha', title: 'Alpha' },
-  { label: 'β', snippet: '\\beta', title: 'Beta' },
-  { label: 'Matrix', snippet: '\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}', title: '2x2 Matrix' },
-  { label: 'Display $$', snippet: '$$\\begin{aligned}\n  & = \\dots\n\\end{aligned}$$', title: 'Display Aligned Math' },
-];
 
 export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   useUiLanguage();
@@ -129,48 +108,6 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     title: { en: '', hi: '' },
     status: 'published',
   });
-
-  // Question Editor Modal
-  const [questionModal, setQuestionModal] = useState(false);
-  const [editingQuestionId, setEditingQuestionId] = useState(null);
-  const [questionTab, setQuestionTab] = useState('en');
-  const [questionForm, setQuestionForm] = useState({
-    number: '1',
-    title: { en: '', hi: '' },
-    text: { en: '', hi: '' },
-    questionType: 'subjective',
-    difficulty: 'medium',
-    marks: 2,
-    status: 'published',
-    attachments: [],
-  });
-
-  // Solution Editor Modal (with Multiple Methods)
-  const [solutionModal, setSolutionModal] = useState(false);
-  const [activeQuestionForSolution, setActiveQuestionForSolution] = useState(null);
-  const [solutionId, setSolutionId] = useState(null);
-  const [solutionStatus, setSolutionStatus] = useState('published');
-  const [activeMethodIndex, setActiveMethodIndex] = useState(0);
-  const [solutionLangTab, setSolutionLangTab] = useState('en');
-  const [methods, setMethods] = useState([
-    {
-      title: { en: 'Method 1: Standard Method', hi: 'विधि 1: मानक विधि' },
-      methodType: 'standard',
-      blocks: [
-        {
-          type: 'step',
-          title: { en: 'Step 1: Given Information & Analysis', hi: 'चरण 1: दी गई जानकारी' },
-          content: { en: '', hi: '' },
-        },
-      ],
-      finalAnswer: { en: '', hi: '' },
-    },
-  ]);
-
-  // Media Picker state for image uploads
-  const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-  const [mediaPickerTarget, setMediaPickerTarget] = useState(null); // 'question' | 'step' | 'book'
-  const [mediaPickerStepIndex, setMediaPickerStepIndex] = useState(null);
 
   // Quick image preview lightbox in table
   const [previewImageModal, setPreviewImageModal] = useState(null);
@@ -316,13 +253,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     reloadQuestions();
   }, [selectedExercise?._id, selectedSession]);
 
-  // Helper for inserting math snippet in focused textarea
-  const insertMathSnippet = (snippet, field, setField) => {
-    setField((prev) => {
-      const current = prev || '';
-      return `${current} $${snippet}$ `;
-    });
-  };
+
 
   // ----------------------------------------------------
   // BOOK CRUD & SETTINGS
@@ -523,73 +454,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   // ----------------------------------------------------
   // QUESTION CRUD (MOST IMPORTANT FEATURE)
   // ----------------------------------------------------
-  const handleOpenQuestionModal = (q = null) => {
-    if (q) {
-      setEditingQuestionId(q._id);
-      setQuestionForm({
-        number: String(q.number),
-        title: q.title || { en: '', hi: '' },
-        text: q.text || { en: '', hi: '' },
-        questionType: q.questionType || 'subjective',
-        difficulty: q.difficulty || 'medium',
-        marks: q.marks || 2,
-        status: q.status || 'published',
-        attachments: q.attachments || [],
-      });
-    } else {
-      setEditingQuestionId(null);
-      setQuestionForm({
-        number: String((questions.length || 0) + 1),
-        title: { en: '', hi: '' },
-        text: { en: '', hi: '' },
-        questionType: 'subjective',
-        difficulty: 'medium',
-        marks: 2,
-        status: 'published',
-        attachments: [],
-      });
-    }
-    setQuestionTab('en');
-    setQuestionModal(true);
-  };
 
-  const handleSaveQuestion = async (e) => {
-    e.preventDefault();
-    if (!selectedExercise?._id) return;
-    try {
-      const qPayload = {
-        number: String(questionForm.number),
-        title: questionForm.title,
-        text: questionForm.text,
-        questionType: questionForm.questionType,
-        difficulty: questionForm.difficulty,
-        marks: Number(questionForm.marks),
-        exercise: selectedExercise._id,
-        chapter: selectedChapter._id,
-        class: selectedClass._id,
-        subject:
-          selectedChapter.subject?._id ||
-          selectedChapter.subject ||
-          selectedClass.subjects?.[0]?._id ||
-          selectedClass.subjects?.[0],
-        academicSession: selectedSession,
-        status: questionForm.status || 'published',
-        attachments: questionForm.attachments,
-      };
-
-      if (editingQuestionId) {
-        await put(`/content/questions/${editingQuestionId}`, qPayload);
-        toast.success(uiText('Question updated successfully'));
-      } else {
-        await post('/content/questions', qPayload);
-        toast.success(uiText('Question created successfully'));
-      }
-      setQuestionModal(false);
-      reloadQuestions();
-    } catch (err) {
-      toast.apiError(err);
-    }
-  };
 
   const handleToggleQuestionStatus = async (q) => {
     const nextStatus = q.status === 'published' ? 'draft' : 'published';
@@ -623,175 +488,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     }
   };
 
-  // ----------------------------------------------------
-  // SOLUTION EDITOR (MULTIPLE METHODS & STEP-BY-STEP BUILDER)
-  // ----------------------------------------------------
-  const handleOpenSolutionModal = async (q) => {
-    setActiveQuestionForSolution(q);
-    setSolutionModal(true);
-    setActiveMethodIndex(0);
-    setSolutionLangTab('en');
 
-    try {
-      // Fetch fresh question with full populated solution
-      const res = await get(`/content/questions/${q._id}`);
-      const sol = res.solution;
-
-      if (sol) {
-        setSolutionId(sol._id);
-        setSolutionStatus(sol.status || 'published');
-
-        if (sol.methods && sol.methods.length > 0) {
-          setMethods(
-            sol.methods.map((m) => ({
-              _id: m._id,
-              title: m.title || { en: 'Method 1: Standard Method', hi: 'विधि 1: मानक विधि' },
-              methodType: m.methodType || 'standard',
-              blocks: m.blocks?.length
-                ? m.blocks
-                : [{ type: 'step', title: { en: 'Step 1', hi: 'चरण 1' }, content: { en: '', hi: '' } }],
-              finalAnswer: m.finalAnswer || { en: '', hi: '' },
-            })),
-          );
-        } else if (sol.blocks && sol.blocks.length > 0) {
-          // Wrap legacy flat blocks into Method 1
-          setMethods([
-            {
-              title: { en: 'Method 1: Standard Method', hi: 'विधि 1: मानक विधि' },
-              methodType: 'standard',
-              blocks: sol.blocks,
-              finalAnswer: { en: '', hi: '' },
-            },
-          ]);
-        } else {
-          setMethods([
-            {
-              title: { en: 'Method 1: Standard Method', hi: 'विधि 1: मानक विधि' },
-              methodType: 'standard',
-              blocks: [
-                {
-                  type: 'step',
-                  title: { en: 'Step 1: Given Information & Analysis', hi: 'चरण 1: दी गई जानकारी' },
-                  content: { en: '', hi: '' },
-                },
-              ],
-              finalAnswer: { en: '', hi: '' },
-            },
-          ]);
-        }
-      } else {
-        // No solution yet
-        setSolutionId(null);
-        setSolutionStatus('published');
-        setMethods([
-          {
-            title: { en: 'Method 1: Standard Method', hi: 'विधि 1: मानक विधि' },
-            methodType: 'standard',
-            blocks: [
-              {
-                type: 'step',
-                title: { en: 'Step 1: Given Information & Analysis', hi: 'चरण 1: दी गई जानकारी' },
-                content: { en: '', hi: '' },
-              },
-            ],
-            finalAnswer: { en: '', hi: '' },
-          },
-        ]);
-      }
-    } catch (err) {
-      toast.apiError(err);
-    }
-  };
-
-  const handleAddMethod = () => {
-    const nextIdx = methods.length + 1;
-    const newMethod = {
-      title: {
-        en: `Method ${nextIdx}: ${nextIdx === 2 ? 'Shortcut Method' : 'Alternative Method'}`,
-        hi: `विधि ${nextIdx}: ${nextIdx === 2 ? 'शॉर्टकट विधि' : 'वैकल्पिक विधि'}`,
-      },
-      methodType: nextIdx === 2 ? 'shortcut' : 'alternative',
-      blocks: [
-        {
-          type: 'step',
-          title: { en: 'Step 1: Method Overview & Steps', hi: 'चरण 1: विधि का विवरण' },
-          content: { en: '', hi: '' },
-        },
-      ],
-      finalAnswer: { en: '', hi: '' },
-    };
-    setMethods([...methods, newMethod]);
-    setActiveMethodIndex(methods.length);
-  };
-
-  const handleRemoveMethod = (indexToRemove) => {
-    if (methods.length <= 1) {
-      toast.error('At least one solution method must be maintained.');
-      return;
-    }
-    const updated = methods.filter((_, idx) => idx !== indexToRemove);
-    setMethods(updated);
-    setActiveMethodIndex(Math.max(0, indexToRemove - 1));
-  };
-
-  const handleAddStepToCurrentMethod = () => {
-    const current = methods[activeMethodIndex];
-    if (!current) return;
-    const nextStepNum = (current.blocks?.length || 0) + 1;
-    const newStep = {
-      type: 'step',
-      title: { en: `Step ${nextStepNum}`, hi: `चरण ${nextStepNum}` },
-      content: { en: '', hi: '' },
-    };
-    const updatedBlocks = [...(current.blocks || []), newStep];
-    const updatedMethods = [...methods];
-    updatedMethods[activeMethodIndex] = { ...current, blocks: updatedBlocks };
-    setMethods(updatedMethods);
-  };
-
-  const handleRemoveStep = (stepIdx) => {
-    const current = methods[activeMethodIndex];
-    if (!current || (current.blocks || []).length <= 1) return;
-    const updatedBlocks = current.blocks.filter((_, idx) => idx !== stepIdx);
-    const updatedMethods = [...methods];
-    updatedMethods[activeMethodIndex] = { ...current, blocks: updatedBlocks };
-    setMethods(updatedMethods);
-  };
-
-  const handleSaveSolution = async (targetStatus = 'published') => {
-    if (!activeQuestionForSolution?._id) return;
-    try {
-      const payload = {
-        solution: {
-          methods: methods.map((m, mIdx) => ({
-            title: m.title,
-            methodType: m.methodType,
-            blocks: m.blocks.map((b) => ({
-              type: 'step',
-              title: b.title,
-              content: b.content,
-              latex: b.latex || '',
-              media: b.media || [],
-            })),
-            finalAnswer: m.finalAnswer,
-            isDefault: mIdx === 0,
-          })),
-          status: targetStatus,
-        },
-      };
-
-      await put(`/content/questions/${activeQuestionForSolution._id}`, payload);
-      toast.success(
-        targetStatus === 'published'
-          ? uiText('Solution published successfully with step-by-step methods!')
-          : uiText('Solution saved as Draft (hidden from students)'),
-      );
-      setSolutionModal(false);
-      reloadQuestions();
-    } catch (err) {
-      toast.apiError(err);
-    }
-  };
 
   const handleToggleSolutionStatus = async (q) => {
     if (!q.solution?._id) {
@@ -1009,6 +706,13 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                       <span>{ch.title?.en || ch.title?.hi || `Chapter ${ch.number}`}</span>
                     </button>
                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+                      <Link
+                        to={adminUrl(`chapters/${ch._id}`)}
+                        className="p-1 hover:text-brand cursor-pointer"
+                        title="Open Full Chapter Editor (Image, Video, Formulas, Notes, PDF, SEO)"
+                      >
+                        <ExternalLink className="size-3" />
+                      </Link>
                       <button
                         type="button"
                         onClick={(e) => {
@@ -1090,6 +794,13 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                       {ex.title?.en && <span className="text-muted-foreground text-[11px]">({ex.title.en})</span>}
                     </button>
                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+                      <Link
+                        to={adminUrl(`exercises/${ex._id}`)}
+                        className="p-1 hover:text-brand cursor-pointer"
+                        title="Open Full Exercise Editor"
+                      >
+                        <ExternalLink className="size-3" />
+                      </Link>
                       <button
                         type="button"
                         onClick={(e) => {
@@ -1133,14 +844,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               </h3>
             </div>
             {selectedExercise && (
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => handleOpenQuestionModal(null)}
-                className="h-7.5 px-3 text-xs gap-1.5 font-bold cursor-pointer bg-brand text-white hover:bg-brand/90"
-              >
-                <Plus className="size-3.5" />
-                {uiText('Add Question')}
+              <Button asChild size="sm" className="h-8 px-3.5 text-xs gap-1.5 font-bold cursor-pointer bg-brand text-white hover:bg-brand/90">
+                <Link to={adminUrl(`questions/new?book=${selectedBook?._id || ''}&class=${selectedClass?._id || ''}&chapter=${selectedChapter?._id || ''}&exercise=${selectedExercise?._id || ''}&session=${selectedSession}`)}>
+                  <Plus className="size-3.5" />
+                  <span>{uiText('Create New Question (Full CMS Editor)')}</span>
+                </Link>
               </Button>
             )}
           </div>
@@ -1201,8 +909,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               <div className="p-8 text-center text-xs text-muted-foreground border border-dashed rounded-xl m-2">
                 <p className="font-semibold text-foreground mb-1">No questions created yet in Exercise {selectedExercise.number}</p>
                 <p className="mb-3 text-[11px]">Type question statements or upload scanned question images, then author step-by-step solutions.</p>
-                <Button size="sm" onClick={() => handleOpenQuestionModal(null)}>
-                  <Plus className="size-3.5 mr-1" /> Add Question 1
+                <Button asChild size="sm" className="font-bold">
+                  <Link to={adminUrl(`questions/new?book=${selectedBook?._id || ''}&class=${selectedClass?._id || ''}&chapter=${selectedChapter?._id || ''}&exercise=${selectedExercise?._id || ''}&session=${selectedSession}`)}>
+                    <Plus className="size-3.5 mr-1" /> {uiText('Create Question 1 (Full CMS Editor)')}
+                  </Link>
                 </Button>
               </div>
             ) : filteredQuestions.length === 0 ? (
@@ -1332,24 +1042,24 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                     <div className="flex flex-wrap items-center justify-between pt-2 border-t text-[11px] gap-2">
                       <div className="flex items-center gap-2">
                         {/* Edit Question */}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenQuestionModal(q)}
+                        <Link
+                          to={adminUrl(`questions/${q._id}`)}
                           className="font-bold text-foreground hover:text-brand inline-flex items-center gap-1 cursor-pointer"
+                          title="Open in Full Question Editor"
                         >
                           <Edit2 className="size-3" />
-                          <span>Edit Q</span>
-                        </button>
+                          <span>Edit Question</span>
+                        </Link>
 
                         {/* Edit / Write Solution */}
-                        <button
-                          type="button"
-                          onClick={() => handleOpenSolutionModal(q)}
+                        <Link
+                          to={adminUrl(`questions/${q._id}`)}
                           className="font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer ml-2"
+                          title="Open Full Solution Builder with Multiple Methods"
                         >
                           <Sparkles className="size-3" />
                           <span>{hasSolution ? 'Edit Solution & Methods' : '+ Write Solution'}</span>
-                        </button>
+                        </Link>
                       </div>
 
                       <div className="flex items-center gap-2.5">
@@ -1393,533 +1103,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         </div>
       </div>
 
-      {/* ==================================================== */}
-      {/* MODAL 1: QUESTION EDITOR (MANUAL TYPING + SCANS)    */}
-      {/* ==================================================== */}
-      {questionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-          <div className="w-full max-w-3xl rounded-2xl border bg-card p-6 shadow-2xl animate-in zoom-in-95 my-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b mb-4">
-              <div>
-                <h3 className="text-base font-extrabold text-foreground">
-                  {editingQuestionId ? `Edit Question ${questionForm.number}` : `Create New Question`}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {selectedBook?.title?.en} · Class {selectedClass?.number} · Chapter {selectedChapter?.number} · Exercise{' '}
-                  {selectedExercise?.number}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setQuestionModal(false)}
-                className="p-1 rounded-lg hover:bg-muted text-muted-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
 
-            <form onSubmit={handleSaveQuestion} className="space-y-4">
-              {/* Question Metadata Fields */}
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                <div>
-                  <label className="text-xs font-bold block mb-1">Question No. *</label>
-                  <input
-                    type="text"
-                    value={questionForm.number}
-                    onChange={(e) => setQuestionForm({ ...questionForm, number: e.target.value })}
-                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
-                    placeholder="e.g. 1, 2(a)"
-                    required
-                  />
-                </div>
 
-                <div>
-                  <label className="text-xs font-bold block mb-1">Type</label>
-                  <select
-                    value={questionForm.questionType}
-                    onChange={(e) => setQuestionForm({ ...questionForm, questionType: e.target.value })}
-                    className="w-full h-8.5 rounded-xl border border-border bg-background px-2 text-xs font-semibold"
-                  >
-                    <option value="subjective">Subjective</option>
-                    <option value="objective">Objective / MCQ</option>
-                    <option value="short_answer">Short Answer</option>
-                    <option value="long_answer">Long Answer</option>
-                    <option value="proof">Proof / Verification</option>
-                    <option value="numerical">Numerical</option>
-                  </select>
-                </div>
 
-                <div>
-                  <label className="text-xs font-bold block mb-1">Difficulty</label>
-                  <select
-                    value={questionForm.difficulty}
-                    onChange={(e) => setQuestionForm({ ...questionForm, difficulty: e.target.value })}
-                    className="w-full h-8.5 rounded-xl border border-border bg-background px-2 text-xs font-semibold"
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                    <option value="hots">HOTS</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold block mb-1">Marks</label>
-                  <input
-                    type="number"
-                    value={questionForm.marks}
-                    onChange={(e) => setQuestionForm({ ...questionForm, marks: e.target.value })}
-                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-semibold"
-                    min="1"
-                    max="100"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold block mb-1">Publication Status</label>
-                  <select
-                    value={questionForm.status}
-                    onChange={(e) => setQuestionForm({ ...questionForm, status: e.target.value })}
-                    className="w-full h-8.5 rounded-xl border border-border bg-background px-2 text-xs font-bold text-brand"
-                  >
-                    <option value="published">Published</option>
-                    <option value="draft">Draft (Unpublished)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Optional Question Title */}
-              <div>
-                <label className="text-xs font-bold block mb-1">Question Title / Topic (Optional)</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Find the domain and range of rational function"
-                  value={questionForm.title.en}
-                  onChange={(e) =>
-                    setQuestionForm({ ...questionForm, title: { ...questionForm.title, en: e.target.value } })
-                  }
-                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
-                />
-              </div>
-
-              {/* Bilingual Statement Editor Tabs */}
-              <div className="rounded-xl border border-border bg-background/50 p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setQuestionTab('en')}
-                      className={cn(
-                        'px-3 py-1 text-xs font-bold rounded-lg cursor-pointer transition-colors',
-                        questionTab === 'en' ? 'bg-brand text-white' : 'bg-muted text-muted-foreground'
-                      )}
-                    >
-                      English Statement
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setQuestionTab('hi')}
-                      className={cn(
-                        'px-3 py-1 text-xs font-bold rounded-lg cursor-pointer transition-colors',
-                        questionTab === 'hi' ? 'bg-brand text-white' : 'bg-muted text-muted-foreground'
-                      )}
-                    >
-                      Hindi Statement (हिंदी प्रश्न)
-                    </button>
-                  </div>
-                  <span className="text-[11px] text-muted-foreground font-semibold">Supports KaTeX: $...$ or $$...$$</span>
-                </div>
-
-                {/* Math Symbol Toolbar */}
-                <div className="flex flex-wrap gap-1 mb-2 p-1.5 rounded-lg bg-muted/40 border">
-                  <span className="text-[10px] font-bold text-muted-foreground flex items-center mr-1">Insert Math:</span>
-                  {MATH_SHORTCUTS.map((item) => (
-                    <button
-                      key={item.label}
-                      type="button"
-                      onClick={() => {
-                        if (questionTab === 'en') {
-                          insertMathSnippet(item.snippet, questionForm.text.en, (val) =>
-                            setQuestionForm((prev) => ({
-                              ...prev,
-                              text: { ...prev.text, en: typeof val === 'function' ? val(prev.text.en) : val },
-                            }))
-                          );
-                        } else {
-                          insertMathSnippet(item.snippet, questionForm.text.hi, (val) =>
-                            setQuestionForm((prev) => ({
-                              ...prev,
-                              text: { ...prev.text, hi: typeof val === 'function' ? val(prev.text.hi) : val },
-                            }))
-                          );
-                        }
-                      }}
-                      className="px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-background border border-border/80 hover:bg-brand hover:text-white transition-colors cursor-pointer"
-                      title={item.title}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Textarea */}
-                {questionTab === 'en' ? (
-                  <textarea
-                    rows={4}
-                    value={questionForm.text.en}
-                    onChange={(e) =>
-                      setQuestionForm({ ...questionForm, text: { ...questionForm.text, en: e.target.value } })
-                    }
-                    placeholder="Type English question statement here. Wrap math in $...$ e.g. Solve for x: $x^2 - 4 = 0$"
-                    className="w-full rounded-xl border border-border bg-background p-3 text-xs leading-relaxed focus:ring-1 focus:ring-brand font-medium"
-                  />
-                ) : (
-                  <textarea
-                    rows={4}
-                    value={questionForm.text.hi}
-                    onChange={(e) =>
-                      setQuestionForm({ ...questionForm, text: { ...questionForm.text, hi: e.target.value } })
-                    }
-                    placeholder="यहाँ हिंदी में प्रश्न टाइप करें। सूत्र $...$ में लिखें जैसे: $x$ का मान ज्ञात कीजिए।"
-                    className="w-full rounded-xl border border-border bg-background p-3 text-xs leading-relaxed focus:ring-1 focus:ring-brand font-medium"
-                  />
-                )}
-              </div>
-
-              {/* Scanned Question Image / Diagram Attachment */}
-              <div className="rounded-xl border border-dashed border-border p-4 bg-muted/20">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <ImageIcon className="size-4 text-brand" />
-                    <span>Upload Scanned Question Image / Diagram (Optional)</span>
-                  </span>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setMediaPickerTarget('question');
-                      setMediaPickerOpen(true);
-                    }}
-                    className="h-7 text-xs font-bold"
-                  >
-                    <UploadCloud className="size-3.5 mr-1" /> Choose from Library / Upload
-                  </Button>
-                </div>
-
-                {questionForm.attachments && questionForm.attachments.length > 0 ? (
-                  <div className="space-y-2 mt-3">
-                    {questionForm.attachments.map((att, attIdx) => (
-                      <div
-                        key={att._id || attIdx}
-                        className="flex items-center justify-between gap-3 p-2 rounded-lg border bg-background"
-                      >
-                        <div className="flex items-center gap-2">
-                          {att.media?.url && (
-                            <img src={att.media.url} alt="Attached Diagram" className="size-10 object-cover rounded" />
-                          )}
-                          <span className="text-xs truncate max-w-[200px] font-mono">
-                            {att.media?.filename || att.media?.url || 'Uploaded Image'}
-                          </span>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setQuestionForm({
-                              ...questionForm,
-                              attachments: questionForm.attachments.filter((_, idx) => idx !== attIdx),
-                            });
-                          }}
-                          className="h-7 text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-[11px] text-muted-foreground mt-1">
-                    You can either type the question manually above, OR upload a scanned book page / handwritten diagram, or both!
-                  </p>
-                )}
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setQuestionModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="font-bold bg-brand text-white hover:bg-brand/90">
-                  <Save className="size-3.5 mr-1" />
-                  {editingQuestionId ? 'Update Question' : 'Save Question'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ==================================================== */}
-      {/* MODAL 2: SOLUTION EDITOR (MULTIPLE METHODS & STEPS) */}
-      {/* ==================================================== */}
-      {solutionModal && activeQuestionForSolution && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
-          <div className="w-full max-w-4xl rounded-2xl border bg-card p-6 shadow-2xl animate-in zoom-in-95 my-6 max-h-[92vh] overflow-y-auto flex flex-col">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b mb-4">
-              <div>
-                <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
-                  <Sparkles className="size-4 text-brand" />
-                  <span>Author Solution for Question {activeQuestionForSolution.number}</span>
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Exercise {selectedExercise?.number} · {selectedBook?.title?.en}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setSolutionModal(false)}
-                className="p-1 rounded-lg hover:bg-muted text-muted-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-
-            {/* Question Summary Bar for quick reference while authoring */}
-            <div className="rounded-xl border border-border/80 bg-muted/30 p-3 mb-4 text-xs">
-              <span className="font-extrabold text-brand uppercase tracking-wider text-[10px] block mb-1">
-                Question Statement:
-              </span>
-              <p className="line-clamp-3 text-foreground font-medium">
-                {activeQuestionForSolution.text?.en || activeQuestionForSolution.text?.hi || '[Scanned image question]'}
-              </p>
-            </div>
-
-            {/* Methods Switcher Tabs Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-3 mb-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-muted-foreground uppercase mr-1">Methods:</span>
-                {methods.map((method, mIdx) => (
-                  <button
-                    key={mIdx}
-                    type="button"
-                    onClick={() => setActiveMethodIndex(mIdx)}
-                    className={cn(
-                      'px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border',
-                      activeMethodIndex === mIdx
-                        ? 'bg-brand text-white border-brand shadow-xs'
-                        : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
-                    )}
-                  >
-                    {method.title?.en || `Method ${mIdx + 1}`}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={handleAddMethod}
-                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-brand border border-brand/40 bg-brand/5 hover:bg-brand/10 transition-colors cursor-pointer inline-flex items-center gap-1"
-                >
-                  <Plus className="size-3" />
-                  <span>Add Alternative Method</span>
-                </button>
-              </div>
-
-              {methods.length > 1 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleRemoveMethod(activeMethodIndex)}
-                  className="h-7 text-xs text-destructive hover:bg-destructive/10"
-                >
-                  <Trash2 className="size-3 mr-1" /> Remove Current Method
-                </Button>
-              )}
-            </div>
-
-            {/* Active Method Details & Step Builder */}
-            {methods[activeMethodIndex] && (
-              <div className="space-y-4 flex-1">
-                {/* Method Title & Type Config */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-xl border bg-muted/20">
-                  <div className="sm:col-span-2">
-                    <label className="text-xs font-bold block mb-1">Method Title (e.g. Standard / Shortcut / Trick)</label>
-                    <input
-                      type="text"
-                      value={methods[activeMethodIndex].title?.en || ''}
-                      onChange={(e) => {
-                        const updated = [...methods];
-                        updated[activeMethodIndex] = {
-                          ...updated[activeMethodIndex],
-                          title: { ...updated[activeMethodIndex].title, en: e.target.value },
-                        };
-                        setMethods(updated);
-                      }}
-                      className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
-                      placeholder="e.g. Method 1: Standard Method"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold block mb-1">Method Type</label>
-                    <select
-                      value={methods[activeMethodIndex].methodType || 'standard'}
-                      onChange={(e) => {
-                        const updated = [...methods];
-                        updated[activeMethodIndex] = {
-                          ...updated[activeMethodIndex],
-                          methodType: e.target.value,
-                        };
-                        setMethods(updated);
-                      }}
-                      className="w-full h-8.5 rounded-xl border border-border bg-background px-2 text-xs font-semibold"
-                    >
-                      <option value="standard">Standard / Textbook Method</option>
-                      <option value="shortcut">Shortcut / Competitive Trick</option>
-                      <option value="alternative">Alternative Mathematical Method</option>
-                      <option value="custom">Custom</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Step-by-Step Explanation Blocks */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                      <ListOrdered className="size-3.5 text-brand" />
-                      <span>Step-by-Step Mathematical Explanation</span>
-                    </span>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      onClick={handleAddStepToCurrentMethod}
-                      className="h-7 text-xs font-bold"
-                    >
-                      <Plus className="size-3 mr-1" /> Add Next Step
-                    </Button>
-                  </div>
-
-                  {methods[activeMethodIndex].blocks?.map((step, sIdx) => (
-                    <div key={sIdx} className="rounded-xl border border-border bg-background p-3.5 space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="rounded-md bg-brand/10 text-brand font-extrabold text-xs px-2 py-0.5">
-                          Step {sIdx + 1}
-                        </span>
-                        {methods[activeMethodIndex].blocks.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveStep(sIdx)}
-                            className="text-muted-foreground hover:text-destructive p-1 cursor-pointer"
-                            title="Remove Step"
-                          >
-                            <Trash2 className="size-3" />
-                          </button>
-                        )}
-                      </div>
-
-                      {/* Math Toolbar for this step */}
-                      <div className="flex flex-wrap gap-1 p-1 rounded-md bg-muted/40 border">
-                        <span className="text-[10px] font-bold text-muted-foreground flex items-center mr-1">Formula:</span>
-                        {MATH_SHORTCUTS.slice(0, 10).map((item) => (
-                          <button
-                            key={item.label}
-                            type="button"
-                            onClick={() => {
-                              const updated = [...methods];
-                              const currentStep = updated[activeMethodIndex].blocks[sIdx];
-                              const currentContent = currentStep.content?.en || '';
-                              currentStep.content = {
-                                ...currentStep.content,
-                                en: `${currentContent} $${item.snippet}$ `,
-                              };
-                              setMethods(updated);
-                            }}
-                            className="px-1.5 py-0.5 text-[10px] font-mono font-bold rounded bg-background border border-border/80 hover:bg-brand hover:text-white transition-colors cursor-pointer"
-                          >
-                            {item.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      {/* Step Textarea */}
-                      <textarea
-                        rows={3}
-                        value={step.content?.en || ''}
-                        onChange={(e) => {
-                          const updated = [...methods];
-                          updated[activeMethodIndex].blocks[sIdx].content = {
-                            ...updated[activeMethodIndex].blocks[sIdx].content,
-                            en: e.target.value,
-                          };
-                          setMethods(updated);
-                        }}
-                        placeholder={`Write Step ${sIdx + 1} mathematical explanation. Use $...$ for equations, e.g. Substitute $x = 3$ into equation (1).`}
-                        className="w-full rounded-lg border border-border bg-background p-2.5 text-xs font-mono leading-relaxed"
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Final Answer Highlight Box */}
-                <div className="rounded-xl border-2 border-brand/40 bg-brand/5 p-3.5">
-                  <span className="text-xs font-extrabold text-brand uppercase tracking-wider block mb-1">
-                    Final Answer Summary
-                  </span>
-                  <input
-                    type="text"
-                    value={methods[activeMethodIndex].finalAnswer?.en || ''}
-                    onChange={(e) => {
-                      const updated = [...methods];
-                      updated[activeMethodIndex] = {
-                        ...updated[activeMethodIndex],
-                        finalAnswer: { ...updated[activeMethodIndex].finalAnswer, en: e.target.value },
-                      };
-                      setMethods(updated);
-                    }}
-                    placeholder="e.g. Hence, the roots of the equation are $x = 2$ and $x = 3$."
-                    className="w-full h-8.5 rounded-lg border border-border bg-background px-3 text-xs font-bold"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Solution Save Actions (Independent Publishing) */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t mt-4">
-              <span className="text-xs text-muted-foreground font-semibold flex items-center gap-1.5">
-                <AlertCircle className="size-3.5 text-brand" />
-                <span>You can save solution as Draft or Publish independently of the question status.</span>
-              </span>
-
-              <div className="flex items-center gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setSolutionModal(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleSaveSolution('draft')}
-                  className="font-bold border-amber-500 text-amber-700 hover:bg-amber-50 dark:text-amber-400"
-                >
-                  Save as Draft
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => handleSaveSolution('published')}
-                  className="font-bold bg-brand text-white hover:bg-brand/90"
-                >
-                  <Check className="size-3.5 mr-1" />
-                  Save & Publish Solution
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ==================================================== */}
       {/* MODAL 3: BOOK SETTINGS & CLASS ACCESS CONFIGURATION  */}
@@ -2157,28 +1343,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         </div>
       )}
 
-      {/* Media Picker Dialog */}
-      <MediaPicker
-        open={mediaPickerOpen}
-        onOpenChange={setMediaPickerOpen}
-        onSelect={(mediaItem) => {
-          if (mediaPickerTarget === 'question') {
-            setQuestionForm((prev) => ({
-              ...prev,
-              attachments: [
-                ...prev.attachments,
-                {
-                  media: mediaItem,
-                  kind: 'image',
-                  caption: { en: mediaItem.title || '', hi: '' },
-                  placement: 'question',
-                },
-              ],
-            }));
-          }
-          setMediaPickerOpen(false);
-        }}
-      />
+
 
       {/* Preview Image Modal */}
       {previewImageModal && (

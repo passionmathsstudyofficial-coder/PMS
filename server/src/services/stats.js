@@ -11,7 +11,15 @@ function sessionScope(session) {
   const selected = String(session).trim();
   const slug = selected.replace(/[–—]/g, '-').toLowerCase();
   const display = slug.replace(/-(\d{2})$/, '–$1');
-  return { academicSession: { $in: [...new Set([selected, slug, display])] } };
+  const labels = [...new Set([selected, slug, display])];
+  return {
+    $or: [
+      { academicSession: { $in: labels } },
+      { academicSession: null },
+      { academicSession: '' },
+      { academicSession: { $exists: false } },
+    ],
+  };
 }
 
 // Published chapter / exercise / question counts per class (used on class cards).

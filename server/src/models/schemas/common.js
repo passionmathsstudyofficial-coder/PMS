@@ -71,3 +71,12 @@ export const ButtonSchema = new Schema({
 });
 
 export const DIFFICULTIES = ['easy', 'medium', 'hard'];
+
+export const FormulaSchema = new Schema(
+  {
+    title: l10n(),
+    latex: { type: String, default: '', maxlength: 5000 },
+    description: textL10n(),
+  },
+  { _id: true },
+);
