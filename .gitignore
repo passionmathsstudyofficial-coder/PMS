@@ -12,9 +12,10 @@ node_modules/
 .pnp.*
 
 # Build output — re-create with `npm run build`
-client/dist/
-dist/
+# client/dist is tracked for Hostinger production deployment
+/dist/
 build/
+!client/dist/
 *.tsbuildinfo
 
 # Secrets — keep the *.example templates, never the real .env files
