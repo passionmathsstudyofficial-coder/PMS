@@ -4,6 +4,7 @@ import {
   AdSlot,
   Book,
   Announcement,
+  Chapter,
   ClassLevel,
   Navigation,
   NAV_KEYS,
@@ -74,6 +75,25 @@ export async function publicReferenceBooks(preview = false) {
       });
     }
   }
+
+  const chapterFilter = preview ? {} : Chapter.publicFilter();
+  const chapterCounts = await Chapter.aggregate([
+    { $match: chapterFilter },
+    { $group: { _id: '$book', count: { $sum: 1 } } },
+  ]).catch(() => []);
+  const countByBookId = new Map(chapterCounts.map((c) => [String(c._id || ''), c.count]));
+
+  for (const book of allMap.values()) {
+    let count = 0;
+    if (book._id) {
+      count = countByBookId.get(String(book._id)) || 0;
+    }
+    if (book.slug === 'ncert') {
+      count += countByBookId.get('') || 0;
+    }
+    book.chapterCount = count;
+  }
+
   return Array.from(allMap.values()).filter((b) => b.isVisible !== false);
 }
 

@@ -19,7 +19,7 @@ export { Book, BOOK_CATEGORIES } from './Book.js';
 export { ImportantQuestion } from './ImportantQuestion.js';
 export { Media } from './Media.js';
 export { Video } from './Video.js';
-export { Section, SECTION_TYPES } from './Section.js';
+export { Section, SECTION_TYPES, ensureDefaultHomepageSections } from './Section.js';
 export { RelatedContent, RELATABLE_TYPES } from './RelatedContent.js';
 export { SeoSetting } from './SeoSetting.js';
 export { ActivityLog, ACTIVITY_ACTIONS } from './ActivityLog.js';

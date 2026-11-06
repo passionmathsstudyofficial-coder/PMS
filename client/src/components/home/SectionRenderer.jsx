@@ -9,6 +9,7 @@ import {
   ImageGallerySection,
   NotesSection,
   QuestionListSection,
+  ReferenceBooksSection,
   RelatedLinksSection,
   StatisticsSection,
   StepsSection,
@@ -22,6 +23,7 @@ const COMPONENTS = {
   statistics: StatisticsSection,
   classGrid: ClassGridSection,
   steps: StepsSection,
+  referenceBooks: ReferenceBooksSection,
   chapterGrid: ChapterGridSection,
   cardGrid: CardGridSection,
   questionList: QuestionListSection,
@@ -38,6 +40,17 @@ const COMPONENTS = {
 export function SectionRenderer({ sections }) {
   useUiLanguage();
   return sections.map((section) => {
+    // Replace legacy Structured Learning steps section with the new Reference Books showcase
+    const isLegacyStructuredLearning =
+      section.type === 'steps' &&
+      (section.name === 'hierarchy' ||
+        section.title?.en === 'Every question in a clear order' ||
+        section.badge?.en === 'Structured learning');
+
+    if (isLegacyStructuredLearning) {
+      return <ReferenceBooksSection key={section._id || 'reference-books'} section={section} />;
+    }
+
     const Component = COMPONENTS[section.type];
     return Component ? <Component key={section._id} section={section} /> : null;
   });

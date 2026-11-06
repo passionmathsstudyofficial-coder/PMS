@@ -10,7 +10,7 @@ import {
   Subject,
 } from '../models/index.js';
 import { MEDIA_SELECT, VIDEO_SELECT } from './populate.js';
-import { publicClasses } from './site.js';
+import { publicClasses, publicReferenceBooks } from './site.js';
 import { classStats, countsForChapters } from './stats.js';
 import { getTerms, term } from './terms.js';
 import { urls } from './urls.js';
@@ -176,6 +176,17 @@ async function sectionData(section, preview, terms) {
         Question.countDocuments(filter(Question)),
       ]);
       return { auto: { classes, chapters, exercises, questions } };
+    }
+    case 'referenceBooks': {
+      const books = await publicReferenceBooks(preview);
+      return { books };
+    }
+    case 'steps': {
+      if (section.name === 'hierarchy') {
+        const books = await publicReferenceBooks(preview);
+        return { books };
+      }
+      return {};
     }
     default:
       return {};

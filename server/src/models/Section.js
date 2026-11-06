@@ -18,6 +18,7 @@ export const SECTION_TYPES = [
   'faq',
   'statistics',
   'steps',
+  'referenceBooks',
   'relatedContent',
   'notes',
   'custom',
@@ -77,3 +78,48 @@ sectionSchema.plugin(contentPlugin);
 sectionSchema.index({ page: 1, sortOrder: 1 });
 
 export const Section = mongoose.model('Section', sectionSchema);
+
+export async function ensureDefaultHomepageSections() {
+  try {
+    // 1. If old hierarchy steps section exists on home, update it to referenceBooks
+    const oldHierarchy = await Section.findOne({ page: 'home', $or: [{ name: 'hierarchy' }, { type: 'steps' }] });
+    if (oldHierarchy) {
+      oldHierarchy.type = 'referenceBooks';
+      oldHierarchy.name = 'reference-books';
+      oldHierarchy.badge = { hi: 'संदर्भ पुस्तक संग्रह', en: 'REFERENCE BOOK COLLECTION' };
+      oldHierarchy.title = { hi: 'हमारी संदर्भ पुस्तकें देखें', en: 'Explore Our Reference Books' };
+      oldHierarchy.description = {
+        hi: 'भारत की सबसे लोकप्रिय संदर्भ पुस्तकों से अध्याय-वार संपूर्ण हल, अभ्यास, स्पष्टीकरण और गणित का अभ्यास प्राप्त करें।',
+        en: "Find comprehensive chapter-wise solutions, exercises, explanations and mathematics practice from India's most popular reference books.",
+      };
+      if (!oldHierarchy.config) oldHierarchy.config = {};
+      if (oldHierarchy.config.background === 'dark') {
+        oldHierarchy.config.background = 'none';
+      }
+      oldHierarchy.status = 'published';
+      oldHierarchy.isVisible = true;
+      await oldHierarchy.save();
+    } else {
+      const refSection = await Section.findOne({ page: 'home', type: 'referenceBooks' });
+      if (!refSection) {
+        await Section.create({
+          page: 'home',
+          type: 'referenceBooks',
+          name: 'reference-books',
+          sortOrder: 3,
+          status: 'published',
+          isVisible: true,
+          badge: { hi: 'संदर्भ पुस्तक संग्रह', en: 'REFERENCE BOOK COLLECTION' },
+          title: { hi: 'हमारी संदर्भ पुस्तकें देखें', en: 'Explore Our Reference Books' },
+          description: {
+            hi: 'भारत की सबसे लोकप्रिय संदर्भ पुस्तकों से अध्याय-वार संपूर्ण हल, अभ्यास, स्पष्टीकरण और गणित का अभ्यास प्राप्त करें।',
+            en: "Find comprehensive chapter-wise solutions, exercises, explanations and mathematics practice from India's most popular reference books.",
+          },
+          config: { background: 'none' },
+        });
+      }
+    }
+  } catch (err) {
+    console.error('[ensureDefaultHomepageSections] error:', err);
+  }
+}

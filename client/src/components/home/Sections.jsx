@@ -12,7 +12,9 @@ import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { Icon } from '@/lib/icons';
 import { useInterfaceL10n } from '@/lib/i18n';
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from '@/lib/motion';
-import { useTerm } from '@/lib/site';
+import { getReferenceBooks } from '@/lib/referenceBooks.js';
+import { useSite, useTerm } from '@/lib/site';
+import { uiText } from '@/lib/uiLanguage.js';
 import { cn } from '@/lib/utils';
 import { SectionButtons, SectionShell } from './SectionShell.jsx';
 
@@ -87,6 +89,272 @@ export function StepsSection({ section }) {
           );
         })}
       </ol>
+    </SectionShell>
+  );
+}
+
+function ReferenceBookIllustration({ slug, author }) {
+  const isNcert = slug === 'ncert';
+  const isRs = slug === 'rs-aggarwal';
+  const isRd = slug === 'rd-sharma';
+  const isKc = slug === 'kc-sinha';
+  const isMl = slug === 'ml-aggarwal';
+
+  const theme = isNcert
+    ? {
+        bg: 'from-amber-500/20 via-orange-500/10 to-amber-500/5',
+        border: 'border-amber-500/30',
+        badgeBg: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
+        badgeText: 'NCERT Exemplar & Textbook',
+        accentText: 'text-amber-600 dark:text-amber-400',
+        formula: 'f(x) = \\sum_{n=0}^{\\infty} a_n x^n',
+        decorColor: 'rgba(245, 158, 11, 0.25)',
+      }
+    : isRs
+    ? {
+        bg: 'from-blue-600/20 via-indigo-500/10 to-blue-500/5',
+        border: 'border-blue-500/30',
+        badgeBg: 'bg-blue-500/15 text-blue-700 dark:text-blue-300',
+        badgeText: 'Secondary & Sr. Secondary',
+        accentText: 'text-blue-600 dark:text-blue-400',
+        formula: '\\sin^2\\theta + \\cos^2\\theta = 1',
+        decorColor: 'rgba(59, 130, 246, 0.25)',
+      }
+    : isRd
+    ? {
+        bg: 'from-purple-600/20 via-violet-500/10 to-indigo-500/5',
+        border: 'border-purple-500/30',
+        badgeBg: 'bg-purple-500/15 text-purple-700 dark:text-purple-300',
+        badgeText: 'Board & Competitive Practice',
+        accentText: 'text-purple-600 dark:text-purple-400',
+        formula: '\\int_a^b f(x)\\,dx = F(b) - F(a)',
+        decorColor: 'rgba(147, 51, 234, 0.25)',
+      }
+    : isKc
+    ? {
+        bg: 'from-emerald-600/20 via-teal-500/10 to-emerald-500/5',
+        border: 'border-emerald-500/30',
+        badgeBg: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300',
+        badgeText: 'Higher & Foundation Practice',
+        accentText: 'text-emerald-600 dark:text-emerald-400',
+        formula: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}',
+        decorColor: 'rgba(16, 185, 129, 0.25)',
+      }
+    : isMl
+    ? {
+        bg: 'from-rose-600/20 via-pink-500/10 to-rose-500/5',
+        border: 'border-rose-500/30',
+        badgeBg: 'bg-rose-500/15 text-rose-700 dark:text-rose-300',
+        badgeText: 'ICSE & CBSE Mathematics',
+        accentText: 'text-rose-600 dark:text-rose-400',
+        formula: 'S_n = \\frac{n}{2}[2a + (n-1)d]',
+        decorColor: 'rgba(244, 63, 94, 0.25)',
+      }
+    : {
+        bg: 'from-indigo-600/20 via-brand/10 to-indigo-500/5',
+        border: 'border-brand/30',
+        badgeBg: 'bg-brand/15 text-brand',
+        badgeText: 'Reference Solution',
+        accentText: 'text-brand',
+        formula: 'a^2 + b^2 = c^2',
+        decorColor: 'rgba(230, 81, 0, 0.2)',
+      };
+
+  return (
+    <div className={cn('relative aspect-[16/10] w-full overflow-hidden rounded-xl border bg-gradient-to-br p-4 flex flex-col justify-between select-none', theme.bg, theme.border)}>
+      {/* Background Math SVG pattern */}
+      <svg className="absolute inset-0 h-full w-full opacity-35 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id={`math-grid-${slug}`} width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-foreground/20" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#math-grid-${slug})`} />
+        <circle cx="85%" cy="30%" r="48" fill="none" stroke={theme.decorColor} strokeWidth="1.5" strokeDasharray="4 4" />
+        <path d="M 20 95 Q 90 20, 160 75 T 290 30" fill="none" stroke={theme.decorColor} strokeWidth="2" />
+        <polygon points="180,85 240,35 260,100" fill="none" stroke={theme.decorColor} strokeWidth="1.2" />
+      </svg>
+
+      {/* Top row in illustration */}
+      <div className="relative z-10 flex items-center justify-between">
+        <span className={cn('rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider shadow-sm', theme.badgeBg)}>
+          {theme.badgeText}
+        </span>
+        <BookOpen className={cn('size-4 opacity-75', theme.accentText)} />
+      </div>
+
+      {/* Center math formula */}
+      <div className="relative z-10 my-auto text-center px-2 py-1">
+        <div className={cn('font-mono text-xs font-bold tracking-wide opacity-95', theme.accentText)}>
+          <MathFormula latex={theme.formula} display={false} />
+        </div>
+      </div>
+
+      {/* Bottom book publisher or edition */}
+      <div className="relative z-10 flex items-center justify-between border-t border-border/40 pt-2 text-[10px] font-semibold text-muted-foreground">
+        <span className="truncate max-w-[150px]">{author || 'Mathematics'}</span>
+        <span className="font-mono opacity-80">Class 6–12</span>
+      </div>
+    </div>
+  );
+}
+
+export function ReferenceBooksSection({ section }) {
+  useUiLanguage();
+  const t = useInterfaceL10n();
+  const term = useTerm();
+  const site = useSite();
+
+  const rawBooks = section?.data?.books || getReferenceBooks(site);
+  const ncertIncluded = rawBooks.some((b) => b.slug === 'ncert');
+  const dynamicBooks = ncertIncluded
+    ? rawBooks
+    : [
+        {
+          slug: 'ncert',
+          title: { hi: 'NCERT गणित समाधान', en: 'NCERT Solutions' },
+          author: 'NCERT',
+          publisher: 'NCERT',
+          availableClasses: [6, 7, 8, 9, 10, 11, 12],
+          description: {
+            hi: 'सीबीएसई कक्षा 6 से 12 के लिए NCERT गणित के अध्याय-वार और प्रश्नावली-वार संपूर्ण चरणबद्ध हल।',
+            en: 'Complete chapter-wise and exercise-wise step-by-step solutions for NCERT Mathematics Classes 6 to 12.',
+          },
+          url: '/reference-solutions/ncert',
+        },
+        ...rawBooks,
+      ];
+  const books = (dynamicBooks || []).filter((b) => b.isVisible !== false);
+
+  const isOldHierarchy =
+    section?.name === 'hierarchy' ||
+    section?.type === 'steps' ||
+    section?.title?.en === 'Every question in a clear order';
+
+  const defaultBadge = { hi: 'संदर्भ पुस्तक संग्रह', en: 'REFERENCE BOOK COLLECTION' };
+  const defaultTitle = { hi: 'हमारी संदर्भ पुस्तकें देखें', en: 'Explore Our Reference Books' };
+  const defaultDesc = {
+    hi: 'भारत की सबसे लोकप्रिय संदर्भ पुस्तकों से अध्याय-वार संपूर्ण हल, अभ्यास, स्पष्टीकरण और गणित का अभ्यास प्राप्त करें।',
+    en: "Find comprehensive chapter-wise solutions, exercises, explanations and mathematics practice from India's most popular reference books.",
+  };
+
+  const effectiveSection = {
+    ...section,
+    badge: (!isOldHierarchy && section?.badge && (section.badge.en || section.badge.hi)) ? section.badge : defaultBadge,
+    title: (!isOldHierarchy && section?.title && (section.title.en || section.title.hi)) ? section.title : defaultTitle,
+    description: (!isOldHierarchy && section?.description && (section.description.en || section.description.hi)) ? section.description : defaultDesc,
+    config: {
+      ...section?.config,
+      background: section?.config?.background === 'dark' ? 'none' : (section?.config?.background || 'none'),
+    },
+  };
+
+  if (!books.length) return null;
+
+  return (
+    <SectionShell section={effectiveSection} className="py-12 sm:py-16">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {books.map((book) => {
+          const bookTitle = t(book.title) || book.author || book.name || book.slug;
+          const bookDesc = t(book.description) || (t(book.subtitle) || '');
+          const classes = (book.availableClasses?.length ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12])
+            .slice()
+            .sort((a, b) => a - b);
+          const classRangeLabel = classes.length > 1
+            ? `${term('class')} ${classes[0]}–${classes[classes.length - 1]}`
+            : (classes.length === 1 ? `${term('class')} ${classes[0]}` : term('mathematics'));
+
+          const bookUrl = book.url || `/reference-solutions/${book.slug}`;
+
+          return (
+            <div
+              key={book.slug || book._id}
+              data-reveal
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl"
+            >
+              <div>
+                {/* Book Cover Visual: Either real uploaded image or custom educational illustration */}
+                <div className="relative mb-5 overflow-hidden rounded-xl border border-border/50 bg-muted/30">
+                  {book.coverUrl || book.coverImage?.url ? (
+                    <img
+                      src={book.coverUrl || book.coverImage?.url}
+                      alt={bookTitle}
+                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <ReferenceBookIllustration slug={book.slug} title={bookTitle} author={book.author} />
+                  )}
+
+                  {/* Top-right Class Coverage Badge overlay */}
+                  <span className="absolute right-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-bold text-foreground shadow-sm backdrop-blur-md">
+                    {classRangeLabel}
+                  </span>
+                </div>
+
+                {/* Metadata Row: Subject & Author */}
+                <div className="mb-2.5 flex items-center gap-2">
+                  <span className="inline-flex items-center rounded-md bg-brand-soft px-2.5 py-0.5 text-xs font-bold text-brand">
+                    {term('mathematics') || 'Mathematics'}
+                  </span>
+                  {book.author && (
+                    <span className="truncate text-xs font-medium text-muted-foreground">
+                      {book.author}
+                    </span>
+                  )}
+                </div>
+
+                {/* Book Title */}
+                <h3 className="font-heading text-lg font-extrabold tracking-tight transition-colors group-hover:text-brand sm:text-xl">
+                  <Link to={bookUrl} className="focus:outline-none">
+                    <span className="absolute inset-0" aria-hidden="true" />
+                    {bookTitle}
+                  </Link>
+                </h3>
+
+                {/* Book Description */}
+                {bookDesc && (
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                    {bookDesc}
+                  </p>
+                )}
+
+                {/* Available Classes Quick Navigation */}
+                <div className="relative z-10 mt-4">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                    {term('class')} {uiText('हल उपलब्ध:')}
+                  </p>
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {classes.map((clsNum) => (
+                      <Link
+                        key={clsNum}
+                        to={`/reference-solutions/${book.slug}/class-${clsNum}`}
+                        className="rounded-lg border border-border/60 bg-background/70 px-2 py-0.5 text-[11px] font-bold text-foreground/85 transition hover:border-brand hover:bg-brand hover:text-white"
+                        title={`${bookTitle} - Class ${clsNum}`}
+                      >
+                        {clsNum}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Card Footer: Chapter count & Explore Button */}
+              <div className="relative z-10 mt-6 flex items-center justify-between border-t border-border/60 pt-4 text-xs">
+                <span className="font-semibold text-muted-foreground">
+                  {book.chapterCount
+                    ? `${book.chapterCount} ${term('chapter')}`
+                    : uiText('विस्तृत चरणबद्ध हल')}
+                </span>
+                <span className="inline-flex items-center gap-1.5 font-bold text-brand group-hover:text-brand">
+                  <span>{uiText('Explore Solutions')}</span>
+                  <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </SectionShell>
   );
 }

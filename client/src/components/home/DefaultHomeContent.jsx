@@ -21,6 +21,7 @@ import { MathFormula } from '@/components/content/MathFormula.jsx';
 import { SOCIAL_ICONS } from '@/components/site/SocialIcons.jsx';
 import { Button } from '@/components/ui/button';
 import { HeroSection } from './HeroSection.jsx';
+import { ReferenceBooksSection } from './Sections.jsx';
 
 
 const CLASSES_DATA = [
@@ -239,6 +240,9 @@ export function DefaultHomeContent() {
           ))}
         </div>
       </section>
+
+      {/* ─── REFERENCE BOOKS SHOWCASE ─── */}
+      <ReferenceBooksSection section={{}} />
 
       {/* ─── KEY PILLARS / WHY PMS ─── */}
       <section className="border-y bg-muted/30 py-16 sm:py-24">
