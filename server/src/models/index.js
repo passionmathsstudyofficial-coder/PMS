@@ -28,5 +28,5 @@ export { AdSlot, AD_PLACEMENTS, AD_PAGE_TYPES } from './AdSlot.js';
 export { Backup } from './Backup.js';
 export { StudentSession } from './StudentSession.js';
 export { PasswordRecovery } from './PasswordRecovery.js';
-export { AcademicSession } from './AcademicSession.js';
+export { AcademicSession, ensureDefaultSessions } from './AcademicSession.js';
 

@@ -179,13 +179,13 @@ export function crudRouter(Model, options = {}) {
     res.status(201).json(await serialize(fresh, req));
   });
 
-  router.put('/:id', requireAuth, requirePermission(writePermission), async (req, res) => {
+  const updateHandler = async (req, res) => {
     const doc = await findById(req.params.id);
     const body = stripProtected(req.body, extraProtected);
     await assertSolutionRights(req, doc);
     const fromStatus = doc.status;
     assertPublishRights(req, fromStatus, body.status);
-    doc.set(mergeLanguageFields(doc.toObject(),body));
+    doc.set(mergeLanguageFields(doc.toObject(), body));
     await assertSolutionRights(req, doc);
     if (['class', 'subject', 'chapter', 'exercise'].some(field => doc.isModified(field))) await protectParent(doc);
     if (Model.schema.path('updatedBy')) doc.updatedBy = req.admin._id;
@@ -200,7 +200,10 @@ export function crudRouter(Model, options = {}) {
     if (transition) await logActivity(req, { action: transition, entityType, entityId: doc._id, entityLabel: labelOf(doc) });
     const fresh = await findById(doc._id, populate.detail);
     res.json(await serialize(fresh, req));
-  });
+  };
+
+  router.put('/:id', requireAuth, requirePermission(writePermission), updateHandler);
+  router.patch('/:id', requireAuth, requirePermission(writePermission), updateHandler);
 
   if (hasStatus) {
     router.patch('/:id/status', requireAuth, requirePermission(writePermission), async (req, res) => {

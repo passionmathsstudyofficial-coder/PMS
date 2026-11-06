@@ -28,3 +28,14 @@ academicSessionSchema.pre('save', async function handleCurrent() {
 
 export const AcademicSession = mongoose.model('AcademicSession', academicSessionSchema);
 
+export async function ensureDefaultSessions() {
+  const count = await AcademicSession.countDocuments();
+  if (count === 0) {
+    await AcademicSession.create([
+      { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true, isActive: true, sortOrder: 0 },
+      { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false, isActive: true, sortOrder: 1 },
+      { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false, isActive: true, sortOrder: 2 },
+    ]);
+  }
+}
+

@@ -70,8 +70,9 @@ export default function NotesManagerPage({ fixedCategory }) {
         const clsList = (clsRes.items || []).sort((a, b) => b.number - a.number);
         setClasses(clsList);
         const referenceBook = (booksRes.items || []).find((book) => book.slug === bookSlug);
-        const allowedClasses = referenceBook?.availableClasses?.length ? clsList.filter((c) => referenceBook.availableClasses.includes(c.number)) : clsList;
-        setSelectedClass(allowedClasses.find((c) => c.number === 10) || allowedClasses[0] || null);
+        const refAllowed = referenceBook?.availableClasses?.length ? clsList.filter((c) => referenceBook.availableClasses.includes(c.number)) : [];
+        const allowedClasses = refAllowed.length ? refAllowed : clsList;
+        setSelectedClass(allowedClasses.find((c) => c.number === 10) || allowedClasses[0] || clsList[0] || null);
 
         const sessList = sessRes.items || [];
         setSessions(sessList);
@@ -252,7 +253,7 @@ export default function NotesManagerPage({ fixedCategory }) {
       <div className="rounded-2xl border bg-card shadow-xs overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex items-center justify-between">
           <h3 className="text-sm font-bold text-foreground">
-            {currentCategoryMeta.label} — Class {selectedClass?.number} ({notes.length})
+            {currentCategoryMeta.label} — {selectedClass ? `Class ${selectedClass.number}` : 'Select Class'} ({notes.length})
           </h3>
           <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`notes/new?${new URLSearchParams({ class: selectedClass?._id || '', chapter: selectedChapter !== 'all' ? selectedChapter : chapters[0]?._id || '', category: currentCategoryMeta.dbCat, session: selectedSession, ...(selectedBook?._id ? { book: selectedBook._id } : {}) })}`)}><Plus className="size-3.5" /><span>Add Note / Formula Sheet</span></Link></Button>
         </div>

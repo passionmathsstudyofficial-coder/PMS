@@ -26,6 +26,7 @@ api.use('/public', publicRoutes);
 api.get('/search', languageResponse, searchLimiter, searchHandler);
 api.use('/', settings);
 api.use('/', content);
+api.use('/content', content);
 api.use('/media', media);
 api.use('/videos', videos);
 api.use('/admins', admins);

@@ -825,7 +825,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   }
 
   // 2. All Maths Formula Sheets: /notes/maths-formula-sheets
-  if (subCategory === 'maths-formula-sheets') {
+  if (subCategory === 'maths-formula-sheets' || subCategory === 'formula-sheets') {
     const [chapters, formulaNotes, resources] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
       Note.find(vis(Note, preview, { category: 'formula_sheet', ...classFilter }))
@@ -871,9 +871,9 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   }
 
   // 3. Reference Book Formulas & Notes: RS Aggarwal, RD Sharma, KC Sinha
-  const isRs = subCategory === 'rs-aggarwal-formulas-notes';
-  const isRd = subCategory === 'rd-sharma-formulas-notes';
-  const isKc = subCategory === 'kc-sinha-formulas-notes';
+  const isRs = subCategory === 'rs-aggarwal-formulas-notes' || subCategory === 'rs-aggarwal' || subCategory === 'reference-book-notes';
+  const isRd = subCategory === 'rd-sharma-formulas-notes' || subCategory === 'rd-sharma';
+  const isKc = subCategory === 'kc-sinha-formulas-notes' || subCategory === 'kc-sinha';
 
   if (isRs || isRd || isKc) {
     const bookSlug = isRs ? 'rs-aggarwal' : isRd ? 'rd-sharma' : 'kc-sinha';
@@ -918,7 +918,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   }
 
   // 4. VVI Questions & Short Notes: /notes/vvi-questions-short-notes
-  if (subCategory === 'vvi-questions-short-notes') {
+  if (subCategory === 'vvi-questions-short-notes' || subCategory === 'vvi-short-notes') {
     const [chapters, shortNotes, questions] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
       Note.find(vis(Note, preview, { category: 'vvi_short_notes', ...classFilter }))
@@ -1371,7 +1371,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     return attachLanding(await resolveStudyMaterialsPath(segments, { preview, page, limit, session: effectiveSession, terms, home }), key, preview, override);
   }
 
-  if (segments[0] === 'notes') {
+  if (segments[0] === 'notes' || segments[0] === 'revision-notes') {
     const key = `notes/${segments[1] || 'ncert-chapter-wise-notes'}`;
     return attachLanding(await resolveNotesPath(segments, { preview, page, limit, session: effectiveSession, terms, home }), key, preview, override);
   }

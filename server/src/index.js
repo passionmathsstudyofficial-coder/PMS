@@ -1,12 +1,13 @@
 import { env } from './config/env.js';
 import { connectDB, disconnectDB } from './config/db.js';
 import { createApp } from './app.js';
-import { SiteSettings } from './models/index.js';
+import { SiteSettings, ensureDefaultSessions } from './models/index.js';
 import { scheduleBackups } from './services/backup.js';
 
 async function main() {
   await connectDB(env.MONGODB_URI);
   await SiteSettings.getSingleton();
+  await ensureDefaultSessions();
   console.log(`[db] connected (${env.MONGODB_URI.replace(/\/\/[^@]*@/, '//***@')})`);
 
   const app = createApp();
