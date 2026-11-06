@@ -347,7 +347,7 @@ async function run() {
 
   await Announcement.create({
     badge: { hi: 'नया सत्र', en: 'New session' },
-    text: { hi: 'NCERT 2024-25 पाठ्यक्रम के अनुसार अध्याय-wise हल जोड़े जा रहे हैं।', en: 'अध्याय-wise solutions as per the NCERT 2024-25 syllabus are being added.' },
+    text: { hi: 'NCERT 2024-25 पाठ्यक्रम के अनुसार अध्याय-wise हल जोड़े जा रहे हैं।', en: 'Chapter-wise solutions as per the NCERT 2024-25 syllabus are being added.' },
     linkLabel: { hi: 'शुरू करें', en: 'Start now' },
     linkUrl: '/#classes',
   });
@@ -364,7 +364,7 @@ async function run() {
       highlight: { hi: 'कक्षा 6 से 12', en: 'Class 6 to 12' },
       description: {
         hi: 'Class 6 to 12 Mathematics के अध्याय-wise और प्रश्नावली-wise Solutions आसान भाषा में।',
-        en: 'अध्याय-wise and प्रश्नावली-wise Class 6–12 Mathematics solutions in simple language.',
+        en: 'Chapter-wise and exercise-wise Class 6–12 Mathematics solutions in simple language.',
       },
       buttons: [{ label: { hi: 'अपनी कक्षा चुनें', en: 'Choose your class' }, url: '#classes', variant: 'primary' }],
       config: {
@@ -388,7 +388,7 @@ async function run() {
       config: { autoStats: true, columns: 4 },
       items: [
         { value: '{classes}', title: { hi: 'कक्षाएँ', en: 'Classes' }, icon: 'graduation-cap' },
-        { value: '{chapters}', title: { hi: 'अध्याय', en: 'अध्याय' }, icon: 'book-open' },
+        { value: '{chapters}', title: { hi: 'अध्याय', en: 'Chapters' }, icon: 'book-open' },
         { value: '{questions}', title: { hi: 'हल सहित प्रश्न', en: 'Solved questions' }, icon: 'list-checks' },
         { value: '100%', title: { hi: 'निःशुल्क', en: 'Free' }, icon: 'heart-handshake' },
       ],
@@ -400,7 +400,7 @@ async function run() {
       status: 'published',
       badge: { hi: 'NCERT कक्षा 6 से 12', en: 'NCERT Classes 6 to 12' },
       title: { hi: 'अपनी कक्षा चुनें', en: 'Select Your Class' },
-      description: { hi: 'अध्याय-wise NCERT हल, नोट्स और महत्वपूर्ण प्रश्न।', en: 'अध्याय-wise NCERT solutions, notes and important questions.' },
+      description: { hi: 'अध्याय-वार NCERT हल, नोट्स और महत्वपूर्ण प्रश्न।', en: 'Chapter-wise NCERT solutions, notes and important questions.' },
       config: { layout: 'featured' },
     },
     {
@@ -422,7 +422,7 @@ async function run() {
       sortOrder: 4,
       status: 'published',
       badge: { hi: 'सबसे ज़्यादा पढ़े गए', en: 'Most practiced' },
-      title: { hi: 'लोकप्रिय अध्याय', en: 'Popular अध्याय' },
+      title: { hi: 'लोकप्रिय अध्याय', en: 'Popular Chapters' },
       config: { chapters: [chapterDocs['10-5']._id, chapterDocs['9-6']._id, chapterDocs['9-5']._id, chapterDocs['10-8']._id], limit: 8 },
     },
     {
@@ -434,7 +434,7 @@ async function run() {
       title: { hi: 'महत्वपूर्ण अध्ययन सामग्री', en: 'Featured Study Resources' },
       config: { columns: 3 },
       items: [
-        { title: { hi: 'सूत्र संग्रह', en: 'Formula Sheets' }, description: { hi: 'अध्याय-wise सभी महत्वपूर्ण सूत्र।', en: 'All important formulas, अध्याय-wise.' }, latex: 'a_n = a + (n-1)d', icon: 'sigma', url: '/class-10/maths/notes', badge: { hi: 'नोट्स', en: 'Notes' } },
+        { title: { hi: 'सूत्र संग्रह', en: 'Formula Sheets' }, description: { hi: 'अध्याय-वार सभी महत्वपूर्ण सूत्र।', en: 'All important formulas, chapter-wise.' }, latex: 'a_n = a + (n-1)d', icon: 'sigma', url: '/class-10/maths/notes', badge: { hi: 'नोट्स', en: 'Notes' } },
         { title: { hi: 'प्रमेय एवं रचनाएँ', en: 'Theorems & Constructions' }, description: { hi: 'रचना के चरण और स्पष्ट आरेख।', en: 'Steps of construction with clear diagrams.' }, icon: 'drafting-compass', url: '/class-9/maths/adhyay-6/prashnavali-6-1', badge: { hi: 'आरेख', en: 'Diagrams' } },
         { title: { hi: 'महत्वपूर्ण प्रश्न', en: 'Important Questions' }, description: { hi: 'परीक्षा की दृष्टि से चुने गए प्रश्न।', en: 'Hand-picked exam-oriented questions.' }, icon: 'file-question', url: '/class-10/maths/important-questions', badge: { hi: 'परीक्षा', en: 'Exam' } },
       ],
@@ -457,7 +457,7 @@ async function run() {
       title: { hi: 'अक्सर पूछे जाने वाले प्रश्न', en: 'Frequently Asked Questions' },
       items: [
         { title: { hi: 'क्या सभी हल निःशुल्क हैं?', en: 'Are all solutions free?' }, description: { hi: 'हाँ, सभी NCERT गणित हल पूरी तरह निःशुल्क हैं।', en: 'Yes, all NCERT Maths solutions are completely free.' } },
-        { title: { hi: 'क्या हल हिंदी और English दोनों में हैं?', en: 'Are solutions available in Hindi and English?' }, description: { hi: 'हाँ। ऊपर दिए भाषा बटन से हिंदी या English चुनें।', en: 'Yes. Use the language switch at the top to choose हिंदी or English.' } },
+        { title: { hi: 'क्या हल हिंदी और English दोनों में हैं?', en: 'Are solutions available in Hindi and English?' }, description: { hi: 'हाँ। ऊपर दिए भाषा बटन से हिंदी या English चुनें।', en: 'Yes. Use the language switch at the top to choose Hindi or English.' } },
         { title: { hi: 'क्या हल नए पाठ्यक्रम के अनुसार हैं?', en: 'Are solutions as per the latest syllabus?' }, description: { hi: 'सामग्री NCERT 2024-25 पाठ्यक्रम के अनुसार तैयार की जा रही है।', en: 'Content is being prepared as per the NCERT 2024-25 syllabus.' } },
       ],
     },
@@ -467,7 +467,7 @@ async function run() {
       sortOrder: 8,
       status: 'published',
       title: { hi: 'आज से ही अभ्यास शुरू करें', en: 'Start practising today' },
-      description: { hi: 'अपनी कक्षा चुनें और प्रश्नावली-wise हल देखें।', en: 'Pick your class and open प्रश्नावली-wise solutions.' },
+      description: { hi: 'अपनी कक्षा चुनें और प्रश्नावली-वार हल देखें।', en: 'Pick your class and open exercise-wise solutions.' },
       config: { background: 'brand' },
       buttons: [
         { label: { hi: 'कक्षा 10 गणित', en: 'Class 10 Maths' }, url: `/${c10.slug}/maths`, variant: 'secondary' },

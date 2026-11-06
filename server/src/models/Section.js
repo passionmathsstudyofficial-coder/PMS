@@ -119,6 +119,56 @@ export async function ensureDefaultHomepageSections() {
         });
       }
     }
+
+    // 2. Sanitize any contaminated English fields in all sections (e.g. Devanagari in en fields)
+    const cleanEn = (str) => {
+      if (!str || typeof str !== 'string') return str;
+      return str
+        .replace(/अध्याय-wise/g, 'chapter-wise')
+        .replace(/प्रश्नावली-wise/g, 'exercise-wise')
+        .replace(/Popular अध्याय/g, 'Popular Chapters')
+        .replace(/हिंदी or English/g, 'Hindi or English')
+        .replace(/^अध्याय$/g, 'Chapters')
+        .replace(/^प्रश्नावली$/g, 'Exercises');
+    };
+
+    const allSections = await Section.find({ page: 'home' });
+    for (const sec of allSections) {
+      let changed = false;
+      if (sec.title?.en && /[\u0900-\u097f]/.test(sec.title.en)) {
+        sec.title.en = cleanEn(sec.title.en);
+        changed = true;
+      }
+      if (sec.description?.en && /[\u0900-\u097f]/.test(sec.description.en)) {
+        sec.description.en = cleanEn(sec.description.en);
+        changed = true;
+      }
+      if (Array.isArray(sec.items)) {
+        for (const it of sec.items) {
+          if (it.title?.en && /[\u0900-\u097f]/.test(it.title.en)) {
+            it.title.en = cleanEn(it.title.en);
+            changed = true;
+          }
+          if (it.description?.en && /[\u0900-\u097f]/.test(it.description.en)) {
+            it.description.en = cleanEn(it.description.en);
+            changed = true;
+          }
+        }
+      }
+      if (changed) {
+        await sec.save();
+      }
+    }
+
+    // 3. Sanitize Book collection (clear broken media-amazon URLs & ensure availableClasses)
+    const BookModel = mongoose.models.Book;
+    if (BookModel) {
+      const booksWithAmazon = await BookModel.find({ coverUrl: /media-amazon\.com/ });
+      for (const b of booksWithAmazon) {
+        b.coverUrl = '';
+        await b.save();
+      }
+    }
   } catch (err) {
     console.error('[ensureDefaultHomepageSections] error:', err);
   }

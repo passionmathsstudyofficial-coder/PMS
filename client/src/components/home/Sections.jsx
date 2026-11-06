@@ -1,6 +1,6 @@
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight, BookOpen, FileText, Star } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Figure } from '@/components/content/Figure.jsx';
@@ -199,32 +199,136 @@ function ReferenceBookIllustration({ slug, author }) {
   );
 }
 
+function BookCoverImage({ book, bookTitle }) {
+  const [failed, setFailed] = useState(false);
+  const rawSrc = book.coverUrl || book.coverImage?.url;
+  // Discard external amazon URLs that fail due to hotlink/CSP protection
+  const src = (rawSrc && !rawSrc.includes('media-amazon.com')) ? rawSrc : null;
+
+  if (!src || failed) {
+    return <ReferenceBookIllustration slug={book.slug} title={bookTitle} author={book.author} />;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={bookTitle}
+      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+const CANONICAL_BOOKS = {
+  ncert: {
+    title: { hi: 'NCERT गणित समाधान', en: 'NCERT Solutions' },
+    author: 'NCERT',
+    publisher: 'NCERT',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+    description: {
+      hi: 'सीबीएसई कक्षा 6 से 12 के लिए NCERT गणित के अध्याय-वार और प्रश्नावली-वार संपूर्ण चरणबद्ध हल।',
+      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for NCERT Mathematics Classes 6 to 12.',
+    },
+    url: '/reference-solutions/ncert',
+  },
+  'rs-aggarwal': {
+    title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'RS Aggarwal Solutions' },
+    author: 'R.S. Aggarwal',
+    publisher: 'Bharati Bhawan',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+    description: {
+      hi: 'सीबीएसई कक्षा 6 से 12 के लिए आर.एस. अग्रवाल गणित के अध्याय-वार और प्रश्नावली-वार विस्तृत हल।',
+      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for RS Aggarwal Mathematics Classes 6 to 12.',
+    },
+    url: '/reference-solutions/rs-aggarwal',
+  },
+  'rd-sharma': {
+    title: { hi: 'आर.डी. शर्मा समाधान', en: 'RD Sharma Solutions' },
+    author: 'Dr. R.D. Sharma',
+    publisher: 'Dhanpat Rai Publications',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+    description: {
+      hi: 'सीबीएसई बोर्ड परीक्षा और प्रतियोगी परीक्षाओं के लिए आर.डी. शर्मा गणित के संपूर्ण हल।',
+      en: 'Comprehensive RD Sharma Mathematics solutions with all question steps, formulas, and proofs.',
+    },
+    url: '/reference-solutions/rd-sharma',
+  },
+  'kc-sinha': {
+    title: { hi: 'के.सी. सिन्हा समाधान', en: 'KC Sinha Solutions' },
+    author: 'Dr. K.C. Sinha',
+    publisher: 'Students Friends / Rastogi Publications',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+    description: {
+      hi: 'कक्षा 6 से 12 के विद्यार्थियों के लिए के.सी. सिन्हा गणित के संपूर्ण और विस्तृत चरणबद्ध हल।',
+      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for KC Sinha Mathematics Classes 6 to 12.',
+    },
+    url: '/reference-solutions/kc-sinha',
+  },
+  'ml-aggarwal': {
+    title: { hi: 'एम.एल. अग्रवाल समाधान', en: 'ML Aggarwal Solutions' },
+    author: 'M.L. Aggarwal',
+    publisher: 'Arya Publications',
+    availableClasses: [6, 7, 8, 9, 10, 11, 12],
+    description: {
+      hi: 'आईसीएसई / सीबीएसई गणित के लिए एम.एल. अग्रवाल अंडरस्टैंडिंग मैथमेटिक्स के हल।',
+      en: 'Step-by-step solutions for ML Aggarwal Understanding Mathematics for middle and secondary classes.',
+    },
+    url: '/reference-solutions/ml-aggarwal',
+  },
+};
+
+const ALIAS_SLUGS = {
+  'mathematics-for-class-10-by-r-d-sharma': 'rd-sharma',
+  'secondary-school-mathematics-for-class-10-by-r-s-aggarwal': 'rs-aggarwal',
+  'ncert-mathematics-textbook-for-class-10': 'ncert',
+};
+
 export function ReferenceBooksSection({ section }) {
-  useUiLanguage();
+  const language = useUiLanguage();
   const t = useInterfaceL10n();
-  const term = useTerm();
   const site = useSite();
 
+  const isHindi = language === 'hi';
+  const availableClassesText = isHindi ? 'उपलब्ध कक्षाएँ:' : 'Available Classes:';
+  const exploreSolutionsText = isHindi ? 'समाधान देखें' : 'Explore Solutions';
+  const stepByStepText = isHindi ? 'चरणबद्ध हल' : 'Step-by-step Solutions';
+  const mathSubjectText = isHindi ? 'गणित' : 'Mathematics';
+  const chaptersText = isHindi ? 'अध्याय' : 'Chapters';
+  const classText = isHindi ? 'कक्षा' : 'Class';
+
   const rawBooks = section?.data?.books || getReferenceBooks(site);
-  const ncertIncluded = rawBooks.some((b) => b.slug === 'ncert');
-  const dynamicBooks = ncertIncluded
-    ? rawBooks
-    : [
-        {
-          slug: 'ncert',
-          title: { hi: 'NCERT गणित समाधान', en: 'NCERT Solutions' },
-          author: 'NCERT',
-          publisher: 'NCERT',
-          availableClasses: [6, 7, 8, 9, 10, 11, 12],
-          description: {
-            hi: 'सीबीएसई कक्षा 6 से 12 के लिए NCERT गणित के अध्याय-वार और प्रश्नावली-वार संपूर्ण चरणबद्ध हल।',
-            en: 'Complete chapter-wise and exercise-wise step-by-step solutions for NCERT Mathematics Classes 6 to 12.',
-          },
-          url: '/reference-solutions/ncert',
-        },
-        ...rawBooks,
-      ];
-  const books = (dynamicBooks || []).filter((b) => b.isVisible !== false);
+  // Ensure all 5 canonical books are always present and properly sequenced
+  const bookMap = new Map();
+  for (const [slug, canon] of Object.entries(CANONICAL_BOOKS)) {
+    bookMap.set(slug, { ...canon, slug });
+  }
+  for (const b of (rawBooks || [])) {
+    if (!b?.slug) continue;
+    const cleanSlug = String(b.slug).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+    const targetSlug = ALIAS_SLUGS[cleanSlug] || cleanSlug;
+    const existing = bookMap.get(targetSlug) || {};
+    // If it's a canonical book with single-class title (e.g. "for Class 10"), preserve canonical series title
+    const isCanon = Boolean(CANONICAL_BOOKS[targetSlug]);
+    const preserveCanonTitle = isCanon && (
+      !b.title?.en ||
+      b.title.en.includes('Class 10') ||
+      b.title.en.includes('Class 12')
+    );
+
+    bookMap.set(targetSlug, {
+      ...existing,
+      ...b,
+      slug: targetSlug,
+      title: (isCanon && preserveCanonTitle) ? CANONICAL_BOOKS[targetSlug].title : (b.title || existing.title),
+      availableClasses: (b.availableClasses?.length >= 3)
+        ? b.availableClasses
+        : (existing.availableClasses || [6, 7, 8, 9, 10, 11, 12]),
+      url: b.url || `/reference-solutions/${targetSlug}`,
+    });
+  }
+
+  const books = Array.from(bookMap.values()).filter((b) => b.isVisible !== false);
 
   const isOldHierarchy =
     section?.name === 'hierarchy' ||
@@ -261,8 +365,8 @@ export function ReferenceBooksSection({ section }) {
             .slice()
             .sort((a, b) => a - b);
           const classRangeLabel = classes.length > 1
-            ? `${term('class')} ${classes[0]}–${classes[classes.length - 1]}`
-            : (classes.length === 1 ? `${term('class')} ${classes[0]}` : term('mathematics'));
+            ? `${classText} ${classes[0]}–${classes[classes.length - 1]}`
+            : (classes.length === 1 ? `${classText} ${classes[0]}` : mathSubjectText);
 
           const bookUrl = book.url || `/reference-solutions/${book.slug}`;
 
@@ -273,18 +377,9 @@ export function ReferenceBooksSection({ section }) {
               className="group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/50 hover:shadow-xl"
             >
               <div>
-                {/* Book Cover Visual: Either real uploaded image or custom educational illustration */}
+                {/* Book Cover Visual: Either uploaded image (with error boundary) or custom educational illustration */}
                 <div className="relative mb-5 overflow-hidden rounded-xl border border-border/50 bg-muted/30">
-                  {book.coverUrl || book.coverImage?.url ? (
-                    <img
-                      src={book.coverUrl || book.coverImage?.url}
-                      alt={bookTitle}
-                      className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <ReferenceBookIllustration slug={book.slug} title={bookTitle} author={book.author} />
-                  )}
+                  <BookCoverImage book={book} bookTitle={bookTitle} />
 
                   {/* Top-right Class Coverage Badge overlay */}
                   <span className="absolute right-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-bold text-foreground shadow-sm backdrop-blur-md">
@@ -295,7 +390,7 @@ export function ReferenceBooksSection({ section }) {
                 {/* Metadata Row: Subject & Author */}
                 <div className="mb-2.5 flex items-center gap-2">
                   <span className="inline-flex items-center rounded-md bg-brand-soft px-2.5 py-0.5 text-xs font-bold text-brand">
-                    {term('mathematics') || 'Mathematics'}
+                    {mathSubjectText}
                   </span>
                   {book.author && (
                     <span className="truncate text-xs font-medium text-muted-foreground">
@@ -322,7 +417,7 @@ export function ReferenceBooksSection({ section }) {
                 {/* Available Classes Quick Navigation */}
                 <div className="relative z-10 mt-4">
                   <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
-                    {term('class')} {uiText('हल उपलब्ध:')}
+                    {availableClassesText}
                   </p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {classes.map((clsNum) => (
@@ -343,11 +438,11 @@ export function ReferenceBooksSection({ section }) {
               <div className="relative z-10 mt-6 flex items-center justify-between border-t border-border/60 pt-4 text-xs">
                 <span className="font-semibold text-muted-foreground">
                   {book.chapterCount
-                    ? `${book.chapterCount} ${term('chapter')}`
-                    : uiText('विस्तृत चरणबद्ध हल')}
+                    ? `${book.chapterCount} ${chaptersText}`
+                    : stepByStepText}
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-bold text-brand group-hover:text-brand">
-                  <span>{uiText('Explore Solutions')}</span>
+                  <span>{exploreSolutionsText}</span>
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </span>
               </div>

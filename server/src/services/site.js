@@ -43,9 +43,20 @@ export async function publicClasses(preview = false) {
   });
 }
 
+const ALIAS_BOOK_SLUGS = {
+  'mathematics-for-class-10-by-r-d-sharma': 'rd-sharma',
+  'secondary-school-mathematics-for-class-10-by-r-s-aggarwal': 'rs-aggarwal',
+  'ncert-mathematics-textbook-for-class-10': 'ncert',
+};
+
 export async function publicReferenceBooks(preview = false) {
   // Read configured entries even when private, so a hidden override suppresses its default menu entry.
-  const dbBooks = await Book.find({ category: 'reference' })
+  const dbBooks = await Book.find({
+    $or: [
+      { category: 'reference' },
+      { slug: { $in: ['ncert', 'rs-aggarwal', 'rd-sharma', 'kc-sinha', 'ml-aggarwal'] } },
+    ],
+  })
     .sort({ sortOrder: 1, createdAt: 1 })
     .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
     .lean();
@@ -60,18 +71,34 @@ export async function publicReferenceBooks(preview = false) {
   }
   for (const b of dbBooks) {
     if (b.slug) {
+      const cleanSlug = String(b.slug).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+      const targetSlug = ALIAS_BOOK_SLUGS[cleanSlug] || cleanSlug;
       if (!preview && (b.status !== 'published' || !b.isVisible || !b.publishedAt || new Date(b.publishedAt) > new Date())) {
-        allMap.delete(b.slug);
+        if (cleanSlug === targetSlug) {
+          allMap.delete(targetSlug);
+        }
         continue;
       }
-      const existing = allMap.get(b.slug) || {};
-      allMap.set(b.slug, {
+      const existing = allMap.get(targetSlug) || {};
+      const isCanon = CANONICAL_REFERENCE_BOOKS.some((c) => c.slug === targetSlug);
+      const preserveCanonTitle = isCanon && (
+        !b.title?.en ||
+        b.title.en.includes('Class 10') ||
+        b.title.en.includes('Class 12')
+      );
+
+      const coverUrl = (b.coverUrl && !b.coverUrl.includes('media-amazon.com')) ? b.coverUrl : '';
+
+      allMap.set(targetSlug, {
         ...existing,
         ...b,
-        availableClasses: (b.availableClasses && b.availableClasses.length > 0)
+        slug: targetSlug,
+        coverUrl: coverUrl || existing.coverUrl,
+        title: (isCanon && preserveCanonTitle) ? existing.title : (b.title || existing.title),
+        availableClasses: (b.availableClasses && b.availableClasses.length >= 3)
           ? b.availableClasses
-          : (b.class?.number ? [b.class.number] : []),
-        url: `/reference-solutions/${b.slug}`,
+          : (existing.availableClasses || (b.class?.number ? [b.class.number] : [6, 7, 8, 9, 10, 11, 12])),
+        url: `/reference-solutions/${targetSlug}`,
       });
     }
   }
