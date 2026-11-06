@@ -1,10 +1,13 @@
 import { adminText } from '../lib/format.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/lib/notifications.jsx';
 import { adminUrl } from '@/lib/config';
+import { get, post } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { Layers, FileText, Sparkles, ExternalLink, Edit2, RefreshCw } from 'lucide-react';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { L10nField, LanguageModeField, SelectField, SlugField, SwitchField, TextField } from '../components/fields/Fields.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
@@ -19,18 +22,202 @@ import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 
 export function PagesList() {
   useUiLanguage();
+  const [tab, setTab] = useState('landing');
+  const [registry, setRegistry] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(false);
+
+  const fetchRegistry = async () => {
+    setLoading(true);
+    try {
+      const res = await get('/content/landing-pages');
+      setRegistry(res.items || []);
+    } catch (err) {
+      toast.apiError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === 'landing') fetchRegistry();
+  }, [tab]);
+
+  const handleInitAll = async () => {
+    setInitializing(true);
+    try {
+      const res = await post('/content/landing-pages/ensure', {});
+      toast.success(uiText('All default landing pages initialized successfully.'));
+      setRegistry(res.items || []);
+    } catch (err) {
+      toast.apiError(err);
+    } finally {
+      setInitializing(false);
+    }
+  };
+
+  const handleEditLanding = async (item) => {
+    try {
+      if (item.pageId) {
+        window.location.href = adminUrl(`pages/${item.pageId}`);
+        return;
+      }
+      const res = await post('/content/landing-pages/ensure', { landingKey: item.landingKey });
+      if (res.item?._id) {
+        window.location.href = adminUrl(`pages/${res.item._id}`);
+      }
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  const categories = ['Study Materials', 'Notes & Formulas', 'Reference Books', 'NCERT Mathematics'];
+
   return (
-    <ResourceListPage
-      resource="pages"
-      description={uiText("Create, edit, preview, publish, and manage standalone website pages and their SEO content.")}
-      createPath={adminUrl('pages/new')}
-      editPath={(p) => adminUrl(`pages/${p._id}`)}
-      columns={[
-        { get header() { return uiText("Title"); }, cell: (p) => <LocalizedCell value={p.title} /> },
-        { get header() { return uiText("URL"); }, cell: (p) => <code className="text-xs">/{p.slug}</code> },
-        { get header() { return uiText("Template"); }, className: 'hidden sm:table-cell', cell: (p) => uiText(p.template) },
-      ]}
-    />
+    <div className="space-y-6">
+      <Panel
+        title={uiText("Page & Landing Management")}
+        description={uiText("Manage educational landing pages (banners, heroes, custom sections, FAQs) and standalone website pages.")}
+      />
+
+      <div className="flex border-b">
+        <button
+          type="button"
+          onClick={() => setTab('landing')}
+          className={cn(
+            'px-5 py-2.5 text-sm font-bold border-b-2 transition cursor-pointer flex items-center gap-2',
+            tab === 'landing'
+              ? 'border-brand text-brand'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <Layers className="size-4" />
+          <span>{uiText("Hub & Category Landing Pages (हब व लैंडिंग पृष्ठ)")}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('standalone')}
+          className={cn(
+            'px-5 py-2.5 text-sm font-bold border-b-2 transition cursor-pointer flex items-center gap-2',
+            tab === 'standalone'
+              ? 'border-brand text-brand'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          )}
+        >
+          <FileText className="size-4" />
+          <span>{uiText("Standalone & Legal Pages (सामान्य पृष्ठ)")}</span>
+        </button>
+      </div>
+
+      {tab === 'landing' ? (
+        <div className="space-y-8">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border bg-brand-soft/20 p-4">
+            <div className="text-sm">
+              <p className="font-bold text-foreground">
+                {uiText("All major categories have fully editable landing pages.")}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {uiText("Customize hero headings, introductory paragraphs, banner images, custom content sections, FAQs, and SEO tags without touching code.")}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={initializing}
+              onClick={handleInitAll}
+              className="gap-2 font-bold cursor-pointer"
+            >
+              <RefreshCw className={cn('size-4', initializing && 'animate-spin')} />
+              <span>{initializing ? uiText("Initializing...") : uiText("Initialize All Landing Pages")}</span>
+            </Button>
+          </div>
+
+          {loading ? (
+            <div className="p-12 text-center text-sm text-muted-foreground">{uiText("Loading landing pages...")}</div>
+          ) : (
+            categories.map((cat) => {
+              const items = registry.filter((r) => r.category === cat);
+              if (!items.length) return null;
+              return (
+                <div key={cat} className="space-y-3">
+                  <h3 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
+                    <Sparkles className="size-4 text-brand" />
+                    <span>{cat}</span>
+                    <span className="text-xs font-normal text-muted-foreground">({items.length} pages)</span>
+                  </h3>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {items.map((item) => (
+                      <div
+                        key={item.landingKey}
+                        className="rounded-2xl border bg-card p-4 shadow-xs flex flex-col justify-between transition hover:border-brand/40"
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-muted text-muted-foreground truncate max-w-[180px]">
+                              {item.landingKey}
+                            </span>
+                            <span
+                              className={cn(
+                                'text-[10px] font-bold px-2 py-0.5 rounded-full',
+                                item.isInitialized
+                                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                              )}
+                            >
+                              {item.isInitialized ? uiText("Customized") : uiText("Default System")}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-sm text-foreground">
+                            {adminText(item.title)}
+                          </h4>
+                          <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+                            {adminText(item.defaultTitle)}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 pt-3 border-t flex items-center justify-between gap-2">
+                          <a
+                            href={item.targetUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-brand"
+                          >
+                            <span>{item.targetUrl}</span>
+                            <ExternalLink className="size-3" />
+                          </a>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => handleEditLanding(item)}
+                            className="h-7 px-2.5 text-xs font-bold gap-1 cursor-pointer bg-brand text-white hover:bg-brand/90"
+                          >
+                            <Edit2 className="size-3" />
+                            <span>{uiText("Edit")}</span>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      ) : (
+        <ResourceListPage
+          resource="pages"
+          description={uiText("Create, edit, preview, publish, and manage standalone website pages and their SEO content.")}
+          createPath={adminUrl('pages/new')}
+          editPath={(p) => adminUrl(`pages/${p._id}`)}
+          columns={[
+            { get header() { return uiText("Title"); }, cell: (p) => <LocalizedCell value={p.title} /> },
+            { get header() { return uiText("URL"); }, cell: (p) => <code className="text-xs">/{p.slug}</code> },
+            { get header() { return uiText("Template"); }, className: 'hidden sm:table-cell', cell: (p) => uiText(p.template) },
+          ]}
+        />
+      )}
+    </div>
   );
 }
 
@@ -38,7 +225,11 @@ const LANDING_KEYS = [
   'study-materials', 'study-materials/ncert-books', 'study-materials/previous-year-questions', 'study-materials/pyq', 'study-materials/cbse-sample-papers', 'study-materials/maths-syllabus', 'study-materials/syllabus', 'study-materials/cbse-extra-questions', 'study-materials/extra-questions', 'study-materials/vvi-questions', 'study-materials/important-questions',
   'notes', 'notes/ncert-chapter-wise-notes', 'notes/ncert-notes', 'notes/maths-formula-sheets', 'notes/rs-aggarwal-formulas-notes', 'notes/rd-sharma-formulas-notes', 'notes/ml-aggarwal-formulas-notes', 'notes/kc-sinha-formulas-notes', 'notes/vvi-questions-short-notes',
   'reference-solutions', 'reference-solutions/rs-aggarwal', 'reference-solutions/rd-sharma', 'reference-solutions/ml-aggarwal', 'reference-solutions/kc-sinha',
+  'class-12/mathematics', 'class-11/mathematics', 'class-10/mathematics', 'class-9/mathematics', 'class-8/mathematics', 'class-7/mathematics', 'class-6/mathematics',
+  'class-12', 'class-11', 'class-10', 'class-9', 'class-8', 'class-7', 'class-6',
+  'state-boards', 'state-boards/bihar-board', 'state-boards/up-board', 'state-boards/jharkhand-board', 'state-boards/mp-board', 'state-boards/rajasthan-board',
 ];
+
 const PAGE_DEFAULTS = { landingKey: '', title: {}, slug: '', excerpt: {}, content: {}, hero: { title: {}, description: {}, image: null, banner: null }, sections: [], template: 'default', languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function PageEditor({ id }) {

@@ -172,6 +172,18 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     }
   };
 
+  const handleEditLanding = async () => {
+    try {
+      const key = `study-materials/${activeCategory === 'sample-papers' ? 'cbse-sample-papers' : activeCategory === 'extra-questions' ? 'cbse-extra-questions' : activeCategory === 'vvi' ? 'vvi-questions' : activeCategory === 'syllabus' ? 'maths-syllabus' : 'previous-year-questions'}`;
+      const res = await post('/content/landing-pages/ensure', { landingKey: key });
+      if (res.item?._id) {
+        window.location.href = adminUrl(`pages/${res.item._id}`);
+      }
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Panel
@@ -239,7 +251,13 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-brand/5 p-3 text-sm">
         <span>{activeCategory === 'syllabus' ? 'Syllabus PDFs are managed in the resource library; class chapters are managed under NCERT Mathematics → Chapter Management.' : 'Manage downloadable papers, marking schemes, and supporting PDFs for this category.'}</span>
-        <Button asChild size="sm" variant="outline"><Link to={adminUrl(`resources?resourceType=${resourceType}${selectedClass?._id ? `&class=${selectedClass._id}` : ''}`)}>Open related resources</Link></Button>
+        <div className="flex items-center gap-2">
+          <Button type="button" size="sm" variant="outline" onClick={handleEditLanding} className="gap-1.5 font-bold cursor-pointer">
+            <FileText className="size-3.5 text-brand" />
+            <span>Edit Landing Page</span>
+          </Button>
+          <Button asChild size="sm" variant="outline"><Link to={adminUrl(`resources?resourceType=${resourceType}${selectedClass?._id ? `&class=${selectedClass._id}` : ''}`)}>Open related resources</Link></Button>
+        </div>
       </div>
 
       {/* Questions List & Add Button */}

@@ -15,6 +15,7 @@ import {
 } from '../models/index.js';
 import { stripHtml } from '../lib/sanitize.js';
 import { ApiError } from '../middleware/error.js';
+import { LANDING_KEY_ALIASES } from './landingPages.js';
 import {
   BOOK_SELECT,
   MEDIA_SELECT,
@@ -47,7 +48,14 @@ function sessionVis(Model, preview, extra = {}, session) {
 
 async function attachLanding(result, key, preview, override) {
   if (!result?.data || !key) return result;
-  const landingPage = await Page.findOne(vis(Page, preview, { landingKey: key }))
+  const normalizedKey = String(key).trim().toLowerCase();
+  const candidateKeys = [
+    normalizedKey,
+    LANDING_KEY_ALIASES[normalizedKey],
+    normalizedKey.replace(/\/mathematics$/, ''),
+    normalizedKey.replace(/^class-(\d+)$/, 'class-$1/mathematics'),
+  ].filter(Boolean);
+  const landingPage = await Page.findOne(vis(Page, preview, { landingKey: { $in: candidateKeys } }))
     .populate([
       { path: 'hero.image', select: MEDIA_SELECT },
       { path: 'hero.banner', select: MEDIA_SELECT },
@@ -486,7 +494,15 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
     };
   }
 
-  const categorySlug = segments[1];
+  const rawSlug = segments[1];
+  const ALIASES = {
+    pyq: 'previous-year-questions',
+    syllabus: 'maths-syllabus',
+    'extra-questions': 'cbse-extra-questions',
+    'sample-papers': 'cbse-sample-papers',
+    'important-questions': 'vvi-questions',
+  };
+  const categorySlug = ALIASES[rawSlug] || rawSlug;
   const cat = STUDY_MATERIAL_CATEGORIES.find((c) => c.slug === categorySlug);
   if (!cat) throw new ApiError(404, 'Study material category not found');
 
@@ -1377,7 +1393,8 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   }
 
   if (segments[0] === 'state-boards') {
-    return resolveStateBoardsPath(segments, { preview, terms, home });
+    const key = segments.length > 1 ? `state-boards/${segments[1]}` : 'state-boards';
+    return attachLanding(await resolveStateBoardsPath(segments, { preview, terms, home }), key, preview, override);
   }
 
   if (segments[0] === 'reference-solutions' || segments[0] === 'reference-books') {
@@ -1491,7 +1508,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     ];
     const currentSession = session || activeSessions.find((s) => s.isCurrent)?.name || activeSessions[0]?.name || '2026–27';
 
-    return {
+    const subjectResult = {
       type: 'subject',
       data: {
         class: cls,
@@ -1519,6 +1536,8 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
         image: cls.thumbnail?.url,
       }),
     };
+    const key = `class-${cls.number}/${segments[1]}`;
+    return attachLanding(subjectResult, key, preview, override);
   }
 
   const special = segments[2];

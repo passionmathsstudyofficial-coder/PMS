@@ -4,7 +4,7 @@ export { Session } from './Session.js';
 export { SiteSettings, DEFAULT_TERMINOLOGY } from './SiteSettings.js';
 export { Navigation, NAV_KEYS } from './Navigation.js';
 export { Announcement } from './Announcement.js';
-export { Page } from './Page.js';
+export { Page, ensureDefaultLandingPages } from './Page.js';
 export { ClassLevel } from './ClassLevel.js';
 export { Subject } from './Subject.js';
 export { Chapter } from './Chapter.js';

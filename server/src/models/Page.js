@@ -41,10 +41,12 @@ pageSchema.index({ landingKey: 1, status: 1 });
 
 pageSchema.pre('validate', function buildPage() {
   this.slug = slugify(this.slug || this.title?.en || this.title?.hi, 'page');
-  if (/^class-\d+/.test(this.slug) || ['search', 'api', 'uploads'].includes(this.slug)) {
+  if ((!this.landingKey && /^class-\d+/.test(this.slug)) || ['search', 'api', 'uploads'].includes(this.slug)) {
     this.invalidate('slug', 'This slug is reserved');
   }
   this.searchText = joinSearch(l10nText(this.title), l10nText(this.excerpt), l10nText(this.content));
 });
 
 export const Page = mongoose.model('Page', pageSchema);
+export { ensureDefaultLandingPages } from '../services/landingPages.js';
+

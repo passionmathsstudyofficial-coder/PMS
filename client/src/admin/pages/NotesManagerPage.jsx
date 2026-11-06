@@ -180,6 +180,18 @@ export default function NotesManagerPage({ fixedCategory }) {
 
   const currentCategoryMeta = CATEGORY_MAP[activeCategory] || CATEGORY_MAP.ncert;
 
+  const handleEditLanding = async () => {
+    try {
+      const key = `notes/${activeCategory === 'ncert' ? 'ncert-chapter-wise-notes' : activeCategory === 'formulas' ? 'maths-formula-sheets' : activeCategory === 'vvi' ? 'vvi-questions-short-notes' : activeCategory + '-formulas-notes'}`;
+      const res = await post('/content/landing-pages/ensure', { landingKey: key });
+      if (res.item?._id) {
+        window.location.href = adminUrl(`pages/${res.item._id}`);
+      }
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Panel
@@ -255,7 +267,13 @@ export default function NotesManagerPage({ fixedCategory }) {
           <h3 className="text-sm font-bold text-foreground">
             {currentCategoryMeta.label} — {selectedClass ? `Class ${selectedClass.number}` : 'Select Class'} ({notes.length})
           </h3>
-          <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`notes/new?${new URLSearchParams({ class: selectedClass?._id || '', chapter: selectedChapter !== 'all' ? selectedChapter : chapters[0]?._id || '', category: currentCategoryMeta.dbCat, session: selectedSession, ...(selectedBook?._id ? { book: selectedBook._id } : {}) })}`)}><Plus className="size-3.5" /><span>Add Note / Formula Sheet</span></Link></Button>
+          <div className="flex items-center gap-2">
+            <Button type="button" size="sm" variant="outline" onClick={handleEditLanding} className="gap-1.5 font-bold cursor-pointer">
+              <FileText className="size-3.5 text-brand" />
+              <span>Edit Landing Page</span>
+            </Button>
+            <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`notes/new?${new URLSearchParams({ class: selectedClass?._id || '', chapter: selectedChapter !== 'all' ? selectedChapter : chapters[0]?._id || '', category: currentCategoryMeta.dbCat, session: selectedSession, ...(selectedBook?._id ? { book: selectedBook._id } : {}) })}`)}><Plus className="size-3.5" /><span>Add Note / Formula Sheet</span></Link></Button>
+          </div>
         </div>
 
         {loading ? (

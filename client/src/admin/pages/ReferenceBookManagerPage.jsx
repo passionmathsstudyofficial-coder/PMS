@@ -27,6 +27,7 @@ import {
   Tag,
   ArrowRight,
   ExternalLink,
+  FileText,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Panel } from '../components/PageHeader.jsx';
@@ -834,6 +835,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     return selectedBook.title?.en || selectedBook.slug?.toUpperCase();
   };
 
+  const handleEditLanding = async () => {
+    try {
+      const key = selectedBook?.slug ? `reference-solutions/${selectedBook.slug}` : 'reference-solutions';
+      const res = await post('/content/landing-pages/ensure', { landingKey: key });
+      if (res.item?._id) {
+        window.location.href = adminUrl(`pages/${res.item._id}`);
+      }
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Header & Overview */}
@@ -845,6 +858,16 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           )}
         />
         <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleEditLanding}
+            className="h-9 gap-1.5 font-bold text-xs cursor-pointer"
+          >
+            <FileText className="size-3.5 text-brand" />
+            {uiText('Edit Landing Page')}
+          </Button>
           <Button
             type="button"
             variant="outline"

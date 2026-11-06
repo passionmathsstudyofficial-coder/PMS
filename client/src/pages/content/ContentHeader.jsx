@@ -15,12 +15,29 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
   const t = useInterfaceL10n();
   const landing = useContext(LandingContext);
   const location = useLocation();
-  const useLandingHero = Boolean(landing?.landingKey && (location.pathname === `/${landing.landingKey}` || location.pathname.startsWith(`/${landing.landingKey}/`)));
+  const hasLandingCustomization = Boolean(
+    landing && (
+      (landing.hero?.title && Object.values(landing.hero.title).some(Boolean)) ||
+      (landing.hero?.description && Object.values(landing.hero.description).some(Boolean)) ||
+      landing.hero?.banner?.url ||
+      landing.hero?.image?.url ||
+      landing.landingKey
+    )
+  );
+  const useLandingHero = Boolean(
+    hasLandingCustomization && (
+      !landing.landingKey ||
+      location.pathname === `/${landing.landingKey}` ||
+      location.pathname.startsWith(`/${landing.landingKey}/`) ||
+      location.pathname.includes(landing.landingKey.split('/')[1] || landing.landingKey) ||
+      (landing.landingKey.startsWith('class-') && location.pathname.startsWith('/class-'))
+    )
+  );
   const ref = useRef(null);
   useEntrance(ref, [String(watermark), breadcrumbs?.at(-1)?.url]);
 
-  const titleContent = useLandingHero ? (Object.values(landing.hero?.title || {}).some(Boolean) ? landing.hero.title : landing.title) : title;
-  const subtitleContent = useLandingHero ? (Object.values(landing.hero?.description || {}).some(Boolean) ? landing.hero.description : landing.excerpt) : subtitle;
+  const titleContent = useLandingHero ? (Object.values(landing.hero?.title || {}).some(Boolean) ? landing.hero.title : (landing.title || title)) : title;
+  const subtitleContent = useLandingHero ? (Object.values(landing.hero?.description || {}).some(Boolean) ? landing.hero.description : (landing.excerpt || subtitle)) : subtitle;
   const heroImage = useLandingHero ? (landing.hero?.banner?.url || landing.hero?.image?.url) : null;
   const resolvedTitle = typeof titleContent === 'object' && titleContent !== null && !isValidElement(titleContent) ? t(titleContent) : titleContent;
   const resolvedSubtitle = typeof subtitleContent === 'object' && subtitleContent !== null && !isValidElement(subtitleContent) ? t(subtitleContent) : subtitleContent;

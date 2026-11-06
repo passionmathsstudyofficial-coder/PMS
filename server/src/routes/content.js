@@ -33,6 +33,7 @@ import { ApiError } from '../middleware/error.js';
 import { assertNoChildren, crudRouter } from '../services/crud.js';
 import { logActivity, labelOf } from '../services/activity.js';
 import { BOOK_SELECT, MEDIA_SELECT, RESOURCE_SELECT, VIDEO_SELECT, blockPopulate, questionPopulate, solutionPopulate } from '../services/populate.js';
+import { ensureDefaultLandingPages, ensureLandingPageByKey, getLandingRegistry } from '../services/landingPages.js';
 
 
 const router = express.Router();
@@ -750,6 +751,43 @@ router.use(
     prepareDuplicate: (plain) => ({ ...plain, slug: `${plain.slug}-${copySuffix()}` }),
   }),
 );
+
+router.get('/landing-pages', requireAuth, async (req, res, next) => {
+  try {
+    const registry = await getLandingRegistry();
+    res.json({ items: registry, total: registry.length });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/landing-pages/ensure', requireAuth, requirePermission('content:write'), async (req, res, next) => {
+  try {
+    const { landingKey } = req.body || {};
+    if (landingKey) {
+      const page = await ensureLandingPageByKey(landingKey);
+      cache.invalidate();
+      return res.json({ item: page });
+    }
+    const created = await ensureDefaultLandingPages();
+    cache.invalidate();
+    const registry = await getLandingRegistry();
+    res.json({ createdCount: created.length, items: registry });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/landing-pages/by-key', requireAuth, async (req, res, next) => {
+  try {
+    const key = String(req.query.key || '').trim().toLowerCase();
+    if (!key) throw new ApiError(400, 'Missing key query parameter');
+    const page = await ensureLandingPageByKey(key);
+    res.json({ item: page });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.use(
   '/pages',
