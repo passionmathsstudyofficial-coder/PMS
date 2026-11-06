@@ -11,6 +11,7 @@ import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { ChapterFilter, ClassFilter, useQueryFilters } from '../components/filters.jsx';
 import { Field, L10nField, LanguageModeField, SlugField, TextField } from '../components/fields/Fields.jsx';
+import { AcademicSessionField } from '../components/fields/AcademicSessionField.jsx';
 import { RefSelect } from '../components/fields/RefSelect.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
 import { ExerciseVideoFields } from '../components/fields/ExerciseVideoFields.jsx';
@@ -93,12 +94,12 @@ function ExerciseQuestionsPanel({ exerciseId }) {
   );
 }
 
-const EXERCISE_DEFAULTS = { chapter: null, number: '', title: {}, slug: '', description: {}, instructions: {}, introVideo: null, introVideoEn: null, introVideoHi: null, pdfFile: null, pdfUrl: '', notes: {}, languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
+const EXERCISE_DEFAULTS = { chapter: null, number: '', title: {}, slug: '', academicSession: '2026-27', description: {}, instructions: {}, introVideo: null, introVideoEn: null, introVideoHi: null, pdfFile: null, pdfUrl: '', notes: {}, languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function ExerciseEditor({ id }) {
   useUiLanguage();
   const [params] = useSearchParams();
-  const editor = useEditorForm({ resource: 'exercises', id, basePath: adminUrl('exercises'), defaults: { ...EXERCISE_DEFAULTS, chapter: params.get('chapter') || null } });
+  const editor = useEditorForm({ resource: 'exercises', id, basePath: adminUrl('exercises'), defaults: { ...EXERCISE_DEFAULTS, chapter: params.get('chapter') || null, academicSession: params.get('session') || '2026-27' } });
   const [previewOpen, setPreviewOpen] = useState(false);
   const [classId, setClassId] = useState('');
   const { form, setField } = editor;
@@ -151,6 +152,7 @@ export function ExerciseEditor({ id }) {
                 />
                 <RefSelect label={uiText("अध्याय")} required resource="chapters" value={form.chapter} onChange={(v) => setField('chapter', v)} params={classId ? { class: classId } : {}} />
                 <TextField label={uiText("प्रश्नावली number")} required value={form.number} onChange={(v) => setField('number', v)} placeholder="5.2" />
+                <AcademicSessionField value={form.academicSession} onChange={(v) => setField('academicSession', v)} />
                 <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.number ? `prashnavali-${form.number}` : ''} />
                 <L10nField className="sm:col-span-2" label={uiText("Title (optional)")} value={form.title} onChange={(v) => setField('title', v)} placeholder={uiText("AP का n वाँ पद / nth term of an AP")} />
               </div>

@@ -10,6 +10,7 @@ import { AdminLayout } from './components/AdminLayout.jsx';
 import { AdminAuthProvider, RequireAdmin, useAdminAuth } from './lib/auth.jsx';
 import OverviewPage from './pages/OverviewPage.jsx';
 const StudentsPage = lazy(() => import('./pages/StudentsPage.jsx'));
+const MathsSyllabusManagerPage = lazy(() => import('./pages/MathsSyllabusManagerPage.jsx'));
 
 // Each admin area is code-split; pages export several named components.
 const named = (loader, name) => lazy(() => loader().then((module) => ({ default: module[name] })));
@@ -76,6 +77,13 @@ const ActivityPage = named(system, 'ActivityPage');
 const BackupsPage = named(system, 'BackupsPage');
 const AccountPage = named(system, 'AccountPage');
 
+const ReferenceBookManagerPage = lazy(() => import('./pages/ReferenceBookManagerPage.jsx'));
+const ImportantQuestionsManagerPage = lazy(() => import('./pages/ImportantQuestionsManagerPage.jsx'));
+const NotesManagerPage = lazy(() => import('./pages/NotesManagerPage.jsx'));
+const AcademicSessionsPage = lazy(() => import('./pages/AcademicSessionsPage.jsx'));
+const ContentStatusPage = lazy(() => import('./pages/ContentStatusPage.jsx'));
+const ContentSearchPage = lazy(() => import('./pages/ContentSearchPage.jsx'));
+
 
 /** Editors get key={id} so switching documents always starts with a fresh form. */
 function EditorRoute({ component: Component }) {
@@ -138,10 +146,20 @@ export default function AdminApp() {
               <Route path="books/:id" element={<EditorRoute component={BookEditor} />} />
               <Route path="reference-books" element={<BooksList />} />
               <Route path="reference-books/:id" element={<EditorRoute component={BookEditor} />} />
+              <Route path="reference-books-manager" element={<ReferenceBookManagerPage />} />
+              <Route path="reference-books-manager/:bookSlug" element={<ReferenceBookManagerPage />} />
               <Route path="announcements" element={<AnnouncementsList />} />
               <Route path="announcements/:id" element={<EditorRoute component={AnnouncementEditor} />} />
-              <Route path="important-questions" element={<ImportantQuestionsList />} />
-              <Route path="important-questions/:id" element={<EditorRoute component={ImportantQuestionEditor} />} />
+              <Route path="important-questions" element={<ImportantQuestionsManagerPage />} />
+              <Route path="important-questions/syllabus" element={<MathsSyllabusManagerPage />} />
+              <Route path="important-questions/:category" element={<ImportantQuestionsManagerPage />} />
+              <Route path="important-questions-legacy" element={<ImportantQuestionsList />} />
+              <Route path="important-questions-legacy/:id" element={<EditorRoute component={ImportantQuestionEditor} />} />
+              <Route path="notes-manager" element={<NotesManagerPage />} />
+              <Route path="notes-manager/:category" element={<NotesManagerPage />} />
+              <Route path="sessions" element={<AcademicSessionsPage />} />
+              <Route path="content-status" element={<ContentStatusPage />} />
+              <Route path="content-search" element={<ContentSearchPage />} />
               <Route path="templates" element={<TemplatesList />} />
               <Route path="templates/:id" element={<EditorRoute component={TemplateEditor} />} />
 

@@ -54,10 +54,14 @@ export function QuestionCard({ question, headingLevel = 'h2', showPermalink = tr
   const solutionImages = solutionAttachments.map(toImage);
 
   const video = question.video?.video ? question.video : null;
-  const blocks = question.solution?.blocks || [];
-  const hasFinalBlock = blocks.some((b) => b.type === 'finalAnswer');
-  const answerHtml = t(question.answer, mode);
-  const hasSolution = blocks.length > 0 || hasContent(question.answer);
+  const methods = question.solution?.methods || [];
+  const [activeMethodIndex, setActiveMethodIndex] = useState(0);
+  const activeMethod = methods[activeMethodIndex];
+  const blocks = activeMethod?.blocks?.length > 0 ? activeMethod.blocks : (question.solution?.blocks || []);
+  const hasMethodFinalAnswer = activeMethod && hasContent(activeMethod.finalAnswer);
+  const hasFinalBlock = blocks.some((b) => b.type === 'finalAnswer') || hasMethodFinalAnswer;
+  const answerHtml = hasMethodFinalAnswer ? t(activeMethod.finalAnswer, mode) : t(question.answer, mode);
+  const hasSolution = blocks.length > 0 || methods.length > 0 || hasContent(question.answer);
   const langs = availableLanguages(question.text);
   const onlyOther = mode === 'auto' && langs.length === 1 && langs[0] !== lang;
 
@@ -140,9 +144,25 @@ export function QuestionCard({ question, headingLevel = 'h2', showPermalink = tr
             {solutionOpen && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
                 <div className="space-y-4 p-4">
-                  {!hasSolution && <p className="text-sm text-muted-foreground">{term('comingSoon')}</p>}
+                  {!hasSolution && (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900/50 dark:bg-amber-950/20">
+                      <div className="flex items-start gap-3 text-amber-800 dark:text-amber-300">
+                        <div className="size-2 rounded-full bg-amber-500 shrink-0 mt-1.5" />
+                        <div>
+                          <h4 className="font-semibold text-sm">
+                            {uiText("Solution in Preparation")}
+                          </h4>
+                          <p className="text-xs text-amber-700/90 dark:text-amber-400/90 mt-0.5 leading-relaxed">
+                            {uiText(
+                              "Our mathematics educators are actively writing step-by-step solutions with alternative methods for this question. It will be published shortly."
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {video?.placement === 'beforeSolution' && <YouTubeEmbed video={video.video} />}
-                  {blocks.length > 0 && (
+                  {methods.length === 0 && blocks.length > 0 && (
                     <SolutionRenderer
                       blocks={blocks}
                       languageMode={question.solution?.languageMode !== 'auto' ? question.solution?.languageMode : mode}
@@ -150,8 +170,47 @@ export function QuestionCard({ question, headingLevel = 'h2', showPermalink = tr
                       afterBody={<Attachments items={solutionAttachments} images={solutionImages} />}
                     />
                   )}
-                  {blocks.length === 0 && <Attachments items={solutionAttachments} images={solutionImages} />}
-                  {!hasFinalBlock && answerHtml && (
+                  {methods.length > 1 && (
+                    <div className="flex flex-wrap gap-2 pb-2 mb-3 border-b">
+                      {methods.map((method, index) => (
+                        <button
+                          key={method._id || index}
+                          type="button"
+                          onClick={() => setActiveMethodIndex(index)}
+                          className={cn(
+                            'rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer border',
+                            activeMethodIndex === index
+                              ? 'bg-brand text-white border-brand shadow-xs'
+                              : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border',
+                          )}
+                        >
+                          {t(method.title) || `${uiText("Method")} ${index + 1}`}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {methods.length > 0 && (
+                    <div className="space-y-3">
+                      {methods.length === 1 && (activeMethod?.title?.en || activeMethod?.title?.hi) && (
+                        <h4 className="font-heading text-xs font-bold text-brand uppercase tracking-wider">
+                          {t(activeMethod.title)}
+                        </h4>
+                      )}
+                      <SolutionRenderer
+                        blocks={activeMethod?.blocks || []}
+                        languageMode={question.solution?.languageMode || mode}
+                        extraImages={solutionImages}
+                        afterBody={<Attachments items={solutionAttachments} images={solutionImages} />}
+                      />
+                      {t(activeMethod?.finalAnswer) && (
+                        <Callout variant="answer" title={term('finalAnswer')} className="border-2 mt-4">
+                          <RichContent html={t(activeMethod.finalAnswer, mode)} className="font-medium" />
+                        </Callout>
+                      )}
+                    </div>
+                  )}
+                  {methods.length === 0 && blocks.length === 0 && <Attachments items={solutionAttachments} images={solutionImages} />}
+                  {methods.length === 0 && !hasFinalBlock && answerHtml && (
                     <Callout variant="answer" title={term('finalAnswer')} className="border-2">
                       <RichContent html={answerHtml} className="font-medium" />
                     </Callout>

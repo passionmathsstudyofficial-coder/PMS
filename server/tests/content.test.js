@@ -62,6 +62,96 @@ test('admin builds Class → Subject → अध्याय → प्रश्�
   assert.equal(chapters.body.items.length, 1);
 });
 
+test('public resource landing pages isolate content by selected academic session', async () => {
+  const createdIds = [];
+  for (const [academicSession, title] of [['2026-27', 'Current session paper'], ['2025-26', 'Previous session paper']]) {
+    const created = await owner.post('/api/resources').send({
+      class: ids.class,
+      subject: ids.subject,
+      title: { en: title },
+      resourceType: 'sample_paper',
+      academicSession,
+      status: 'published',
+    });
+    assert.equal(created.status, 201);
+    createdIds.push(created.body._id);
+  }
+
+  const path = '/study-materials/cbse-sample-papers/class-10';
+  const current = await resolve(app, path, '&session=2026-27');
+  const previous = await resolve(app, path, '&session=2025-26');
+  assert.equal(current.status, 200);
+  assert.equal(previous.status, 200);
+  assert.deepEqual(current.body.data.papers.map((paper) => paper.title.en), ['Current session paper']);
+  assert.deepEqual(previous.body.data.papers.map((paper) => paper.title.en), ['Previous session paper']);
+  for (const id of createdIds) await owner.del(`/api/resources/${id}`);
+});
+
+test('public chapter routes and editable landing sections honor their saved scope', async () => {
+  const oldChapter = await owner.post('/api/chapters').send({
+    class: ids.class,
+    subject: ids.subject,
+    number: 6,
+    slug: 'session-specific-chapter',
+    title: { en: 'Previous session chapter' },
+    academicSession: '2025-26',
+    status: 'published',
+  });
+  assert.equal(oldChapter.status, 201);
+  const current = await resolve(app, '/class-10/maths', '&session=2026-27');
+  const previous = await resolve(app, '/class-10/maths', '&session=2025-26');
+  assert.deepEqual(current.body.data.chapters.map((chapter) => chapter.title.en), ['Arithmetic Progressions']);
+  assert.deepEqual(previous.body.data.chapters.map((chapter) => chapter.title.en), ['Previous session chapter']);
+
+  const page = await owner.post('/api/pages').send({
+    title: { en: 'Sample Papers landing content' },
+    slug: 'sample-papers-landing-content',
+    landingKey: 'study-materials/cbse-sample-papers',
+    hero: { title: { en: 'Editable Sample Papers Heading' }, description: { en: 'Managed from the CMS.' } },
+    sections: [{ type: 'richText', title: { en: 'How to prepare' }, text: { en: '<p>Use timed practice sets.</p>' }, visible: true, sortOrder: 0 }],
+    status: 'published',
+  });
+  assert.equal(page.status, 201);
+  const landing = await resolve(app, '/study-materials/cbse-sample-papers');
+  assert.equal(landing.status, 200);
+  assert.equal(landing.body.data.landingPage.hero.title.en, 'Editable Sample Papers Heading');
+  assert.equal(landing.body.data.landingPage.sections[0].title.en, 'How to prepare');
+  await owner.del(`/api/chapters/${oldChapter.body._id}`);
+  await owner.del(`/api/pages/${page.body._id}`);
+});
+
+test('RS Aggarwal Class 9 solutions resolve only at the configured book and class URL', async () => {
+  const cls = await owner.post('/api/classes').send({ number: 9, name: { en: 'Class 9 Mathematics' }, subjects: [ids.subject], status: 'published' });
+  assert.equal(cls.status, 201);
+  const book = await owner.post('/api/books').send({
+    title: { en: 'R.S. Aggarwal Class 9' }, author: 'R.S. Aggarwal', slug: 'rs-aggarwal', category: 'reference',
+    class: cls.body._id, subject: ids.subject, availableClasses: [9], hasSolutions: true, status: 'published',
+  });
+  assert.equal(book.status, 201);
+  const chapter = await owner.post('/api/chapters').send({
+    class: cls.body._id, subject: ids.subject, book: book.body._id, number: 1, slug: 'rs-chapter-1',
+    title: { en: 'Number Systems' }, academicSession: '2026-27', status: 'published',
+  });
+  assert.equal(chapter.status, 201);
+  const exercise = await owner.post('/api/exercises').send({ chapter: chapter.body._id, number: '1.1', slug: 'exercise-1-1', academicSession: '2026-27', status: 'published' });
+  assert.equal(exercise.status, 201);
+  const question = await owner.post('/api/questions').send({ exercise: exercise.body._id, number: '1', slug: 'question-1', text: { en: 'Find the rational number.' }, academicSession: '2026-27', status: 'published' });
+  assert.equal(question.status, 201);
+  await Solution.create({ question: question.body._id, blocks: [{ type: 'finalAnswer', content: { en: 'The solution is 1/2.' } }] });
+
+  const resolved = await resolve(app, '/reference-solutions/rs-aggarwal/class-9/rs-chapter-1/exercise-1-1');
+  assert.equal(resolved.status, 200);
+  assert.equal(resolved.body.data.class.number, 9);
+  assert.equal(resolved.body.data.questions[0].solution.blocks[0].content.en, 'The solution is 1/2.');
+  const unsupported = await resolve(app, '/reference-solutions/rs-aggarwal/class-10');
+  assert.equal(unsupported.status, 404);
+  await owner.del(`/api/questions/${question.body._id}`);
+  await owner.del(`/api/exercises/${exercise.body._id}`);
+  await owner.del(`/api/chapters/${chapter.body._id}`);
+  await owner.del(`/api/books/${book.body._id}`);
+  await owner.del(`/api/classes/${cls.body._id}`);
+});
+
 test('YouTube URLs are validated and stored once', async () => {
   const bad = await owner.post('/api/videos/resolve').send({ url: 'https://example.com/watch?v=abcdefghijk' });
   assert.equal(bad.status, 400);
@@ -268,7 +358,7 @@ test('drag-and-drop reorder, settings, navigation and homepage sections are data
 });
 
 test('activity log, dashboard stats and sitemap reflect admin work', async () => {
-  const logs = await owner.get('/api/activity-logs');
+  const logs = await owner.get('/api/activity-logs?limit=200');
   const actions = new Set(logs.body.items.map((l) => l.action));
   for (const action of ['login', 'create', 'publish', 'duplicate', 'delete', 'reorder', 'settings_update']) assert.ok(actions.has(action), action);
 

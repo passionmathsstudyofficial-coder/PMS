@@ -15,6 +15,7 @@ const exerciseSchema = new mongoose.Schema(
     chapter: { type: ObjectId, ref: 'Chapter', required: true, index: true },
     class: { type: ObjectId, ref: 'Class', index: true },
     subject: { type: ObjectId, ref: 'Subject', index: true },
+    academicSession: { type: String, default: '2026-27', trim: true, index: true },
     number: { type: String, required: true, trim: true, maxlength: 20 },
     title: l10n(),
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 120 },
@@ -41,9 +42,10 @@ exerciseSchema.index({ searchText: 'text' }, { default_language: 'none' });
 exerciseSchema.pre('validate', async function buildExercise() {
   this.slug = slugify(this.slug || `prashnavali-${this.number}`, `prashnavali-${this.number}`);
   const chapter = this.chapter
-    ? await mongoose.model('Chapter').findById(this.chapter).select('class subject number title').lean()
+      ? await mongoose.model('Chapter').findById(this.chapter).select('class subject number title academicSession').lean()
     : null;
-  if (!chapter) {
+    if (chapter) this.academicSession = chapter.academicSession || this.academicSession;
+    if (!chapter) {
     this.invalidate('chapter', 'Parent chapter not found');
     return;
   }

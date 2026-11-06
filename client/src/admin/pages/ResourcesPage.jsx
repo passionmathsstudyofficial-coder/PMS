@@ -10,6 +10,7 @@ import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { ClassFilter, useQueryFilters } from '../components/filters.jsx';
 import { Field, L10nField, SelectField, SwitchField } from '../components/fields/Fields.jsx';
+import { AcademicSessionField } from '../components/fields/AcademicSessionField.jsx';
 import { RefSelect } from '../components/fields/RefSelect.jsx';
 import { LocalizedCell } from '../components/LocalizedCell.jsx';
 import { MediaField } from '../components/media/MediaFields.jsx';
@@ -60,7 +61,7 @@ export function ResourcesList() {
           />
         </div>
       }
-      createPath={adminUrl(`resources/new${filters.class ? `?class=${filters.class}` : ''}`)}
+      createPath={adminUrl(`resources/new?${new URLSearchParams({ ...(filters.class ? { class: filters.class } : {}), ...(filters.resourceType ? { resourceType: filters.resourceType } : {}) }).toString()}`)}
       createLabel={uiText("Upload / Add Resource")}
       editPath={(item) => adminUrl(`resources/${item._id}`)}
       rowLabel={(r) => adminText(r.title) || uiText("Resource")}
@@ -107,7 +108,10 @@ export function ResourceEditor({ id }) {
       topic: '',
       title: { hi: '', en: '', mixed: '' },
       description: { hi: '', en: '', mixed: '' },
-      resourceType: 'notes',
+      resourceType: params.get('resourceType') || 'notes',
+      academicSession: params.get('session') || '2026-27',
+      year: undefined,
+      paperSet: '',
       file: null,
       fileUrl: '',
       fileSize: '',
@@ -187,6 +191,13 @@ export function ResourceEditor({ id }) {
                   placeholder={uiText("e.g. 2.4 MB")}
                   className="h-9 w-full rounded-md border bg-transparent px-3 text-xs"
                 />
+              </Field>
+              <AcademicSessionField value={doc.academicSession} onChange={(v) => set('academicSession', v)} />
+              <Field label={uiText("Examination Year")}>
+                <input type="number" min="2000" max="2100" value={doc.year || ''} onChange={(e) => set('year', e.target.value ? Number(e.target.value) : undefined)} placeholder="2026" className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
+              </Field>
+              <Field label={uiText("Paper Set / Series")}>
+                <input type="text" value={doc.paperSet || ''} onChange={(e) => set('paperSet', e.target.value)} placeholder="Set 1" className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
               </Field>
             </div>
           </Panel>

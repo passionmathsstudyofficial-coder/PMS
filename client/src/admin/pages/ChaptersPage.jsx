@@ -11,6 +11,7 @@ import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { ClassFilter, useQueryFilters } from '../components/filters.jsx';
 import { Field, L10nField, LanguageModeField, NumberField, SlugField, SwitchField } from '../components/fields/Fields.jsx';
+import { AcademicSessionField } from '../components/fields/AcademicSessionField.jsx';
 import { FormulaInput } from '../components/fields/FormulaInput.jsx';
 import { RefMultiSelect, RefSelect } from '../components/fields/RefSelect.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
@@ -129,6 +130,7 @@ const CHAPTER_DEFAULTS = {
   class: null,
   subject: null,
   book: null,
+  academicSession: '2026-27',
   number: undefined,
   title: {},
   slug: '',
@@ -152,7 +154,7 @@ const CHAPTER_DEFAULTS = {
 export function ChapterEditor({ id }) {
   useUiLanguage();
   const [params] = useSearchParams();
-  const editor = useEditorForm({ resource: 'chapters', id, basePath: adminUrl('chapters'), defaults: { ...CHAPTER_DEFAULTS, class: params.get('class') || null } });
+  const editor = useEditorForm({ resource: 'chapters', id, basePath: adminUrl('chapters'), defaults: { ...CHAPTER_DEFAULTS, class: params.get('class') || null, book: params.get('book') || null, academicSession: params.get('session') || CHAPTER_DEFAULTS.academicSession } });
   const subjects = useResourceList('subjects', { limit: 50 });
   const [previewOpen, setPreviewOpen] = useState(false);
   const { form, setField } = editor;
@@ -207,7 +209,9 @@ export function ChapterEditor({ id }) {
                   onChange={(v) => setField('book', v)}
                   labelOf={(b) => adminText(b.title) || b.name || uiText("Book")}
                 />
+                <AcademicSessionField value={form.academicSession} onChange={(v) => setField('academicSession', v)} />
                 <NumberField label={uiText("अध्याय number")} required value={form.number} onChange={(v) => setField('number', v)} min={0} />
+                <NumberField label={uiText('Syllabus marks (optional)')} value={form.syllabusMarks} onChange={(v) => setField('syllabusMarks', v)} min={0} />
                 <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.number !== undefined ? `adhyay-${form.number}` : ''} prefix={classSlug ? `/${classSlug}/${subjectSlug || 'maths'}/` : undefined} />
                 <L10nField className="sm:col-span-2" label={uiText("Title")} required value={form.title} onChange={(v) => setField('title', v)} placeholder={uiText("समांतर श्रेढ़ियाँ / Arithmetic Progressions")} />
                 <L10nField className="sm:col-span-2" label={uiText("Short description")} multiline rows={2} value={form.shortDescription} onChange={(v) => setField('shortDescription', v)} />

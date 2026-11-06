@@ -19,7 +19,7 @@ export const BOOK_CATEGORIES = [
 const bookSchema = new Schema(
   {
     title: l10n(),
-    author: { type: String, required: true, trim: true, maxlength: 200 },
+    author: { type: String, default: '', trim: true, maxlength: 200 },
     publisher: { type: String, default: '', trim: true, maxlength: 200 },
     edition: { type: String, default: '', trim: true, maxlength: 100 },
     class: { type: ObjectId, ref: 'Class', index: true },

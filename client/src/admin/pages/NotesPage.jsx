@@ -8,6 +8,7 @@ import { DifficultyBadge } from '@/components/content/badges.jsx';
 import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { ClassFilter, useQueryFilters } from '../components/filters.jsx';
+import { AcademicSessionField } from '../components/fields/AcademicSessionField.jsx';
 import { L10nField, LanguageModeField, NumberField, SelectField, SlugField, TagsField, TextField } from '../components/fields/Fields.jsx';
 import { RefSelect } from '../components/fields/RefSelect.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
@@ -66,12 +67,12 @@ export function NotesList() {
   );
 }
 
-const NOTE_DEFAULTS = { class: null, subject: null, chapter: null, title: {}, slug: '', summary: {}, content: {}, attachments: [], video: null, tags: [], languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
+const NOTE_DEFAULTS = { class: null, subject: null, chapter: null, book: null, category: 'ncert_notes', academicSession: '2026-27', title: {}, slug: '', summary: {}, content: {}, attachments: [], video: null, tags: [], languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function NoteEditor({ id }) {
   useUiLanguage();
   const params = new URLSearchParams(window.location.search);
-  const editor = useEditorForm({ resource: 'notes', id, basePath: adminUrl('notes'), defaults: { ...NOTE_DEFAULTS, class: params.get('class') || null } });
+  const editor = useEditorForm({ resource: 'notes', id, basePath: adminUrl('notes'), defaults: { ...NOTE_DEFAULTS, class: params.get('class') || null, chapter: params.get('chapter') || null, book: params.get('book') || null, category: params.get('category') || NOTE_DEFAULTS.category, academicSession: params.get('session') || NOTE_DEFAULTS.academicSession } });
   useDefaultSubject(editor);
   const [previewOpen, setPreviewOpen] = useState(false);
   const { form, setField } = editor;
@@ -108,7 +109,18 @@ export function NoteEditor({ id }) {
               <div className="grid gap-4 sm:grid-cols-3">
                 <RefSelect label={uiText("Class")} required resource="classes" value={form.class} onChange={(v) => setForm((f) => ({ ...f, class: v, chapter: null }))} />
                 <RefSelect label={uiText("Subject")} required resource="subjects" value={form.subject} onChange={(v) => setField('subject', v)} />
-                <RefSelect label={uiText("अध्याय (optional)")} resource="chapters" clearable value={form.chapter} params={refId(form.class) ? { class: refId(form.class) } : {}} onChange={(v) => setField('chapter', v)} />
+                <SelectField label={uiText("Content Category")} value={form.category || 'ncert_notes'} onChange={(v) => setField('category', v)} options={[
+                  { value: 'ncert_notes', get label() { return uiText("NCERT Notes"); } },
+                  { value: 'formula_sheet', get label() { return uiText("Formula Sheet"); } },
+                  { value: 'rs_aggarwal_notes', get label() { return uiText("RS Aggarwal Notes"); } },
+                  { value: 'rd_sharma_notes', get label() { return uiText("RD Sharma Notes"); } },
+                  { value: 'kc_sinha_notes', get label() { return uiText("KC Sinha Notes"); } },
+                  { value: 'vvi_short_notes', get label() { return uiText("VVI Short Notes"); } },
+                  { value: 'general', get label() { return uiText("General Notes"); } },
+                ]} />
+                <AcademicSessionField value={form.academicSession} onChange={(v) => setField('academicSession', v)} />
+                <RefSelect label={uiText("Reference Book (optional)")} resource="books" clearable value={form.book} onChange={(v) => setField('book', v)} />
+                <RefSelect label={uiText("अध्याय (optional)")} resource="chapters" clearable value={form.chapter} params={refId(form.class) ? { class: refId(form.class), ...(refId(form.book) ? { book: refId(form.book) } : {}) } : {}} onChange={(v) => setField('chapter', v)} />
                 <L10nField className="sm:col-span-2" label={uiText("Title")} required value={form.title} onChange={(v) => setField('title', v)} />
                 <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.title?.en} />
                 <L10nField className="sm:col-span-3" label={uiText("Summary")} multiline rows={2} value={form.summary} onChange={(v) => setField('summary', v)} />
@@ -163,7 +175,7 @@ export function ImportantQuestionsList() {
   );
 }
 
-const IQ_DEFAULTS = { class: null, subject: null, chapter: null, linkedQuestion: null, slug: '', text: {}, attachments: [], blocks: [], answer: {}, marks: undefined, source: '', difficulty: 'medium', tags: [], languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
+const IQ_DEFAULTS = { class: null, subject: null, chapter: null, linkedQuestion: null, slug: '', text: {}, attachments: [], blocks: [], answer: {}, markingScheme: {}, marks: undefined, source: '', category: 'vvi', academicSession: '2026-27', year: undefined, paperSet: '', questionType: 'short', difficulty: 'medium', tags: [], languageMode: 'auto', seo: {}, status: 'draft', isVisible: true };
 
 export function ImportantQuestionEditor({ id }) {
   useUiLanguage();
@@ -171,8 +183,8 @@ export function ImportantQuestionEditor({ id }) {
   const editor = useEditorForm({
     resource: 'important-questions',
     id,
-    basePath: adminUrl('important-questions'),
-    defaults: { ...IQ_DEFAULTS, class: params.get('class') || null },
+    basePath: adminUrl('important-questions-legacy'),
+    defaults: { ...IQ_DEFAULTS, class: params.get('class') || null, category: ({ 'sample-papers': 'sample_paper', 'extra-questions': 'extra_questions' })[params.get('category')] || params.get('category') || IQ_DEFAULTS.category, academicSession: params.get('session') || IQ_DEFAULTS.academicSession, year: params.get('year') ? Number(params.get('year')) : undefined },
     label: (doc) => stripTags(adminText(doc?.text)).slice(0, 50) || uiText("this question"),
   });
   useDefaultSubject(editor);
@@ -188,7 +200,7 @@ export function ImportantQuestionEditor({ id }) {
           <EditorShell
             title={editor.isNew ? uiText("New important question") : uiText("Important question")}
             description={classNumber ? uiTemplate`Class ${classNumber}` : undefined}
-            backTo={adminUrl('important-questions')}
+            backTo={adminUrl('important-questions-legacy')}
             backLabel={uiText("All important questions")}
             doc={editor.doc}
             form={form}
@@ -204,7 +216,23 @@ export function ImportantQuestionEditor({ id }) {
                 <div className="space-y-3">
                   <NumberField label={uiText("Marks")} value={form.marks} onChange={(v) => setField('marks', v)} min={0} max={100} />
                   <SelectField label={uiText("Difficulty")} value={form.difficulty} onChange={(v) => setField('difficulty', v)} options={DIFFICULTY_OPTIONS} />
+                  <SelectField label={uiText("Question Category")} value={form.category || 'vvi'} onChange={(v) => setField('category', v)} options={[
+                    { value: 'vvi', get label() { return uiText("VVI / Board Special"); } },
+                    { value: 'pyq', get label() { return uiText("Previous Year Question"); } },
+                    { value: 'sample_paper', get label() { return uiText("Sample Paper Question"); } },
+                    { value: 'extra_questions', get label() { return uiText("Extra Question"); } },
+                    { value: 'general', get label() { return uiText("General"); } },
+                  ]} />
+                  <SelectField label={uiText("Question Type")} value={form.questionType || 'short'} onChange={(v) => setField('questionType', v)} options={[
+                    { value: 'short', get label() { return uiText("Short answer"); } },
+                    { value: 'long', get label() { return uiText("Long answer"); } },
+                    { value: 'mcq', get label() { return uiText("Multiple choice"); } },
+                    { value: 'case_study', get label() { return uiText("Case study"); } },
+                  ]} />
                   <TextField label={uiText("Source")} value={form.source} onChange={(v) => setField('source', v)} placeholder={uiText("CBSE 2024 · NCERT Exemplar")} />
+                  <AcademicSessionField value={form.academicSession} onChange={(v) => setField('academicSession', v)} />
+                  <NumberField label={uiText("Exam Year")} value={form.year} onChange={(v) => setField('year', v)} min={2000} max={2100} />
+                  <TextField label={uiText("Paper Set")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder="Set 1" />
                   <LanguageModeField value={form.languageMode} onChange={(v) => setField('languageMode', v)} />
                   <TagsField value={form.tags} onChange={(v) => setField('tags', v)} />
                 </div>
@@ -233,6 +261,9 @@ export function ImportantQuestionEditor({ id }) {
             </Panel>
             <Panel title={uiText("Short answer")}>
               <RichL10nField value={form.answer} onChange={(v) => setField('answer', v)} minimal />
+            </Panel>
+            <Panel title={uiText("Marking scheme")}>
+              <RichL10nField value={form.markingScheme} onChange={(v) => setField('markingScheme', v)} minimal />
             </Panel>
           </EditorShell>
           <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} path={path} />

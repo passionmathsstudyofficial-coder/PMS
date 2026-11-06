@@ -3,13 +3,15 @@ import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { useSearchParams } from 'react-router';
 import { toast } from '@/lib/notifications.jsx';
 import { DifficultyBadge } from '@/components/content/badges.jsx';
 import { adminUrl } from '@/lib/config';
 import { EditorShell } from '../components/EditorShell.jsx';
 import { ChapterFilter, ClassFilter, ExerciseFilter, useQueryFilters } from '../components/filters.jsx';
-import { LanguageModeField, NumberField, SelectField, SlugField, SwitchField, TagsField, TextField } from '../components/fields/Fields.jsx';
+import { AcademicSessionField } from '../components/fields/AcademicSessionField.jsx';
+import { L10nField, LanguageModeField, NumberField, SelectField, SlugField, SwitchField, TagsField, TextField } from '../components/fields/Fields.jsx';
 import { RefSelect } from '../components/fields/RefSelect.jsx';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
 import { VideoField } from '../components/fields/VideoField.jsx';
@@ -63,6 +65,7 @@ export function QuestionsList() {
 
 const QUESTION_DEFAULTS = {
   exercise: null,
+  academicSession: '2026-27',
   number: '',
   slug: '',
   text: {},
@@ -79,13 +82,13 @@ const QUESTION_DEFAULTS = {
   seo: {},
   status: 'draft',
   isVisible: true,
-  solution: { blocks: [], languageMode: 'auto' },
+  solution: { blocks: [], methods: [], status: 'draft', languageMode: 'auto' },
 };
 
 const toQuestionForm = (doc) => ({
   ...doc,
   video: { video: doc.video?.video || null, placement: doc.video?.placement || 'afterSolution' },
-  solution: { blocks: doc.solution?.blocks || [], languageMode: doc.solution?.languageMode || 'auto' },
+  solution: { ...doc.solution, blocks: doc.solution?.blocks || [], methods: doc.solution?.methods || [], status: doc.solution?.status || (doc.solution ? 'published' : 'draft'), languageMode: doc.solution?.languageMode || 'auto' },
 });
 
 export function QuestionEditor({ id }) {
@@ -95,7 +98,7 @@ export function QuestionEditor({ id }) {
     resource: 'questions',
     id,
     basePath: adminUrl('questions'),
-    defaults: { ...QUESTION_DEFAULTS, exercise: params.get('exercise') || null },
+    defaults: { ...QUESTION_DEFAULTS, exercise: params.get('exercise') || null, academicSession: params.get('session') || '2026-27' },
     toForm: toQuestionForm,
     label: (doc) => uiTemplate`Question ${doc?.number}`,
   });
@@ -172,6 +175,7 @@ export function QuestionEditor({ id }) {
                 />
                 <RefSelect label={uiText("प्रश्नावली")} required resource="exercises" value={form.exercise} disabled={!chapterId && !form.exercise} params={chapterId ? { chapter: chapterId } : classId ? { class: classId } : {}} onChange={(v) => setField('exercise', v)} />
                 <TextField label={uiText("Question number")} required value={form.number} onChange={(v) => setField('number', v)} placeholder={uiText("3 or 3(ii)")} />
+                <AcademicSessionField value={form.academicSession} onChange={(v) => setField('academicSession', v)} />
                 <div className="sm:col-span-2">
                   <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.number ? `prashn-${form.number}` : ''} />
                 </div>
@@ -197,6 +201,7 @@ export function QuestionEditor({ id }) {
             </Panel>
 
             <Panel title={uiText("5. Step-by-step solution")} description={uiText("Add blocks (Explanation → Steps → Formula → Diagram → Video → Final Answer) in any order. Drag to reorder.")}>
+                <SelectField label={uiText('Solution publication status')} value={form.solution?.status || 'draft'} onChange={(status) => setSolution({ status })} options={['draft', 'published', 'archived'].map((value) => ({ value, label: uiText(value) }))} />
               <div className="space-y-4">
                 <SolutionBuilder
                   blocks={form.solution?.blocks}
@@ -211,6 +216,18 @@ export function QuestionEditor({ id }) {
                 />
                 <div className="max-w-sm">
                   <LanguageModeField label={uiText("Solution language mode")} value={form.solution?.languageMode} onChange={(languageMode) => setSolution({ languageMode })} />
+                  {(form.solution?.methods || []).map((method, index) => {
+                    const update = (patch) => setSolution({ methods: form.solution.methods.map((item, i) => i === index ? { ...item, ...patch } : item) });
+                    return <div key={method._id || index} className="my-4 space-y-3 rounded-xl border p-4">
+                      <L10nField label={uiText('Method title')} value={method.title} onChange={(title) => update({ title })} />
+                      <SelectField label={uiText('Method type')} value={method.methodType || 'standard'} onChange={(methodType) => update({ methodType })} options={['standard', 'shortcut', 'alternative', 'custom'].map((value) => ({ value, label: uiText(value) }))} />
+                      <SolutionBuilder blocks={method.blocks || []} onChange={(blocks) => update({ blocks })} />
+                      <RichL10nField label={uiText('Final answer')} value={method.finalAnswer} onChange={(finalAnswer) => update({ finalAnswer })} minimal />
+                      <Button type="button" variant="outline" disabled={!index} onClick={() => { const methods = [...form.solution.methods]; [methods[index - 1], methods[index]] = [methods[index], methods[index - 1]]; setSolution({ methods }); }}>{uiText('Move up')}</Button>
+                      <Button type="button" variant="destructive" onClick={() => setSolution({ methods: form.solution.methods.filter((_, i) => i !== index) })}>{uiText('Delete')}</Button>
+                    </div>;
+                  })}
+                  <Button type="button" variant="outline" onClick={() => setSolution({ methods: [...(form.solution?.methods || []), { title: {}, methodType: 'alternative', blocks: [], finalAnswer: {} }] })}>{uiText('Add solution method')}</Button>
                 </div>
               </div>
             </Panel>

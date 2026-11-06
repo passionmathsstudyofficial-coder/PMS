@@ -8,6 +8,13 @@ export const blockPopulate = (prefix = 'blocks') => [
   { path: `${prefix}.video`, select: VIDEO_SELECT },
 ];
 
+export const solutionPopulate = (prefix = 'blocks') => [
+  { path: `${prefix}.media.media`, select: MEDIA_SELECT },
+  { path: `${prefix}.video`, select: VIDEO_SELECT },
+  { path: 'methods.blocks.media.media', select: MEDIA_SELECT },
+  { path: 'methods.blocks.video', select: VIDEO_SELECT },
+];
+
 export const questionPopulate = [
   { path: 'attachments.media', select: MEDIA_SELECT },
   { path: 'video.video', select: VIDEO_SELECT },
@@ -37,5 +44,16 @@ export function cleanAttachments(attachments = []) {
 
 export function cleanVideoRef(value) {
   return isVisibleVideo(value) ? value : null;
+}
+
+export function cleanMethods(methods = []) {
+  return (methods || []).map((m) => ({
+    _id: m._id,
+    title: m.title,
+    methodType: m.methodType || 'standard',
+    blocks: cleanBlocks(m.blocks),
+    finalAnswer: m.finalAnswer,
+    isDefault: m.isDefault,
+  }));
 }
 

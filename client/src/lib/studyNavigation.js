@@ -1,18 +1,18 @@
 const entry = (en, hi, url) => ({ _id: `study-${en.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, label: { en, hi }, url });
 const questions = [
-  entry('Previous Year Questions (PYQ)', 'पिछले वर्षों के प्रश्न (PYQ)', '/study-materials/cbse-sample-papers?view=pyq'),
+  entry('Previous Year Questions (PYQ)', 'पिछले वर्षों के प्रश्न (PYQ)', '/study-materials/previous-year-questions'),
   entry('Sample Papers', 'सैंपल पेपर्स', '/study-materials/cbse-sample-papers'),
-  entry('CBSE Extra Questions', 'CBSE अतिरिक्त प्रश्न', '/study-materials/extra-questions'),
-  entry('VVI Questions (Board Special)', 'अति महत्वपूर्ण प्रश्न (बोर्ड विशेष)', '/study-materials/important-questions'),
-  entry('Maths Syllabus', 'गणित पाठ्यक्रम', '/study-materials/syllabus'),
+  entry('CBSE Extra Questions', 'CBSE अतिरिक्त प्रश्न', '/study-materials/cbse-extra-questions'),
+  entry('VVI Questions (Board Special)', 'अति महत्वपूर्ण प्रश्न (बोर्ड विशेष)', '/study-materials/vvi-questions'),
+  entry('Maths Syllabus', 'गणित पाठ्यक्रम', '/study-materials/maths-syllabus'),
 ];
 const notes = [
-  entry('NCERT Chapter-wise Notes', 'NCERT अध्याय-वार नोट्स', '/study-materials/ncert-notes'),
-  entry('All Maths Formula Sheets', 'सभी गणित सूत्र पत्रक', '/study-materials/ncert-notes?view=formulas'),
-  entry('RS Aggarwal Formulas & Notes', 'आर.एस. अग्रवाल सूत्र व नोट्स', '/reference-solutions/rs-aggarwal?view=notes'),
-  entry('RD Sharma Formulas & Notes', 'आर.डी. शर्मा सूत्र व नोट्स', '/reference-solutions/rd-sharma?view=notes'),
-  entry('KC Sinha Formulas & Notes', 'के.सी. सिन्हा सूत्र व नोट्स', '/reference-solutions/kc-sinha?view=notes'),
-  entry('VVI Questions & Short Notes', 'अति महत्वपूर्ण प्रश्न व संक्षिप्त नोट्स', '/study-materials/important-questions?view=short-notes'),
+  entry('NCERT Chapter-wise Notes', 'NCERT अध्याय-वार नोट्स', '/notes/ncert-chapter-wise-notes'),
+  entry('All Maths Formula Sheets', 'सभी गणित सूत्र पत्रक', '/notes/maths-formula-sheets'),
+  entry('RS Aggarwal Formulas & Notes', 'आर.एस. अग्रवाल सूत्र व नोट्स', '/notes/rs-aggarwal-formulas-notes'),
+  entry('RD Sharma Formulas & Notes', 'आर.डी. शर्मा सूत्र व नोट्स', '/notes/rd-sharma-formulas-notes'),
+  entry('KC Sinha Formulas & Notes', 'के.सी. सिन्हा सूत्र व नोट्स', '/notes/kc-sinha-formulas-notes'),
+  entry('VVI Questions & Short Notes', 'अति महत्वपूर्ण प्रश्न व संक्षिप्त नोट्स', '/notes/vvi-questions-short-notes'),
 ];
 
 // Share the same destinations and labels between desktop and mobile navigation.
@@ -43,13 +43,19 @@ export function navigationChildren(item, classes) {
   if (!isMaths && !isQuestions && !isNotes) return children;
   const suffix = isMaths ? '' : isQuestions ? '/important-questions' : '/notes';
   const available = classes?.length ? classes : [12, 11, 10, 9, 8, 7, 6].map(number => ({ number }));
-  return [...available].sort((a, b) => b.number - a.number).map(cls => ({
-    _id: `maths-class-${cls.number}${suffix}`,
-    url: isMaths && cls.url || `/class-${cls.number}/maths${suffix}`,
-    label: isMaths ? { en: `Class ${cls.number} Maths`, hi: `कक्षा ${cls.number} गणित` }
-      : isQuestions ? { en: `Class ${cls.number} Important Questions`, hi: `कक्षा ${cls.number} महत्वपूर्ण प्रश्न` }
-      : { en: `Class ${cls.number} Maths Notes`, hi: `कक्षा ${cls.number} गणित नोट्स` },
-  }));
+  return [...available].sort((a, b) => b.number - a.number).map(cls => {
+    let mathsLabel = { en: `NCERT Class ${cls.number} Mathematics`, hi: `NCERT कक्षा ${cls.number} गणित` };
+    if (en === 'mathematics' || en === 'maths') {
+      mathsLabel = { en: `Class ${cls.number} Maths`, hi: `कक्षा ${cls.number} गणित` };
+    }
+    return {
+      _id: `maths-class-${cls.number}${suffix}`,
+      url: isMaths && cls.url || `/class-${cls.number}/maths${suffix}`,
+      label: isMaths ? mathsLabel
+        : isQuestions ? { en: `Class ${cls.number} Important Questions`, hi: `कक्षा ${cls.number} महत्वपूर्ण प्रश्न` }
+        : { en: `Class ${cls.number} Maths Notes`, hi: `कक्षा ${cls.number} गणित नोट्स` },
+    };
+  });
 }
 
 export const navigationId = item => `${item.type || 'link'}:${item._id || item.label?.en || item.label?.hi}:${item.url || ''}`;

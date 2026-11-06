@@ -7,6 +7,7 @@ import {
   ObjectId,
   languageMode,
   richL10n,
+  textL10n,
   seo,
 } from './schemas/common.js';
 import { joinSearch, l10nText, labels } from '../services/searchText.js';
@@ -19,7 +20,10 @@ const questionSchema = new mongoose.Schema(
     chapter: { type: ObjectId, ref: 'Chapter', index: true },
     class: { type: ObjectId, ref: 'Class', index: true },
     subject: { type: ObjectId, ref: 'Subject', index: true },
+    academicSession: { type: String, default: '2026-27', trim: true, index: true },
     number: { type: String, required: true, trim: true, maxlength: 20 },
+    title: textL10n(),
+    questionType: { type: String, enum: ['subjective', 'objective', 'mcq', 'short_answer', 'long_answer', 'numerical', 'proof'], default: 'subjective' },
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 120 },
     text: richL10n(),
     languageMode,
@@ -50,9 +54,10 @@ questionSchema.index({ searchText: 'text' }, { default_language: 'none' });
 questionSchema.pre('validate', async function buildQuestion() {
   this.slug = slugify(this.slug || `prashn-${this.number}`, `prashn-${this.number}`);
   const exercise = this.exercise
-    ? await mongoose.model('Exercise').findById(this.exercise).select('chapter class subject number').lean()
+      ? await mongoose.model('Exercise').findById(this.exercise).select('chapter class subject number academicSession').lean()
     : null;
-  if (!exercise) {
+    if (exercise) this.academicSession = exercise.academicSession || this.academicSession;
+    if (!exercise) {
     this.invalidate('exercise', 'Parent exercise not found');
     return;
   }
@@ -69,6 +74,7 @@ questionSchema.pre('validate', async function buildQuestion() {
     l10nText(chapter?.title),
     labels.exercise(exercise.number),
     labels.question(this.number),
+    l10nText(this.title),
     l10nText(this.text),
     l10nText(this.hint),
     l10nText(this.answer),

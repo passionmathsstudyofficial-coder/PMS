@@ -416,18 +416,6 @@ export function HeaderFooterSettingsPage() {
                 checked={form.header?.showThemeSwitch !== false}
                 onChange={(v) => patch('header', { showThemeSwitch: v })}
               />
-              <SwitchField
-                label={uiText("Show Login Button")}
-                checked={form.header?.showLoginButton}
-                onChange={(v) => patch('header', { showLoginButton: v })}
-              />
-              {form.header?.showLoginButton && (
-                <TextField
-                  label={uiText("Login Button URL")}
-                  value={form.header?.loginUrl}
-                  onChange={(v) => patch('header', { loginUrl: v })}
-                />
-              )}
               <L10nField
                 className="sm:col-span-2"
                 label={uiText("Search Placeholder")}

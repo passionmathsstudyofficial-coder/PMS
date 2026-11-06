@@ -42,13 +42,22 @@ router.get('/home', optionalAuth, async (req, res) => {
   res.json(await buildHome(preview));
 });
 
+router.get('/sessions', async (req, res) => {
+  res.set('Cache-Control', FRESH);
+  const { AcademicSession } = await import('../models/index.js');
+  const sessions = await AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean();
+  res.json({ items: sessions, total: sessions.length });
+});
+
 router.get('/resolve', optionalAuth, async (req, res) => {
   const path = asString(req.query.path, 500) || '/';
   const page = intParam(req.query.page, 1);
+  const session = asString(req.query.session, 30) || undefined;
   const preview = isPreview(req);
+  const cacheKey = `resolve:${path.replace(/\/+$/, '') || '/'}:${page}:${session || 'default'}`;
   const data = preview
-    ? await resolvePath(path, { preview, page, previewToken: asString(req.query.previewToken, 60) })
-    : await cache.wrap(`resolve:${path.replace(/\/+$/, '') || '/'}:${page}`, 60_000, () => resolvePath(path, { page }));
+    ? await resolvePath(path, { preview, page, session, previewToken: asString(req.query.previewToken, 60) })
+    : await cache.wrap(cacheKey, 60_000, () => resolvePath(path, { page, session }));
   res.set('Cache-Control', preview ? 'no-store' : FRESH);
   res.json(data);
 });

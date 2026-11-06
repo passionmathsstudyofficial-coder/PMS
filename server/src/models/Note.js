@@ -9,6 +9,14 @@ const noteSchema = new mongoose.Schema(
     class: { type: ObjectId, ref: 'Class', required: true, index: true },
     subject: { type: ObjectId, ref: 'Subject', required: true, index: true },
     chapter: { type: ObjectId, ref: 'Chapter', index: true },
+    book: { type: ObjectId, ref: 'Book', index: true },
+    category: {
+      type: String,
+      enum: ['ncert_notes', 'formula_sheet', 'rs_aggarwal_notes', 'rd_sharma_notes', 'kc_sinha_notes', 'vvi_short_notes', 'general'],
+      default: 'ncert_notes',
+      index: true,
+    },
+    academicSession: { type: String, default: '2026-27', trim: true, index: true },
     title: l10n(),
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 140 },
     summary: textL10n(),
@@ -24,7 +32,7 @@ const noteSchema = new mongoose.Schema(
 );
 
 noteSchema.plugin(contentPlugin);
-noteSchema.index({ class: 1, subject: 1, slug: 1 }, { unique: true });
+noteSchema.index({ class: 1, subject: 1, academicSession: 1, slug: 1 }, { unique: true });
 noteSchema.index({ searchText: 'text' }, { default_language: 'none' });
 
 noteSchema.pre('validate', async function buildNote() {

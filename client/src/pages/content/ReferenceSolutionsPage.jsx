@@ -32,6 +32,7 @@ import { hasContent, useL10n, useInterfaceL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { ContentHeader, PrevNext } from './ContentHeader.jsx';
+import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 
 export default function ReferenceSolutionsPage({ data, breadcrumbs, path, preview, previewToken }) {
   useUiLanguage();
@@ -55,6 +56,8 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     siblings = [],
     prev,
     next,
+    academicSessions = [],
+    currentSession = '2026–27',
   } = data;
 
   const [activePdfUrl, setActivePdfUrl] = useState(null);
@@ -231,6 +234,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
             en: `${interfaceL10n(book.title)} Solutions for Class ${cls.number} Maths`,
           }}
           subtitle={uiTemplate`Complete chapter-wise and exercise-wise solutions for Class ${cls.number} Mathematics as per latest board curriculum.`}
+          actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
         />
 
         <div className="container-page py-10">
@@ -330,6 +334,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
             en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number}: ${chapter.title?.en || t(chapter.title)}`,
           }}
           subtitle={uiTemplate`Exercise-wise step-by-step solutions, key concept summaries, and PDF download for Chapter ${chapter.number}.`}
+          actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
         />
 
         <div className="container-page py-10">
@@ -437,6 +442,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         }}
         subtitle={uiTemplate`Detailed step-by-step solutions for Exercise ${exercise.number} with mathematical formulas, diagrams, and video lessons.`}
         aside={<LanguageNotice />}
+        actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
       />
 
       {/* Sibling exercises navigation bar */}
@@ -485,6 +491,28 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                     <a href={documentDownloadUrl(resolveMediaUrl(exercise.pdfFile?.url || exercise.pdfUrl || chapter.pdfFile?.url || chapter.pdfUrl))} download target="_blank" rel="noopener noreferrer">
                       <Download className="mr-1 size-3.5" />{uiText("Download")}</a>
                   </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Question Jump Navigator */}
+            {questions.length > 1 && (
+              <div className="rounded-2xl border bg-card p-3 shadow-xs">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    {uiText("Jump to Question")} ({questions.length})
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {questions.map((q) => (
+                    <a
+                      key={q._id}
+                      href={`#q-${q.slug}`}
+                      className="rounded-lg border bg-background px-2.5 py-1 text-xs font-bold text-foreground transition hover:border-brand hover:bg-brand hover:text-white"
+                    >
+                      Q{q.number}
+                    </a>
+                  ))}
                 </div>
               </div>
             )}

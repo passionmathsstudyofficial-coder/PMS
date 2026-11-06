@@ -1,13 +1,22 @@
 import mongoose from 'mongoose';
-import { ObjectId, languageMode } from './schemas/common.js';
+import { ObjectId, languageMode, textL10n, richL10n } from './schemas/common.js';
 import { SolutionBlockSchema } from './SolutionBlock.js';
-import { blocksText, joinSearch } from '../services/searchText.js';
+import { blocksText, joinSearch, l10nText } from '../services/searchText.js';
 
-// One solution per question; publishing follows the parent question.
+export const SolutionMethodSchema = new mongoose.Schema({
+  title: textL10n(),
+  methodType: { type: String, enum: ['standard', 'shortcut', 'alternative', 'custom'], default: 'standard' },
+  blocks: [SolutionBlockSchema],
+  finalAnswer: richL10n(),
+  isDefault: { type: Boolean, default: false },
+});
+
 const solutionSchema = new mongoose.Schema(
   {
     question: { type: ObjectId, ref: 'Question', required: true, unique: true },
     blocks: [SolutionBlockSchema],
+    methods: [SolutionMethodSchema],
+    status: { type: String, enum: ['draft', 'published', 'archived'], default: 'published' },
     languageMode,
     template: { type: ObjectId, ref: 'Template' },
     createdBy: { type: ObjectId, ref: 'Admin' },
@@ -20,7 +29,12 @@ const solutionSchema = new mongoose.Schema(
 solutionSchema.index({ searchText: 'text' }, { default_language: 'none' });
 
 solutionSchema.pre('validate', function buildSolution() {
-  this.searchText = joinSearch(blocksText(this.blocks));
+  const methodTexts = (this.methods || []).flatMap((m) => [
+    l10nText(m.title),
+    l10nText(m.finalAnswer),
+    ...blocksText(m.blocks),
+  ]);
+  this.searchText = joinSearch(blocksText(this.blocks), ...methodTexts);
 });
 
 export const Solution = mongoose.model('Solution', solutionSchema);

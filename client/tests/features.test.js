@@ -129,7 +129,7 @@ test('admin language preference stays independent from the student preference',a
  syncLanguageScope('/');setUiLanguage('en');
 });
 
-test('actual header renders configured login link and toggles without changing its design',async()=>{
+test('actual header omits student login even when legacy settings enable it',async()=>{
  const {Header}=await vite.ssrLoadModule('/src/components/site/Header.jsx');
  const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
  const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
@@ -139,7 +139,7 @@ test('actual header renders configured login link and toggles without changing i
   const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
   client.setQueryData(['site','en'],{settings:{header:{showLoginButton:enabled,loginUrl:'/login?source=header',loginLabel:{en:'Student sign in'},showSearch:false,showThemeSwitch:false,showLanguageSwitch:false,showClassPills:false}},navigation:{header:[{_id:'a',type:'link',url:'/audit-page',label:{en:'Audit navigation'}}]},navigationConfigured:{header:true},terms:{}});
   host.innerHTML=renderToStaticMarkup(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Header)))));
-  assert.equal(Boolean(host.querySelector('a[href="/login?source=header"]')),enabled);
+  assert.equal(Boolean(host.querySelector('a[href="/login?source=header"]')),false);
   assert.ok(host.querySelector('a[href="/audit-page"]'));assert.equal(host.querySelector('input'),null);
   assert.doesNotMatch(host.textContent,/View in Hindi/);client.clear();
  }
@@ -305,7 +305,7 @@ test('study dropdowns show requested destinations and support exclusive opening,
  const button=label=>[...host.querySelectorAll('button')].find(el=>el.textContent===label);
  await act(async()=>button('Important Questions').click());
  assert.equal(host.querySelectorAll('[role="menuitem"]').length,5);
- assert.equal(host.querySelector('[role="menuitem"]').getAttribute('href'),'/study-materials/cbse-sample-papers?view=pyq');
+ assert.equal(host.querySelector('[role="menuitem"]').getAttribute('href'),'/study-materials/previous-year-questions');
  await act(async()=>button('Notes').click());
  assert.equal(button('Important Questions').getAttribute('aria-expanded'),'false');
  assert.equal(host.querySelectorAll('[role="menuitem"]').length,6);

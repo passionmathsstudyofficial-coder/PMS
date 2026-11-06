@@ -2,24 +2,31 @@ import { uiText } from '@/lib/uiLanguage.js';
 import { ContentLanguageSwitcher } from '@/components/content/ContentLanguageSwitcher.jsx';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { isValidElement, useRef } from 'react';
-import { Link } from 'react-router';
+import { isValidElement, useContext, useRef } from 'react';
+import { Link, useLocation } from 'react-router';
 import { Breadcrumbs } from '@/components/site/Breadcrumbs.jsx';
 import { useInterfaceL10n } from '@/lib/i18n';
 import { useEntrance } from '@/lib/motion';
 import { cn } from '@/lib/utils';
+import { LandingContext } from './LandingContext.jsx';
 
-export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark, children, aside, className }) {
+export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark, children, aside, actions, className }) {
   useUiLanguage();
   const t = useInterfaceL10n();
+  const landing = useContext(LandingContext);
+  const location = useLocation();
+  const useLandingHero = Boolean(landing?.landingKey && (location.pathname === `/${landing.landingKey}` || location.pathname.startsWith(`/${landing.landingKey}/`)));
   const ref = useRef(null);
   useEntrance(ref, [String(watermark), breadcrumbs?.at(-1)?.url]);
 
-  const resolvedTitle = typeof title === 'object' && title !== null && !isValidElement(title) ? t(title) : title;
-  const resolvedSubtitle = typeof subtitle === 'object' && subtitle !== null && !isValidElement(subtitle) ? t(subtitle) : subtitle;
+  const titleContent = useLandingHero ? (Object.values(landing.hero?.title || {}).some(Boolean) ? landing.hero.title : landing.title) : title;
+  const subtitleContent = useLandingHero ? (Object.values(landing.hero?.description || {}).some(Boolean) ? landing.hero.description : landing.excerpt) : subtitle;
+  const heroImage = useLandingHero ? (landing.hero?.banner?.url || landing.hero?.image?.url) : null;
+  const resolvedTitle = typeof titleContent === 'object' && titleContent !== null && !isValidElement(titleContent) ? t(titleContent) : titleContent;
+  const resolvedSubtitle = typeof subtitleContent === 'object' && subtitleContent !== null && !isValidElement(subtitleContent) ? t(subtitleContent) : subtitleContent;
 
   return (
-    <section ref={ref} className={cn('relative overflow-hidden border-b bg-gradient-to-b from-brand-soft/40 to-background', className)}>
+    <section ref={ref} style={heroImage ? { backgroundImage: `linear-gradient(180deg, rgba(248,250,252,.88), rgba(248,250,252,.96)), url("${heroImage}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined} className={cn('relative overflow-hidden border-b bg-gradient-to-b from-brand-soft/40 to-background', className)}>
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-50 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true" />
       {watermark !== undefined && (
         <span
@@ -49,9 +56,9 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
             {children && <div data-enter>{children}</div>}
             <ContentLanguageSwitcher />
           </div>
-          {aside && (
+          {(aside || actions) && (
             <div data-enter className="shrink-0">
-              {aside}
+              {aside}{actions}
             </div>
           )}
         </div>

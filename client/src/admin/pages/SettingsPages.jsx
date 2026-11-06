@@ -276,10 +276,7 @@ export function HeaderSettingsPage() {
                 <SwitchField label={uiText("Show हिंदी / ENG switch")} checked={form.header?.showLanguageSwitch} onChange={(v) => patch('header', { showLanguageSwitch: v })} />
                 <SwitchField label={uiText("Show light / dark switch")} checked={form.header?.showThemeSwitch} onChange={(v) => patch('header', { showThemeSwitch: v })} />
                 <SwitchField label={uiText("Show announcement bar")} checked={form.header?.showAnnouncement} onChange={(v) => patch('header', { showAnnouncement: v })} />
-                <SwitchField label={uiText("Show login button")} checked={form.header?.showLoginButton} onChange={(v) => patch('header', { showLoginButton: v })} />
                 <L10nField label={uiText("Search placeholder")} value={form.header?.searchPlaceholder} onChange={(v) => patch('header', { searchPlaceholder: v })} />
-                <L10nField label={uiText("Login button label")} value={form.header?.loginLabel} onChange={(v) => patch('header', { loginLabel: v })} />
-                <TextField label={uiText("Login button URL")} value={form.header?.loginUrl} onChange={(v) => patch('header', { loginUrl: v })} />
               </div>
             </Panel>
             <SaveBar dirty={settings.dirty} saving={settings.saving} onSave={() => settings.save(['header'])} />

@@ -7,6 +7,7 @@ import { languageResponse } from '../middleware/language.js';
 import { hasPermission } from '../lib/permissions.js';
 import { isObjectId } from '../lib/request.js';
 import {
+  AcademicSession,
   AdSlot,
   Announcement,
   Book,
@@ -26,10 +27,10 @@ import {
   Template,
   Topic,
 } from '../models/index.js';
-import { optionalAuth } from '../middleware/auth.js';
+import { optionalAuth, requireAuth, requirePermission } from '../middleware/auth.js';
 import { ApiError } from '../middleware/error.js';
 import { assertNoChildren, crudRouter } from '../services/crud.js';
-import { BOOK_SELECT, MEDIA_SELECT, RESOURCE_SELECT, VIDEO_SELECT, blockPopulate, questionPopulate } from '../services/populate.js';
+import { BOOK_SELECT, MEDIA_SELECT, RESOURCE_SELECT, VIDEO_SELECT, blockPopulate, questionPopulate, solutionPopulate } from '../services/populate.js';
 
 
 const router = express.Router();
@@ -101,8 +102,17 @@ router.use(
   crudRouter(Chapter, {
     entityType: 'Chapter',
     defaultSort: { sortOrder: 1, number: 1 },
-    adminFilters: (q) => idFilter(q, ['class', 'subject', 'book']),
-    publicFilters: (q) => idFilter(q, ['class', 'subject', 'book']),
+    adminFilters: (q) => ({
+      ...idFilter(q, ['class', 'subject', 'book']),
+      ...(q.book === 'none' ? { book: null } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
+    }),
+    publicFilters: (q) => ({
+      ...idFilter(q, ['class', 'subject', 'book']),
+      ...(q.book === 'none' ? { book: null } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+    }),
     populate: {
       list: [classPopulate, subjectPopulate, { path: 'book', select: 'title author slug' }],
       detail: [
@@ -193,11 +203,16 @@ router.use(
     adminFilters: (q) => ({
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'exercise', 'book']),
       ...(q.resourceType ? { resourceType: String(q.resourceType) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.year ? { year: Number(q.year) } : {}),
       ...(q.featured === 'true' ? { featured: true } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'exercise', 'book']),
       ...(q.resourceType ? { resourceType: String(q.resourceType) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.year ? { year: Number(q.year) } : {}),
       ...(q.featured === 'true' ? { featured: true } : {}),
     }),
     populate: {
@@ -273,8 +288,15 @@ router.use(
   crudRouter(Exercise, {
     entityType: 'Exercise',
     defaultSort: { sortOrder: 1, number: 1 },
-    adminFilters: (q) => idFilter(q, ['chapter', 'class', 'subject']),
-    publicFilters: (q) => idFilter(q, ['chapter', 'class']),
+    adminFilters: (q) => ({
+      ...idFilter(q, ['chapter', 'class', 'subject']),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
+    }),
+    publicFilters: (q) => ({
+      ...idFilter(q, ['chapter', 'class']),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+    }),
     populate: {
       list: [{ path: 'chapter', select: 'number title slug' }, classPopulate],
       detail: [
@@ -295,18 +317,24 @@ router.use(
 
 );
 
-async function saveSolution(question, req) {
+async function prepareSolution(question, req) {
   const payload = req.body?.solution;
   if (payload === undefined) return;
   let solution = await Solution.findOne({ question: question._id });
+  const previousStatus = solution?.status;
   if (!solution) solution = new Solution({ question: question._id, createdBy: req.admin._id });
+  const nextStatus = payload?.status || previousStatus || (hasPermission(req.admin.role, 'content:publish') ? 'published' : 'draft');
+  if ((previousStatus === 'published' || nextStatus === 'published') && !hasPermission(req.admin.role, 'content:publish')) throw new ApiError(403, 'Only admins can publish or edit published solutions.');
   solution.set(mergeLanguageFields(solution.toObject(),{
-    blocks: Array.isArray(payload?.blocks) ? payload.blocks : solution.blocks.toObject(),
+    blocks: Array.isArray(payload?.blocks) ? payload.blocks : (solution.blocks?.toObject ? solution.blocks.toObject() : solution.blocks || []),
+    methods: Array.isArray(payload?.methods) ? payload.methods : (solution.methods?.toObject ? solution.methods.toObject() : solution.methods || []),
+    status: nextStatus,
     languageMode: payload?.languageMode || 'auto',
     template: isObjectId(payload?.template) ? payload.template : undefined,
   }));
   solution.updatedBy = req.admin._id;
-  await solution.save();
+  await solution.validate();
+  req.pendingSolution = solution;
 }
 
 router.use(
@@ -318,10 +346,20 @@ router.use(
       ...idFilter(q, ['exercise', 'chapter', 'class']),
       ...(['easy', 'medium', 'hard'].includes(q.difficulty) ? { difficulty: q.difficulty } : {}),
       ...(q.isImportant === 'true' ? { isImportant: true } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
     }),
-    publicFilters: (q) => idFilter(q, ['exercise', 'chapter']),
+    publicFilters: (q) => ({
+      ...idFilter(q, ['exercise', 'chapter']),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+    }),
     populate: {
-      list: [{ path: 'exercise', select: 'number slug' }, { path: 'chapter', select: 'number title slug' }, classPopulate],
+      list: [
+        { path: 'exercise', select: 'number slug' },
+        { path: 'chapter', select: 'number title slug' },
+        { path: 'attachments.media', select: MEDIA_SELECT },
+        classPopulate,
+      ],
       detail: [
         ...questionPopulate,
         seoImage,
@@ -331,10 +369,30 @@ router.use(
         subjectPopulate,
       ],
     },
-    afterWrite: async (doc, req) => saveSolution(doc, req),
-    serialize: async (doc) => {
-      const solution = await Solution.findOne({ question: doc._id }).populate(blockPopulate()).lean();
-      return { ...doc.toObject(), solution };
+    serializeList: async (items) => {
+      const qIds = items.map((q) => q._id);
+      const solutions = await Solution.find({ question: { $in: qIds } }).select('question status methods blocks').lean();
+      const solMap = new Map(solutions.map((s) => [String(s.question), s]));
+      return items.map((q) => {
+        const sol = solMap.get(String(q._id));
+        return {
+          ...q,
+          solution: sol ? {
+            _id: sol._id,
+            status: sol.status || 'published',
+            methodsCount: sol.methods?.length || 0,
+            blocksCount: sol.blocks?.length || 0,
+            hasSolution: true,
+          } : null,
+        };
+      });
+    },
+    beforeWrite: prepareSolution,
+    afterWrite: async (doc, req) => { if (req.pendingSolution) await req.pendingSolution.save(); },
+    serialize: async (doc, req) => {
+      const solution = await Solution.findOne({ question: doc._id }).populate(solutionPopulate()).lean();
+      const canReadDraft = req.admin && hasPermission(req.admin.role, 'content:read');
+      return { ...doc.toObject(), solution: canReadDraft || !solution?.status || solution?.status === 'published' ? solution : null };
     },
     afterDelete: async (doc) => {
       await Promise.all([Solution.deleteOne({ question: doc._id }), RelatedContent.deleteMany({ source: doc._id })]);
@@ -346,6 +404,11 @@ router.use(
         await Solution.create({
           question: copy._id,
           blocks: solution.blocks.map(({ _id, ...b }) => b),
+          methods: (solution.methods || []).map(({ _id, ...m }) => ({
+            ...m,
+            blocks: (m.blocks || []).map(({ _id: bId, ...b }) => b),
+          })),
+          status: solution.status || 'published',
           languageMode: solution.languageMode,
           createdBy: req.admin._id,
           updatedBy: req.admin._id,
@@ -360,12 +423,12 @@ router.use(
   crudRouter(Solution, {
     entityType: 'Solution',
     publicRead: false,
-    hasStatus: false,
+    hasStatus: true,
     defaultSort: { updatedAt: -1 },
     adminFilters: (q) => idFilter(q, ['question']),
     populate: {
       list: [{ path: 'question', select: 'number slug exercise chapter class status', populate: [{ path: 'exercise', select: 'number' }, classPopulate] }],
-      detail: [...blockPopulate(), { path: 'question', select: 'number slug' }],
+      detail: [...solutionPopulate(), { path: 'question', select: 'number slug' }],
     },
   }),
 );
@@ -375,14 +438,24 @@ router.use(
   crudRouter(Note, {
     entityType: 'Note',
     defaultSort: { sortOrder: 1, createdAt: -1 },
-    adminFilters: (q) => idFilter(q, ['class', 'subject', 'chapter']),
-    publicFilters: (q) => idFilter(q, ['class', 'chapter']),
+    adminFilters: (q) => ({
+      ...idFilter(q, ['class', 'subject', 'chapter', 'book']),
+      ...(q.category ? { category: String(q.category) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
+    }),
+    publicFilters: (q) => ({
+      ...idFilter(q, ['class', 'chapter', 'book']),
+      ...(q.category ? { category: String(q.category) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+    }),
     populate: {
-      list: [classPopulate, { path: 'chapter', select: 'number title' }],
+      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'book', select: 'title author slug' }],
       detail: [
         classPopulate,
         subjectPopulate,
         { path: 'chapter', select: 'number title slug' },
+        { path: 'book', select: 'title author slug' },
         { path: 'attachments.media', select: MEDIA_SELECT },
         { path: 'video', select: VIDEO_SELECT },
         seoImage,
@@ -398,8 +471,19 @@ router.use(
   crudRouter(ImportantQuestion, {
     entityType: 'ImportantQuestion',
     defaultSort: { sortOrder: 1, createdAt: -1 },
-    adminFilters: (q) => idFilter(q, ['class', 'subject', 'chapter']),
-    publicFilters: (q) => idFilter(q, ['class', 'chapter']),
+    adminFilters: (q) => ({
+      ...idFilter(q, ['class', 'subject', 'chapter']),
+      ...(q.category ? { category: String(q.category) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.year ? { year: Number(q.year) } : {}),
+      ...(q.status ? { status: String(q.status) } : {}),
+    }),
+    publicFilters: (q) => ({
+      ...idFilter(q, ['class', 'chapter']),
+      ...(q.category ? { category: String(q.category) } : {}),
+      ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+      ...(q.year ? { year: Number(q.year) } : {}),
+    }),
     populate: {
       list: [classPopulate, { path: 'chapter', select: 'number title' }],
       detail: [
@@ -498,6 +582,26 @@ router.use(
         throw new ApiError(403, 'Only the owner account can change advertisement code');
       }
     },
+  }),
+);
+
+router.use(
+  '/sessions',
+  crudRouter(AcademicSession, {
+    entityType: 'AcademicSession',
+    hasStatus: false,
+    defaultSort: { sortOrder: 1, year: -1 },
+    adminFilters: (q) => ({
+      ...(q.isActive !== undefined ? { isActive: q.isActive === 'true' } : {}),
+      ...(q.isCurrent !== undefined ? { isCurrent: q.isCurrent === 'true' } : {}),
+    }),
+    publicFilters: () => ({ isActive: true }),
+    prepareDuplicate: (plain) => ({
+      ...plain,
+      name: `${plain.name} (copy)`,
+      slug: `${plain.slug}-${copySuffix()}`,
+      isCurrent: false,
+    }),
   }),
 );
 

@@ -1,5 +1,6 @@
 import { cache } from '../lib/cache.js';
 import {
+  AcademicSession,
   AdSlot,
   Book,
   Announcement,
@@ -45,7 +46,7 @@ export async function publicReferenceBooks(preview = false) {
   // Read configured entries even when private, so a hidden override suppresses its default menu entry.
   const dbBooks = await Book.find({ category: 'reference' })
     .sort({ sortOrder: 1, createdAt: 1 })
-    .populate({ path: 'coverImage', select: MEDIA_SELECT })
+    .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
     .lean();
 
   const allMap = new Map();
@@ -68,7 +69,7 @@ export async function publicReferenceBooks(preview = false) {
         ...b,
         availableClasses: (b.availableClasses && b.availableClasses.length > 0)
           ? b.availableClasses
-          : (existing.availableClasses || [6, 7, 8, 9, 10, 11, 12]),
+          : (b.class?.number ? [b.class.number] : []),
         url: `/reference-solutions/${b.slug}`,
       });
     }
@@ -91,7 +92,7 @@ export async function getSiteBootstrap() {
     delete settings.updatedBy;
     delete settings.__v;
 
-    const [navDocs, announcements, classes, terms, seoRoutes, adSlots, referenceBooks] = await Promise.all([
+    const [navDocs, announcements, classes, terms, seoRoutes, adSlots, referenceBooks, sessions] = await Promise.all([
       Navigation.find({ key: { $in: NAV_KEYS } }).lean(),
       Announcement.find(Announcement.activeFilter()).sort({ sortOrder: 1 }).limit(3).lean(),
       publicClasses(),
@@ -101,6 +102,7 @@ export async function getSiteBootstrap() {
         ? AdSlot.find({ isEnabled: true }).sort({ sortOrder: 1 }).select('name placement device pageTypes minHeightMobile minHeightDesktop updatedAt').lean()
         : [],
       publicReferenceBooks(),
+      AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean(),
     ]);
 
     const navigation = Object.fromEntries(NAV_KEYS.map((key) => [key, []]));
@@ -109,6 +111,13 @@ export async function getSiteBootstrap() {
         .filter((i) => i.isVisible)
         .map((i) => ({ ...i, children: (i.children || []).filter((c) => c.isVisible) }));
     }
+
+    const defaultSessions = [
+      { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true, isActive: true },
+      { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false, isActive: true },
+      { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false, isActive: true },
+    ];
+    const academicSessions = sessions?.length ? sessions : defaultSessions;
 
     return {
       settings,
@@ -120,6 +129,7 @@ export async function getSiteBootstrap() {
       seoRoutes: Object.fromEntries(seoRoutes.map((r) => [r.routeKey, r])),
       adSlots,
       referenceBooks,
+      academicSessions,
     };
   });
 }

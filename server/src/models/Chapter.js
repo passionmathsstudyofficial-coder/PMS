@@ -20,10 +20,12 @@ const chapterSchema = new Schema(
     title: l10n(),
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 120 },
     shortDescription: textL10n(),
+    syllabusMarks: { type: Number, min: 0 },
     image: { type: ObjectId, ref: 'Media' },
     featuredImage: { type: ObjectId, ref: 'Media' },
     introVideo: { type: ObjectId, ref: 'Video' },
     book: { type: ObjectId, ref: 'Book', index: true },
+    academicSession: { type: String, default: '2026-27', trim: true, index: true },
     pdfFile: { type: ObjectId, ref: 'Media' },
     pdfUrl: { type: String, default: '', trim: true, maxlength: 2000 },
     introduction: richL10n(),
@@ -39,7 +41,7 @@ const chapterSchema = new Schema(
 );
 
 chapterSchema.plugin(contentPlugin);
-chapterSchema.index({ class: 1, subject: 1, book: 1, slug: 1 }, { unique: true });
+chapterSchema.index({ class: 1, subject: 1, book: 1, academicSession: 1, slug: 1 }, { unique: true });
 chapterSchema.index({ class: 1, subject: 1, sortOrder: 1, number: 1 });
 chapterSchema.index({ searchText: 'text' }, { default_language: 'none' });
 

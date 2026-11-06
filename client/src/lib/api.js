@@ -58,3 +58,7 @@ api.interceptors.response.use(
 export const errorMessage = (error, fallback = 'Something went wrong') => presentApiError(error, fallback);
 
 export const get = (url, params, config) => api.get(url, { params, ...config }).then((r) => r.data);
+export const post = (url, data, config) => api.post(url, data, config).then((r) => r.data);
+export const put = (url, data, config) => api.put(url, data, config).then((r) => r.data);
+export const patch = (url, data, config) => api.patch(url, data, config).then((r) => r.data);
+export const del = (url, config) => api.delete(url, config).then((r) => r.data);

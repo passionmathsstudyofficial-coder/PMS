@@ -9,6 +9,7 @@ import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { useL10n, useLang } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { ContentHeader, StatPills } from './ContentHeader.jsx';
+import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 
 export function ChapterRow({ chapter, showExercises = true }) {
   useUiLanguage();
@@ -60,7 +61,7 @@ export default function SubjectPage({ data, breadcrumbs }) {
   useUiLanguage();
   const t = useL10n();
   const term = useTerm();
-  const { class: cls, subject, chapters, noteCount, importantCount, links } = data;
+  const { class: cls, subject, chapters, noteCount, importantCount, links, academicSessions = [], currentSession = '2026–27' } = data;
   const exerciseTotal = chapters.reduce((sum, c) => sum + c.exerciseCount, 0);
   const questionTotal = chapters.reduce((sum, c) => sum + c.questionCount, 0);
   const className = t(cls.name) || `${term('class')} ${cls.number} ${t(subject.name)}`;
@@ -91,6 +92,7 @@ export default function SubjectPage({ data, breadcrumbs }) {
         }
         subtitle={t(cls.description)}
         aside={<LanguageNotice />}
+        actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
       >
         <StatPills
           items={[

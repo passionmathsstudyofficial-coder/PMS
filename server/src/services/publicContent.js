@@ -1,4 +1,5 @@
 import {
+  AcademicSession,
   Book,
   Chapter,
   ClassLevel,
@@ -22,8 +23,10 @@ import {
   blockPopulate,
   cleanAttachments,
   cleanBlocks,
+  cleanMethods,
   cleanVideoRef,
   questionPopulate,
+  solutionPopulate,
 } from './populate.js';
 import { getPreview } from './previewStore.js';
 import { relatedFor } from './related.js';
@@ -32,6 +35,32 @@ import { getTerms, pick, term } from './terms.js';
 import { urls } from './urls.js';
 
 const vis = (Model, preview, extra = {}) => (preview ? extra : Model.publicFilter(extra));
+
+function sessionVis(Model, preview, extra = {}, session) {
+  const path = Model.schema?.path('academicSession');
+  if (!path) return vis(Model, preview, extra);
+  const selected = String(session || '2026-27').trim();
+  const normalized = selected.replace(/[–—]/g, '-').toLowerCase();
+  const labels = [selected, normalized, normalized.replace(/-(\d{2})$/, (match, yy) => `–${yy}`)];
+  return vis(Model, preview, { ...extra, academicSession: { $in: [...new Set(labels)] } });
+}
+
+async function attachLanding(result, key, preview, override) {
+  if (!result?.data || !key) return result;
+  const landingPage = await Page.findOne(vis(Page, preview, { landingKey: key }))
+    .populate([
+      { path: 'hero.image', select: MEDIA_SELECT },
+      { path: 'hero.banner', select: MEDIA_SELECT },
+      { path: 'sections.image', select: MEDIA_SELECT },
+      { path: 'sections.items.image', select: MEDIA_SELECT },
+    ]);
+  if (!landingPage) return result;
+  applyOverride(landingPage, override, 'Page');
+  result.data.landingPage = landingPage;
+  if (landingPage.seo?.title) result.seo.title = landingPage.seo.title;
+  if (landingPage.seo?.description) result.seo.description = landingPage.seo.description;
+  return result;
+}
 
 function applyOverride(doc, override, entityType) {
   if (!doc || !override || override.entityType !== entityType || String(override.id) !== String(doc._id)) return false;
@@ -73,33 +102,43 @@ async function shapeQuestion(question, { preview, override, base }) {
   let solution = null;
   if (override?.entityType === 'Question' && String(override.id) === String(q._id) && override.solution) {
     const draft = new Solution({ question: q._id, ...override.solution });
-    await draft.populate(blockPopulate());
+    await draft.populate(solutionPopulate());
     solution = draft.toObject();
   } else {
-    solution = await Solution.findOne({ question: q._id }).populate(blockPopulate()).lean();
+    solution = await Solution.findOne({ question: q._id }).populate(solutionPopulate()).lean();
   }
+  const isSolutionVisible = preview || (solution && (!solution.status || solution.status === 'published'));
   return {
     _id: q._id,
     number: q.number,
+    title: q.title,
+    questionType: q.questionType || 'subjective',
     slug: q.slug,
     text: q.text,
     languageMode: q.languageMode,
-    attachments: cleanAttachments(q.attachments),
+    attachments: cleanAttachments((q.attachments || []).filter((item) => isSolutionVisible || item.placement !== 'solution')),
     video: q.video?.video ? { video: cleanVideoRef(q.video.video), placement: q.video.placement } : null,
     hint: q.hint,
-    answer: q.answer,
+    answer: solution && !isSolutionVisible ? {} : q.answer,
     importantPoint: q.importantPoint,
     difficulty: q.difficulty,
     marks: q.marks,
     tags: q.tags,
     isImportant: q.isImportant,
     status: preview ? q.status : undefined,
-    solution: solution ? { blocks: cleanBlocks(solution.blocks), languageMode: solution.languageMode } : null,
+    solution: isSolutionVisible && solution ? {
+      _id: solution._id,
+      status: solution.status || 'published',
+      blocks: cleanBlocks(solution.blocks),
+      methods: cleanMethods(solution.methods || []),
+      languageMode: solution.languageMode,
+    } : null,
     url: `${base}/${q.slug}`,
   };
 }
 
-async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, baseCrumbs }) {
+async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, baseCrumbs, session }) {
+  const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, session);
   const tp = topic.toObject ? topic.toObject() : topic;
   const topicUrl = urls.topic(cls, subject, ch, tp);
   const chapterUrl = urls.chapter(cls, subject, ch);
@@ -218,14 +257,54 @@ export const STUDY_MATERIAL_CATEGORIES = [
     icon: 'FileText',
   },
   {
-    slug: 'cbse-sample-papers',
-    type: 'cbse_sample_papers',
-    name: { hi: 'CBSE सैंपल पेपर्स व PYQ', en: 'CBSE Sample Papers' },
+    slug: 'previous-year-questions',
+    type: 'previous_year_paper',
+    name: { hi: 'पिछले वर्षों के प्रश्नपत्र (PYQ)', en: 'Previous Year Questions (PYQ)' },
     shortDesc: {
-      hi: 'सीबीएसई बोर्ड परीक्षा के नवीनतम मॉडल प्रश्नपत्र और पिछले वर्षों के हल प्रश्नपत्र।',
-      en: 'Official CBSE sample question papers with marking schemes and previous years papers.',
+      hi: 'सीबीएसई कक्षा 6 से 12 तक पिछले 10 वर्षों के हल प्रश्नपत्र, मार्किंग स्कीम और प्रश्न-वार विस्तृत हल।',
+      en: 'Previous 10 years CBSE question papers with question-wise step-by-step solutions and marking schemes.',
     },
     icon: 'FileSpreadsheet',
+  },
+  {
+    slug: 'cbse-sample-papers',
+    type: 'cbse_sample_papers',
+    name: { hi: 'CBSE सैंपल पेपर्स व मॉडल पेपर्स', en: 'CBSE Sample Papers' },
+    shortDesc: {
+      hi: 'सीबीएसई बोर्ड परीक्षा के नवीनतम मॉडल प्रश्नपत्र, ब्लूप्रिंट और अंकन योजना।',
+      en: 'Official CBSE sample question papers with marking schemes and practice model papers.',
+    },
+    icon: 'FileSpreadsheet',
+  },
+  {
+    slug: 'cbse-extra-questions',
+    type: 'extra_questions',
+    name: { hi: 'CBSE अतिरिक्त अभ्यास प्रश्न', en: 'CBSE Extra Questions' },
+    shortDesc: {
+      hi: 'कक्षा और अध्याय-वार अतिरिक्त महत्वपूर्ण प्रश्न, हॉट्स (HOTS) और चरणबद्ध हल।',
+      en: 'Class-wise and chapter-wise extra practice questions with detailed step-by-step solutions.',
+    },
+    icon: 'HelpCircle',
+  },
+  {
+    slug: 'vvi-questions',
+    type: 'important_questions',
+    name: { hi: 'VVI प्रश्न (बोर्ड विशेष)', en: 'VVI Questions (Board Special)' },
+    shortDesc: {
+      hi: 'बोर्ड परीक्षा हेतु अति महत्वपूर्ण लघु उत्तरीय, दीर्घ उत्तरीय और बार-बार पूछे जाने वाले प्रश्न।',
+      en: 'Most repeated high-yield board special questions with complete step-by-step solutions.',
+    },
+    icon: 'Sparkles',
+  },
+  {
+    slug: 'maths-syllabus',
+    type: 'syllabus',
+    name: { hi: 'गणित पाठ्यक्रम (Maths Syllabus)', en: 'Maths Syllabus' },
+    shortDesc: {
+      hi: 'नवीनतम सीबीएसई गणित पाठ्यक्रम, इकाई-वार अंक विभाजन और हटाए गए विषय विवरण।',
+      en: 'Latest CBSE Mathematics syllabus, unit-wise marks distribution, and curriculum downloads.',
+    },
+    icon: 'GraduationCap',
   },
   {
     slug: 'extra-questions',
@@ -270,6 +349,19 @@ export const STUDY_MATERIAL_CATEGORIES = [
 ];
 
 export const CANONICAL_REFERENCE_BOOKS = [
+  {
+    slug: 'ncert',
+    title: { hi: 'NCERT गणित समाधान', en: 'NCERT Solutions' },
+    author: 'NCERT',
+    publisher: 'NCERT',
+    category: 'reference',
+    description: {
+      hi: 'सीबीएसई कक्षा 6 से 12 के लिए NCERT गणित के अध्याय-वार और प्रश्नावली-वार संपूर्ण चरणबद्ध हल।',
+      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for NCERT Mathematics Classes 6 to 12.',
+    },
+    classes: [6, 7, 8, 9, 10, 11, 12],
+    featured: true,
+  },
   {
     slug: 'rs-aggarwal',
     title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'RS Aggarwal Solutions' },
@@ -347,12 +439,20 @@ async function findClassBySegment(segment, preview) {
     .lean();
 }
 
-async function resolveStudyMaterialsPath(segments, { preview, page, limit, terms, home }) {
+async function resolveStudyMaterialsPath(segments, { preview, page, limit, session, terms, home }) {
+  const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, session);
   const smCrumb = { label: { hi: 'अध्ययन सामग्री', en: 'Study Materials' }, url: urls.studyMaterials() };
-  const classes = await ClassLevel.find(vis(ClassLevel, preview))
-    .sort({ number: -1 })
-    .select('number name slug')
-    .lean();
+  const [classes, sessions] = await Promise.all([
+    ClassLevel.find(vis(ClassLevel, preview)).sort({ number: -1 }).select('number name slug').lean(),
+    AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean(),
+  ]);
+
+  const activeSessions = sessions.length ? sessions : [
+    { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true },
+    { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false },
+    { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false },
+  ];
+  const currentSession = session || activeSessions.find((s) => s.isCurrent)?.name || activeSessions[0]?.name || '2026–27';
 
   // 1. Hub page: /study-materials
   if (segments.length === 1) {
@@ -373,6 +473,8 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, terms
         level: 'hub',
         categories: STUDY_MATERIAL_CATEGORIES,
         classes: classes.map((c) => ({ ...c, url: urls.class(c) })),
+        academicSessions: activeSessions,
+        currentSession,
         featuredResources: featuredResources.map(formatResource),
       },
       breadcrumbs: [home, smCrumb],
@@ -392,107 +494,497 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, terms
   const categoryTypes = [cat.type];
   if (cat.type === 'ncert_notes') categoryTypes.push('notes', 'formula_sheet', 'revision');
   if (cat.type === 'cbse_sample_papers') categoryTypes.push('sample_paper', 'previous_year_paper', 'practice_paper');
+  if (cat.type === 'previous_year_paper') categoryTypes.push('previous_year_paper', 'pyq', 'sample_paper');
   if (cat.type === 'extra_questions') categoryTypes.push('question_bank', 'worksheet', 'assignment');
-  if (cat.type === 'important_questions') categoryTypes.push('important_questions');
+  if (cat.type === 'important_questions') categoryTypes.push('important_questions', 'vvi');
   if (cat.type === 'ncert_books') categoryTypes.push('ncert_books', 'other');
 
-  // 2. Category list across classes: /study-materials/:categorySlug
-  if (segments.length === 2) {
-    const resources = await Resource.find(vis(Resource, preview, { resourceType: { $in: categoryTypes } }))
-      .sort({ sortOrder: 1, createdAt: -1 })
-      .populate([
-        { path: 'class', select: 'number name slug' },
-        { path: 'chapter', select: 'number title slug' },
-        { path: 'file', select: MEDIA_SELECT },
-        { path: 'thumbnail', select: MEDIA_SELECT },
-      ])
-      .lean();
+  // Determine class if present
+  let cls = null;
+  if (segments.length >= 3) {
+    cls = await findClassBySegment(segments[2], preview);
+    if (!cls) throw new ApiError(404, 'Class not found');
+  } else {
+    // Default to class 10 for detailed category views if not specified
+    cls = classes.find((c) => c.number === 10) || classes[0] || null;
+  }
 
+  const classCrumb = cls ? { label: { hi: `कक्षा ${cls.number}`, en: `Class ${cls.number}` }, url: urls.studyMaterialCategoryClass(cat.slug, cls) } : null;
+  const crumbs = classCrumb && segments.length >= 3 ? [home, smCrumb, catCrumb, classCrumb] : [home, smCrumb, catCrumb];
+
+  // A. Dedicated PYQ page
+  if (categorySlug === 'previous-year-questions' || categorySlug === 'pyq') {
+    const classFilter = cls ? { class: cls._id } : {};
+    const [papers, solvedQuestions] = await Promise.all([
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['previous_year_paper', 'pyq'] }, ...classFilter }))
+        .sort({ year: -1, createdAt: -1 })
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'file', select: MEDIA_SELECT },
+          { path: 'thumbnail', select: MEDIA_SELECT },
+        ])
+        .lean(),
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: 'pyq', ...classFilter }))
+        .sort({ year: -1, sortOrder: 1, createdAt: -1 })
+        .limit(25)
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'chapter', select: 'number title slug' },
+          ...blockPopulate(),
+        ])
+        .lean(),
+    ]);
+
+    const examYears = [2025, 2024, 2023, 2022, 2020, 2019, 2018];
     return {
-      type: 'studyMaterials',
+      type: 'pyq',
       data: {
-        level: 'category',
         category: cat,
+        class: cls,
         classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
-        resources: resources.map(formatResource),
+        academicSessions: activeSessions,
+        currentSession,
+        examinationYears: examYears,
+        papers: papers.map(formatResource),
+        solvedQuestions: solvedQuestions.map((q) => ({
+          ...q,
+          attachments: cleanAttachments(q.attachments),
+          blocks: cleanBlocks(q.blocks),
+        })),
         categories: STUDY_MATERIAL_CATEGORIES,
       },
-      breadcrumbs: [home, smCrumb, catCrumb],
+      breadcrumbs: crumbs,
       seo: {
-        title: `${pick(cat.name, 'en')} for Classes 6 to 12 Maths | Passion Maths Study`,
-        description: describe(cat.shortDesc, `Download ${pick(cat.name, 'en')} for Classes 6 to 12 Mathematics in Hindi and English medium.`),
+        title: `CBSE Class ${cls?.number || '6-12'} Maths Previous Year Question Papers (PYQ) with Solutions | Passion Maths Study`,
+        description: `Download CBSE Class ${cls?.number || '6-12'} Mathematics Previous Year Question Papers with step-by-step solutions, marking schemes, and question-wise analysis.`,
         canonical: urls.studyMaterialCategory(cat.slug),
       },
     };
   }
 
-  // 3. Class-specific category page: /study-materials/:categorySlug/class-:number
-  if (segments.length === 3) {
-    const cls = await findClassBySegment(segments[2], preview);
-    if (!cls) throw new ApiError(404, 'Class not found');
-
-    const [chapters, resources, notes] = await Promise.all([
-      Chapter.find(vis(Chapter, preview, { class: cls._id, book: null }))
-        .sort({ sortOrder: 1, number: 1 })
-        .select('number title slug shortDescription image pdfFile pdfUrl')
+  // B. Dedicated CBSE Sample Papers page
+  if (categorySlug === 'cbse-sample-papers') {
+    const classFilter = cls ? { class: cls._id } : {};
+    const [samplePapers, markingSchemes] = await Promise.all([
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['cbse_sample_papers', 'sample_paper', 'practice_paper'] }, ...classFilter }))
+        .sort({ createdAt: -1 })
         .populate([
-          { path: 'image', select: MEDIA_SELECT },
-          { path: 'pdfFile', select: MEDIA_SELECT },
-        ])
-        .lean(),
-      Resource.find(vis(Resource, preview, { class: cls._id, resourceType: { $in: categoryTypes } }))
-        .sort({ sortOrder: 1, createdAt: -1 })
-        .populate([
-          { path: 'chapter', select: 'number title slug' },
+          { path: 'class', select: 'number name slug' },
           { path: 'file', select: MEDIA_SELECT },
           { path: 'thumbnail', select: MEDIA_SELECT },
         ])
         .lean(),
-      Note.find(vis(Note, preview, { class: cls._id }))
-        .sort({ sortOrder: 1, createdAt: -1 })
-        .select('title summary slug chapter')
-        .populate({ path: 'chapter', select: 'number title slug' })
+      Resource.find(vis(Resource, preview, { resourceType: 'solution', ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'file', select: MEDIA_SELECT },
+        ])
         .lean(),
     ]);
 
-    const classCrumb = { label: { hi: `कक्षा ${cls.number}`, en: `Class ${cls.number}` }, url: urls.studyMaterialCategoryClass(cat.slug, cls) };
-
     return {
-      type: 'studyMaterials',
+      type: 'samplePapers',
       data: {
-        level: 'categoryClass',
         category: cat,
         class: cls,
-        chapters,
-        resources: resources.map(formatResource),
-        notes,
         classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
+        academicSessions: activeSessions,
+        currentSession,
+        papers: samplePapers.map(formatResource),
+        markingSchemes: markingSchemes.map(formatResource),
         categories: STUDY_MATERIAL_CATEGORIES,
       },
-      breadcrumbs: [home, smCrumb, catCrumb, classCrumb],
+      breadcrumbs: crumbs,
       seo: {
-        title: `Class ${cls.number} Maths ${pick(cat.name, 'en')} | Free PDF & Solutions`,
-        description: describe(cat.shortDesc, `Class ${cls.number} Mathematics ${pick(cat.name, 'en')} – Chapter-wise PDF download, solutions, and key revision notes.`),
-        canonical: urls.studyMaterialCategoryClass(cat.slug, cls),
+        title: `CBSE Class ${cls?.number || '6-12'} Maths Sample Papers with Solutions & Marking Scheme | Passion Maths Study`,
+        description: `Download latest official CBSE Sample Papers for Class ${cls?.number || '6-12'} Mathematics with step-by-step solutions and blueprints.`,
+        canonical: urls.studyMaterialCategory(cat.slug),
       },
     };
   }
 
-  throw new ApiError(404, 'Page not found');
+  // C. Dedicated CBSE Extra Questions page
+  if (categorySlug === 'cbse-extra-questions' || categorySlug === 'extra-questions') {
+    const classFilter = cls ? { class: cls._id } : {};
+    const [chapters, extraQuestions, resources] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean() : [],
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: { $in: ['extra_questions', 'general'] }, ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .limit(30)
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'chapter', select: 'number title slug' },
+          ...blockPopulate(),
+        ])
+        .lean(),
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['extra_questions', 'question_bank', 'worksheet'] }, ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    return {
+      type: 'extraQuestions',
+      data: {
+        category: cat,
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        questions: extraQuestions.map((q) => ({
+          ...q,
+          attachments: cleanAttachments(q.attachments),
+          blocks: cleanBlocks(q.blocks),
+        })),
+        resources: resources.map(formatResource),
+        categories: STUDY_MATERIAL_CATEGORIES,
+      },
+      breadcrumbs: crumbs,
+      seo: {
+        title: `CBSE Class ${cls?.number || '6-12'} Maths Extra Questions with Step-by-Step Solutions | Passion Maths Study`,
+        description: `Chapter-wise extra questions for CBSE Class ${cls?.number || '6-12'} Mathematics with detailed solutions, difficulty levels, and formulas.`,
+        canonical: urls.studyMaterialCategory(cat.slug),
+      },
+    };
+  }
+
+  // D. Dedicated VVI Questions page
+  if (categorySlug === 'vvi-questions' || categorySlug === 'important-questions') {
+    const classFilter = cls ? { class: cls._id } : {};
+    const [chapters, vviQuestions, resources] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean() : [],
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: { $in: ['vvi', 'general'] }, ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .limit(35)
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'chapter', select: 'number title slug' },
+          ...blockPopulate(),
+        ])
+        .lean(),
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['important_questions', 'vvi'] }, ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    return {
+      type: 'vviQuestions',
+      data: {
+        category: cat,
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        questions: vviQuestions.map((q) => ({
+          ...q,
+          attachments: cleanAttachments(q.attachments),
+          blocks: cleanBlocks(q.blocks),
+        })),
+        resources: resources.map(formatResource),
+        categories: STUDY_MATERIAL_CATEGORIES,
+      },
+      breadcrumbs: crumbs,
+      seo: {
+        title: `CBSE Class ${cls?.number || '6-12'} Maths VVI Questions (Board Special) | Passion Maths Study`,
+        description: `Most important VVI questions for CBSE Class ${cls?.number || '6-12'} Mathematics board exams with step-by-step solutions and marks weightage.`,
+        canonical: urls.studyMaterialCategory(cat.slug),
+      },
+    };
+  }
+
+  // E. Dedicated Maths Syllabus page
+  if (categorySlug === 'maths-syllabus' || categorySlug === 'syllabus') {
+    const classFilter = cls ? { class: cls._id } : {};
+    const [chapters, syllabusResources] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug shortDescription syllabusMarks image').populate({ path: 'image', select: MEDIA_SELECT }).lean() : [],
+      Resource.find(vis(Resource, preview, { resourceType: 'syllabus', ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    return {
+      type: 'mathsSyllabus',
+      data: {
+        category: cat,
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        resources: syllabusResources.map(formatResource),
+        topics: await Topic.find(vis(Topic, preview, { chapter: { $in: chapters.map((chapter) => chapter._id) } })).select('chapter title shortDescription number slug').sort({ sortOrder: 1, number: 1 }).lean(),
+        categories: STUDY_MATERIAL_CATEGORIES,
+      },
+      breadcrumbs: crumbs,
+      seo: {
+        title: `CBSE Class ${cls?.number || '6-12'} Maths Syllabus ${currentSession} | Chapter-wise Marks Distribution`,
+        description: `Official CBSE Class ${cls?.number || '6-12'} Mathematics syllabus for ${currentSession}, course structure, deleted topics, and question paper design.`,
+        canonical: urls.studyMaterialCategory(cat.slug),
+      },
+    };
+  }
+
+  // Generic fallback for any other study material category (e.g. ncert-books)
+  const resources = await Resource.find(vis(Resource, preview, { resourceType: { $in: categoryTypes }, ...(cls ? { class: cls._id } : {}) }))
+    .sort({ sortOrder: 1, createdAt: -1 })
+    .populate([
+      { path: 'class', select: 'number name slug' },
+      { path: 'chapter', select: 'number title slug' },
+      { path: 'file', select: MEDIA_SELECT },
+      { path: 'thumbnail', select: MEDIA_SELECT },
+    ])
+    .lean();
+
+  return {
+    type: 'studyMaterials',
+    data: {
+      level: segments.length === 3 ? 'categoryClass' : 'category',
+      category: cat,
+      class: cls,
+      classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
+      academicSessions: activeSessions,
+      currentSession,
+      resources: resources.map(formatResource),
+      categories: STUDY_MATERIAL_CATEGORIES,
+    },
+    breadcrumbs: crumbs,
+    seo: {
+      title: `${pick(cat.name, 'en')} for Class ${cls?.number || '6-12'} Maths | Passion Maths Study`,
+      description: describe(cat.shortDesc, `Download ${pick(cat.name, 'en')} for Classes 6 to 12 Mathematics in Hindi and English medium.`),
+      canonical: urls.studyMaterialCategory(cat.slug),
+    },
+  };
 }
 
-async function resolveReferenceSolutionsPath(segments, { preview, page, limit, previewToken, override, terms, home }) {
+async function resolveNotesPath(segments, { preview, page, limit, session, terms, home }) {
+  const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, session);
+  const notesCrumb = { label: { hi: 'गणित नोट्स व सूत्र', en: 'Maths Notes & Formulas' }, url: '/notes/ncert-chapter-wise-notes' };
+  const [classes, sessions] = await Promise.all([
+    ClassLevel.find(vis(ClassLevel, preview)).sort({ number: -1 }).select('number name slug').lean(),
+    AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean(),
+  ]);
+
+  const activeSessions = sessions.length ? sessions : [
+    { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true },
+    { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false },
+    { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false },
+  ];
+  const currentSession = session || activeSessions.find((s) => s.isCurrent)?.name || activeSessions[0]?.name || '2026–27';
+
+  // If /notes with no secondary segment, default to ncert-chapter-wise-notes
+  const subCategory = segments[1] || 'ncert-chapter-wise-notes';
+
+  // Determine class
+  let cls = null;
+  if (segments.length >= 3) {
+    cls = await findClassBySegment(segments[2], preview);
+  }
+  if (!cls) {
+    cls = classes.find((c) => c.number === 10) || classes[0] || null;
+  }
+
+  const classFilter = cls ? { class: cls._id } : {};
+
+  // 1. NCERT Chapter-wise Notes: /notes/ncert-chapter-wise-notes
+  if (subCategory === 'ncert-chapter-wise-notes' || subCategory === 'ncert-notes') {
+    const [chapters, notes, resources] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug shortDescription formulas').lean() : [],
+      Note.find(vis(Note, preview, { category: { $in: ['ncert_notes', 'general'] }, ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .populate([{ path: 'chapter', select: 'number title slug' }, { path: 'attachments.media', select: MEDIA_SELECT }])
+        .lean(),
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['ncert_notes', 'notes', 'revision'] }, ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'chapter', select: 'number title slug' }, { path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    return {
+      type: 'ncertNotes',
+      data: {
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: `/notes/ncert-chapter-wise-notes/class-${c.number}` })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        notes,
+        resources: resources.map(formatResource),
+      },
+      breadcrumbs: [home, notesCrumb, { label: { hi: 'NCERT अध्याय-वार नोट्स', en: 'NCERT Chapter-wise Notes' }, url: '/notes/ncert-chapter-wise-notes' }],
+      seo: {
+        title: `CBSE Class ${cls?.number || '6-12'} Maths NCERT Chapter-wise Notes | Passion Maths Study`,
+        description: `Complete NCERT Mathematics chapter-wise notes for Class ${cls?.number || '6-12'}, definitions, theorems, formulas, diagrams, and revision summaries.`,
+        canonical: `/notes/ncert-chapter-wise-notes`,
+      },
+    };
+  }
+
+  // 2. All Maths Formula Sheets: /notes/maths-formula-sheets
+  if (subCategory === 'maths-formula-sheets') {
+    const [chapters, formulaNotes, resources] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
+      Note.find(vis(Note, preview, { category: 'formula_sheet', ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .populate([{ path: 'chapter', select: 'number title slug' }])
+        .lean(),
+      Resource.find(vis(Resource, preview, { resourceType: 'formula_sheet', ...classFilter }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    const symbols = [
+      { symbol: '\\pi', name: { en: 'Pi', hi: 'पाई' }, approx: '\\approx 3.14159 \\text{ or } \\frac{22}{7}', use: { en: 'Circumference & Area of Circles', hi: 'वृत्त की परिधि और क्षेत्रफल' } },
+      { symbol: '\\sqrt{x}', name: { en: 'Square Root', hi: 'वर्गमूल' }, approx: 'x^{1/2}', use: { en: 'Radicals & Quadratics', hi: 'मूल और द्विघात समीकरण' } },
+      { symbol: '\\sum_{i=1}^n x_i', name: { en: 'Summation (Sigma)', hi: 'योग (सिग्मा)' }, approx: 'x_1 + x_2 + ... + x_n', use: { en: 'Statistics & Arithmetic Progressions', hi: 'सांख्यिकी और समांतर श्रेढ़ी' } },
+      { symbol: '\\Delta', name: { en: 'Discriminant', hi: 'विविक्तकर' }, approx: 'b^2 - 4ac', use: { en: 'Nature of roots of quadratic equation', hi: 'द्विघात समीकरण के मूलों की प्रकृति' } },
+      { symbol: '\\pm', name: { en: 'Plus-Minus', hi: 'धन-ऋण' }, approx: '+ \\text{ or } -', use: { en: 'Quadratic formula roots', hi: 'द्विघात सूत्र के दो हल' } },
+      { symbol: '\\theta, \\alpha, \\beta', name: { en: 'Angles / Roots', hi: 'कोण / मूल' }, approx: '\\text{Variables}', use: { en: 'Trigonometry & Polynomial zeroes', hi: 'त्रिकोणमिति और बहुपद के शून्यक' } },
+      { symbol: '\\sin^2 \\theta + \\cos^2 \\theta = 1', name: { en: 'Pythagorean Trig Identity', hi: 'त्रिकोणमितीय सर्वसमिका' }, approx: '1', use: { en: 'Trigonometric Simplifications', hi: 'त्रिकोणमिति मान' } },
+      { symbol: '\\int, \\frac{d}{dx}', name: { en: 'Calculus Operators', hi: 'कैलकुलस संकारक' }, approx: '\\text{Integral & Derivative}', use: { en: 'Higher Secondary Maths', hi: 'कक्षा 11 व 12 गणित' } },
+    ];
+
+    return {
+      type: 'formulaSheets',
+      data: {
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: `/notes/maths-formula-sheets/class-${c.number}` })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        formulaNotes,
+        resources: resources.map(formatResource),
+        symbols,
+      },
+      breadcrumbs: [home, notesCrumb, { label: { hi: 'सभी गणित सूत्र पत्रक', en: 'All Maths Formula Sheets' }, url: '/notes/maths-formula-sheets' }],
+      seo: {
+        title: `All Maths Formulas for Class ${cls?.number || '6-12'} | Complete Formula Sheet PDF`,
+        description: `Download Class ${cls?.number || '6-12'} Mathematics All Formula Sheets PDF, chapter-wise formulas, algebra, trigonometry, geometry, and symbols guide.`,
+        canonical: `/notes/maths-formula-sheets`,
+      },
+    };
+  }
+
+  // 3. Reference Book Formulas & Notes: RS Aggarwal, RD Sharma, KC Sinha
+  const isRs = subCategory === 'rs-aggarwal-formulas-notes';
+  const isRd = subCategory === 'rd-sharma-formulas-notes';
+  const isKc = subCategory === 'kc-sinha-formulas-notes';
+
+  if (isRs || isRd || isKc) {
+    const bookSlug = isRs ? 'rs-aggarwal' : isRd ? 'rd-sharma' : 'kc-sinha';
+    const bookTitle = isRs ? 'RS Aggarwal' : isRd ? 'RD Sharma' : 'KC Sinha';
+    const bookDoc = await Book.findOne(vis(Book, preview, { slug: bookSlug })).lean();
+
+    const [chapters, bookNotes, resources] = await Promise.all([
+      Chapter.find(vis(Chapter, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+        .sort({ sortOrder: 1, number: 1 })
+        .select('number title slug shortDescription formulas')
+        .lean(),
+      Note.find(vis(Note, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .lean(),
+      Resource.find(vis(Resource, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+        .sort({ createdAt: -1 })
+        .populate([{ path: 'file', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
+    return {
+      type: 'referenceBookNotes',
+      data: {
+        bookSlug,
+        bookTitle,
+        book: bookDoc,
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: `/notes/${subCategory}/class-${c.number}` })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        notes: bookNotes,
+        resources: resources.map(formatResource),
+      },
+      breadcrumbs: [home, notesCrumb, { label: { hi: `${bookTitle} सूत्र व नोट्स`, en: `${bookTitle} Formulas & Notes` }, url: `/notes/${subCategory}` }],
+      seo: {
+        title: `${bookTitle} Class ${cls?.number || '6-12'} Maths Formulas & Chapter Notes | Passion Maths Study`,
+        description: `Download ${bookTitle} Class ${cls?.number || '6-12'} Mathematics important formulas, theorem notes, worked examples, and quick revision PDF.`,
+        canonical: `/notes/${subCategory}`,
+      },
+    };
+  }
+
+  // 4. VVI Questions & Short Notes: /notes/vvi-questions-short-notes
+  if (subCategory === 'vvi-questions-short-notes') {
+    const [chapters, shortNotes, questions] = await Promise.all([
+      cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
+      Note.find(vis(Note, preview, { category: 'vvi_short_notes', ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .populate([{ path: 'chapter', select: 'number title slug' }])
+        .lean(),
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: 'vvi', ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .limit(20)
+        .populate([
+          { path: 'class', select: 'number name slug' },
+          { path: 'chapter', select: 'number title slug' },
+          ...blockPopulate(),
+        ])
+        .lean(),
+    ]);
+
+    return {
+      type: 'vviShortNotes',
+      data: {
+        class: cls,
+        classes: classes.map((c) => ({ ...c, url: `/notes/vvi-questions-short-notes/class-${c.number}` })),
+        academicSessions: activeSessions,
+        currentSession,
+        chapters,
+        shortNotes,
+        questions: questions.map((q) => ({
+          ...q,
+          attachments: cleanAttachments(q.attachments),
+          blocks: cleanBlocks(q.blocks),
+        })),
+      },
+      breadcrumbs: [home, notesCrumb, { label: { hi: 'VVI प्रश्न व संक्षिप्त नोट्स', en: 'VVI Questions & Short Notes' }, url: '/notes/vvi-questions-short-notes' }],
+      seo: {
+        title: `VVI Questions & Short Notes for Class ${cls?.number || '6-12'} Maths | Rapid Revision`,
+        description: `Rapid revision short notes, high-yield VVI questions, and formula cheat-sheets for Class ${cls?.number || '6-12'} Mathematics board preparation.`,
+        canonical: `/notes/vvi-questions-short-notes`,
+      },
+    };
+  }
+
+  throw new ApiError(404, 'Notes page not found');
+}
+
+async function resolveReferenceSolutionsPath(segments, { preview, page, limit, session, previewToken, override, terms, home }) {
+  const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, session);
   const refCrumb = { label: { hi: 'संदर्भ समाधान', en: 'Reference Solutions' }, url: urls.referenceSolutions() };
 
   // Load registered reference books from DB + canonical list
-  const dbBooks = await Book.find({ category: 'reference' })
-    .sort({ sortOrder: 1, createdAt: -1 })
-    .populate({ path: 'coverImage', select: MEDIA_SELECT })
-    .lean();
+  const [dbBooks, sessions] = await Promise.all([
+    Book.find(vis(Book, preview, { category: 'reference' }))
+      .sort({ sortOrder: 1, createdAt: -1 })
+      .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
+      .lean(),
+    AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean(),
+  ]);
+
+  const activeSessions = sessions.length ? sessions : [
+    { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true },
+    { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false },
+    { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false },
+  ];
+  const currentSession = session || activeSessions.find((s) => s.isCurrent)?.name || activeSessions[0]?.name || '2026–27';
 
   const rootSlug = segments[0] || 'reference-solutions';
   const allBooksMap = new Map();
-  for (const b of CANONICAL_REFERENCE_BOOKS) allBooksMap.set(b.slug, { ...b, classes: b.classes || [6, 7, 8, 9, 10, 11, 12], url: `/${rootSlug}/${b.slug}` });
   for (const b of dbBooks) {
     if (b.slug) {
       if (!preview && (b.status !== 'published' || !b.isVisible || !b.publishedAt || new Date(b.publishedAt) > new Date())) {
@@ -503,7 +995,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
       allBooksMap.set(b.slug, {
         ...existing,
         ...b,
-        classes: (b.availableClasses && b.availableClasses.length > 0) ? b.availableClasses : (existing.classes || [6, 7, 8, 9, 10, 11, 12]),
+        classes: (b.availableClasses && b.availableClasses.length > 0) ? b.availableClasses : (b.class?.number ? [b.class.number] : []),
         url: `/${rootSlug}/${b.slug}`,
       });
     }
@@ -523,6 +1015,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
         level: 'hub',
         books: allBooks,
         classes: classes.map((c) => ({ ...c, url: urls.class(c) })),
+        academicSessions: activeSessions,
+        currentSession,
       },
       breadcrumbs: [home, refCrumb],
       seo: {
@@ -545,8 +1039,10 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
       data: {
         level: 'book',
         book,
-        classes: classes.map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
+        classes: classes.filter((c) => book.classes?.includes(c.number)).map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
         books: allBooks,
+        academicSessions: activeSessions,
+        currentSession,
       },
       breadcrumbs: [home, refCrumb, bookCrumb],
       seo: seoFor(book, {
@@ -560,10 +1056,12 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   // 3. Book Class page: /reference-solutions/:bookSlug/class-:number
   const cls = await findClassBySegment(segments[2], preview);
   if (!cls) throw new ApiError(404, 'Class not found');
+  if (Array.isArray(book.classes) && book.classes.length && !book.classes.includes(cls.number)) throw new ApiError(404, 'This reference book is not configured for the selected class');
+  if (Array.isArray(book.classes) && book.classes.length === 0) throw new ApiError(404, 'This reference book has no supported classes configured');
   const classCrumb = { label: { hi: `कक्षा ${cls.number}`, en: `Class ${cls.number}` }, url: urls.referenceBookClass(book, cls) };
 
   const dbBookDoc = dbBooks.find((b) => b.slug === bookSlug);
-  const bookFilter = dbBookDoc ? { $or: [{ book: dbBookDoc._id }, { book: null }] } : { book: null };
+  const bookFilter = { book: dbBookDoc._id };
 
   const rawChapters = await Chapter.find(vis(Chapter, preview, { class: cls._id, ...bookFilter }))
     .sort({ sortOrder: 1, number: 1 })
@@ -594,10 +1092,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   const chapters = rawChapters.map((ch) => ({
     ...ch,
     url: urls.referenceChapter(book, cls, ch),
-    exercises: exercisesByChapter.get(String(ch._id)) || [
-      { number: `${ch.number}A`, slug: `exercise-${ch.number}a`, url: `${urls.referenceChapter(book, cls, ch)}/exercise-${ch.number}a` },
-      { number: `${ch.number}B`, slug: `exercise-${ch.number}b`, url: `${urls.referenceChapter(book, cls, ch)}/exercise-${ch.number}b` },
-    ],
+    exercises: exercisesByChapter.get(String(ch._id)) || [],
   }));
 
   if (segments.length === 3) {
@@ -610,6 +1105,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
         chapters,
         books: allBooks,
         classes: classes.map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
+        academicSessions: activeSessions,
+        currentSession,
       },
       breadcrumbs: [home, refCrumb, bookCrumb, classCrumb],
       seo: {
@@ -631,7 +1128,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
   const chapterExercises = chapter.exercises || [];
 
   const [resources, siblingChapters] = await Promise.all([
-    Resource.find(vis(Resource, preview, { class: cls._id, $or: [{ chapter: chapter._id }, { resourceType: 'solution' }] }))
+    Resource.find(vis(Resource, preview, { class: cls._id, chapter: chapter._id }))
       .sort({ sortOrder: 1, createdAt: -1 })
       .populate([
         { path: 'file', select: MEDIA_SELECT },
@@ -658,6 +1155,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
         siblingChapters,
         prev: prevChapter ? { label: prevChapter.title, url: urls.referenceChapter(book, cls, prevChapter) } : null,
         next: nextChapter ? { label: nextChapter.title, url: urls.referenceChapter(book, cls, nextChapter) } : null,
+        academicSessions: activeSessions,
+        currentSession,
       },
       breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb],
       seo: {
@@ -683,15 +1182,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
     ])
     .lean();
 
-  if (!exercise) {
-    exercise = {
-      _id: `ref-${bookSlug}-${cls.number}-${chapter.number}-${exClean}`,
-      number: exClean.toUpperCase(),
-      slug: exerciseSegment,
-      title: { hi: `अभ्यास ${exClean.toUpperCase()}`, en: `Exercise ${exClean.toUpperCase()}` },
-      description: { hi: `${pick(book.title, 'hi')} अध्याय ${chapter.number} का अभ्यास हल`, en: `${pick(book.title, 'en')} Chapter ${chapter.number} Exercise Solutions` },
-    };
-  }
+  if (!exercise) throw new ApiError(404, 'Exercise not found');
 
   const exerciseCrumb = { label: { hi: `अभ्यास ${exercise.number}`, en: `Exercise ${exercise.number}` }, url: urls.referenceExercise(book, cls, chapter, exercise) };
 
@@ -739,6 +1230,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, p
       prev: prevEx ? { label: `Exercise ${prevEx.number}`, url: urls.referenceExercise(book, cls, chapter, prevEx) } : null,
       next: nextEx ? { label: `Exercise ${nextEx.number}`, url: urls.referenceExercise(book, cls, chapter, nextEx) } : null,
       resources: resources.map(formatResource),
+      academicSessions: activeSessions,
+      currentSession,
     },
     breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb, exerciseCrumb],
     seo: {
@@ -858,7 +1351,9 @@ async function resolveStateBoardsPath(segments, { preview, terms, home }) {
   };
 }
 
-export async function resolvePath(pathname, { preview = false, page = 1, limit = 15, previewToken } = {}) {
+export async function resolvePath(pathname, { preview = false, page = 1, limit = 15, session, previewToken } = {}) {
+  const effectiveSession = session || (await AcademicSession.findOne({ isActive: true, isCurrent: true }).select('slug').lean())?.slug || '2026-27';
+  const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, effectiveSession);
   const segments = String(pathname || '/')
     .split('?')[0]
     .split('/')
@@ -872,7 +1367,13 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   if (segments.length === 0) return { type: 'home' };
 
   if (segments[0] === 'study-materials') {
-    return resolveStudyMaterialsPath(segments, { preview, page, limit, terms, home });
+    const key = segments.length > 1 ? `study-materials/${segments[1]}` : 'study-materials';
+    return attachLanding(await resolveStudyMaterialsPath(segments, { preview, page, limit, session: effectiveSession, terms, home }), key, preview, override);
+  }
+
+  if (segments[0] === 'notes') {
+    const key = `notes/${segments[1] || 'ncert-chapter-wise-notes'}`;
+    return attachLanding(await resolveNotesPath(segments, { preview, page, limit, session: effectiveSession, terms, home }), key, preview, override);
   }
 
   if (segments[0] === 'state-boards') {
@@ -880,7 +1381,8 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   }
 
   if (segments[0] === 'reference-solutions' || segments[0] === 'reference-books') {
-    return resolveReferenceSolutionsPath(segments, { preview, page, limit, previewToken, override, terms, home });
+    const key = segments.length > 1 ? `reference-solutions/${segments[1]}` : 'reference-solutions';
+    return attachLanding(await resolveReferenceSolutionsPath(segments, { preview, page, limit, session: effectiveSession, previewToken, override, terms, home }), key, preview, override);
   }
 
   const ctx = await loadSubjectContext(segments, preview);
@@ -929,7 +1431,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
       .select('number title slug shortDescription image status featured')
       .populate({ path: 'image', select: MEDIA_SELECT })
       .lean();
-    const counts = await countsForChapters(chapters.map((c) => c._id), preview);
+    const counts = await countsForChapters(chapters.map((c) => c._id), preview, effectiveSession);
 
     let exercisesByChapter = new Map();
     if (withExercises) {
@@ -937,7 +1439,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
         .sort({ sortOrder: 1, number: 1 })
         .select('number title slug chapter status')
         .lean();
-      const qCounts = await countsForExercises(exercises.map((e) => e._id), preview);
+      const qCounts = await countsForExercises(exercises.map((e) => e._id), preview, effectiveSession);
       exercisesByChapter = exercises.reduce((map, e) => {
         const key = String(e.chapter);
         const ch = chapters.find((c) => String(c._id) === key);
@@ -973,19 +1475,30 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   };
 
   if (segments.length === 2) {
-    const [chapters, noteCount, resourceCount, bookCount, importantCount] = await Promise.all([
+    const [chapters, noteCount, resourceCount, bookCount, importantCount, sessions] = await Promise.all([
       chapterList(true, true),
       Note.countDocuments(vis(Note, preview, scope)),
       Resource.countDocuments(vis(Resource, preview, scope)),
       Book.countDocuments(vis(Book, preview, { class: cls._id })),
       ImportantQuestion.countDocuments(vis(ImportantQuestion, preview, scope)),
+      AcademicSession.find({ isActive: true }).sort({ sortOrder: 1, year: -1 }).lean(),
     ]);
+
+    const activeSessions = sessions.length ? sessions : [
+      { name: '2026–27', slug: '2026-27', year: 2026, isCurrent: true },
+      { name: '2025–26', slug: '2025-26', year: 2025, isCurrent: false },
+      { name: '2024–25', slug: '2024-25', year: 2024, isCurrent: false },
+    ];
+    const currentSession = session || activeSessions.find((s) => s.isCurrent)?.name || activeSessions[0]?.name || '2026–27';
+
     return {
       type: 'subject',
       data: {
         class: cls,
         subject,
         chapters,
+        academicSessions: activeSessions,
+        currentSession,
         noteCount,
         resourceCount,
         bookCount,
@@ -1212,7 +1725,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
       ImportantQuestion.countDocuments(vis(ImportantQuestion, preview, { chapter: ch._id })),
     ]);
 
-    const qCounts = await countsForExercises(exercises.map((e) => e._id), preview);
+    const qCounts = await countsForExercises(exercises.map((e) => e._id), preview, effectiveSession);
     const siblings = await Chapter.find(vis(Chapter, preview, scope)).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean();
     const index = siblings.findIndex((s) => String(s._id) === String(ch._id));
     const nav = (s) => s && { label: term(terms, 'chapter', s.number), title: s.title, url: urls.chapter(cls, subject, s) };
@@ -1281,7 +1794,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
         { path: 'attachments.media', select: MEDIA_SELECT },
       ]);
     }
-    return shapeTopic(topicDoc, { cls, subject, ch, preview, override, terms, baseCrumbs: crumbsBase });
+    return shapeTopic(topicDoc, { cls, subject, ch, preview, override, terms, baseCrumbs: crumbsBase, session: effectiveSession });
   }
 
   // Check for segment 3 in 4-segment URLs
@@ -1305,7 +1818,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
           { path: 'attachments.media', select: MEDIA_SELECT },
         ]);
       }
-      return shapeTopic(topicDoc, { cls, subject, ch, preview, override, terms, baseCrumbs: crumbsBase });
+      return shapeTopic(topicDoc, { cls, subject, ch, preview, override, terms, baseCrumbs: crumbsBase, session: effectiveSession });
     }
 
     // 2. Is it an Exercise?

@@ -2,6 +2,7 @@ import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate, useLocation, useSearchParams } from 'react-router';
+import { useEffect } from 'react';
 import { PreviewBanner } from '@/components/site/PreviewBanner.jsx';
 import { Seo, breadcrumbSchema } from '@/components/site/Seo.jsx';
 import { ErrorState, NotFoundContent, PageSkeleton } from '@/components/site/States.jsx';
@@ -23,6 +24,17 @@ import ResourcesListPage from './content/ResourcesListPage.jsx';
 import StudyMaterialsPage from './content/StudyMaterialsPage.jsx';
 import ReferenceSolutionsPage from './content/ReferenceSolutionsPage.jsx';
 import StateBoardsPage from './content/StateBoardsPage.jsx';
+import PreviousYearQuestionsPage from './content/PreviousYearQuestionsPage.jsx';
+import SamplePapersPage from './content/SamplePapersPage.jsx';
+import ExtraQuestionsPage from './content/ExtraQuestionsPage.jsx';
+import VviQuestionsPage from './content/VviQuestionsPage.jsx';
+import MathsSyllabusPage from './content/MathsSyllabusPage.jsx';
+import NcertNotesPage from './content/NcertNotesPage.jsx';
+import FormulaSheetsPage from './content/FormulaSheetsPage.jsx';
+import ReferenceBookNotesPage from './content/ReferenceBookNotesPage.jsx';
+import VviShortNotesPage from './content/VviShortNotesPage.jsx';
+import LandingSections from './content/LandingSections.jsx';
+import { LandingContext } from './content/LandingContext.jsx';
 
 // API page type → template. Every URL below "/" is resolved from the database; no routes are hardcoded.
 const TEMPLATES = {
@@ -42,6 +54,15 @@ const TEMPLATES = {
   exercise: ExercisePage,
   question: QuestionPage,
   page: StaticPage,
+  pyq: PreviousYearQuestionsPage,
+  samplePapers: SamplePapersPage,
+  extraQuestions: ExtraQuestionsPage,
+  vviQuestions: VviQuestionsPage,
+  mathsSyllabus: MathsSyllabusPage,
+  ncertNotes: NcertNotesPage,
+  formulaSheets: FormulaSheetsPage,
+  referenceBookNotes: ReferenceBookNotesPage,
+  vviShortNotes: VviShortNotesPage,
 };
 const ARTICLE_TYPES = new Set(['chapter', 'exercise', 'question', 'note', 'topic']);
 
@@ -49,15 +70,28 @@ const ARTICLE_TYPES = new Set(['chapter', 'exercise', 'question', 'note', 'topic
 export default function ContentPage() {
   useUiLanguage();
   const location = useLocation();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const { lang } = useLang();
   const preview = params.get('preview') === '1';
   const previewToken = params.get('previewToken') || undefined;
+  const session = params.get('session') || window.localStorage.getItem('pms.academicSession') || undefined;
   const path = location.pathname;
 
+  useEffect(() => {
+    if (!session) return;
+    window.localStorage.setItem('pms.academicSession', session);
+    if (!params.has('session')) {
+      setParams((previous) => {
+        const next = new URLSearchParams(previous);
+        next.set('session', session);
+        return next;
+      }, { replace: true });
+    }
+  }, [session, params, setParams]);
+
   const query = useQuery({
-    queryKey: ['resolve', path, preview, previewToken, lang],
-    queryFn: () => get('/public/resolve', { path, lang, preview: preview ? 1 : undefined, previewToken }),
+    queryKey: ['resolve', path, preview, previewToken, lang, session],
+    queryFn: () => get('/public/resolve', { path, lang, preview: preview ? 1 : undefined, previewToken, session }),
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
@@ -105,7 +139,10 @@ export default function ContentPage() {
         jsonLd={[breadcrumbSchema(result.breadcrumbs, lang), faq]}
       />
       {preview && <PreviewBanner />}
-      <Template key={`${path}:${lang}`} data={result.data} breadcrumbs={result.breadcrumbs} related={result.related} seo={seo} path={path} preview={preview} previewToken={previewToken} />
+      <LandingContext.Provider value={result.data?.landingPage || null}>
+        <Template key={`${path}:${lang}`} data={result.data} pageType={result.type} breadcrumbs={result.breadcrumbs} related={result.related} seo={seo} path={path} preview={preview} previewToken={previewToken} />
+      </LandingContext.Provider>
+      <LandingSections page={result.data?.landingPage} />
     </>
   );
 }

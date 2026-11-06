@@ -210,10 +210,10 @@ export function MainNavbar({ onOpenMobileMenu }) {
     if (!rawItems.length) {
       return [
         { label: { hi: 'होम', en: 'Home' }, url: '/', type: 'link' },
-        { label: { hi: 'गणित', en: 'Mathematics' }, url: '', type: 'classes' },
+        { label: { hi: 'NCERT गणित', en: 'NCERT Mathematics' }, url: '', type: 'classes' },
         { label: { hi: 'संदर्भ पुस्तकें', en: 'Reference Books' }, url: '/reference-solutions', type: 'reference-books' },
-        { label: { hi: 'महत्वपूर्ण प्रश्न', en: 'Important Questions' }, url: '/class-10/maths/important-questions', type: 'dropdown' },
-        { label: { hi: 'नोट्स', en: 'Notes' }, url: '/class-10/maths/notes', type: 'dropdown' },
+        { label: { hi: 'महत्वपूर्ण प्रश्न', en: 'Important Questions' }, url: '/study-materials/previous-year-questions', type: 'dropdown' },
+        { label: { hi: 'नोट्स', en: 'Notes' }, url: '/notes/ncert-chapter-wise-notes', type: 'dropdown' },
         { label: { hi: 'हमारे बारे में', en: 'About Us' }, url: '/about-us', type: 'link' },
       ];
     }
@@ -396,15 +396,6 @@ export function MainNavbar({ onOpenMobileMenu }) {
           {/* Language Switcher (Hindi / English) */}
           {site?.settings?.header?.showLanguageSwitch !== false && (
             <LanguageSwitcher />
-          )}
-
-          {/* Configured Login Button */}
-          {site?.settings?.header?.showLoginButton && (
-            <Button size="sm" asChild>
-              <SmartLink allowAdmin to={site.settings.header.loginUrl || '/login'}>
-                {t(site.settings.header.loginLabel) || uiText("Login")}
-              </SmartLink>
-            </Button>
           )}
 
           {/* Mobile Menu Trigger Button */}

@@ -79,7 +79,7 @@ export function BooksList() {
         {
           get header() { return uiText("Available Classes"); },
           cell: (b) => {
-            const classes = b.availableClasses?.length ? b.availableClasses : [6, 7, 8, 9, 10, 11, 12];
+            const classes = b.availableClasses?.length ? b.availableClasses : (b.class?.number ? [b.class.number] : []);
             return (
               <div className="flex flex-wrap gap-1 max-w-[200px]">
                 {classes.map((c) => (
@@ -175,7 +175,7 @@ export function BookEditor({ id }) {
       category: 'reference',
       description: { hi: '', en: '', mixed: '' },
       recommendedFor: { hi: '', en: '', mixed: '' },
-      availableClasses: [6, 7, 8, 9, 10, 11, 12],
+      availableClasses: [],
       coverImage: null,
       coverUrl: '',
       purchaseUrl: '',
@@ -208,7 +208,7 @@ export function BookEditor({ id }) {
 
   const currentClasses = Array.isArray(doc?.availableClasses)
     ? doc.availableClasses
-    : [6, 7, 8, 9, 10, 11, 12];
+    : (doc?.class?.number ? [doc.class.number] : []);
 
   const toggleClass = (num) => {
     const list = [...currentClasses];

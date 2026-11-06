@@ -34,7 +34,9 @@ export const router = createBrowserRouter([
       {
         element: <PublicLayout />,
         children: [
-          ...['login', 'register', 'forgot-password', 'reset-password'].map(path => ({ path, lazy: lazyPage(() => import('@/pages/StudentAccountPage.jsx')) })),
+          { path: 'login', element: <Navigate to="/" replace /> },
+          { path: 'register', element: <Navigate to="/" replace /> },
+          ...['forgot-password', 'reset-password'].map(path => ({ path, lazy: lazyPage(() => import('@/pages/StudentAccountPage.jsx')) })),
           { index: true, element: <HomePage /> },
           { path: 'search', lazy: lazyPage(() => import('@/pages/SearchPage.jsx')) },
           { path: '*', lazy: lazyPage(() => import('@/pages/ContentPage.jsx')) },

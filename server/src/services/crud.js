@@ -59,6 +59,7 @@ export function crudRouter(Model, options = {}) {
     afterDelete,
     prepareDuplicate,
     serialize = async (doc) => doc,
+    serializeList,
     extend,
   } = options;
 
@@ -124,7 +125,8 @@ export function crudRouter(Model, options = {}) {
       Model.find(filter).sort(sort).skip(skip).limit(limit).populate(populate.list || []).lean(),
       Model.countDocuments(filter),
     ]);
-    const response = { items, total, page, limit, pages: Math.ceil(total / limit) || 1 };
+    const serializedItems = serializeList ? await serializeList(items, req) : items;
+    const response = { items: serializedItems, total, page, limit, pages: Math.ceil(total / limit) || 1 };
     res.json(adminScope || !publicRead ? response : projectLanguage(response,requestLanguage(req)));
   });
 
