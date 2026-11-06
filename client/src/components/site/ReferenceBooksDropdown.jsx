@@ -1,3 +1,4 @@
+import { isPathActive } from '@/lib/navigationActive.js';
 import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
@@ -15,12 +16,20 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
   const t = useInterfaceL10n();
   const term = useTerm();
   const location = useLocation();
-  const path = currentPath || location.pathname;
+  const path = currentPath || location.pathname + location.search + location.hash;
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeBookSlug, setActiveBookSlug] = useState(null);
   const containerRef = useRef(null);
   const timeoutRef = useRef(null);
+  const clickedOpen = useRef(false);
+
+  useEffect(() => {
+    clearTimeout(timeoutRef.current);
+    setIsOpen(false);
+    setActiveBookSlug(null);
+    clickedOpen.current = false;
+  }, [location.pathname, location.search, location.hash]);
 
   const books = getReferenceBooks(site);
 
@@ -53,7 +62,10 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsOpen(true);
+    if (window.matchMedia('(hover: hover)').matches) {
+      if (!isOpen) clickedOpen.current = false;
+      setIsOpen(true);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -75,7 +87,12 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
       {/* Trigger Button: Matches existing Mathematics dropdown design exactly */}
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          clearTimeout(timeoutRef.current);
+          const next = !isOpen || !clickedOpen.current;
+          clickedOpen.current = next;
+          setIsOpen(next);
+        }}
         aria-expanded={isOpen}
         aria-haspopup="menu"
         className={cn(
@@ -108,7 +125,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                 .slice()
                 .sort((a, b) => a - b);
               const isHovered = activeBookSlug === book.slug;
-              const isBookActive = path.includes(book.slug);
+              const isBookActive = isPathActive(referenceBookUrl(book), path) && !/\/class-\d+/.test(path);
 
               return (
                 <div
@@ -118,13 +135,14 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                 >
                   <Link
                     to={referenceBookUrl(book)}
+                    aria-current={isBookActive ? 'page' : undefined}
                     onClick={() => {
                       setIsOpen(false);
                       setActiveBookSlug(null);
                     }}
                     className={cn(
                       'flex items-center justify-between rounded-lg px-3 py-2 text-xs xl:text-sm font-medium transition-colors duration-150 hover:bg-muted hover:text-brand',
-                      isHovered || isBookActive
+                      isBookActive
                         ? 'bg-muted text-brand font-semibold'
                         : 'text-foreground/85',
                     )}
@@ -153,13 +171,14 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                           <Link
                             key={clsNum}
                             to={`/reference-solutions/${book.slug}/class-${clsNum}`}
+                            aria-current={isPathActive(`/reference-solutions/${book.slug}/class-${clsNum}`, path) ? 'page' : undefined}
                             onClick={() => {
                               setIsOpen(false);
                               setActiveBookSlug(null);
                             }}
                             className={cn(
                               'flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs xl:text-sm font-medium transition-colors duration-150 hover:bg-brand/10 hover:text-brand hover:font-bold',
-                              path === `/reference-solutions/${book.slug}/class-${clsNum}`
+                              isPathActive(`/reference-solutions/${book.slug}/class-${clsNum}`, path)
                                 ? 'bg-brand/10 font-bold text-brand'
                                 : 'text-foreground/80',
                             )}

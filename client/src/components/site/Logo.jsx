@@ -5,7 +5,7 @@ import { useInterfaceL10n } from '@/lib/i18n';
 import { useBrand } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
-export function Logo({ className, showText = true, textClassName, variant = 'header' }) {
+export function Logo({ className, showText = true, textClassName, variant = 'header', onClick }) {
   useUiLanguage();
   const brand = useBrand();
   const t = useInterfaceL10n();
@@ -17,6 +17,7 @@ export function Logo({ className, showText = true, textClassName, variant = 'hea
   return (
     <Link
       to="/"
+      onClick={onClick}
       className={cn('group flex shrink-0 items-center gap-3', className)}
       aria-label={uiTemplate`${name} – Home`}
     >

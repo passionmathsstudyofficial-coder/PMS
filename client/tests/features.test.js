@@ -305,7 +305,7 @@ test('study dropdowns show requested destinations and support exclusive opening,
  const button=label=>[...host.querySelectorAll('button')].find(el=>el.textContent===label);
  await act(async()=>button('Important Questions').click());
  assert.equal(host.querySelectorAll('[role="menuitem"]').length,5);
- assert.equal(host.querySelector('[role="menuitem"]').getAttribute('href'),'/study-materials/cbse-sample-papers');
+ assert.equal(host.querySelector('[role="menuitem"]').getAttribute('href'),'/study-materials/cbse-sample-papers?view=pyq');
  await act(async()=>button('Notes').click());
  assert.equal(button('Important Questions').getAttribute('aria-expanded'),'false');
  assert.equal(host.querySelectorAll('[role="menuitem"]').length,6);
@@ -322,5 +322,56 @@ test('study dropdowns show requested destinations and support exclusive opening,
  await act(async()=>button('Notes').click());
  await act(async()=>host.querySelector('[role="menuitem"]').click());
  assert.equal(host.querySelector('[role="menu"]'),null);
+ await act(async()=>button('Notes').click());
+ assert.equal(host.querySelectorAll('[role="menuitem"][aria-current="page"]').length,1);
+ assert.equal(host.querySelector('[aria-current="page"]').textContent,'NCERT Chapter-wise Notes');
+ await act(async()=>[...host.querySelectorAll('[role="menuitem"]')].find(el=>el.textContent==='All Maths Formula Sheets').click());
+ await act(async()=>button('Notes').click());
+ assert.equal(host.querySelectorAll('[role="menuitem"][aria-current="page"]').length,1);
+ assert.equal(host.querySelector('[aria-current="page"]').textContent,'All Maths Formula Sheets');
  await act(async()=>root.unmount());host.remove();client.clear();
+});
+
+
+test('mobile CMS Mathematics builds missing classes, keeps independent accordion state and navigates once', async()=>{
+ const {MobileMenu}=await vite.ssrLoadModule('/src/components/site/MobileMenu.jsx');
+ const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
+ const {api}=await vite.ssrLoadModule('/src/lib/api.js');
+ const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
+ const {createMemoryRouter,RouterProvider}=await import('react-router');
+ const original=api.defaults.adapter;
+ api.defaults.adapter=async config=>({data:config.url.includes('revision')?{revision:'test'}:site,status:200,statusText:'OK',headers:{},config});
+ const site={navigation:{header:[
+  {_id:'math',type:'classes',label:{en:'Mathematics'},children:[]},
+  {_id:'notes',type:'dropdown',label:{en:'Notes'},children:[]},
+ ]},referenceBooks:[{slug:'custom-book',title:{en:'Configured book'},availableClasses:[10]}]};
+ const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
+ client.setQueryData(['site','en'],site);
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ let closes=0;
+ const router=createMemoryRouter([{path:'*',element:React.createElement(SiteProvider,null,React.createElement(MobileMenu,{open:true,onClose:()=>closes++}))}]);
+ try{
+  await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(RouterProvider,{router}))));
+  const dialog=document.querySelector('[role="dialog"]');
+  const button=name=>[...dialog.querySelectorAll('button')].find(el=>el.textContent===name);
+  await act(async()=>button('Mathematics').click());
+  const maths=button('Mathematics');
+  const panel=document.getElementById(maths.getAttribute('aria-controls'));
+  assert.deepEqual([...panel.querySelectorAll('a')].map(link=>link.textContent),[12,11,10,9,8,7,6].map(n=>`Class ${n} Maths`));
+  assert.equal(panel.querySelector('[aria-current="page"]'),null);
+  await act(async()=>maths.click()); assert.equal(maths.getAttribute('aria-expanded'),'false');
+  await act(async()=>maths.click());
+  await act(async()=>button('Notes').click());
+  assert.equal(maths.getAttribute('aria-expanded'),'false');
+  assert.equal(button('Notes').getAttribute('aria-expanded'),'true');
+  await act(async()=>maths.click());
+  await act(async()=>dialog.querySelector('a[href="/class-12/maths"]').click());
+  assert.equal(router.state.location.pathname,'/class-12/maths'); assert.equal(closes,1);
+  assert.equal(maths.getAttribute('aria-expanded'),'false');
+  const reference=[...dialog.querySelectorAll('button')].find(el=>el.textContent.includes('Reference Books'));
+  await act(async()=>reference.click());
+  assert.ok(button('Configured book'));assert.equal(button('R.S. Aggarwal Solutions'),undefined);
+ }finally{
+  await act(async()=>root.unmount());host.remove();router.dispose();client.clear();api.defaults.adapter=original;
+ }
 });

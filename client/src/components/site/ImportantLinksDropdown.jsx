@@ -1,3 +1,4 @@
+import { activeNavigationItem } from '@/lib/navigationActive.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -127,12 +128,13 @@ export function ImportantLinksDropdown({ item, label = uiText('Important Links')
               {children.map((child) => {
                 const childLabel = t(child.label) || '';
                 const clean = child.url?.split('?')[0].split('#')[0] || '';
-                const isChildActive = clean === '/' ? currentPath === '/' : currentPath === clean;
+                const isChildActive = activeNavigationItem(children, location.pathname + location.search + location.hash) === child;
 
                 return (
                   <SmartLink
                     key={child._id || child.url}
                     to={child.url}
+                    aria-current={isChildActive ? 'page' : undefined}
                     newTab={child.newTab}
                     onClick={() => setIsOpen(false)}
                     className={cn(

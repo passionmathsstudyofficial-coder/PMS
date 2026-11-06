@@ -1,4 +1,6 @@
-import { studyNavigationItem } from '@/lib/studyNavigation.js';
+import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { isPathActive, activeNavigationItem } from '@/lib/navigationActive.js';
+import { navigationChildren, navigationId, studyNavigationItem } from '@/lib/studyNavigation.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,16 +9,10 @@ import {
   BookOpen,
   ChevronDown,
   ChevronRight,
-  GraduationCap,
-  Home,
-  Info,
   Library,
-  Mail,
-  Search,
-  Sparkles,
   X,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
@@ -27,40 +23,6 @@ import { SearchBar } from './SearchBar.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { ThemeToggle } from './ThemeToggle.jsx';
 
-const DEFAULT_BOOKS = [
-  {
-    slug: 'rs-aggarwal',
-    title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'R.S. Aggarwal Solutions' },
-    author: 'R.S. Aggarwal',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'rd-sharma',
-    title: { hi: 'आर.डी. शर्मा समाधान', en: 'R.D. Sharma Solutions' },
-    author: 'Dr. R.D. Sharma',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'kc-sinha',
-    title: { hi: 'के.सी. सिन्हा समाधान', en: 'K.C. Sinha Solutions' },
-    author: 'Dr. K.C. Sinha',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'ml-aggarwal',
-    title: { hi: 'एम.एल. अग्रवाल समाधान', en: 'M.L. Aggarwal Solutions' },
-    author: 'M.L. Aggarwal',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-];
-
-function isPathActive(targetUrl, currentPath) {
-  if (!targetUrl) return false;
-  const cleanTarget = targetUrl.split('?')[0].split('#')[0];
-  if (cleanTarget === '/') return currentPath === '/';
-  return currentPath === cleanTarget || currentPath.startsWith(cleanTarget + '/');
-}
-
 // Multi-level accordion for Reference Books on Mobile:
 // Reference Books -> expands to Books -> expands to Classes (6-12)
 function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose }) {
@@ -68,11 +30,10 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
   const site = useSite();
   const t = useInterfaceL10n();
 
-  const [expandedBook, setExpandedBook] = useState('rs-aggarwal');
+  const [expandedBook, setExpandedBook] = useState(null);
 
-  const books = Array.isArray(site?.referenceBooks)
-    ? site.referenceBooks
-    : DEFAULT_BOOKS;
+  const books = getReferenceBooks(site);
+  const panelId = useId();
 
   const isMainActive =
     currentPath.startsWith('/reference-books') ||
@@ -84,6 +45,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
+        aria-controls={panelId}
         className={cn(
           'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
           isMainActive ? 'text-brand bg-brand/5' : 'text-foreground',
@@ -108,6 +70,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
+            id={panelId}
             className="overflow-hidden pl-4 pr-1 pt-1 pb-2 space-y-2"
           >
             {books.map((book) => {
@@ -117,7 +80,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
                   ? book.availableClasses
                   : [6, 7, 8, 9, 10, 11, 12];
               const isBookOpen = expandedBook === book.slug;
-              const isBookActive = currentPath.includes(book.slug);
+              const isBookActive = isPathActive(`/reference-solutions/${book.slug}`, currentPath) && !/\/class-\d+/.test(currentPath);
 
               return (
                 <div
@@ -127,6 +90,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
                   <button
                     type="button"
                     onClick={() => setExpandedBook(isBookOpen ? null : book.slug)}
+                    aria-expanded={isBookOpen}
                     className={cn(
                       'flex w-full items-center justify-between px-3 py-2 text-left text-xs font-bold transition-colors hover:bg-muted/60',
                       isBookActive ? 'text-brand font-extrabold' : 'text-foreground',
@@ -158,7 +122,8 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
                             {uiText("कक्षा चुनें:")}
                           </span>
                           <Link
-                            to={`/reference-solutions/${book.slug}`}
+                            to={referenceBookUrl(book)}
+                            aria-current={isBookActive ? 'page' : undefined}
                             onClick={onClose}
                             className="text-[11px] font-bold text-brand hover:underline inline-flex items-center gap-0.5"
                           >
@@ -171,11 +136,12 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
                         <div className="grid grid-cols-4 gap-1.5">
                           {classes.map((clsNum) => {
                             const classUrl = `/reference-solutions/${book.slug}/class-${clsNum}`;
-                            const isClassActive = currentPath === classUrl;
+                            const isClassActive = isPathActive(classUrl, currentPath);
                             return (
                               <Link
                                 key={clsNum}
                                 to={classUrl}
+                                aria-current={isClassActive ? 'page' : undefined}
                                 onClick={onClose}
                                 className={cn(
                                   'flex items-center justify-center rounded-lg border py-1.5 text-center text-xs font-bold transition-colors',
@@ -216,7 +182,9 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
   useUiLanguage();
   const t = useInterfaceL10n();
   const label = t(item.label) || '';
-  const children = (item.children || []).filter((c) => c.isVisible !== false);
+  const site = useSite();
+  const panelId = useId();
+  const children = navigationChildren(item, site?.classes);
 
   const isTriggerActive =
     isPathActive(item.url, currentPath) ||
@@ -228,6 +196,7 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
         type="button"
         onClick={onToggle}
         aria-expanded={open}
+        aria-controls={panelId}
         className={cn(
           'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors hover:bg-muted',
           isTriggerActive ? 'text-brand bg-brand/5' : 'text-foreground',
@@ -249,14 +218,16 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
+            id={panelId}
             className="overflow-hidden pl-3 pr-1 pt-1 pb-2 space-y-1"
           >
             {children.map((child) => {
-              const childActive = isPathActive(child.url, currentPath);
+              const childActive = activeNavigationItem(children, currentPath) === child;
               return (
                 <SmartLink
                   key={child._id || child.label?.en || child.url}
                   to={child.url}
+                  aria-current={childActive ? 'page' : undefined}
                   newTab={child.newTab}
                   onClick={onClose}
                   className={cn(
@@ -283,15 +254,16 @@ export function MobileMenu({ open, onClose }) {
   const site = useSite();
   const t = useInterfaceL10n();
   const location = useLocation();
-  const currentPath = location.pathname;
+  const currentPath = location.pathname + location.search + location.hash;
 
   const [openDropdown, setOpenDropdown] = useState(null);
+  useEffect(() => { setOpenDropdown(null); }, [open, currentPath]);
 
   // Group raw items into clean mobile list
   const configuredItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
   const rawItems = configuredItems.length ? configuredItems : [
     { label: { en: 'Home', hi: 'होम' }, url: '/', type: 'link' },
-    { label: { en: 'Mathematics', hi: 'गणित' }, type: 'classes', children: [6, 7, 8, 9, 10, 11, 12].map(number => ({ label: { en: `Class ${number} Maths`, hi: `कक्षा ${number} गणित` }, url: `/class-${number}/maths` })) },
+    { label: { en: 'Mathematics', hi: 'गणित' }, type: 'classes' },
     { label: { en: 'Important Questions', hi: 'महत्वपूर्ण प्रश्न' }, url: '/study-materials/important-questions' },
     { label: { en: 'Notes', hi: 'नोट्स' }, url: '/study-materials/ncert-notes' },
     { label: { en: 'About Us', hi: 'हमारे बारे में' }, url: '/about-us', type: 'link' },
@@ -302,23 +274,7 @@ export function MobileMenu({ open, onClose }) {
 
   for (const item of rawItems) {
     const enLabel = (item.label?.en || '').toLowerCase();
-    const hiLabel = item.label?.hi || '';
-    const isStateBoards =
-      enLabel.includes('state board') ||
-      hiLabel.includes('राज्य बोर्ड') ||
-      item.url?.includes('state-boards');
-
-    if (isStateBoards) continue;
-
-    const isBookSpecific =
-      enLabel.includes('aggarwal') ||
-      enLabel.includes('rd sharma') ||
-      enLabel.includes('sinha') ||
-      hiLabel.includes('अग्रवाल') ||
-      hiLabel.includes('शर्मा') ||
-      hiLabel.includes('सिन्हा');
-
-    if (isBookSpecific || item.type === 'mega' || enLabel.includes('reference book')) {
+    if (item.type === 'reference-books' || item.type === 'mega' || enLabel.includes('reference book') || item.url === '/reference-solutions' || item.url === '/reference-books') {
       if (!hasRefBooks) {
         navItems.push({
           _id: 'nav-reference-books',
@@ -334,7 +290,7 @@ export function MobileMenu({ open, onClose }) {
   }
 
   if (!hasRefBooks) {
-    const ncertIdx = navItems.findIndex((i) => (i.label?.en || '').toLowerCase().includes('ncert'));
+    const ncertIdx = navItems.findIndex((i) => i.type === 'classes' || (i.label?.en || '').toLowerCase().includes('math'));
     const insertAt = ncertIdx >= 0 ? ncertIdx + 1 : Math.min(2, navItems.length);
     navItems.splice(insertAt, 0, {
       _id: 'nav-reference-books',
@@ -369,7 +325,7 @@ export function MobileMenu({ open, onClose }) {
             <DialogPrimitive.Title className="sr-only">{uiText("Main Navigation")}</DialogPrimitive.Title>
             {/* Header */}
             <div className="flex h-16 items-center justify-between border-b px-4 shrink-0">
-              <Logo showText={true} />
+              <Logo showText={true} onClick={onClose} />
               <button
                 type="button"
                 onClick={onClose}
@@ -382,11 +338,11 @@ export function MobileMenu({ open, onClose }) {
 
             {/* Quick Search */}
             <div className="p-4 border-b shrink-0">
-              <SearchBar autoFocus={false} onSelect={onClose} />
+              <SearchBar autoFocus={false} onNavigate={onClose} />
             </div>
 
             {/* Navigation List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-1">
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 space-y-1">
               {navItems.map((item) => {
                 const enLabel = (item.label?.en || '').toLowerCase();
                 const isReference =
@@ -414,7 +370,7 @@ export function MobileMenu({ open, onClose }) {
 
                 // 2. Dropdowns (NCERT, State Boards, Important Links)
                 if (item.type === 'dropdown' || item.type === 'classes') {
-                  const id = item._id || item.url || item.label?.en;
+                  const id = navigationId(item);
                   return (
                     <MobileDropdownAccordion
                       key={id}
@@ -433,6 +389,7 @@ export function MobileMenu({ open, onClose }) {
                   <div key={item._id || item.url} className="border-b border-border/50 last:border-b-0 py-1">
                     <SmartLink
                       to={item.url}
+                      aria-current={active ? 'page' : undefined}
                       newTab={item.newTab}
                       onClick={onClose}
                       className={cn(

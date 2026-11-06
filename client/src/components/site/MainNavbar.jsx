@@ -1,4 +1,5 @@
-import { studyNavigationItem } from '@/lib/studyNavigation.js';
+import { isPathActive, activeNavigationItem } from '@/lib/navigationActive.js';
+import { navigationChildren, navigationId, studyNavigationItem } from '@/lib/studyNavigation.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ChevronDown, ChevronRight, Menu, Search } from 'lucide-react';
@@ -17,12 +18,7 @@ import { SearchBar } from './SearchBar.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { ThemeToggle } from './ThemeToggle.jsx';
 
-function isPathActive(targetUrl, currentPath) {
-  if (!targetUrl) return false;
-  const cleanTarget = targetUrl.split('?')[0].split('#')[0];
-  if (cleanTarget === '/') return currentPath === '/';
-  return currentPath === cleanTarget || currentPath.startsWith(cleanTarget + '/');
-}
+
 
 function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu }) {
   item = studyNavigationItem(item);
@@ -33,7 +29,7 @@ function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu })
   const location = useLocation();
   const label = t(item.label) || '';
 
-  const menuId = item._id || item.label?.en || item.url;
+  const menuId = navigationId(item);
   const isOpen = openMenu === menuId;
   const setIsOpen = value => setOpenMenu(previous => {
     const next = typeof value === 'function' ? value(previous === menuId) : value;
@@ -58,8 +54,10 @@ function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu })
   }, [isOpen]);
 
   useEffect(() => {
+    clearTimeout(timeoutRef.current);
+    clickedOpen.current = false;
     setOpenMenu(null);
-  }, [location.pathname, setOpenMenu]);
+  }, [location.pathname, location.search, location.hash, setOpenMenu]);
 
   useEffect(() => () => clearTimeout(timeoutRef.current), []);
 
@@ -99,40 +97,7 @@ function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu })
     }, 150);
   };
 
-  const rawClasses = site?.classes?.length ? site.classes : [
-    { number: 12, url: '/class-12/maths' },
-    { number: 11, url: '/class-11/maths' },
-    { number: 10, url: '/class-10/maths' },
-    { number: 9, url: '/class-9/maths' },
-    { number: 8, url: '/class-8/maths' },
-    { number: 7, url: '/class-7/maths' },
-    { number: 6, url: '/class-6/maths' },
-  ];
-  const classesList = [...rawClasses].sort((a, b) => b.number - a.number);
-
-  let children = (item.children || []).filter((c) => c.isVisible !== false);
-  if (!children.length) {
-    const en = (item.label?.en || '').toLowerCase();
-    if (item.type === 'classes' || en.includes('math')) {
-      children = classesList.map((cls) => ({
-        url: cls.url || `/class-${cls.number}/maths`,
-        label: { hi: `कक्षा ${cls.number} गणित`, en: `Class ${cls.number} Maths` },
-        isVisible: true,
-      }));
-    } else if (en.includes('important question') || (item.label?.hi || '').includes('महत्वपूर्ण प्रश्न')) {
-      children = classesList.map((cls) => ({
-        url: `/class-${cls.number}/maths/important-questions`,
-        label: { hi: `कक्षा ${cls.number} महत्वपूर्ण प्रश्न`, en: `Class ${cls.number} Important Questions` },
-        isVisible: true,
-      }));
-    } else if (en.includes('note') || (item.label?.hi || '').includes('नोट्स')) {
-      children = classesList.map((cls) => ({
-        url: `/class-${cls.number}/maths/notes`,
-        label: { hi: `कक्षा ${cls.number} गणित नोट्स`, en: `Class ${cls.number} Maths Notes` },
-        isVisible: true,
-      }));
-    }
-  }
+  const children = navigationChildren(item, site?.classes);
 
   const isTriggerActive =
     isPathActive(item.url, currentPath) ||
@@ -167,6 +132,7 @@ function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu })
       <button
         type="button"
         onClick={() => {
+          clearTimeout(timeoutRef.current);
           const next = !isOpen || !clickedOpen.current;
           clickedOpen.current = next;
           setIsOpen(next);
@@ -200,12 +166,13 @@ function DropdownMenuItemComponent({ item, currentPath, openMenu, setOpenMenu })
         >
           <div className="space-y-0.5 max-h-[min(28rem,70vh)] overflow-y-auto">
             {children.map((child) => {
-              const childActive = isPathActive(child.url, currentPath);
+              const childActive = activeNavigationItem(children, currentPath) === child;
               return (
                 <SmartLink
                   key={child._id || child.label?.en || child.url}
                   role="menuitem"
                   to={child.url}
+                  aria-current={childActive ? 'page' : undefined}
                   newTab={child.newTab}
                   onClick={() => setIsOpen(false)}
                   className={cn(
@@ -230,7 +197,7 @@ export function MainNavbar({ onOpenMobileMenu }) {
   const site = useSite();
   const t = useInterfaceL10n();
   const location = useLocation();
-  const currentPath = location.pathname;
+  const currentPath = location.pathname + location.search + location.hash;
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
@@ -460,7 +427,7 @@ export function MainNavbar({ onOpenMobileMenu }) {
             <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
             <DialogPrimitive.Content className="fixed top-[15%] left-1/2 z-50 w-full max-w-xl -translate-x-1/2 p-4 outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xl">
-                <SearchBar autoFocus onSelect={() => setSearchOpen(false)} />
+                <SearchBar autoFocus onNavigate={() => setSearchOpen(false)} />
               </div>
             </DialogPrimitive.Content>
           </DialogPrimitive.Portal>
