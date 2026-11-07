@@ -78,7 +78,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
               const classes =
                 book.availableClasses && book.availableClasses.length > 0
                   ? book.availableClasses
-                  : [6, 7, 8, 9, 10, 11, 12];
+                  : [];
               const isBookOpen = expandedBook === book.slug;
               const isBookActive = isPathActive(`/reference-solutions/${book.slug}`, currentPath) && !/\/class-\d+/.test(currentPath);
 

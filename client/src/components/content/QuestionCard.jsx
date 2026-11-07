@@ -191,7 +191,7 @@ export function QuestionCard({ question, headingLevel = 'h2', showPermalink = tr
                   )}
                   {methods.length > 0 && (
                     <div className="space-y-3">
-                      {methods.length === 1 && (activeMethod?.title?.en || activeMethod?.title?.hi) && (
+                      {methods.length === 1 && hasContent(activeMethod?.title?.[lang]) && (
                         <h4 className="font-heading text-xs font-bold text-brand uppercase tracking-wider">
                           {t(activeMethod.title)}
                         </h4>

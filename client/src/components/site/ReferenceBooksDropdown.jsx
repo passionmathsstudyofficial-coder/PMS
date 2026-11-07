@@ -121,7 +121,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
           <div className="space-y-0.5">
             {books.map((book) => {
               const bookTitle = t(book.title) || book.author || book.name || book.slug;
-              const classes = (book.availableClasses?.length ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12])
+              const classes = (book.availableClasses || [])
                 .slice()
                 .sort((a, b) => a - b);
               const isHovered = activeBookSlug === book.slug;

@@ -1073,6 +1073,18 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   }
 
   const bookSlug = segments[1];
+  // Old menus incorrectly advertised NCERT as a reference book. Preserve only
+  // legacy URLs whose corresponding published NCERT destination actually resolves.
+  if (bookSlug === 'ncert' && !allBooksMap.has(bookSlug) && segments.length >= 3) {
+    const cls = await findClassBySegment(segments[2], preview);
+    if (!cls) throw new ApiError(404, 'Class not found');
+    const subjects = await Subject.find(vis(Subject, preview, { _id: { $in: cls.subjects }, isPublic: true })).lean();
+    const subject = subjects.find(sub => isSubjectMatch(sub, 'maths'));
+    if (!subject) throw new ApiError(404, 'Subject not found');
+    const target = `${urls.subject(cls, subject)}${segments.length > 3 ? '/' + segments.slice(3).join('/') : ''}`;
+    await resolvePath(target, { preview, page, limit, session, previewToken });
+    return { type: 'redirect', redirect: target };
+  }
   const book = allBooksMap.get(bookSlug);
   if (!book) throw new ApiError(404, 'Reference book not found');
   const bookCrumb = { label: book.title, url: urls.referenceBook(book) };
@@ -1149,7 +1161,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         class: cls,
         chapters,
         books: allBooks,
-        classes: classes.map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
+        classes: classes.filter(c => book.classes.includes(c.number)).map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
         academicSessions: activeSessions,
         currentSession,
       },
@@ -1230,6 +1242,26 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   if (!exercise) throw new ApiError(404, 'Exercise not found');
 
   const exerciseCrumb = { label: { hi: `अभ्यास ${exercise.number}`, en: `Exercise ${exercise.number}` }, url: urls.referenceExercise(book, cls, chapter, exercise) };
+
+  if (segments.length === 6) {
+    const q = await Question.findOne(vis(Question, preview, { exercise: exercise._id, slug: segments[5] })).populate(questionPopulate);
+    if (!q) throw new ApiError(404, 'Question not found');
+    applyOverride(q, override, 'Question');
+    const base = urls.referenceExercise(book, cls, chapter, exercise);
+    const question = await shapeQuestion(q, { preview, override, base });
+    const siblings = await Question.find(vis(Question, preview, { exercise: exercise._id }))
+      .sort({ sortOrder: 1, createdAt: 1 }).select('number slug').lean();
+    const index = siblings.findIndex(item => String(item._id) === String(q._id));
+    const nav = item => item ? { label: term(terms, 'question', item.number), url: `${base}/${item.slug}` } : null;
+    return {
+      type: 'question',
+      data: { class: cls, book, chapter: { ...chapter, url: urls.referenceChapter(book, cls, chapter) },
+        exercise: { ...exercise, url: base }, question, prev: nav(siblings[index - 1]), next: nav(siblings[index + 1]) },
+      breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb, exerciseCrumb,
+        { label: term(terms, 'question', q.number), url: question.url }],
+      seo: seoFor(q, { title: `${pick(book.title, 'en')} Exercise ${exercise.number} Question ${q.number}`, description: describe(question.text), url: question.url }),
+    };
+  }
 
   // Fetch questions if this is a real DB exercise
   let shapedQuestions = [];
@@ -1403,8 +1435,8 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     .split('?')[0]
     .split('/')
     .filter(Boolean)
-    .map((s) => decodeURIComponent(s).toLowerCase())
-    .slice(0, 6);
+    .map((s) => decodeURIComponent(s).toLowerCase());
+  if (segments.length > 6) throw new ApiError(404, 'Page not found');
   const terms = await getTerms();
   const override = preview ? getPreview(previewToken) : null;
   const home = { label: term(terms, 'home'), url: '/' };

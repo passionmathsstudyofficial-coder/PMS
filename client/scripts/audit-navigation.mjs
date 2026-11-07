@@ -18,6 +18,7 @@ const site={settings:{header:{},whatsappBanner:{enabled:true,url:'https://exampl
  {_id:'about',label:label('About Us'),type:'link',url:'/about-us'},
 ]}};
 const books={'rs-aggarwal':'R.S. Aggarwal Solutions','rd-sharma':'R.D. Sharma Solutions','kc-sinha':'K.C. Sinha Solutions','ml-aggarwal':'M.L. Aggarwal Solutions'};
+site.referenceBooks = Object.entries(books).map(([slug,en]) => ({slug,title:label(en),availableClasses:[6,7,8,9,10,11,12]}));
 const server=await createServer({root:process.cwd(),server:{port:5187,strictPort:true}});
 await server.listen();
 const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true});

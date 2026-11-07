@@ -55,13 +55,19 @@ export function Footer() {
     const configured = configuredLinks.find(item => item.url === url);
     return { ...configured, label: { en, hi }, url };
   };
-  const classes = [6, 7, 8, 9, 10, 11, 12];
+  const classes = (site?.classes || []).map(cls => cls.number);
   const columns = [
     { label: { en: 'NCERT Class 6 to 12 Math Solution', hi: 'NCERT कक्षा 6 से 12 गणित हल' }, children: classes.map(number =>
       link(`NCERT Class ${number} Mathematics`, `NCERT कक्षा ${number} गणित`, site?.classes?.find(cls => cls.number === number)?.url || `/class-${number}/maths`)) },
-    ...[['rs-aggarwal', 'R.S. Aggarwal', 'आर.एस. अग्रवाल'], ['rd-sharma', 'R.D. Sharma', 'आर.डी. शर्मा'], ['kc-sinha', 'K.C. Sinha', 'के.सी. सिन्हा']].map(([slug, en, hi]) => ({
-      label: { en: `${en} Solutions`, hi: `${hi} हल` },
-      children: classes.map(number => link(`${en} Class ${number}`, `${hi} कक्षा ${number}`, `/reference-solutions/${slug}/class-${number}`)),
+    ...getReferenceBooks(site).map(book => ({
+      label: book.title,
+      children: (book.availableClasses || []).map(number => ({
+        label: {
+          en: `${book.title?.en || book.author} Class ${number}`,
+          hi: `${book.title?.hi || book.author} कक्षा ${number}`,
+        },
+        url: `${referenceBookUrl(book)}/class-${number}`,
+      })),
     })),
     { label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' }, children: [
       link('Home', 'होम', '/'),
@@ -225,7 +231,7 @@ export function Footer() {
             )}
           </p>
           <nav aria-label={uiText("Legal links")} className="flex flex-wrap gap-x-4 gap-y-2">
-            {columns[4].children.slice(-3).map(child => <SmartLink key={child.url} to={child.url} className="py-1 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
+            {columns.at(-1).children.slice(-3).map(child => <SmartLink key={child.url} to={child.url} className="py-1 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
           </nav>
         </div>
       </div>

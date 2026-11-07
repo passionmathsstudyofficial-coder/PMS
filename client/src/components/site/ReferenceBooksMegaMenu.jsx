@@ -1,3 +1,4 @@
+import { getReferenceBooks } from '@/lib/referenceBooks.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,39 +9,6 @@ import { useInterfaceL10n } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { SmartLink } from './SmartLink.jsx';
-
-const DEFAULT_BOOKS = [
-  {
-    slug: 'rs-aggarwal',
-    title: { hi: 'आर.एस. अग्रवाल', en: 'R.S. Aggarwal' },
-    author: 'R.S. Aggarwal',
-    description: {
-      hi: 'सीबीएसई कक्षा 6 से 12 के लिए अध्याय-वार व प्रश्नावली-वार विस्तृत हल।',
-      en: 'Complete chapter-wise & exercise-wise step-by-step solutions for CBSE.',
-    },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'rd-sharma',
-    title: { hi: 'आर.डी. शर्मा', en: 'R.D. Sharma' },
-    author: 'Dr. R.D. Sharma',
-    description: {
-      hi: 'बोर्ड परीक्षा एवं प्रतियोगी परीक्षाओं के लिए गहन गणितीय हल व सूत्र।',
-      en: 'Comprehensive solutions with conceptual steps, formulas, and proofs.',
-    },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-  {
-    slug: 'kc-sinha',
-    title: { hi: 'के.सी. सिन्हा', en: 'K.C. Sinha' },
-    author: 'Dr. K.C. Sinha',
-    description: {
-      hi: 'कक्षा 6 से 12 के विद्यार्थियों के लिए विस्तृत चरणबद्ध गणित समाधान।',
-      en: 'Detailed exercise-wise step-by-step mathematics solutions for Class 6–12.',
-    },
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-  },
-];
 
 export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), currentPath = '' }) {
   useUiLanguage();
@@ -97,10 +65,8 @@ export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), curr
     setIsOpen((prev) => !prev);
   };
 
-  // Merge dynamic books from backend with default fallbacks
-  const books = Array.isArray(site?.referenceBooks)
-    ? site.referenceBooks
-    : DEFAULT_BOOKS;
+  // Preserve the published catalog supplied by the backend.
+  const books = getReferenceBooks(site);
 
   const isActive =
     currentPath.startsWith('/reference-books') ||
@@ -182,7 +148,7 @@ export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), curr
                   const classes =
                     book.availableClasses && book.availableClasses.length > 0
                       ? book.availableClasses
-                      : [6, 7, 8, 9, 10, 11, 12];
+                      : [];
                   const bookUrl = `/reference-solutions/${book.slug}`;
                   const coverSrc = book.coverImage?.url || book.coverUrl;
 

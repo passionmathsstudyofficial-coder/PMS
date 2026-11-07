@@ -145,7 +145,7 @@ test('actual header omits student login even when legacy settings enable it',asy
  }
 });
 
-test('footer includes five requested columns and preserves additional published resources',async()=>{
+test('footer uses published books and never invents unavailable class links',async()=>{
  const {Footer}=await vite.ssrLoadModule('/src/components/site/Footer.jsx');
  const {ReferenceBooksDropdown}=await vite.ssrLoadModule('/src/components/site/ReferenceBooksDropdown.jsx');
  const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
@@ -159,11 +159,11 @@ test('footer includes five requested columns and preserves additional published 
   const button=host.querySelector('button');await act(async()=>button.click());
   assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));
  assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,2);
- assert.equal(host.querySelectorAll('footer h2').length,5);
+ assert.equal(host.querySelectorAll('footer h2').length,2+books.length);
  assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
  assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
-  assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,7);
-  assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,7);
+  assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,0);
+  assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,0);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);
   await act(async()=>root.unmount());host.remove();client.clear();
  }

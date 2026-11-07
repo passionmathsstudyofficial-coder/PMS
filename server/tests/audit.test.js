@@ -78,14 +78,14 @@ test('reference menu excludes archived, scheduled, draft and hidden books', asyn
   await owner.del(`/api/books/${item._id}`);
 });
 
-test('a private canonical reference book suppresses its default menu entry', async () => {
-  const initial = (await request(app).get('/api/public/site?lang=en')).body.referenceBooks[0];
-  assert.ok(initial?.slug);
-  const item = await create('books', { title, author: 'Audit Author', slug: initial.slug, category: 'reference', status: 'published' });
+test('a private configured reference book is never restored by a default menu entry', async () => {
+  const slug = 'rs-aggarwal';
+  const item = await create('books', { title, author: 'Audit Author', slug, category: 'reference', status: 'published' });
+  assert.equal((await request(app).get('/api/public/site?lang=en')).body.referenceBooks.some(book => book.slug === slug), true);
   for (const update of [{ isVisible: false }, { isVisible: true, status: 'archived' }, { status: 'draft' }]) {
     await owner.put(`/api/books/${item._id}`).send(update);
     const books = (await request(app).get('/api/public/site?lang=en')).body.referenceBooks;
-    assert.equal(books.some(book => book.slug === initial.slug), false);
+    assert.equal(books.some(book => book.slug === slug), false);
   }
   await owner.del(`/api/books/${item._id}`);
 });

@@ -13,5 +13,9 @@ test('footer and navbar share live reference books, titles and canonical routes'
 
 test('explicit empty reference list never restores hidden books', () => {
   assert.deepEqual(getReferenceBooks({referenceBooks:[]}),[]);
-  assert.equal(getReferenceBooks({}).length,4);
+  assert.equal(getReferenceBooks({}).length,0);
 });
+
+ test('empty configured classes do not become fabricated classes', () => {
+  assert.deepEqual(getReferenceBooks({referenceBooks:[{slug:'book',availableClasses:[]} ]})[0].availableClasses, []);
+ });

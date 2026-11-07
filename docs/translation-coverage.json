@@ -1,6 +1,3628 @@
 {
-  "rawInterfaceText": [],
-  "unresolvedKeys": [],
+  "rawInterfaceText": [
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 44,
+      "kind": "expression",
+      "text": "Session name is required"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 55,
+      "kind": "expression",
+      "text": "Session updated successfully"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 58,
+      "kind": "expression",
+      "text": "Session created successfully"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 91,
+      "kind": "expression",
+      "text": "Session deleted"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 101,
+      "kind": "expression",
+      "text": "Current session updated"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 130,
+      "kind": "attribute",
+      "text": "e.g. 2026–27"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 140,
+      "kind": "jsx",
+      "text": "(optional)"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 144,
+      "kind": "attribute",
+      "text": "e.g. 2026-27"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 169,
+      "kind": "attribute",
+      "text": "e.g. Current session for CBSE Class 6-12"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 236,
+      "kind": "jsx",
+      "text": "Loading sessions..."
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 238,
+      "kind": "jsx",
+      "text": "No academic sessions configured yet. Add your first session using the form."
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 250,
+      "kind": "jsx",
+      "text": "Current"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 254,
+      "kind": "jsx",
+      "text": "Inactive"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 264,
+      "kind": "jsx",
+      "text": "Year:"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 265,
+      "kind": "jsx",
+      "text": "| Slug:"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 276,
+      "kind": "jsx",
+      "text": "Set Current"
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 57,
+      "kind": "attribute",
+      "text": "Search by keyword, formula, chapter number, or question..."
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 63,
+      "kind": "jsx",
+      "text": "Search"
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 70,
+      "kind": "jsx",
+      "text": "Search Results ("
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 75,
+      "kind": "jsx",
+      "text": "Searching database..."
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 78,
+      "kind": "expression",
+      "text": "No matching educational content found."
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 78,
+      "kind": "expression",
+      "text": "Enter a query above to search."
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 91,
+      "kind": "jsx",
+      "text": "Edit"
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 91,
+      "kind": "expression",
+      "text": "(draft)"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 44,
+      "kind": "template",
+      "text": "Chapter {v0}: {v1}"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 45,
+      "kind": "template",
+      "text": "Exercise {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 46,
+      "kind": "template",
+      "text": "Question {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 47,
+      "kind": "expression",
+      "text": "Note"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 48,
+      "kind": "expression",
+      "text": "Important question"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 49,
+      "kind": "expression",
+      "text": "Resource"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 50,
+      "kind": "expression",
+      "text": "Book"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 51,
+      "kind": "expression",
+      "text": "Topic"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 80,
+      "kind": "expression",
+      "text": "All Content"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 81,
+      "kind": "expression",
+      "text": "Published"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 82,
+      "kind": "expression",
+      "text": "Drafts"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 83,
+      "kind": "expression",
+      "text": "Scheduled"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 84,
+      "kind": "expression",
+      "text": "Archived"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 108,
+      "kind": "jsx",
+      "text": "Item & Entity"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 109,
+      "kind": "jsx",
+      "text": "Status"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 113,
+      "kind": "jsx",
+      "text": "Loading content statuses..."
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 115,
+      "kind": "jsx",
+      "text": "No content found in this state."
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 130,
+      "kind": "jsx",
+      "text": "Edit"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 143,
+      "kind": "expression",
+      "text": "published"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 145,
+      "kind": "expression",
+      "text": "Question published successfully"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 168,
+      "kind": "expression",
+      "text": "Question deleted"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 190,
+      "kind": "template",
+      "text": "{v0} Management"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 199,
+      "kind": "jsx",
+      "text": "Category:"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 220,
+      "kind": "jsx",
+      "text": "Class:"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 239,
+      "kind": "jsx",
+      "text": "Session:"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 244,
+      "kind": "jsx",
+      "text": "Exam year:"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 246,
+      "kind": "jsx",
+      "text": "All years"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 253,
+      "kind": "expression",
+      "text": "Syllabus PDFs are managed in the resource library; class chapters are managed under NCERT Mathematics → Chapter Management."
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 253,
+      "kind": "expression",
+      "text": "Manage downloadable papers, marking schemes, and supporting PDFs for this category."
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 257,
+      "kind": "jsx",
+      "text": "Edit Landing Page"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 259,
+      "kind": "jsx",
+      "text": "Open related resources"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 267,
+      "kind": "jsx",
+      "text": "— Class"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 269,
+      "kind": "jsx",
+      "text": "Add Question"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 273,
+      "kind": "jsx",
+      "text": "Loading questions..."
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 275,
+      "kind": "jsx",
+      "text": "No questions added in this category yet. Click \"+ Add Question\" to publish one."
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 295,
+      "kind": "jsx",
+      "text": "Marks"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 299,
+      "kind": "expression",
+      "text": "Question"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 303,
+      "kind": "jsx",
+      "text": "Step-by-Step Solution Provided"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 309,
+      "kind": "attribute",
+      "text": "Edit full question and solution"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 331,
+      "kind": "jsx",
+      "text": "Add"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 332,
+      "kind": "jsx",
+      "text": "(Class"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 338,
+      "kind": "jsx",
+      "text": "Exam Year"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 347,
+      "kind": "jsx",
+      "text": "Paper Set"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 350,
+      "kind": "attribute",
+      "text": "e.g. Set 1"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 357,
+      "kind": "jsx",
+      "text": "Marks"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 368,
+      "kind": "jsx",
+      "text": "Question Title / Topic (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 371,
+      "kind": "attribute",
+      "text": "e.g. Quadratic Formula Derivation"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 379,
+      "kind": "jsx",
+      "text": "Question Text (LaTeX formulas: $...$) *"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 382,
+      "kind": "attribute",
+      "text": "e.g. Find the roots of the quadratic equation: $2x^2 - 7x + 3 = 0$"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 391,
+      "kind": "jsx",
+      "text": "Step-by-Step Mathematical Solution *"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 394,
+      "kind": "template",
+      "text": "Step 1: Compare with $ax^2 + bx + c = 0$\nHere $a = 2, b = -7, c = 3$\n\nStep 2: Apply the quadratic formula\n$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 407,
+      "kind": "jsx",
+      "text": "Cancel"
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 410,
+      "kind": "jsx",
+      "text": "Publish Question & Solution"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 52,
+      "kind": "expression",
+      "text": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 53,
+      "kind": "expression",
+      "text": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 54,
+      "kind": "expression",
+      "text": "RS Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 55,
+      "kind": "expression",
+      "text": "RD Sharma Formulas & Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 56,
+      "kind": "expression",
+      "text": "KC Sinha Formulas & Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 57,
+      "kind": "expression",
+      "text": "ML Aggarwal Formulas & Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 58,
+      "kind": "expression",
+      "text": "VVI Questions & Short Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 150,
+      "kind": "expression",
+      "text": "Note updated successfully"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 153,
+      "kind": "expression",
+      "text": "Note published successfully"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 175,
+      "kind": "expression",
+      "text": "Note deleted"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 199,
+      "kind": "template",
+      "text": "{v0} Management"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 224,
+      "kind": "jsx",
+      "text": "Class:"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 245,
+      "kind": "jsx",
+      "text": "Session:"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 249,
+      "kind": "jsx",
+      "text": "Chapter:"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 255,
+      "kind": "jsx",
+      "text": "All Chapters"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 257,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 269,
+      "kind": "template",
+      "text": "Class {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 269,
+      "kind": "expression",
+      "text": "Select Class"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 274,
+      "kind": "jsx",
+      "text": "Edit Landing Page"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 276,
+      "kind": "jsx",
+      "text": "Add Note / Formula Sheet"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 281,
+      "kind": "jsx",
+      "text": "Loading notes..."
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 283,
+      "kind": "jsx",
+      "text": "No notes added in this section yet. Click \"+ Add Note / Formula Sheet\" to publish."
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 293,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 309,
+      "kind": "attribute",
+      "text": "Edit note with full draft and media controls"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 332,
+      "kind": "expression",
+      "text": "Edit Note"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 332,
+      "kind": "expression",
+      "text": "Add Note / Formula Sheet"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 332,
+      "kind": "jsx",
+      "text": "(Class"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 337,
+      "kind": "jsx",
+      "text": "Assign Chapter"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 343,
+      "kind": "jsx",
+      "text": "General (No specific chapter)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 345,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 353,
+      "kind": "jsx",
+      "text": "Note Title (English) *"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 356,
+      "kind": "attribute",
+      "text": "e.g. Fundamental Theorem of Arithmetic & Proofs"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 365,
+      "kind": "jsx",
+      "text": "Note Title (Hindi)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 368,
+      "kind": "attribute",
+      "text": "e.g. अंकगणित की आधारभूत प्रमेय"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 376,
+      "kind": "jsx",
+      "text": "Summary / Key Concept"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 379,
+      "kind": "attribute",
+      "text": "Brief summary of theorems and definitions"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 387,
+      "kind": "jsx",
+      "text": "Detailed Content (LaTeX: $...$)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 390,
+      "kind": "attribute",
+      "text": "Detailed notes, formula proofs, and worked examples"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 398,
+      "kind": "jsx",
+      "text": "Cancel"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 402,
+      "kind": "expression",
+      "text": "Update Note"
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 402,
+      "kind": "expression",
+      "text": "Publish Note"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 360,
+      "kind": "template",
+      "text": "Q{v0}"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 434,
+      "kind": "attribute",
+      "text": "1 or 1(a)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 439,
+      "kind": "attribute",
+      "text": "Set 1 (Code 30/1/1)"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 147,
+      "kind": "jsx",
+      "text": "pages)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 87,
+      "kind": "template",
+      "text": "{v0}M"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 99,
+      "kind": "template",
+      "text": "({v0})"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 114,
+      "kind": "attribute",
+      "text": "(a) or (i)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 127,
+      "kind": "attribute",
+      "text": "Remove part"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 173,
+      "kind": "jsx",
+      "text": "Option"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 182,
+      "kind": "jsx",
+      "text": "Correct Option"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 185,
+      "kind": "template",
+      "text": "Option {v0} Text"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 185,
+      "kind": "template",
+      "text": "Option {v0} value..."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 205,
+      "kind": "expression",
+      "text": "Book"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 210,
+      "kind": "template",
+      "text": "Class {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 210,
+      "kind": "template",
+      "text": "Class {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 214,
+      "kind": "template",
+      "text": "Ch {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 214,
+      "kind": "template",
+      "text": "Ch {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 218,
+      "kind": "template",
+      "text": "Ex {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 218,
+      "kind": "template",
+      "text": "Ex {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 222,
+      "kind": "template",
+      "text": "Q {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 226,
+      "kind": "expression",
+      "text": "subjective"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 230,
+      "kind": "expression",
+      "text": "medium"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 234,
+      "kind": "jsx",
+      "text": "Marks"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 506,
+      "kind": "attribute",
+      "text": "e.g. Q-10-01-01"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 519,
+      "kind": "attribute",
+      "text": "Set 1 (Code 30/1/1)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 715,
+      "kind": "jsx",
+      "text": "Method"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 359,
+      "kind": "expression",
+      "text": "Chapter updated"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 364,
+      "kind": "expression",
+      "text": "Chapter added"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 378,
+      "kind": "expression",
+      "text": "Chapter deleted"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 425,
+      "kind": "expression",
+      "text": "Exercise updated"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 430,
+      "kind": "expression",
+      "text": "Exercise created"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 444,
+      "kind": "expression",
+      "text": "Exercise deleted"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 474,
+      "kind": "expression",
+      "text": "Question deleted"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 484,
+      "kind": "expression",
+      "text": "Question duplicated"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 495,
+      "kind": "expression",
+      "text": "No solution exists yet for this question. Click \"Edit Solution\" to write one."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 552,
+      "kind": "template",
+      "text": "{v0} Solutions CMS"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 606,
+      "kind": "template",
+      "text": "({v0})"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 633,
+      "kind": "template",
+      "text": "Class {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 633,
+      "kind": "template",
+      "text": "Class {v0} not enabled for this book"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 653,
+      "kind": "expression",
+      "text": "(Current)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 667,
+      "kind": "jsx",
+      "text": "Chapters ("
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 676,
+      "kind": "jsx",
+      "text": "Add"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 682,
+      "kind": "jsx",
+      "text": "Loading chapters..."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 684,
+      "kind": "jsx",
+      "text": "No chapters added for this book & class. Click \"+ Add\" to create Chapter 1."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 705,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 706,
+      "kind": "template",
+      "text": "Chapter {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 712,
+      "kind": "attribute",
+      "text": "Open Full Chapter Editor (Image, Video, Formulas, Notes, PDF, SEO)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 723,
+      "kind": "attribute",
+      "text": "Edit Chapter"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 734,
+      "kind": "attribute",
+      "text": "Delete Chapter"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 751,
+      "kind": "jsx",
+      "text": "Exercises ("
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 761,
+      "kind": "jsx",
+      "text": "Add"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 768,
+      "kind": "jsx",
+      "text": "Select a chapter first"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 770,
+      "kind": "jsx",
+      "text": "Loading exercises..."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 772,
+      "kind": "jsx",
+      "text": "No exercises found. Click \"+ Add\" to add Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 793,
+      "kind": "jsx",
+      "text": "Ex"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 800,
+      "kind": "attribute",
+      "text": "Open Full Exercise Editor"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 811,
+      "kind": "attribute",
+      "text": "Edit Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 822,
+      "kind": "attribute",
+      "text": "Delete Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 841,
+      "kind": "jsx",
+      "text": "Questions & Solutions"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 842,
+      "kind": "template",
+      "text": "· Ex {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 864,
+      "kind": "attribute",
+      "text": "Search Q# or text..."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 878,
+      "kind": "jsx",
+      "text": "Q: All"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 879,
+      "kind": "jsx",
+      "text": "Q: Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 880,
+      "kind": "jsx",
+      "text": "Q: Draft"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 891,
+      "kind": "jsx",
+      "text": "Sol: All"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 892,
+      "kind": "jsx",
+      "text": "Sol: Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 893,
+      "kind": "jsx",
+      "text": "Sol: Draft"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 894,
+      "kind": "jsx",
+      "text": "Sol: Missing"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 903,
+      "kind": "jsx",
+      "text": "Select an exercise to manage its questions and step-by-step solutions"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 907,
+      "kind": "jsx",
+      "text": "Loading questions..."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 910,
+      "kind": "jsx",
+      "text": "No questions created yet in Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 911,
+      "kind": "jsx",
+      "text": "Type question statements or upload scanned question images, then author step-by-step solutions."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 919,
+      "kind": "jsx",
+      "text": "No questions match the current search or filters."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 936,
+      "kind": "jsx",
+      "text": "Q"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 941,
+      "kind": "expression",
+      "text": "subjective"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 954,
+      "kind": "expression",
+      "text": "medium"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 954,
+      "kind": "jsx",
+      "text": "M"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 960,
+      "kind": "jsx",
+      "text": "EN"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 965,
+      "kind": "jsx",
+      "text": "HI"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 984,
+      "kind": "attribute",
+      "text": "Click to toggle Question Publication status"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 985,
+      "kind": "jsx",
+      "text": "Q:"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 986,
+      "kind": "expression",
+      "text": "Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 986,
+      "kind": "expression",
+      "text": "Draft"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1000,
+      "kind": "attribute",
+      "text": "Click to toggle Solution Publication status"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1001,
+      "kind": "jsx",
+      "text": "Sol:"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1002,
+      "kind": "template",
+      "text": "Published ({v0}M)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1002,
+      "kind": "expression",
+      "text": "Draft"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1005,
+      "kind": "jsx",
+      "text": "Sol: None"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1019,
+      "kind": "attribute",
+      "text": "Click to zoom scanned question image"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1021,
+      "kind": "attribute",
+      "text": "Question Diagram"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1022,
+      "kind": "jsx",
+      "text": "Zoom"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1033,
+      "kind": "jsx",
+      "text": "[Scanned question page / diagram attached]"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1036,
+      "kind": "jsx",
+      "text": "[No statement typed yet]"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1048,
+      "kind": "attribute",
+      "text": "Open in Full Question Editor"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1051,
+      "kind": "jsx",
+      "text": "Edit Question"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1058,
+      "kind": "attribute",
+      "text": "Open Full Solution Builder with Multiple Methods"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1061,
+      "kind": "expression",
+      "text": "Edit Solution & Methods"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1061,
+      "kind": "expression",
+      "text": "+ Write Solution"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1071,
+      "kind": "attribute",
+      "text": "Preview student view"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1073,
+      "kind": "jsx",
+      "text": "Live"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1082,
+      "kind": "attribute",
+      "text": "Duplicate Question"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1092,
+      "kind": "attribute",
+      "text": "Delete Question"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1118,
+      "kind": "template",
+      "text": "Edit Reference Book: {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1118,
+      "kind": "template",
+      "text": "Add New Reference Book"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1131,
+      "kind": "jsx",
+      "text": "Book Name (English) *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1134,
+      "kind": "attribute",
+      "text": "e.g. RS Aggarwal Solutions"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1143,
+      "kind": "jsx",
+      "text": "Book Name (Hindi)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1146,
+      "kind": "attribute",
+      "text": "e.g. आर.एस. अग्रवाल गणित समाधान"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1155,
+      "kind": "jsx",
+      "text": "Author Name *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1158,
+      "kind": "attribute",
+      "text": "e.g. R.S. Aggarwal"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1167,
+      "kind": "jsx",
+      "text": "Publisher"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1170,
+      "kind": "attribute",
+      "text": "e.g. Bharati Bhawan"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1180,
+      "kind": "jsx",
+      "text": "Edition / Publication"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1183,
+      "kind": "attribute",
+      "text": "e.g. 2026-27 Edition"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1191,
+      "kind": "jsx",
+      "text": "Status"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1197,
+      "kind": "jsx",
+      "text": "Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1198,
+      "kind": "jsx",
+      "text": "Draft (Private)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1205,
+      "kind": "jsx",
+      "text": "Available Classes (Select classes enabled for this book) *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1226,
+      "kind": "jsx",
+      "text": "Class"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1235,
+      "kind": "jsx",
+      "text": "Cancel"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1240,
+      "kind": "expression",
+      "text": "Update Book Settings"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1240,
+      "kind": "expression",
+      "text": "Create Book"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1255,
+      "kind": "expression",
+      "text": "Edit Chapter"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1255,
+      "kind": "template",
+      "text": "Add Chapter to {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1259,
+      "kind": "jsx",
+      "text": "Chapter Number *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1269,
+      "kind": "jsx",
+      "text": "Chapter Title (English) *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1272,
+      "kind": "attribute",
+      "text": "e.g. Relations and Functions"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1280,
+      "kind": "jsx",
+      "text": "Chapter Title (Hindi)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1283,
+      "kind": "attribute",
+      "text": "e.g. सम्बन्ध एवं फलन"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1290,
+      "kind": "jsx",
+      "text": "Cancel"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1293,
+      "kind": "jsx",
+      "text": "Save Chapter"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1309,
+      "kind": "expression",
+      "text": "Edit Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1309,
+      "kind": "template",
+      "text": "Add Exercise to Chapter {v0}"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1313,
+      "kind": "jsx",
+      "text": "Exercise Number / Code *"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1316,
+      "kind": "attribute",
+      "text": "e.g. 1.1, 1.2, Miscellaneous"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1324,
+      "kind": "jsx",
+      "text": "Exercise Title (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1327,
+      "kind": "attribute",
+      "text": "e.g. Types of Relations"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1334,
+      "kind": "jsx",
+      "text": "Cancel"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1337,
+      "kind": "jsx",
+      "text": "Save Exercise"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1355,
+      "kind": "attribute",
+      "text": "Zoom Preview"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 200,
+      "kind": "attribute",
+      "text": "Set 1"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 195,
+      "kind": "expression",
+      "text": "Mathematics"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 196,
+      "kind": "jsx",
+      "text": "Class 6–12"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 334,
+      "kind": "template",
+      "text": "{v0} - Class {v1}"
+    },
+    {
+      "file": "client/src/components/site/AcademicSessionSelector.jsx",
+      "line": 97,
+      "kind": "jsx",
+      "text": "Current"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 68,
+      "kind": "jsx",
+      "text": "CBSE Class"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 68,
+      "kind": "jsx",
+      "text": "Mathematics"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 132,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 180,
+      "kind": "expression",
+      "text": "PDF Worksheet"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 226,
+      "kind": "jsx",
+      "text": "HOTS"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 56,
+      "kind": "jsx",
+      "text": "Complete Mathematics Formula Repository"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 110,
+      "kind": "jsx",
+      "text": "Quick Revision"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 114,
+      "kind": "template",
+      "text": "Complete Class {v0} Maths Formula Sheet PDF"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 158,
+      "kind": "jsx",
+      "text": "Symbol"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 159,
+      "kind": "jsx",
+      "text": "Symbol Name"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 160,
+      "kind": "jsx",
+      "text": "Formula / Approximation"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 161,
+      "kind": "jsx",
+      "text": "Common Usage"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 53,
+      "kind": "jsx",
+      "text": "Curriculum & Course Structure"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 107,
+      "kind": "jsx",
+      "text": "Syllabus"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 111,
+      "kind": "template",
+      "text": "CBSE Class {v0} Maths Official Syllabus PDF"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 155,
+      "kind": "jsx",
+      "text": "Unit No."
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 156,
+      "kind": "jsx",
+      "text": "Unit Name"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 157,
+      "kind": "jsx",
+      "text": "Marks Weightage"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 64,
+      "kind": "jsx",
+      "text": "Chapter-wise NCERT Revision Notes"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 125,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 148,
+      "kind": "expression",
+      "text": "PDF Notes"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 76,
+      "kind": "jsx",
+      "text": "CBSE Class"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 76,
+      "kind": "jsx",
+      "text": "Mathematics"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 189,
+      "kind": "expression",
+      "text": "PYQ"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 59,
+      "kind": "jsx",
+      "text": "Mathematics"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 139,
+      "kind": "expression",
+      "text": "PDF Document"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
+      "line": 512,
+      "kind": "jsx",
+      "text": "Q"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 57,
+      "kind": "jsx",
+      "text": "CBSE Class"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 57,
+      "kind": "jsx",
+      "text": "Mathematics"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 110,
+      "kind": "jsx",
+      "text": "CBSE Examination Pattern & Blueprint ("
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 117,
+      "kind": "jsx",
+      "text": "Section A"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 118,
+      "kind": "jsx",
+      "text": "20 × 1 = 20 Marks"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 121,
+      "kind": "jsx",
+      "text": "Section B"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 122,
+      "kind": "jsx",
+      "text": "5 × 2 = 10 Marks"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 125,
+      "kind": "jsx",
+      "text": "Section C"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 126,
+      "kind": "jsx",
+      "text": "6 × 3 = 18 Marks"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 129,
+      "kind": "jsx",
+      "text": "Section D"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 130,
+      "kind": "jsx",
+      "text": "4 × 5 = 20 Marks"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 133,
+      "kind": "jsx",
+      "text": "Section E"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 134,
+      "kind": "jsx",
+      "text": "3 × 4 = 12 Marks"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 157,
+      "kind": "jsx",
+      "text": "SQP"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 230,
+      "kind": "jsx",
+      "text": "Marking Scheme"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 67,
+      "kind": "jsx",
+      "text": "Board Special Exam Booster"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 142,
+      "kind": "jsx",
+      "text": "Ch"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 155,
+      "kind": "expression",
+      "text": "All"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 156,
+      "kind": "expression",
+      "text": "Short (2-3M)"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 157,
+      "kind": "expression",
+      "text": "Long (5M)"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 158,
+      "kind": "expression",
+      "text": "Case Study"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 204,
+      "kind": "jsx",
+      "text": "Board Special"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 43,
+      "kind": "jsx",
+      "text": "Last Minute Exam Booster"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 103,
+      "kind": "jsx",
+      "text": "Quick Revision"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 172,
+      "kind": "jsx",
+      "text": "Ch"
+    }
+  ],
+  "unresolvedKeys": [
+    {
+      "file": "client/src/admin/components/fields/AcademicSessionField.jsx",
+      "line": 23,
+      "key": "Academic session"
+    },
+    {
+      "file": "client/src/admin/components/fields/FormulaListField.jsx",
+      "line": 17,
+      "key": "Shown in the “Important Formulas” box and searchable by students."
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 46,
+      "key": "Class Management"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 47,
+      "key": "Chapter Management"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 48,
+      "key": "Exercise Management"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 49,
+      "key": "Question & Solution Management"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 54,
+      "key": "Reference Book Solutions"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 59,
+      "key": "KC Sinha Solutions"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 61,
+      "key": "All Reference Books"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 67,
+      "key": "Previous Year Questions"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 69,
+      "key": "CBSE Extra Questions"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 70,
+      "key": "VVI Questions (Board Special)"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 71,
+      "key": "Maths Syllabus"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 75,
+      "key": "Notes & Formulas"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 77,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 78,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 79,
+      "key": "RS Aggarwal Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 80,
+      "key": "RD Sharma Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 81,
+      "key": "KC Sinha Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 82,
+      "key": "ML Aggarwal Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 83,
+      "key": "VVI Short Notes"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 87,
+      "key": "Shared Management"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 89,
+      "key": "Academic Sessions"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 90,
+      "key": "Media & PDF Library"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 91,
+      "key": "Drafts & Published Content"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 92,
+      "key": "Content Search & Filters"
+    },
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 111,
+      "key": "Page Management"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 111,
+      "key": "Academic Sessions Management"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 112,
+      "key": "Manage academic sessions (2026–27, 2025–26, etc.), set active session, and control yearly curriculum scoping."
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 121,
+      "key": "Edit Academic Session"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 121,
+      "key": "Add New Academic Session"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 126,
+      "key": "Session Name"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 140,
+      "key": "URL Slug"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 153,
+      "key": "Base Year"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 184,
+      "key": "Set as Current Active Session"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 194,
+      "key": "Visible to Students (Active)"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 200,
+      "key": "Update Session"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 200,
+      "key": "Create Session"
+    },
+    {
+      "file": "client/src/admin/pages/AcademicSessionsPage.jsx",
+      "line": 231,
+      "key": "Registered Academic Sessions"
+    },
+    {
+      "file": "client/src/admin/pages/ChaptersPage.jsx",
+      "line": 176,
+      "key": "Syllabus marks (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 48,
+      "key": "Educational Content Search & Filter"
+    },
+    {
+      "file": "client/src/admin/pages/ContentSearchPage.jsx",
+      "line": 49,
+      "key": "Search across NCERT chapters, exercises, questions, reference book solutions, and notes in Hindi and English."
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 73,
+      "key": "Drafts & Published Content Status"
+    },
+    {
+      "file": "client/src/admin/pages/ContentStatusPage.jsx",
+      "line": 74,
+      "key": "Overview of educational content across published, draft, scheduled, and archived states."
+    },
+    {
+      "file": "client/src/admin/pages/HomepagePages.jsx",
+      "line": 72,
+      "key": "Showcase of reference books (NCERT, RS Aggarwal, RD Sharma, KC Sinha, ML Aggarwal)."
+    },
+    {
+      "file": "client/src/admin/pages/ImportantQuestionsManagerPage.jsx",
+      "line": 191,
+      "key": "Publish board questions, previous year papers, marking schemes, formulas, and step-by-step mathematical answers."
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 26,
+      "key": "Maths Syllabus"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 27,
+      "key": "Manage the published syllabus using the existing chapter, topic, and PDF records."
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 29,
+      "key": "Syllabus scope"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 36,
+      "key": "Syllabus chapters"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 36,
+      "key": "Add chapter"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 38,
+      "key": "Untitled chapter"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 40,
+      "key": "Add topic"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 41,
+      "key": "Edit description & media"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 42,
+      "key": "No chapters for this class and session yet."
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 44,
+      "key": "Syllabus PDFs"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 44,
+      "key": "Upload syllabus PDF"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 45,
+      "key": "Syllabus PDF"
+    },
+    {
+      "file": "client/src/admin/pages/MathsSyllabusManagerPage.jsx",
+      "line": 45,
+      "key": "No syllabus PDFs for this class and session yet."
+    },
+    {
+      "file": "client/src/admin/pages/NotesManagerPage.jsx",
+      "line": 200,
+      "key": "Publish chapter-wise revision notes, mathematical formulas, theorem proofs, and definitions."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 30,
+      "key": "Short answer (लघु उत्तरीय)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 31,
+      "key": "Long answer (दीर्घ उत्तरीय)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 32,
+      "key": "Multiple Choice (MCQ)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 33,
+      "key": "Numerical Problem (संख्यात्मक प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 34,
+      "key": "Case-Based / Case Study"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 35,
+      "key": "Assertion and Reason"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 36,
+      "key": "Competency-Based"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 37,
+      "key": "Theorem / Proof (प्रमेय / उपपत्ति)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 38,
+      "key": "Subjective Question"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 39,
+      "key": "Short (legacy)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 40,
+      "key": "Long (legacy)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 41,
+      "key": "Case Study (legacy)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 144,
+      "key": "Notes page: formulas, theory, PDF notes, video lessons, and related chapters."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 171,
+      "key": "Reference Book (optional — संदर्भ पुस्तक)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 188,
+      "key": "Topic (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 196,
+      "key": "Content Category"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 200,
+      "key": "NCERT Chapter-wise Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 201,
+      "key": "All Maths Formula Sheets"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 202,
+      "key": "RS Aggarwal Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 203,
+      "key": "RD Sharma Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 204,
+      "key": "KC Sinha Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 205,
+      "key": "ML Aggarwal Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 206,
+      "key": "VVI Short Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 207,
+      "key": "General Notes"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 213,
+      "key": "Coordinate Geometry Notes / निर्देशांक ज्यामिति नोट्स"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 214,
+      "key": "Short description / Summary"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 218,
+      "key": "PDF Solutions / Notes (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 220,
+      "key": "Notes PDF / Solution Document"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 220,
+      "key": "Upload handwritten notes or complete PDF."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 229,
+      "key": "Card Image"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 230,
+      "key": "Featured Image (top of page)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 232,
+      "key": "Introduction / Lecture Video"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 235,
+      "key": "Supporting Figures & Diagrams"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 241,
+      "key": "Brief introduction, concepts overview, and key learning outcomes..."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 248,
+      "key": "Detailed Notes Content"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 249,
+      "key": "Full theoretical notes, definitions, theorems, and derivations with mathematical symbols..."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 252,
+      "key": "Pick chapters to link manually."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 282,
+      "key": "Q#"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 363,
+      "key": "Important Questions Management"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 383,
+      "key": "Location & details"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 388,
+      "key": "Reference Book (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 404,
+      "key": "Topic (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 414,
+      "key": "Question Category"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 418,
+      "key": "Previous Year Question (PYQ)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 419,
+      "key": "CBSE Sample Paper"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 420,
+      "key": "CBSE Extra Questions"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 421,
+      "key": "VVI / Board Special"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 422,
+      "key": "Maths Syllabus"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 427,
+      "key": "Question Type"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 434,
+      "key": "Question Number / Code"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 436,
+      "key": "Board (e.g. CBSE, ICSE)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 438,
+      "key": "Exam Year"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 439,
+      "key": "Paper Set"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 449,
+      "key": "Question Title (optional headline)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 449,
+      "key": "Prove that √5 is irrational / सिद्ध कीजिए कि √5 एक अपरिमेय संख्या है"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 453,
+      "key": "PDF Documents & Answer Keys (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 455,
+      "key": "Question Paper / Answer Key PDF"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 455,
+      "key": "Upload question paper or official marking scheme PDF."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 456,
+      "key": "Or External PDF Document URL"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 462,
+      "key": "Question Statement"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 462,
+      "key": "Enter question text with LaTeX math support e.g. $\\int x^2 dx$ or $\\frac{a}{b}$."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 466,
+      "key": "Images, Diagrams & Video"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 468,
+      "key": "Card Image"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 469,
+      "key": "Featured / Solution Image"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 471,
+      "key": "Video Solution / Walkthrough"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 474,
+      "key": "Diagrams, Figures & Graphs"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 483,
+      "key": "Step-by-step Solution"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 483,
+      "key": "Add steps, calculations, theorems, explanations, and diagrams."
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 487,
+      "key": "Short Answer & Marking Scheme"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 490,
+      "key": "Short Final Answer"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 494,
+      "key": "Marking Scheme / Step Breakdown"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 50,
+      "key": "All default landing pages initialized successfully."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 79,
+      "key": "Page & Landing Management"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 80,
+      "key": "Manage educational landing pages (banners, heroes, custom sections, FAQs) and standalone website pages."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 95,
+      "key": "Hub & Category Landing Pages (हब व लैंडिंग पृष्ठ)"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 108,
+      "key": "Standalone & Legal Pages (सामान्य पृष्ठ)"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 117,
+      "key": "All major categories have fully editable landing pages."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 120,
+      "key": "Customize hero headings, introductory paragraphs, banner images, custom content sections, FAQs, and SEO tags without touching code."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 132,
+      "key": "Initializing..."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 132,
+      "key": "Initialize All Landing Pages"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 137,
+      "key": "Loading landing pages..."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 168,
+      "key": "Customized"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 168,
+      "key": "Default System"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 210,
+      "key": "Create, edit, preview, publish, and manage standalone website pages and their SEO content."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 278,
+      "key": "Editable landing page (optional)"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 278,
+      "key": "Standalone page"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 304,
+      "key": "Landing hero"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 304,
+      "key": "Used on the matching public category page when this page is published."
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 306,
+      "key": "Hero title"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 307,
+      "key": "Hero description"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 308,
+      "key": "Hero image"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 309,
+      "key": "Banner image"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 312,
+      "key": "Editable sections"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 321,
+      "key": "Section heading"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 323,
+      "key": "Section image"
+    },
+    {
+      "file": "client/src/admin/pages/PagesPage.jsx",
+      "line": 331,
+      "key": "Button label"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 47,
+      "key": "Subjective Question (विषयपरक प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 48,
+      "key": "Short Answer (लघु उत्तरीय प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 49,
+      "key": "Long Answer (दीर्घ उत्तरीय प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 50,
+      "key": "Numerical Problem (संख्यात्मक प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 51,
+      "key": "Multiple Choice Question (MCQ)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 52,
+      "key": "Case-Based / Case Study (केस आधारित प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 53,
+      "key": "Assertion and Reason (अभिकथन और कारण)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 54,
+      "key": "Competency-Based (योग्यता आधारित)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 55,
+      "key": "Theorem / Proof (प्रमेय / उपपत्ति)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 56,
+      "key": "Objective Question (वस्तुनिष्ठ प्रश्न)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 65,
+      "key": "Questions & Solutions"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 76,
+      "key": "Create New Question"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 82,
+      "key": "Q#"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 109,
+      "key": "Part"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 132,
+      "key": "Part Statement"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 133,
+      "key": "Part Final Answer"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 138,
+      "key": "Add Question Part / Subquestion"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 190,
+      "key": "MCQ Explanation / Reason"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 191,
+      "key": "Explain why this option is correct..."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 200,
+      "key": "Question Information"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 221,
+      "key": "Question No."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 225,
+      "key": "Question Type"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 406,
+      "key": "Create New Question"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 409,
+      "key": "Edit Question"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 414,
+      "key": "Full-page Educational CMS Question Editor with step-by-step solutions, formulas, and media."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 438,
+      "key": "Important question (VVI)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 440,
+      "key": "Topics (e.g. pythagoras, trigonometry, calculus)."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 448,
+      "key": "1. Location & Question Details"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 498,
+      "key": "Question Topic (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 505,
+      "key": "Question Number"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 505,
+      "key": "1 or 1(a) or 2(ii)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 506,
+      "key": "Question Code (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 509,
+      "key": "Question Type"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 517,
+      "key": "Board (e.g. CBSE, ICSE, State)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 518,
+      "key": "Examination Year"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 519,
+      "key": "Paper Set (e.g. Set 1)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 520,
+      "key": "CBSE Board Exam 2024 · NCERT Exemplar"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 526,
+      "key": "Question Title (Optional Headline)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 526,
+      "key": "Find the coordinates of the point which divides the join of..."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 527,
+      "key": "Short Description / Summary"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 532,
+      "key": "2. PDF Solutions / Question Documents (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 535,
+      "key": "Question PDF / Solution Document"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 539,
+      "key": "Upload scanned question paper, handwritten solution or answer key PDF."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 541,
+      "key": "Or External PDF Document URL"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 554,
+      "key": "3. Images & Video"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 556,
+      "key": "Question Image (cards / thumbnail)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 557,
+      "key": "Featured Image (top of page)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 560,
+      "key": "Video Solution / Walkthrough"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 568,
+      "key": "Paste a YouTube link and choose where the player appears."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 573,
+      "key": "Diagrams, Figures & Graphs"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 586,
+      "key": "4. Question Statement"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 587,
+      "key": "Type in हिंदी or English. Use the Σ button (or $…$) for formulas, e.g. $\\angle A = 60^\\circ$ or $\\sqrt{x^2+y^2}$."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 593,
+      "key": "यदि त्रिभुज ABC में ∠A = 60° और ∠B = 70°, तो ∠C ज्ञात कीजिए। / If in triangle ABC, angle A = 60°..."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 600,
+      "key": "Question Parts / Subquestions (Optional)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 610,
+      "key": "Multiple Choice Options (MCQ)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 624,
+      "key": "5. Important Formulas"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 628,
+      "key": "Key Formulas used in this Question"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 629,
+      "key": "Shown in the solution box and searchable by students."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 635,
+      "key": "6. Step-by-Step Solution Builder"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 636,
+      "key": "Add blocks (Explanation → Steps → Calculation → Formula → Diagram → Video → Final Answer) in any order. Drag to reorder."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 642,
+      "key": "Solution Publication Status"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 650,
+      "key": "Solution Language Mode"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 661,
+      "key": "Primary Solution Blocks"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 680,
+      "key": "Additional Solution Methods (Shortcut / Alternative)"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 681,
+      "key": "Add multiple verified methods for this question."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 703,
+      "key": "Add Solution Method"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 746,
+      "key": "Method Title"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 748,
+      "key": "Method Type"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 755,
+      "key": "Final Answer for this method"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 764,
+      "key": "7. Hint, Short Answer & Marking Scheme"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 768,
+      "key": "Short Final Answer"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 769,
+      "key": "Used in search, quick verification, and FAQ snippets."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 774,
+      "key": "Important Point / Key Takeaway"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 775,
+      "key": "Marking Scheme / Step Breakdown"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 781,
+      "key": "8. Notes / Additional Explanation"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 782,
+      "key": "Important concepts, mathematical properties, definitions, related theorems, and exam tips."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 784,
+      "key": "Important note, exam cautions, alternative formulas..."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 788,
+      "key": "9. Related Content"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 788,
+      "key": "Link related questions, exercises, or chapters."
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 791,
+      "key": "Related Questions"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 800,
+      "key": "Related Chapters"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 812,
+      "key": "10. SEO Settings"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 300,
+      "key": "Reference Book updated successfully"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 305,
+      "key": "New Reference Book created successfully"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 463,
+      "key": "Question Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 463,
+      "key": "Question Un-published (Draft)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 501,
+      "key": "Solution Published"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 501,
+      "key": "Solution set to Draft"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 553,
+      "key": "Complete Manual Educational Authoring Workflow: Book → Class → Subject → Chapter → Exercise → Question → Multiple Solution Methods (Standard & Shortcut)."
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 566,
+      "key": "Edit Landing Page"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 576,
+      "key": "Book Settings & Classes"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 585,
+      "key": "Add New Reference Book"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 645,
+      "key": "Session"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 850,
+      "key": "Create New Question (Full CMS Editor)"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 914,
+      "key": "Create Question 1 (Full CMS Editor)"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 196,
+      "key": "Examination Year"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 199,
+      "key": "Paper Set / Series"
+    },
+    {
+      "file": "client/src/components/content/QuestionCard.jsx",
+      "line": 153,
+      "key": "Solution in Preparation"
+    },
+    {
+      "file": "client/src/components/content/QuestionCard.jsx",
+      "line": 156,
+      "key": "Our mathematics educators are actively writing step-by-step solutions with alternative methods for this question. It will be published shortly."
+    },
+    {
+      "file": "client/src/components/content/QuestionCard.jsx",
+      "line": 187,
+      "key": "Method"
+    },
+    {
+      "file": "client/src/components/site/AcademicSessionSelector.jsx",
+      "line": 54,
+      "key": "Academic Session"
+    },
+    {
+      "file": "client/src/components/site/AcademicSessionSelector.jsx",
+      "line": 75,
+      "key": "Select Session"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 151,
+      "key": "Footer navigation"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 165,
+      "key": "More resources"
+    },
+    {
+      "file": "client/src/components/site/Footer.jsx",
+      "line": 233,
+      "key": "Legal links"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 73,
+      "key": "Chapter-wise extra practice questions, High Order Thinking Skills (HOTS), conceptual problems, and downloadable question banks."
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 87,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 90,
+      "key": "Choose your class for chapter-wise extra questions and solutions:"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 130,
+      "key": "All Chapters"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 164,
+      "key": "Showing"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 173,
+      "key": "Downloadable Extra Practice Worksheets (PDF)"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 216,
+      "key": "Extra Question"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 256,
+      "key": "Detailed Solution"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 269,
+      "key": "No extra questions match this filter"
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 272,
+      "key": "Try changing the chapter or difficulty filter above."
+    },
+    {
+      "file": "client/src/pages/content/ExtraQuestionsPage.jsx",
+      "line": 282,
+      "key": "Reset Filters"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 61,
+      "key": "Comprehensive chapter-wise formula tables, algebraic identities, trigonometry formulas, mensuration equations, and mathematical symbols guide."
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 75,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 78,
+      "key": "Choose your class for complete maths formula sheets:"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 117,
+      "key": "Printable pocket formula sheet containing all theorems, formulas and proofs."
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 130,
+      "key": "View Sheet"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 152,
+      "key": "Essential Mathematical Symbols & Notations"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 187,
+      "key": "Chapter-wise Formula Tables"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 206,
+      "key": "Full Solutions"
+    },
+    {
+      "file": "client/src/pages/content/FormulaSheetsPage.jsx",
+      "line": 224,
+      "key": "Formula Sheet Articles"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 58,
+      "key": "Updated CBSE Mathematics syllabus, unit-wise marks weightage, course structure, prescribed NCERT textbooks, and deleted topics."
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 72,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 75,
+      "key": "View class-specific syllabus and marks distribution:"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 114,
+      "key": "Published syllabus document for the selected academic session."
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 127,
+      "key": "View Syllabus"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 148,
+      "key": "Course Structure & Unit-wise Marks Distribution"
+    },
+    {
+      "file": "client/src/pages/content/MathsSyllabusPage.jsx",
+      "line": 172,
+      "key": "Prescribed Chapters (NCERT Mathematics)"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 69,
+      "key": "Comprehensive revision notes, key concepts, theorem proofs, important definitions, diagrams, and downloadable chapter summaries."
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 83,
+      "key": "Select Class (अपनी कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 86,
+      "key": "Choose your class for NCERT chapter-wise revision notes:"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 117,
+      "key": "Filter by Chapter"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 123,
+      "key": "All Chapters"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 132,
+      "key": "Notes Available"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 141,
+      "key": "Downloadable Chapter Notes (PDF)"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 220,
+      "key": "No notes found for this chapter"
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 223,
+      "key": "Select All Chapters or view chapter solutions directly."
+    },
+    {
+      "file": "client/src/pages/content/NcertNotesPage.jsx",
+      "line": 226,
+      "key": "Show All Chapters"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 81,
+      "key": "Download past 10 years CBSE question papers with question-wise step-by-step solutions, marking schemes, paper sets, and answer keys."
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 96,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 99,
+      "key": "Choose your class to view class-specific question papers and solutions:"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 132,
+      "key": "Filter by Year"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 145,
+      "key": "All Years"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 166,
+      "key": "Showing"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 166,
+      "key": "Papers"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 175,
+      "key": "Previous Year Question Papers & Marking Schemes"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 235,
+      "key": "Question papers for the selected year will be uploaded shortly."
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 238,
+      "key": "View All Available Years"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 250,
+      "key": "Solved Board Questions with Step-by-Step Mathematical Explanations"
+    },
+    {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 253,
+      "key": "Real questions from past CBSE board exams with complete factorizations, proofs, equations, and answer keys."
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 78,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 122,
+      "key": "Go to Solutions"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 179,
+      "key": "Exercise Solutions"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 201,
+      "key": "Content will be published through the admin CMS."
+    },
+    {
+      "file": "client/src/pages/content/ReferenceBookNotesPage.jsx",
+      "line": 211,
+      "key": "Articles & Concept Explanations"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
+      "line": 503,
+      "key": "Jump to Question"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 62,
+      "key": "Official CBSE sample question papers with marking schemes, blueprint, section-wise marks distribution, and model solutions."
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 76,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 79,
+      "key": "Choose your class for official CBSE sample papers and scoring blueprints:"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 113,
+      "key": "The question paper consists of 5 sections: Section A (20 MCQs of 1 mark each), Section B (5 Very Short Answer questions of 2 marks each), Section C (6 Short Answer questions of 3 marks each), Section D (4 Long Answer questions of 5 marks each), and Section E (3 Case-Based integrated units of assessment of 4 marks each)."
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 144,
+      "key": "CBSE Sample Question Papers (SQP)"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 186,
+      "key": "View Sample Paper"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 204,
+      "key": "Sample papers will be published here for download."
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 216,
+      "key": "Official Marking Schemes & Solutions (MS)"
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 219,
+      "key": "CBSE marking scheme showing step-by-step mark distribution for every question."
+    },
+    {
+      "file": "client/src/pages/content/SamplePapersPage.jsx",
+      "line": 248,
+      "key": "View Marking Scheme"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 72,
+      "key": "High-yield board examination questions, most repeated theorem proofs, short answers, long answers, and scoring formulas."
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 86,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 89,
+      "key": "Choose your class for VVI board special questions:"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 120,
+      "key": "Board Exam Scoring Strategy & Tips"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 123,
+      "key": "These VVI (Very Very Important) questions are curated based on recurring patterns in CBSE board examinations over the past 10 years. Practice writing every mathematical step clearly, draw neat diagrams with labels, and write down the relevant formula at the start of each answer to secure full step marks."
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 140,
+      "key": "All Chapters"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 179,
+      "key": "Showing"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 179,
+      "key": "VVI Questions"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 201,
+      "key": "VVI Question"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 239,
+      "key": "Detailed Step-by-Step Solution"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 252,
+      "key": "No VVI questions found for this filter"
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 255,
+      "key": "Try selecting another chapter or reset filters."
+    },
+    {
+      "file": "client/src/pages/content/VviQuestionsPage.jsx",
+      "line": 265,
+      "key": "Reset Filters"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 48,
+      "key": "Rapid revision cheat-sheets, bulleted key concepts, recurring board questions, and high-yield formula summaries for quick recall."
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 62,
+      "key": "Select Class (कक्षा चुनें)"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 65,
+      "key": "Choose your class for rapid revision VVI notes:"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 96,
+      "key": "Rapid Revision Short Notes"
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 137,
+      "key": "Formula sheet and quick notes for this chapter."
+    },
+    {
+      "file": "client/src/pages/content/VviShortNotesPage.jsx",
+      "line": 152,
+      "key": "Top Scoring VVI Board Questions"
+    },
+    {
+      "file": "client/src/pages/StudentAccountPage.jsx",
+      "line": 55,
+      "key": "Admin login"
+    }
+  ],
   "invalidEntries": [],
   "dynamicBypasses": [],
   "intentional": [
@@ -156,67 +3778,67 @@
     },
     {
       "file": "client/src/admin/pages/ChaptersPage.jsx",
-      "line": 220,
+      "line": 186,
       "text": "https://...",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/ExercisesPage.jsx",
-      "line": 171,
+      "line": 173,
       "text": "https://...",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 524,
+      "line": 512,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 631,
+      "line": 619,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 762,
+      "line": 750,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 996,
+      "line": 984,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1135,
+      "line": 1123,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1163,
+      "line": 1151,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1293,
+      "line": 1281,
       "text": "https://{v0}.com/...",
       "reason": "Literal URL or route pattern; must remain unchanged in either language"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1376,
+      "line": 1364,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HomepagePages.jsx",
-      "line": 211,
+      "line": 212,
       "text": "· {v0}",
       "reason": "Data-only formatting template; values retain their own language"
     },
@@ -234,9 +3856,27 @@
     },
     {
       "file": "client/src/admin/pages/NotesPage.jsx",
-      "line": 63,
+      "line": 80,
       "text": "{v0}. {v1}",
       "reason": "Data-only numbering and authored title; no interface prose"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 222,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 436,
+      "text": "CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/pages/NotesPage.jsx",
+      "line": 457,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/OverviewPage.jsx",
@@ -245,20 +3885,32 @@
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
-      "file": "client/src/admin/pages/ResourcesPage.jsx",
-      "line": 256,
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 517,
+      "text": "CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
+      "file": "client/src/admin/pages/QuestionsPage.jsx",
+      "line": 546,
       "text": "https://...",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/ResourcesPage.jsx",
-      "line": 266,
+      "line": 267,
+      "text": "https://...",
+      "reason": "Literal URL, path, or account handle"
+    },
+    {
+      "file": "client/src/admin/pages/ResourcesPage.jsx",
+      "line": 277,
       "text": "https://www.youtube.com/watch?v=...",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/ResourcesPage.jsx",
-      "line": 276,
+      "line": 287,
       "text": "https://...",
       "reason": "Literal URL, path, or account handle"
     },
@@ -282,31 +3934,31 @@
     },
     {
       "file": "client/src/admin/pages/SettingsPages.jsx",
-      "line": 529,
+      "line": 526,
       "text": "newTermKey",
       "reason": "Technical identifier or filename"
     },
     {
       "file": "client/src/admin/pages/SettingsPages.jsx",
-      "line": 604,
+      "line": 601,
       "text": "sitemap.xml",
       "reason": "Technical identifier or filename"
     },
     {
       "file": "client/src/admin/pages/SettingsPages.jsx",
-      "line": 609,
+      "line": 606,
       "text": "robots.txt",
       "reason": "Technical identifier or filename"
     },
     {
       "file": "client/src/admin/pages/SettingsPages.jsx",
-      "line": 628,
+      "line": 625,
       "text": "@passionmaths",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/SettingsPages.jsx",
-      "line": 891,
+      "line": 888,
       "text": "#{v0}",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
@@ -401,6 +4053,12 @@
       "reason": "Brand, product or established proper name"
     },
     {
+      "file": "client/src/components/content/QuestionCard.jsx",
+      "line": 187,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
       "file": "client/src/components/content/SolutionRenderer.jsx",
       "line": 68,
       "text": "· {v0}",
@@ -432,49 +4090,55 @@
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 119,
+      "line": 347,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/components/home/Sections.jsx",
+      "line": 388,
       "text": "{v0} {v1}{v2}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 182,
+      "line": 451,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 183,
+      "line": 452,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 27,
+      "line": 26,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 28,
+      "line": 27,
       "text": "YouTube",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 29,
+      "line": 28,
       "text": "Instagram",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 30,
+      "line": 29,
       "text": "Facebook",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 166,
+      "line": 117,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
@@ -488,24 +4152,6 @@
       "file": "client/src/components/site/LanguageSwitcher.jsx",
       "line": 10,
       "text": "ENG",
-      "reason": "Mathematical notation, unit, acronym or language selector identifier"
-    },
-    {
-      "file": "client/src/components/site/StudySidebar.jsx",
-      "line": 32,
-      "text": "CBSE",
-      "reason": "Mathematical notation, unit, acronym or language selector identifier"
-    },
-    {
-      "file": "client/src/components/site/StudySidebar.jsx",
-      "line": 33,
-      "text": "CBSE",
-      "reason": "Mathematical notation, unit, acronym or language selector identifier"
-    },
-    {
-      "file": "client/src/components/site/StudySidebar.jsx",
-      "line": 34,
-      "text": "ICSE/CBSE",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
     {
@@ -557,6 +4203,12 @@
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
+      "file": "client/src/pages/content/PreviousYearQuestionsPage.jsx",
+      "line": 276,
+      "text": "CBSE",
+      "reason": "Mathematical notation, unit, acronym or language selector identifier"
+    },
+    {
       "file": "client/src/pages/content/QuestionPage.jsx",
       "line": 42,
       "text": "{v0} {v1} {v2} · {v3} {v4} – {v5}",
@@ -564,7 +4216,7 @@
     },
     {
       "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
-      "line": 265,
+      "line": 269,
       "text": "PDF",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
@@ -588,7 +4240,7 @@
     },
     {
       "file": "client/src/pages/content/SubjectPage.jsx",
-      "line": 126,
+      "line": 128,
       "text": "{v0} — {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
@@ -612,8 +4264,8 @@
     "applicationEntries": 1503,
     "remainingEntries": 127,
     "legacyEntries": 533,
-    "unresolved": 0,
-    "scannedFiles": 174,
+    "unresolved": 661,
+    "scannedFiles": 198,
     "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
   }
 }

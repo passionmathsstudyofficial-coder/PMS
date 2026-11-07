@@ -13,7 +13,6 @@ import {
   Subject,
 } from '../models/index.js';
 import { MEDIA_SELECT } from './populate.js';
-import { CANONICAL_REFERENCE_BOOKS } from './publicContent.js';
 import { getTerms } from './terms.js';
 import { urls } from './urls.js';
 
@@ -43,85 +42,26 @@ export async function publicClasses(preview = false) {
   });
 }
 
-const ALIAS_BOOK_SLUGS = {
-  'mathematics-for-class-10-by-r-d-sharma': 'rd-sharma',
-  'secondary-school-mathematics-for-class-10-by-r-s-aggarwal': 'rs-aggarwal',
-  'ncert-mathematics-textbook-for-class-10': 'ncert',
-};
-
 export async function publicReferenceBooks(preview = false) {
-  // Read configured entries even when private, so a hidden override suppresses its default menu entry.
-  const dbBooks = await Book.find({
-    $or: [
-      { category: 'reference' },
-      { slug: { $in: ['ncert', 'rs-aggarwal', 'rd-sharma', 'kc-sinha', 'ml-aggarwal'] } },
-    ],
-  })
-    .sort({ sortOrder: 1, createdAt: 1 })
+  // Use the same records, slugs and class constraints as the public resolver.
+  const books = await Book.find(preview ? { category: 'reference' } : Book.publicFilter({ category: 'reference' }))
+    .sort({ sortOrder: 1, createdAt: -1 })
     .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
     .lean();
-
-  const allMap = new Map();
-  for (const b of CANONICAL_REFERENCE_BOOKS) {
-    allMap.set(b.slug, {
-      ...b,
-      availableClasses: b.classes || [6, 7, 8, 9, 10, 11, 12],
-      url: `/reference-solutions/${b.slug}`,
-    });
-  }
-  for (const b of dbBooks) {
-    if (b.slug) {
-      const cleanSlug = String(b.slug).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-      const targetSlug = ALIAS_BOOK_SLUGS[cleanSlug] || cleanSlug;
-      if (!preview && (b.status !== 'published' || !b.isVisible || !b.publishedAt || new Date(b.publishedAt) > new Date())) {
-        if (cleanSlug === targetSlug) {
-          allMap.delete(targetSlug);
-        }
-        continue;
-      }
-      const existing = allMap.get(targetSlug) || {};
-      const isCanon = CANONICAL_REFERENCE_BOOKS.some((c) => c.slug === targetSlug);
-      const preserveCanonTitle = isCanon && (
-        !b.title?.en ||
-        b.title.en.includes('Class 10') ||
-        b.title.en.includes('Class 12')
-      );
-
-      const coverUrl = (b.coverUrl && !b.coverUrl.includes('media-amazon.com')) ? b.coverUrl : '';
-
-      allMap.set(targetSlug, {
-        ...existing,
-        ...b,
-        slug: targetSlug,
-        coverUrl: coverUrl || existing.coverUrl,
-        title: (isCanon && preserveCanonTitle) ? existing.title : (b.title || existing.title),
-        availableClasses: (b.availableClasses && b.availableClasses.length >= 3)
-          ? b.availableClasses
-          : (existing.availableClasses || (b.class?.number ? [b.class.number] : [6, 7, 8, 9, 10, 11, 12])),
-        url: `/reference-solutions/${targetSlug}`,
-      });
-    }
-  }
-
-  const chapterFilter = preview ? {} : Chapter.publicFilter();
-  const chapterCounts = await Chapter.aggregate([
-    { $match: chapterFilter },
+  const classes = await ClassLevel.find(preview ? {} : ClassLevel.publicFilter()).select('number').lean();
+  const numbers = new Set(classes.map(cls => cls.number));
+  const counts = await Chapter.aggregate([
+    { $match: preview ? {} : Chapter.publicFilter() },
     { $group: { _id: '$book', count: { $sum: 1 } } },
-  ]).catch(() => []);
-  const countByBookId = new Map(chapterCounts.map((c) => [String(c._id || ''), c.count]));
-
-  for (const book of allMap.values()) {
-    let count = 0;
-    if (book._id) {
-      count = countByBookId.get(String(book._id)) || 0;
-    }
-    if (book.slug === 'ncert') {
-      count += countByBookId.get('') || 0;
-    }
-    book.chapterCount = count;
-  }
-
-  return Array.from(allMap.values()).filter((b) => b.isVisible !== false);
+  ]);
+  const byId = new Map(counts.map(row => [String(row._id), row.count]));
+  return books.filter(book => book.slug).map(book => ({
+    ...book,
+    availableClasses: [...new Set(book.availableClasses?.length ? book.availableClasses : (book.class?.number ? [book.class.number] : []))]
+      .filter(number => numbers.has(number)),
+    url: urls.referenceBook(book),
+    chapterCount: byId.get(String(book._id)) || 0,
+  }));
 }
 
 export async function getSiteBootstrap() {

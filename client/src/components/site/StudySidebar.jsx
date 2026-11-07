@@ -1,3 +1,5 @@
+import { useSite } from '@/lib/site';
+import { getReferenceBooks } from '@/lib/referenceBooks.js';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
@@ -28,17 +30,13 @@ export const STUDY_MATERIAL_LINKS = [
   { slug: 'syllabus', label: { hi: 'पाठ्यक्रम (Syllabus)', en: 'CBSE Syllabus' }, icon: GraduationCap },
 ];
 
-export const REFERENCE_BOOK_LINKS = [
-  { slug: 'rs-aggarwal', label: { hi: 'आर.एस. अग्रवाल समाधान', en: 'RS Aggarwal Solutions' }, badge: 'CBSE' },
-  { slug: 'rd-sharma', label: { hi: 'आर.डी. शर्मा समाधान', en: 'RD Sharma Solutions' }, badge: 'CBSE' },
-  { slug: 'ml-aggarwal', label: { hi: 'एम.एल. अग्रवाल समाधान', en: 'ML Aggarwal Solutions' }, badge: 'ICSE/CBSE' },
-];
-
-const CLASSES = [12, 11, 10, 9, 8, 7, 6];
-
 export function StudySidebar({ currentCategory, currentBook, currentClass, chapters = [], className }) {
   useUiLanguage();
   const t = useInterfaceL10n();
+  const site = useSite();
+  const books = getReferenceBooks(site);
+  const selectedBook = books.find(book => book.slug === (currentBook?.slug || currentBook));
+  const classes = (site?.classes || []).filter(cls => !currentBook || selectedBook?.availableClasses?.includes(cls.number)).map(cls => cls.number);
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -122,8 +120,8 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
           <h3 className="font-heading text-sm font-bold text-foreground">{uiText("Reference Solutions")}</h3>
         </div>
         <ul className="space-y-1">
-          {REFERENCE_BOOK_LINKS.map((b) => {
-            const targetUrl = currentClass
+          {books.map((b) => {
+            const targetUrl = currentClass && b.availableClasses?.includes(currentClass.number || currentClass)
               ? `/reference-solutions/${b.slug}/class-${currentClass.number || currentClass}`
               : `/reference-solutions/${b.slug}`;
             const isActive = pathname.startsWith(`/reference-solutions/${b.slug}`);
@@ -139,7 +137,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
                       : 'text-foreground/80 hover:bg-muted hover:text-foreground',
                   )}
                 >
-                  <span className="truncate">{t(b.label)}</span>
+                  <span className="truncate">{t(b.title)}</span>
                   <span
                     className={cn(
                       'ml-1.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase',
@@ -165,7 +163,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
       <div className="rounded-2xl border bg-card p-4 shadow-xs">
         <h3 className="mb-2 text-xs font-extrabold tracking-wider text-muted-foreground uppercase">{uiText("Classes 6 to 12")}</h3>
         <div className="grid grid-cols-4 gap-1.5">
-          {CLASSES.map((num) => {
+          {classes.map((num) => {
             const isCurrent = currentClass && (currentClass.number === num || currentClass === num);
             const classUrl = currentCategory
               ? `/study-materials/${currentCategory.slug || currentCategory}/class-${num}`

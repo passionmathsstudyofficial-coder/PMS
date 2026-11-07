@@ -10,7 +10,7 @@ import { RichContent } from '@/components/content/RichContent.jsx';
 import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
 import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { Icon } from '@/lib/icons';
-import { useInterfaceL10n } from '@/lib/i18n';
+import { hasContent, useInterfaceL10n } from '@/lib/i18n';
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from '@/lib/motion';
 import { getReferenceBooks } from '@/lib/referenceBooks.js';
 import { useSite, useTerm } from '@/lib/site';
@@ -220,70 +220,6 @@ function BookCoverImage({ book, bookTitle }) {
   );
 }
 
-const CANONICAL_BOOKS = {
-  ncert: {
-    title: { hi: 'NCERT गणित समाधान', en: 'NCERT Solutions' },
-    author: 'NCERT',
-    publisher: 'NCERT',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-    description: {
-      hi: 'सीबीएसई कक्षा 6 से 12 के लिए NCERT गणित के अध्याय-वार और प्रश्नावली-वार संपूर्ण चरणबद्ध हल।',
-      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for NCERT Mathematics Classes 6 to 12.',
-    },
-    url: '/reference-solutions/ncert',
-  },
-  'rs-aggarwal': {
-    title: { hi: 'आर.एस. अग्रवाल समाधान', en: 'RS Aggarwal Solutions' },
-    author: 'R.S. Aggarwal',
-    publisher: 'Bharati Bhawan',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-    description: {
-      hi: 'सीबीएसई कक्षा 6 से 12 के लिए आर.एस. अग्रवाल गणित के अध्याय-वार और प्रश्नावली-वार विस्तृत हल।',
-      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for RS Aggarwal Mathematics Classes 6 to 12.',
-    },
-    url: '/reference-solutions/rs-aggarwal',
-  },
-  'rd-sharma': {
-    title: { hi: 'आर.डी. शर्मा समाधान', en: 'RD Sharma Solutions' },
-    author: 'Dr. R.D. Sharma',
-    publisher: 'Dhanpat Rai Publications',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-    description: {
-      hi: 'सीबीएसई बोर्ड परीक्षा और प्रतियोगी परीक्षाओं के लिए आर.डी. शर्मा गणित के संपूर्ण हल।',
-      en: 'Comprehensive RD Sharma Mathematics solutions with all question steps, formulas, and proofs.',
-    },
-    url: '/reference-solutions/rd-sharma',
-  },
-  'kc-sinha': {
-    title: { hi: 'के.सी. सिन्हा समाधान', en: 'KC Sinha Solutions' },
-    author: 'Dr. K.C. Sinha',
-    publisher: 'Students Friends / Rastogi Publications',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-    description: {
-      hi: 'कक्षा 6 से 12 के विद्यार्थियों के लिए के.सी. सिन्हा गणित के संपूर्ण और विस्तृत चरणबद्ध हल।',
-      en: 'Complete chapter-wise and exercise-wise step-by-step solutions for KC Sinha Mathematics Classes 6 to 12.',
-    },
-    url: '/reference-solutions/kc-sinha',
-  },
-  'ml-aggarwal': {
-    title: { hi: 'एम.एल. अग्रवाल समाधान', en: 'ML Aggarwal Solutions' },
-    author: 'M.L. Aggarwal',
-    publisher: 'Arya Publications',
-    availableClasses: [6, 7, 8, 9, 10, 11, 12],
-    description: {
-      hi: 'आईसीएसई / सीबीएसई गणित के लिए एम.एल. अग्रवाल अंडरस्टैंडिंग मैथमेटिक्स के हल।',
-      en: 'Step-by-step solutions for ML Aggarwal Understanding Mathematics for middle and secondary classes.',
-    },
-    url: '/reference-solutions/ml-aggarwal',
-  },
-};
-
-const ALIAS_SLUGS = {
-  'mathematics-for-class-10-by-r-d-sharma': 'rd-sharma',
-  'secondary-school-mathematics-for-class-10-by-r-s-aggarwal': 'rs-aggarwal',
-  'ncert-mathematics-textbook-for-class-10': 'ncert',
-};
-
 export function ReferenceBooksSection({ section }) {
   const language = useUiLanguage();
   const t = useInterfaceL10n();
@@ -298,37 +234,7 @@ export function ReferenceBooksSection({ section }) {
   const classText = isHindi ? 'कक्षा' : 'Class';
 
   const rawBooks = section?.data?.books || getReferenceBooks(site);
-  // Ensure all 5 canonical books are always present and properly sequenced
-  const bookMap = new Map();
-  for (const [slug, canon] of Object.entries(CANONICAL_BOOKS)) {
-    bookMap.set(slug, { ...canon, slug });
-  }
-  for (const b of (rawBooks || [])) {
-    if (!b?.slug) continue;
-    const cleanSlug = String(b.slug).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-    const targetSlug = ALIAS_SLUGS[cleanSlug] || cleanSlug;
-    const existing = bookMap.get(targetSlug) || {};
-    // If it's a canonical book with single-class title (e.g. "for Class 10"), preserve canonical series title
-    const isCanon = Boolean(CANONICAL_BOOKS[targetSlug]);
-    const preserveCanonTitle = isCanon && (
-      !b.title?.en ||
-      b.title.en.includes('Class 10') ||
-      b.title.en.includes('Class 12')
-    );
-
-    bookMap.set(targetSlug, {
-      ...existing,
-      ...b,
-      slug: targetSlug,
-      title: (isCanon && preserveCanonTitle) ? CANONICAL_BOOKS[targetSlug].title : (b.title || existing.title),
-      availableClasses: (b.availableClasses?.length >= 3)
-        ? b.availableClasses
-        : (existing.availableClasses || [6, 7, 8, 9, 10, 11, 12]),
-      url: b.url || `/reference-solutions/${targetSlug}`,
-    });
-  }
-
-  const books = Array.from(bookMap.values()).filter((b) => b.isVisible !== false);
+  const books = getReferenceBooks({ referenceBooks: rawBooks || [] });
 
   const isOldHierarchy =
     section?.name === 'hierarchy' ||
@@ -344,9 +250,9 @@ export function ReferenceBooksSection({ section }) {
 
   const effectiveSection = {
     ...section,
-    badge: (!isOldHierarchy && section?.badge && (section.badge.en || section.badge.hi)) ? section.badge : defaultBadge,
-    title: (!isOldHierarchy && section?.title && (section.title.en || section.title.hi)) ? section.title : defaultTitle,
-    description: (!isOldHierarchy && section?.description && (section.description.en || section.description.hi)) ? section.description : defaultDesc,
+    badge: (!isOldHierarchy && section?.badge && hasContent(section.badge[language])) ? section.badge : defaultBadge,
+    title: (!isOldHierarchy && section?.title && hasContent(section.title[language])) ? section.title : defaultTitle,
+    description: (!isOldHierarchy && section?.description && hasContent(section.description[language])) ? section.description : defaultDesc,
     config: {
       ...section?.config,
       background: section?.config?.background === 'dark' ? 'none' : (section?.config?.background || 'none'),
@@ -361,7 +267,7 @@ export function ReferenceBooksSection({ section }) {
         {books.map((book) => {
           const bookTitle = t(book.title) || book.author || book.name || book.slug;
           const bookDesc = t(book.description) || (t(book.subtitle) || '');
-          const classes = (book.availableClasses?.length ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12])
+          const classes = (book.availableClasses || [])
             .slice()
             .sort((a, b) => a - b);
           const classRangeLabel = classes.length > 1
