@@ -147,9 +147,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
           <div className="space-y-0.5">
             {books.map((book) => {
               const bookTitle = t(book.title) || book.author || book.name || book.slug;
-              const classes = (book.availableClasses || [])
-                .slice()
-                .sort((a, b) => a - b);
+              const classes = (book.availableClasses || []);
               const isHovered = activeBookSlug === book.slug;
               const isBookActive = isPathActive(referenceBookUrl(book), path) && !/\/class-\d+/.test(path);
 
@@ -203,15 +201,15 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                           <Link
                             role="menuitem"
                             key={clsNum}
-                            to={`/reference-solutions/${book.slug}/class-${clsNum}`}
-                            aria-current={isPathActive(`/reference-solutions/${book.slug}/class-${clsNum}`, path) ? 'page' : undefined}
+                            to={(book.classRecords?.find(c => c.number === clsNum)?.url || `/reference-solutions/${book.slug}/class-${clsNum}`)}
+                            aria-current={isPathActive((book.classRecords?.find(c => c.number === clsNum)?.url || `/reference-solutions/${book.slug}/class-${clsNum}`), path) ? 'page' : undefined}
                             onClick={() => {
                               setIsOpen(false);
                               setActiveBookSlug(null);
                             }}
                             className={cn(
                               'flex items-center justify-between rounded-md px-2.5 py-1.5 text-xs xl:text-sm font-medium transition-colors duration-150 hover:bg-brand/10 hover:text-brand hover:font-bold',
-                              isPathActive(`/reference-solutions/${book.slug}/class-${clsNum}`, path)
+                              isPathActive((book.classRecords?.find(c => c.number === clsNum)?.url || `/reference-solutions/${book.slug}/class-${clsNum}`), path)
                                 ? 'bg-brand/10 font-bold text-brand'
                                 : 'text-foreground/80',
                             )}

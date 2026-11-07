@@ -36,7 +36,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
   const site = useSite();
   const books = getReferenceBooks(site);
   const selectedBook = books.find(book => book.slug === (currentBook?.slug || currentBook));
-  const classes = (site?.classes || []).filter(cls => !currentBook || selectedBook?.availableClasses?.includes(cls.number)).map(cls => cls.number);
+  const classes = currentBook ? (selectedBook?.classRecords || []).map(cls => cls.number) : (site?.classes || []).map(cls => cls.number);
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -122,7 +122,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
         <ul className="space-y-1">
           {books.map((b) => {
             const targetUrl = currentClass && b.availableClasses?.includes(currentClass.number || currentClass)
-              ? `/reference-solutions/${b.slug}/class-${currentClass.number || currentClass}`
+              ? (b.classRecords?.find(c => c.number === (currentClass.number || currentClass))?.url || `/reference-solutions/${b.slug}/class-${currentClass.number || currentClass}`)
               : `/reference-solutions/${b.slug}`;
             const isActive = pathname.startsWith(`/reference-solutions/${b.slug}`);
 
@@ -168,7 +168,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
             const classUrl = currentCategory
               ? `/study-materials/${currentCategory.slug || currentCategory}/class-${num}`
               : currentBook
-                ? `/reference-solutions/${currentBook.slug || currentBook}/class-${num}`
+                ? (selectedBook?.classRecords?.find(c => c.number === num)?.url || `/reference-solutions/${currentBook.slug || currentBook}/class-${num}`)
                 : `/class-${num}/maths`;
 
             return (

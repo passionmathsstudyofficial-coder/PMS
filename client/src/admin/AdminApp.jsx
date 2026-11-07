@@ -14,6 +14,9 @@ const MathsSyllabusManagerPage = lazy(() => import('./pages/MathsSyllabusManager
 
 // Each admin area is code-split; pages export several named components.
 const named = (loader, name) => lazy(() => loader().then((module) => ({ default: module[name] })));
+const bookClasses = () => import('./pages/BookClassesPage.jsx');
+const BookClassesList = named(bookClasses, 'BookClassesList');
+const BookClassEditor = named(bookClasses, 'BookClassEditor');
 const classes = () => import('./pages/ClassesPage.jsx');
 const chapters = () => import('./pages/ChaptersPage.jsx');
 const topics = () => import('./pages/TopicsPage.jsx');
@@ -125,6 +128,8 @@ export default function AdminApp() {
             <Routes>
               <Route index element={<OverviewPage />} />
 
+              <Route path="book-classes" element={<BookClassesList />} />
+              <Route path="book-classes/:id" element={<EditorRoute component={BookClassEditor} />} />
               <Route path="classes" element={<ClassesList />} />
               <Route path="classes/:id" element={<EditorRoute component={ClassEditor} />} />
               <Route path="subjects" element={<SubjectsList />} />

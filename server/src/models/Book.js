@@ -89,4 +89,12 @@ bookSchema.pre('validate', async function buildBook() {
   );
 });
 
+bookSchema.pre('save', function () { this.$locals.initializeClasses = this.isNew && this.category === 'reference'; });
+bookSchema.post('save', async function (doc) {
+  if (doc.$locals.initializeClasses) {
+    const { ensureBookClasses } = await import('../services/bookClasses.js');
+    await ensureBookClasses(doc);
+  }
+});
+
 export const Book = mongoose.model('Book', bookSchema);

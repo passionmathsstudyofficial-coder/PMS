@@ -131,10 +131,10 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                       <div className="mt-6">
                         <p className="mb-2.5 text-xs font-bold text-muted-foreground uppercase">{uiText("Select Class for Solutions:")}</p>
                         <div className="flex flex-wrap gap-2">
-                          {(b.classes || [6, 7, 8, 9, 10, 11, 12]).map((cNum) => (
+                          {(b.classes || []).map((cNum) => (
                             <Link
                               key={cNum}
-                              to={`${rootPrefix}/${b.slug}/class-${cNum}`}
+                              to={b.classRecords?.find(c => c.number === cNum)?.url}
                               className="rounded-xl border bg-background px-3.5 py-1.5 text-xs font-bold text-foreground transition hover:border-brand hover:bg-brand hover:text-white"
                             >{uiText("Class")}{' '}{cNum}
                             </Link>
@@ -185,10 +185,10 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                 <p className="mb-6 text-sm text-muted-foreground">{' '}{uiText("Choose your class below to access detailed chapter-by-chapter exercise solutions, step-by-step formulas, and free PDF notes:")}{' '}</p>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {(book.classes || [10, 9, 8, 7, 6, 11, 12]).map((cNum) => (
+                  {(book.classes || []).map((cNum) => (
                     <Link
                       key={cNum}
-                      to={`${rootPrefix}/${book.slug}/class-${cNum}`}
+                      to={book.classRecords?.find(c => c.number === cNum)?.url}
                       className="group flex items-center justify-between rounded-2xl border bg-background p-4 shadow-xs transition hover:border-brand hover:shadow-md"
                     >
                       <div className="flex items-center gap-3.5">
@@ -196,7 +196,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                           {cNum}
                         </span>
                         <div>
-                          <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">{uiText("Class")}{' '}{cNum}{uiText("Solutions")}</h3>
+                          <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">{interfaceL10n(book.classRecords?.find(c => c.number === cNum)?.name) || `${uiText("Class")} ${cNum}`}</h3>
                           <p className="text-xs text-muted-foreground">{uiText("Chapter & Exercise Solutions")}</p>
                         </div>
                       </div>
@@ -222,6 +222,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
       <>
         <ContentHeader
           breadcrumbs={breadcrumbs}
+          inheritLandingHero={false}
           watermark={`C${cls.number}`}
           eyebrow={
             <div className="flex items-center gap-2">
@@ -230,10 +231,10 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
             </div>
           }
           title={{
-            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} गणित समाधान`,
-            en: `${interfaceL10n(book.title)} Solutions for Class ${cls.number} Maths`,
+            hi: `${interfaceL10n(book.title)} — ${interfaceL10n(cls.name) || `कक्षा ${cls.number}`}`,
+            en: `${interfaceL10n(book.title)} — ${interfaceL10n(cls.name) || `Class ${cls.number}`}`,
           }}
-          subtitle={uiTemplate`Complete chapter-wise and exercise-wise solutions for Class ${cls.number} Mathematics as per latest board curriculum.`}
+          subtitle={t(cls.description) || uiTemplate`Browse available chapters and exercises for Class ${cls.number} Mathematics.`}
           actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
         />
 

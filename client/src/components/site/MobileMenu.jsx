@@ -135,7 +135,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
                         {/* Class buttons */}
                         <div className="grid grid-cols-4 gap-1.5">
                           {classes.map((clsNum) => {
-                            const classUrl = `/reference-solutions/${book.slug}/class-${clsNum}`;
+                            const classUrl = (book.classRecords?.find(c => c.number === clsNum)?.url || `/reference-solutions/${book.slug}/class-${clsNum}`);
                             const isClassActive = isPathActive(classUrl, currentPath);
                             return (
                               <Link

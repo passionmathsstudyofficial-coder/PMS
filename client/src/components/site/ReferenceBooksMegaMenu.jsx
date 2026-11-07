@@ -205,7 +205,7 @@ export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), curr
                           {classes.map((clsNum) => (
                             <Link
                               key={clsNum}
-                              to={`/reference-solutions/${book.slug}/class-${clsNum}`}
+                              to={(book.classRecords?.find(c => c.number === clsNum)?.url || `/reference-solutions/${book.slug}/class-${clsNum}`)}
                               onClick={() => setIsOpen(false)}
                               className="rounded-md bg-background px-1.5 py-0.5 text-[10.5px] font-bold text-foreground/80 hover:bg-brand hover:text-white transition-colors border border-border/50 shadow-2xs"
                             >

@@ -1,3 +1,4 @@
+import { publicParentFilter } from '../services/relationships.js';
 import crypto from 'node:crypto';
 import { cache } from '../lib/cache.js';
 import express from 'express';
@@ -12,6 +13,7 @@ import {
   AdSlot,
   Announcement,
   Book,
+  BookClass,
   Chapter,
   ClassLevel,
   Exercise,
@@ -52,6 +54,18 @@ const classPopulate = { path: 'class', select: 'number name slug' };
 const subjectPopulate = { path: 'subject', select: 'name slug' };
 const seoImage = { path: 'seo.ogImage', select: MEDIA_SELECT };
 
+router.use('/book-classes', crudRouter(BookClass, {
+  entityType: 'BookClass',
+  adminFilters: q => idFilter(q, ['book', 'class']),
+  publicFilters: q => idFilter(q, ['book', 'class']),
+  populate: { list: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }], detail: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }] },
+  beforeDelete: async doc => {
+    for (const Model of [Chapter, Note, ImportantQuestion, Resource]) {
+      await assertNoChildren(Model, { book: doc.book, class: doc.class }, 'This book class still has {count} linked records. Move or delete them first.');
+    }
+  },
+}));
+
 router.use(
   '/classes',
   crudRouter(ClassLevel, {
@@ -76,7 +90,7 @@ router.use(
         if (!isObjectId(req.params.classId)) throw new ApiError(400, 'Invalid class id');
         const admin = req.query.scope === 'admin' && req.admin && hasPermission(req.admin.role, 'content:read');
         const base = { class: req.params.classId, ...idFilter(req.query, ['subject']) };
-        const items = await Chapter.find(admin ? base : Chapter.publicFilter(base))
+        const items = await Chapter.find(admin ? base : { ...Chapter.publicFilter(base), ...await publicParentFilter(Chapter) })
           .sort({ sortOrder: 1, number: 1 })
           .populate(subjectPopulate)
           .lean();
@@ -327,9 +341,11 @@ router.use(
         if (!isObjectId(req.params.id)) throw new ApiError(400, 'Invalid book id');
         const book = await Book.findById(req.params.id).lean();
         if (!book) throw new ApiError(404, 'Book not found');
-        const available = book.availableClasses?.length ? book.availableClasses : (book.class ? [] : [6, 7, 8, 9, 10, 11, 12]);
-        const filter = available.length ? { number: { $in: available } } : (book.class ? { _id: book.class } : {});
-        const items = await ClassLevel.find(filter).sort({ number: 1 }).populate({ path: 'subjects', select: 'name slug' }).lean();
+        const admin = req.query.scope === 'admin' && req.admin && hasPermission(req.admin.role, 'content:read');
+        if (!admin && !await Book.exists(Book.publicFilter({ _id: book._id }))) throw new ApiError(404, 'Book not found');
+        const entries = await BookClass.find(admin ? {book:book._id} : BookClass.publicFilter({book:book._id})).populate({path:'class',populate:{path:'subjects',select:'name slug'}}).sort({sortOrder:1}).lean();
+        const visibleClasses = new Set((await ClassLevel.find(admin ? {} : ClassLevel.publicFilter()).select('_id').lean()).map(row=>String(row._id)));
+        const items = entries.filter(row => row.class && visibleClasses.has(String(row.class._id))).map(row => ({...row.class,...row,_id:row.class._id,number:row.class.number,bookClassId:row._id}));
         res.json({ items, total: items.length });
       });
 
@@ -343,13 +359,13 @@ router.use(
           const cls = await ClassLevel.findById(classId).select('number').lean();
           if (cls) num = cls.number;
         }
-        if (num && !book.availableClasses.includes(num)) {
-          book.availableClasses.push(num);
-          book.availableClasses.sort((a, b) => a - b);
-          await book.save();
-          cache.invalidate();
-        }
-        res.status(201).json(book);
+        const cls = await ClassLevel.findOne({number:num});
+        if (!cls) throw new ApiError(400, 'Create the class in Class Management first.');
+        let entry = await BookClass.findOne({book:book._id,class:cls._id});
+        if (!entry) entry = await BookClass.create({book:book._id,class:cls._id,name:cls.name,slug:cls.slug,subjects:cls.subjects,status:'draft'});
+        await logActivity(req, { action:'update',entityType:'BookClass',entityId:entry._id,entityLabel:labelOf(entry) });
+        cache.invalidate();
+        res.status(201).json(entry);
       });
 
       r.get('/:id/chapters', optionalAuth, async (req, res) => {
@@ -360,7 +376,7 @@ router.use(
           ...idFilter(req.query, ['class', 'subject']),
           ...(req.query.academicSession ? { academicSession: String(req.query.academicSession) } : {}),
         };
-        const items = await Chapter.find(admin ? filter : Chapter.publicFilter(filter))
+        const items = await Chapter.find(admin ? filter : { ...Chapter.publicFilter(filter), ...await publicParentFilter(Chapter) })
           .sort({ sortOrder: 1, number: 1 })
           .populate([classPopulate, subjectPopulate])
           .lean();

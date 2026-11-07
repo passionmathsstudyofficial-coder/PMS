@@ -120,7 +120,7 @@ test('public chapter routes and editable landing sections honor their saved scop
   await owner.del(`/api/pages/${page.body._id}`);
 });
 
-test('RS Aggarwal Class 9 solutions resolve only at the configured book and class URL', async () => {
+test('RS Aggarwal content remains book-specific while independent class pages include Class 10', async () => {
   const cls = await owner.post('/api/classes').send({ number: 9, name: { en: 'Class 9 Mathematics' }, subjects: [ids.subject], status: 'published' });
   assert.equal(cls.status, 201);
   const book = await owner.post('/api/books').send({
@@ -144,11 +144,14 @@ test('RS Aggarwal Class 9 solutions resolve only at the configured book and clas
   assert.equal(resolved.body.data.class.number, 9);
   assert.equal(resolved.body.data.questions[0].solution.blocks[0].content.en, 'The solution is 1/2.');
   const unsupported = await resolve(app, '/reference-solutions/rs-aggarwal/class-10');
-  assert.equal(unsupported.status, 404);
+  assert.equal(unsupported.status, 200);
+  assert.equal(unsupported.body.data.chapters.length, 0);
   await owner.del(`/api/questions/${question.body._id}`);
   await owner.del(`/api/exercises/${exercise.body._id}`);
   await owner.del(`/api/chapters/${chapter.body._id}`);
-  await owner.del(`/api/books/${book.body._id}`);
+  const memberships = await owner.get(`/api/book-classes?scope=admin&book=${book.body._id}`);
+  for (const entry of memberships.body.items) await owner.del(`/api/book-classes/${entry._id}`).expect(200);
+  await owner.del(`/api/books/${book.body._id}`).expect(200);
   await owner.del(`/api/classes/${cls.body._id}`);
 });
 

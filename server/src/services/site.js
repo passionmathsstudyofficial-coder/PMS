@@ -3,6 +3,7 @@ import {
   AcademicSession,
   AdSlot,
   Book,
+  BookClass,
   Announcement,
   Chapter,
   ClassLevel,
@@ -50,6 +51,7 @@ export async function publicReferenceBooks(preview = false) {
     .lean();
   const classes = await ClassLevel.find(preview ? {} : ClassLevel.publicFilter()).select('number').lean();
   const numbers = new Set(classes.map(cls => cls.number));
+  const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).populate('class', 'number slug').sort({ sortOrder: 1 }).lean();
   const counts = await Chapter.aggregate([
     { $match: preview ? {} : Chapter.publicFilter() },
     { $group: { _id: '$book', count: { $sum: 1 } } },
@@ -57,8 +59,8 @@ export async function publicReferenceBooks(preview = false) {
   const byId = new Map(counts.map(row => [String(row._id), row.count]));
   return books.filter(book => book.slug).map(book => ({
     ...book,
-    availableClasses: [...new Set(book.availableClasses?.length ? book.availableClasses : (book.class?.number ? [book.class.number] : []))]
-      .filter(number => numbers.has(number)),
+    classRecords: entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number)).map(entry => ({ ...entry, number: entry.class.number, url: `/reference-solutions/${book.slug}/${entry.slug}` })),
+    availableClasses: entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number)).map(entry => entry.class.number),
     url: urls.referenceBook(book),
     chapterCount: byId.get(String(book._id)) || 0,
   }));

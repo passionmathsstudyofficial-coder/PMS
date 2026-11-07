@@ -1,0 +1,451 @@
+{
+  "database": "test",
+  "rows": [
+    {
+      "book": "K.C. Sinha",
+      "number": 6,
+      "id": "6aef59ceb886514311503b0d",
+      "url": "/reference-solutions/kc-sinha/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 7,
+      "id": "6aef59ceb886514311503b0e",
+      "url": "/reference-solutions/kc-sinha/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 8,
+      "id": "6aef59ceb886514311503b0f",
+      "url": "/reference-solutions/kc-sinha/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 9,
+      "id": "6aef59ceb886514311503b10",
+      "url": "/reference-solutions/kc-sinha/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 10,
+      "id": "6aef59ceb886514311503b11",
+      "url": "/reference-solutions/kc-sinha/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 11,
+      "id": "6aef59ceb886514311503b12",
+      "url": "/reference-solutions/kc-sinha/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "number": 12,
+      "id": "6aef59ceb886514311503b13",
+      "url": "/reference-solutions/kc-sinha/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 6,
+      "id": "6aef59ceb886514311503b05",
+      "url": "/reference-solutions/ml-aggarwal/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 7,
+      "id": "6aef59ceb886514311503b06",
+      "url": "/reference-solutions/ml-aggarwal/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 8,
+      "id": "6aef59ceb886514311503b07",
+      "url": "/reference-solutions/ml-aggarwal/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 9,
+      "id": "6aef59ceb886514311503b08",
+      "url": "/reference-solutions/ml-aggarwal/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 10,
+      "id": "6aef59ceb886514311503b09",
+      "url": "/reference-solutions/ml-aggarwal/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 11,
+      "id": "6aef59ceb886514311503b0a",
+      "url": "/reference-solutions/ml-aggarwal/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "number": 12,
+      "id": "6aef59ceb886514311503b0b",
+      "url": "/reference-solutions/ml-aggarwal/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 6,
+      "id": "6aef59ceb886514311503afd",
+      "url": "/reference-solutions/rd-sharma/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 7,
+      "id": "6aef59ceb886514311503afe",
+      "url": "/reference-solutions/rd-sharma/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 8,
+      "id": "6aef59ceb886514311503aff",
+      "url": "/reference-solutions/rd-sharma/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 9,
+      "id": "6aef59ceb886514311503b00",
+      "url": "/reference-solutions/rd-sharma/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 10,
+      "id": "6aef59ceb886514311503b01",
+      "url": "/reference-solutions/rd-sharma/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 11,
+      "id": "6aef59ceb886514311503b02",
+      "url": "/reference-solutions/rd-sharma/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "number": 12,
+      "id": "6aef59ceb886514311503b03",
+      "url": "/reference-solutions/rd-sharma/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 6,
+      "id": "6aef59ceb886514311503af5",
+      "url": "/reference-solutions/rs-aggarwal/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 7,
+      "id": "6aef59ceb886514311503af6",
+      "url": "/reference-solutions/rs-aggarwal/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 8,
+      "id": "6aef59ceb886514311503af7",
+      "url": "/reference-solutions/rs-aggarwal/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 9,
+      "id": "6aef59ceb886514311503af8",
+      "url": "/reference-solutions/rs-aggarwal/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 10,
+      "id": "6aef59ceb886514311503af9",
+      "url": "/reference-solutions/rs-aggarwal/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 11,
+      "id": "6aef59ceb886514311503afa",
+      "url": "/reference-solutions/rs-aggarwal/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "number": 12,
+      "id": "6aef59ceb886514311503afb",
+      "url": "/reference-solutions/rs-aggarwal/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 6,
+      "id": "6aef59cdb886514311503aed",
+      "url": "/reference-solutions/kc-sinha-maths/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 7,
+      "id": "6aef59cdb886514311503aee",
+      "url": "/reference-solutions/kc-sinha-maths/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 8,
+      "id": "6aef59cdb886514311503aef",
+      "url": "/reference-solutions/kc-sinha-maths/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 9,
+      "id": "6aef59cdb886514311503af0",
+      "url": "/reference-solutions/kc-sinha-maths/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 10,
+      "id": "6aef59cdb886514311503af1",
+      "url": "/reference-solutions/kc-sinha-maths/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 11,
+      "id": "6aef59cdb886514311503af2",
+      "url": "/reference-solutions/kc-sinha-maths/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "number": 12,
+      "id": "6aef59cdb886514311503af3",
+      "url": "/reference-solutions/kc-sinha-maths/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 6,
+      "id": "6aef59cdb886514311503ae5",
+      "url": "/reference-solutions/ncert/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 7,
+      "id": "6aef59cdb886514311503ae6",
+      "url": "/reference-solutions/ncert/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 8,
+      "id": "6aef59cdb886514311503ae7",
+      "url": "/reference-solutions/ncert/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 9,
+      "id": "6aef59cdb886514311503ae8",
+      "url": "/reference-solutions/ncert/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 10,
+      "id": "6aef59cdb886514311503ae9",
+      "url": "/reference-solutions/ncert/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 11,
+      "id": "6aef59cdb886514311503aea",
+      "url": "/reference-solutions/ncert/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "number": 12,
+      "id": "6aef59cdb886514311503aeb",
+      "url": "/reference-solutions/ncert/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 6,
+      "id": "6aef59ceb886514311503b14",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-6",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 7,
+      "id": "6aef59ceb886514311503b15",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-7",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 8,
+      "id": "6aef59ceb886514311503b16",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-8",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 9,
+      "id": "6aef59cfb886514311503b17",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-9",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 10,
+      "id": "6aef59cfb886514311503b18",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 11,
+      "id": "6aef59cfb886514311503b19",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-11",
+      "status": 200,
+      "published": true,
+      "visible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "number": 12,
+      "id": "6aef59cfb886514311503b1a",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-12",
+      "status": 200,
+      "published": true,
+      "visible": true
+    }
+  ],
+  "startedAt": "2026-11-07T17:19:49.323Z",
+  "idempotent": true,
+  "noVerificationText": true,
+  "finishedAt": "2026-11-07T17:19:57.355Z",
+  "ok": true
+}

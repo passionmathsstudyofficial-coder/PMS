@@ -1,3 +1,4 @@
+import { BookClass } from '../models/BookClass.js';
 import {
   AcademicSession,
   Book,
@@ -89,8 +90,10 @@ async function attachLanding(result, key, preview, override) {
   if (!landingPage) return result;
   applyOverride(landingPage, override, 'Page');
   result.data.landingPage = landingPage;
-  if (landingPage.seo?.title) result.seo.title = landingPage.seo.title;
-  if (landingPage.seo?.description) result.seo.description = landingPage.seo.description;
+  if (!(result.type === 'referenceSolutions' && result.data.level === 'class')) {
+    if (landingPage.seo?.title) result.seo.title = landingPage.seo.title;
+    if (landingPage.seo?.description) result.seo.description = landingPage.seo.description;
+  }
   return result;
 }
 
@@ -1052,6 +1055,13 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     .select('number name slug')
     .lean();
 
+  const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).sort({ sortOrder: 1 }).lean();
+  const entriesFor = book => entries.filter(entry => String(entry.book) === String(book._id)).map(entry => {
+    const parent = classes.find(cls => String(cls._id) === String(entry.class));
+    return parent ? { ...parent, ...entry, _id: parent._id, bookClassId: entry._id, number: parent.number, url: urls.referenceBookClass(book, entry) } : null;
+  }).filter(Boolean);
+  for (const book of allBooks) { book.classRecords = entriesFor(book); book.classes = book.classRecords.map(cls => cls.number); }
+
   // 1. Hub: /reference-solutions
   if (segments.length === 1) {
     return {
@@ -1096,7 +1106,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
       data: {
         level: 'book',
         book,
-        classes: classes.filter((c) => book.classes?.includes(c.number)).map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
+        classes: entriesFor(book),
         books: allBooks,
         academicSessions: activeSessions,
         currentSession,
@@ -1111,8 +1121,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   }
 
   // 3. Book Class page: /reference-solutions/:bookSlug/class-:number
-  const cls = await findClassBySegment(segments[2], preview);
-  if (!cls) throw new ApiError(404, 'Class not found');
+  const cls = entriesFor(book).find(entry => entry.slug === segments[2]);
+  if (!cls) throw new ApiError(404, 'Book class not found');
   if (Array.isArray(book.classes) && book.classes.length && !book.classes.includes(cls.number)) throw new ApiError(404, 'This reference book is not configured for the selected class');
   if (Array.isArray(book.classes) && book.classes.length === 0) throw new ApiError(404, 'This reference book has no supported classes configured');
   const classCrumb = { label: { hi: `कक्षा ${cls.number}`, en: `Class ${cls.number}` }, url: urls.referenceBookClass(book, cls) };
@@ -1161,16 +1171,16 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         class: cls,
         chapters,
         books: allBooks,
-        classes: classes.filter(c => book.classes.includes(c.number)).map((c) => ({ ...c, url: urls.referenceBookClass(book, c) })),
+        classes: entriesFor(book),
         academicSessions: activeSessions,
         currentSession,
       },
       breadcrumbs: [home, refCrumb, bookCrumb, classCrumb],
-      seo: {
+      seo: seoFor(cls, {
         title: `${pick(book.title, 'en')} Class ${cls.number} Maths Solutions | Chapter-wise`,
         description: `Complete solutions for ${pick(book.title, 'en')} Class ${cls.number} Mathematics chapters and exercises with step-by-step explanations.`,
-        canonical: urls.referenceBookClass(book, cls),
-      },
+        url: urls.referenceBookClass(book, cls),
+      }),
     };
   }
 

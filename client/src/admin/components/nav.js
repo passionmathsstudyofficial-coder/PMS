@@ -58,6 +58,7 @@ export const NAV_GROUPS = [
       { to: 'reference-books-manager/rd-sharma', get label() { return uiText("RD Sharma Solutions"); }, icon: Library },
       { to: 'reference-books-manager/kc-sinha', get label() { return uiText("KC Sinha Solutions"); }, icon: Library },
       { to: 'reference-books-manager/ml-aggarwal', get label() { return uiText("ML Aggarwal Solutions"); }, icon: Library },
+      { to: 'book-classes', label: 'Reference book classes', icon: GraduationCap },
       { to: 'books', get label() { return uiText("All Reference Books"); }, icon: BookMarked },
     ],
   },

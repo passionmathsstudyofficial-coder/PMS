@@ -30,3 +30,5 @@ export { StudentSession } from './StudentSession.js';
 export { PasswordRecovery } from './PasswordRecovery.js';
 export { AcademicSession, ensureDefaultSessions } from './AcademicSession.js';
 
+
+export { BookClass } from './BookClass.js';

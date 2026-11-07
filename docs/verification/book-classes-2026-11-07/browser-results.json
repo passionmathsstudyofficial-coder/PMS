@@ -1,0 +1,505 @@
+{
+  "admin": [
+    {
+      "book": "K.C. Sinha",
+      "id": "6aef59ceb886514311503b13",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "id": "6aef59ceb886514311503b0b",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "id": "6aef59ceb886514311503b03",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "id": "6aef59ceb886514311503afb",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "id": "6aef59cdb886514311503af3",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "id": "6aef59cdb886514311503aeb",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "id": "6aef59cfb886514311503b1a",
+      "uiSave": true,
+      "databaseReadback": true,
+      "adminReload": true,
+      "publicApi": true,
+      "anonymousPage": true,
+      "anonymousReload": true
+    }
+  ],
+  "public": [
+    {
+      "book": "kc-sinha",
+      "number": 6,
+      "url": "/reference-solutions/kc-sinha/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 7,
+      "url": "/reference-solutions/kc-sinha/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 8,
+      "url": "/reference-solutions/kc-sinha/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 9,
+      "url": "/reference-solutions/kc-sinha/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 10,
+      "url": "/reference-solutions/kc-sinha/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 11,
+      "url": "/reference-solutions/kc-sinha/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha",
+      "number": 12,
+      "url": "/reference-solutions/kc-sinha/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 6,
+      "url": "/reference-solutions/ml-aggarwal/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 7,
+      "url": "/reference-solutions/ml-aggarwal/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 8,
+      "url": "/reference-solutions/ml-aggarwal/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 9,
+      "url": "/reference-solutions/ml-aggarwal/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 10,
+      "url": "/reference-solutions/ml-aggarwal/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 11,
+      "url": "/reference-solutions/ml-aggarwal/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "number": 12,
+      "url": "/reference-solutions/ml-aggarwal/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 6,
+      "url": "/reference-solutions/rd-sharma/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 7,
+      "url": "/reference-solutions/rd-sharma/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 8,
+      "url": "/reference-solutions/rd-sharma/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 9,
+      "url": "/reference-solutions/rd-sharma/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 10,
+      "url": "/reference-solutions/rd-sharma/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 11,
+      "url": "/reference-solutions/rd-sharma/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rd-sharma",
+      "number": 12,
+      "url": "/reference-solutions/rd-sharma/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 6,
+      "url": "/reference-solutions/rs-aggarwal/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 7,
+      "url": "/reference-solutions/rs-aggarwal/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 8,
+      "url": "/reference-solutions/rs-aggarwal/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 9,
+      "url": "/reference-solutions/rs-aggarwal/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 10,
+      "url": "/reference-solutions/rs-aggarwal/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 11,
+      "url": "/reference-solutions/rs-aggarwal/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "number": 12,
+      "url": "/reference-solutions/rs-aggarwal/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 6,
+      "url": "/reference-solutions/kc-sinha-maths/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 7,
+      "url": "/reference-solutions/kc-sinha-maths/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 8,
+      "url": "/reference-solutions/kc-sinha-maths/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 9,
+      "url": "/reference-solutions/kc-sinha-maths/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 10,
+      "url": "/reference-solutions/kc-sinha-maths/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 11,
+      "url": "/reference-solutions/kc-sinha-maths/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "number": 12,
+      "url": "/reference-solutions/kc-sinha-maths/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 6,
+      "url": "/reference-solutions/ncert/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 7,
+      "url": "/reference-solutions/ncert/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 8,
+      "url": "/reference-solutions/ncert/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 9,
+      "url": "/reference-solutions/ncert/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 10,
+      "url": "/reference-solutions/ncert/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 11,
+      "url": "/reference-solutions/ncert/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "ncert",
+      "number": 12,
+      "url": "/reference-solutions/ncert/class-12",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 6,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-6",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 7,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-7",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 8,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-8",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 9,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-9",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 10,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 11,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-11",
+      "anonymous": true,
+      "reload": true
+    },
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 12,
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-12",
+      "anonymous": true,
+      "reload": true
+    }
+  ],
+  "navigation": [
+    {
+      "mode": "desktop hover",
+      "book": "kc-sinha",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "ml-aggarwal",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "rd-sharma",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "rs-aggarwal",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "kc-sinha-maths",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "ncert",
+      "classes": 7
+    },
+    {
+      "mode": "desktop hover",
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "kc-sinha",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "ml-aggarwal",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "rd-sharma",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "rs-aggarwal",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "kc-sinha-maths",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "ncert",
+      "classes": 7
+    },
+    {
+      "mode": "mobile tap",
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "classes": 7
+    }
+  ],
+  "errors": [],
+  "transientResponses": [
+    {
+      "url": "/reference-solutions/kc-sinha?lang=en",
+      "status": 403,
+      "type": "Hostinger browser check; waited for normal completion"
+    },
+    {
+      "url": "/?lang=en",
+      "status": 403,
+      "type": "Hostinger browser check; waited for normal completion"
+    }
+  ],
+  "ok": true
+}

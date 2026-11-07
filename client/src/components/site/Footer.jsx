@@ -66,7 +66,7 @@ export function Footer() {
           en: `${book.title?.en || book.author} Class ${number}`,
           hi: `${book.title?.hi || book.author} कक्षा ${number}`,
         },
-        url: `${referenceBookUrl(book)}/class-${number}`,
+        url: (book.classRecords?.find(c => c.number === number)?.url || `${referenceBookUrl(book)}/class-${number}`),
       })),
     })),
     { label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' }, children: [

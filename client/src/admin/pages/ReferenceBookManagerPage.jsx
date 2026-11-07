@@ -120,7 +120,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       try {
         const [booksRes, classesRes, sessionsRes] = await Promise.all([
           get('/content/books', { scope: 'admin', limit: 50 }),
-          get('/content/classes', { scope: 'admin', limit: 20 }),
+          get('/content/book-classes', { scope: 'admin', limit: 200 }),
           get('/content/sessions'),
         ]);
 
@@ -129,12 +129,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         const match = dbBooks.find((b) => b.slug === bookSlug) || dbBooks[0] || null;
         setSelectedBook(match);
 
-        const dbClasses = (classesRes.items || []).sort((a, b) => b.number - a.number);
+        const dbClasses = (classesRes.items || []).map(entry => ({ ...entry, bookClassId: entry._id, _id: entry.class?._id, number: entry.class?.number })).filter(entry => entry._id).sort((a, b) => b.number - a.number);
         setClasses(dbClasses);
 
-        const available = match?.availableClasses?.length ? match.availableClasses : [6, 7, 8, 9, 10, 11, 12];
-        const supported = dbClasses.filter((c) => available.includes(c.number));
-        setSelectedClass(supported.find((c) => c.number === 12) || supported[0] || dbClasses[0] || null);
+        const available = dbClasses.filter(c => String(c.book?._id || c.book) === String(match?._id)).map(c => c.number);
+        const supported = dbClasses.filter((c) => available.includes(c.number) && String(c.book?._id || c.book) === String(match?._id));
+        setSelectedClass(supported.find((c) => c.number === 12) || supported[0] || null);
 
         const dbSessions = sessionsRes.items || [];
         setSessions(dbSessions);
@@ -152,8 +152,8 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   // Keep selectedClass valid when book changes
   useEffect(() => {
     if (!selectedBook || !classes.length) return;
-    const available = selectedBook.availableClasses?.length ? selectedBook.availableClasses : [6, 7, 8, 9, 10, 11, 12];
-    const supported = classes.filter((c) => available.includes(c.number));
+    const available = classes.filter(c => String(c.book?._id || c.book) === String(selectedBook._id)).map(c => c.number);
+    const supported = classes.filter((c) => available.includes(c.number) && String(c.book?._id || c.book) === String(selectedBook._id));
     if (!supported.some((c) => c._id === selectedClass?._id)) {
       setSelectedClass(supported.find((c) => c.number === 12) || supported[0] || null);
     }
@@ -306,6 +306,8 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         toast.success(uiText('New Reference Book created successfully'));
         setBooks((prev) => [created, ...prev]);
         setSelectedBook(created);
+        const records = await get('/content/book-classes', {scope:'admin',limit:200});
+        setClasses((records.items || []).map(entry => ({...entry,bookClassId:entry._id,_id:entry.class?._id,number:entry.class?.number})).filter(entry => entry._id));
       }
       setBookModal(false);
     } catch (err) {
@@ -610,13 +612,14 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           </select>
         </div>
 
+        <Link className="text-xs underline" to={adminUrl("book-classes")}>Manage classes and publication</Link>
         {/* Class Selector Pills */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-foreground">{uiText('Class')}:</span>
           <div className="flex gap-1 overflow-x-auto">
-            {[12, 11, 10, 9, 8, 7, 6].map((num) => {
-              const isAvailable = (selectedBook?.availableClasses || [6, 7, 8, 9, 10, 11, 12]).includes(num);
-              const classObj = classes.find((c) => c.number === num);
+            {classes.filter(c => String(c.book?._id || c.book) === String(selectedBook?._id)).map(c => c.number).map((num) => {
+              const isAvailable = true;
+              const classObj = classes.find((c) => c.number === num && String(c.book?._id || c.book) === String(selectedBook?._id));
               const isSelected = selectedClass?.number === num;
               return (
                 <button
@@ -1180,33 +1183,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </div>
               </div>
 
-              {/* Available Classes Multi-Select */}
-              <div>
-                <label className="text-xs font-bold block mb-1.5">{uiText("Available Classes (Select classes enabled for this book) *")}</label>
-                <div className="flex flex-wrap gap-2">
-                  {[6, 7, 8, 9, 10, 11, 12].map((num) => {
-                    const checked = (bookForm.availableClasses || []).includes(num);
-                    return (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => {
-                          const cur = bookForm.availableClasses || [];
-                          const updated = checked ? cur.filter((x) => x !== num) : [...cur, num].sort((a, b) => a - b);
-                          setBookForm({ ...bookForm, availableClasses: updated });
-                        }}
-                        className={cn(
-                          'h-8 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer border',
-                          checked
-                            ? 'bg-brand text-white border-brand shadow-xs'
-                            : 'bg-background text-muted-foreground border-border hover:bg-muted'
-                        )}
-                      >{uiText("Class ")}{num} {checked ? '✓' : ''}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              <Link to={adminUrl('book-classes')} className="text-brand underline">Manage classes independently</Link>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t">
                 <Button type="button" variant="outline" size="sm" onClick={() => setBookModal(false)}>{uiText("Cancel")}</Button>

@@ -1,0 +1,1506 @@
+{
+  "database": "test",
+  "startedAt": "2026-11-07T17:05:13.460Z",
+  "rows": [
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 6,
+      "id": "6aef59ceb886514311503b14",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 7,
+      "id": "6aef59ceb886514311503b15",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 8,
+      "id": "6aef59ceb886514311503b16",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 9,
+      "id": "6aef59cfb886514311503b17",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 10,
+      "id": "6aef59cfb886514311503b18",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 11,
+      "id": "6aef59cfb886514311503b19",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "Mathematics for Class 10 by R.D. Sharma",
+      "slug": "mathematics-for-class-10-by-r-d-sharma",
+      "number": 12,
+      "id": "6aef59cfb886514311503b1a",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 6,
+      "id": "6aef59cdb886514311503ae5",
+      "url": "/reference-solutions/ncert/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 7,
+      "id": "6aef59cdb886514311503ae6",
+      "url": "/reference-solutions/ncert/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 8,
+      "id": "6aef59cdb886514311503ae7",
+      "url": "/reference-solutions/ncert/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 9,
+      "id": "6aef59cdb886514311503ae8",
+      "url": "/reference-solutions/ncert/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 10,
+      "id": "6aef59cdb886514311503ae9",
+      "url": "/reference-solutions/ncert/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 11,
+      "id": "6aef59cdb886514311503aea",
+      "url": "/reference-solutions/ncert/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "NCERT Solutions",
+      "slug": "ncert",
+      "number": 12,
+      "id": "6aef59cdb886514311503aeb",
+      "url": "/reference-solutions/ncert/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 6,
+      "id": "6aef59cdb886514311503aed",
+      "url": "/reference-solutions/kc-sinha-maths/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 7,
+      "id": "6aef59cdb886514311503aee",
+      "url": "/reference-solutions/kc-sinha-maths/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 8,
+      "id": "6aef59cdb886514311503aef",
+      "url": "/reference-solutions/kc-sinha-maths/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 9,
+      "id": "6aef59cdb886514311503af0",
+      "url": "/reference-solutions/kc-sinha-maths/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 10,
+      "id": "6aef59cdb886514311503af1",
+      "url": "/reference-solutions/kc-sinha-maths/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 11,
+      "id": "6aef59cdb886514311503af2",
+      "url": "/reference-solutions/kc-sinha-maths/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha Mathematics",
+      "slug": "kc-sinha-maths",
+      "number": 12,
+      "id": "6aef59cdb886514311503af3",
+      "url": "/reference-solutions/kc-sinha-maths/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 6,
+      "id": "6aef59ceb886514311503af5",
+      "url": "/reference-solutions/rs-aggarwal/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 7,
+      "id": "6aef59ceb886514311503af6",
+      "url": "/reference-solutions/rs-aggarwal/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 8,
+      "id": "6aef59ceb886514311503af7",
+      "url": "/reference-solutions/rs-aggarwal/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 9,
+      "id": "6aef59ceb886514311503af8",
+      "url": "/reference-solutions/rs-aggarwal/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 10,
+      "id": "6aef59ceb886514311503af9",
+      "url": "/reference-solutions/rs-aggarwal/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 11,
+      "id": "6aef59ceb886514311503afa",
+      "url": "/reference-solutions/rs-aggarwal/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.S. Aggarwal",
+      "slug": "rs-aggarwal",
+      "number": 12,
+      "id": "6aef59ceb886514311503afb",
+      "url": "/reference-solutions/rs-aggarwal/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 6,
+      "id": "6aef59ceb886514311503afd",
+      "url": "/reference-solutions/rd-sharma/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 7,
+      "id": "6aef59ceb886514311503afe",
+      "url": "/reference-solutions/rd-sharma/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 8,
+      "id": "6aef59ceb886514311503aff",
+      "url": "/reference-solutions/rd-sharma/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 9,
+      "id": "6aef59ceb886514311503b00",
+      "url": "/reference-solutions/rd-sharma/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 10,
+      "id": "6aef59ceb886514311503b01",
+      "url": "/reference-solutions/rd-sharma/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 11,
+      "id": "6aef59ceb886514311503b02",
+      "url": "/reference-solutions/rd-sharma/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "R.D. Sharma",
+      "slug": "rd-sharma",
+      "number": 12,
+      "id": "6aef59ceb886514311503b03",
+      "url": "/reference-solutions/rd-sharma/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 6,
+      "id": "6aef59ceb886514311503b05",
+      "url": "/reference-solutions/ml-aggarwal/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 7,
+      "id": "6aef59ceb886514311503b06",
+      "url": "/reference-solutions/ml-aggarwal/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 8,
+      "id": "6aef59ceb886514311503b07",
+      "url": "/reference-solutions/ml-aggarwal/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 9,
+      "id": "6aef59ceb886514311503b08",
+      "url": "/reference-solutions/ml-aggarwal/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 10,
+      "id": "6aef59ceb886514311503b09",
+      "url": "/reference-solutions/ml-aggarwal/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 11,
+      "id": "6aef59ceb886514311503b0a",
+      "url": "/reference-solutions/ml-aggarwal/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "M.L. Aggarwal",
+      "slug": "ml-aggarwal",
+      "number": 12,
+      "id": "6aef59ceb886514311503b0b",
+      "url": "/reference-solutions/ml-aggarwal/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 6,
+      "id": "6aef59ceb886514311503b0d",
+      "url": "/reference-solutions/kc-sinha/class-6",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 7,
+      "id": "6aef59ceb886514311503b0e",
+      "url": "/reference-solutions/kc-sinha/class-7",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 8,
+      "id": "6aef59ceb886514311503b0f",
+      "url": "/reference-solutions/kc-sinha/class-8",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 9,
+      "id": "6aef59ceb886514311503b10",
+      "url": "/reference-solutions/kc-sinha/class-9",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 10,
+      "id": "6aef59ceb886514311503b11",
+      "url": "/reference-solutions/kc-sinha/class-10",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 11,
+      "id": "6aef59ceb886514311503b12",
+      "url": "/reference-solutions/kc-sinha/class-11",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    },
+    {
+      "book": "K.C. Sinha",
+      "slug": "kc-sinha",
+      "number": 12,
+      "id": "6aef59ceb886514311503b13",
+      "url": "/reference-solutions/kc-sinha/class-12",
+      "origin": "new book-class record",
+      "databaseVerified": true,
+      "adminEditable": true,
+      "publicApiVerified": true,
+      "status": "published",
+      "isVisible": true
+    }
+  ],
+  "publication": [
+    {
+      "book": "mathematics-for-class-10-by-r-d-sharma",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "ncert",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "kc-sinha-maths",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "rs-aggarwal",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "rd-sharma",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "ml-aggarwal",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    },
+    {
+      "book": "kc-sinha",
+      "unpublish404": true,
+      "disabled404": true,
+      "hiddenFromNavigation": true,
+      "republished200": true
+    }
+  ],
+  "preserved": [
+    {
+      "collection": "books",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4d"
+    },
+    {
+      "collection": "books",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4e"
+    },
+    {
+      "collection": "books",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4f"
+    },
+    {
+      "collection": "books",
+      "id": "6ae1e68ff9bcc5e2a6a3cf50"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec0"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec1"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec2"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec4"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e680f9bcc5e2a6a3cec6"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3cec9"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3ceca"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3cecb"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3cecc"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3cecd"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e681f9bcc5e2a6a3cece"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e682f9bcc5e2a6a3cecf"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e682f9bcc5e2a6a3ced0"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e682f9bcc5e2a6a3ced1"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e682f9bcc5e2a6a3ced2"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e682f9bcc5e2a6a3ced3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3ceda"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3cedb"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3cedc"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3cedf"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3cee0"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e683f9bcc5e2a6a3cee1"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee2"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee4"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee5"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee6"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee7"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e684f9bcc5e2a6a3cee8"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3cee9"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceea"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceeb"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceec"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceed"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceee"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e685f9bcc5e2a6a3ceef"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e687f9bcc5e2a6a3cef0"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e689f9bcc5e2a6a3cef1"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e689f9bcc5e2a6a3cef2"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e689f9bcc5e2a6a3cef3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e689f9bcc5e2a6a3cef4"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cef5"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cef6"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cef7"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cef8"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cef9"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cefa"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68af9bcc5e2a6a3cefb"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68bf9bcc5e2a6a3cefc"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68bf9bcc5e2a6a3cefd"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68bf9bcc5e2a6a3cefe"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae1e68bf9bcc5e2a6a3ceff"
+    },
+    {
+      "collection": "chapters",
+      "id": "6ae24183b34e1e0610ea0f3e"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aed71ba5a67419a33936b00"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aedd7468e0483251e20a4c3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aeea9793f0eefc0872171a6"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef199c9580f87437ecbcef"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef199e9580f87437ecbd1c"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef199f9580f87437ecbd49"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19a19580f87437ecbd76"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19a39580f87437ecbda3"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19a59580f87437ecbdd0"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19a79580f87437ecbdfd"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19a99580f87437ecbe2a"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19ab9580f87437ecbe57"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef19ad9580f87437ecbe84"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3ceb9"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3ceba"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3cebb"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3cebc"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3cebd"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e67ff9bcc5e2a6a3cebe"
+    },
+    {
+      "collection": "classes",
+      "id": "6ae1e680f9bcc5e2a6a3cebf"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae1e680f9bcc5e2a6a3cec5"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae1e680f9bcc5e2a6a3cec8"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae1e682f9bcc5e2a6a3ced7"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae1e682f9bcc5e2a6a3ced8"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae1e683f9bcc5e2a6a3ced9"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae243cdb34e1e0610ea0f4c"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae25852b34e1e0610ea0f82"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae263adb34e1e0610ea0fa9"
+    },
+    {
+      "collection": "exercises",
+      "id": "6ae32712b34e1e0610ea1222"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aec3c14754d0154175a4ec0"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aedd7708e0483251e20a4d2"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aede757d7b736556b9c78b7"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aeea9813f0eefc0872171b1"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef199c9580f87437ecbcf2"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef199e9580f87437ecbd1f"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a09580f87437ecbd4c"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a19580f87437ecbd79"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a39580f87437ecbda6"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a59580f87437ecbdd3"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a79580f87437ecbe00"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19a99580f87437ecbe2d"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19ab9580f87437ecbe5a"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef19ad9580f87437ecbe87"
+    },
+    {
+      "collection": "importantquestions",
+      "id": "6ae1e68df9bcc5e2a6a3cf2d"
+    },
+    {
+      "collection": "importantquestions",
+      "id": "6ae1e68df9bcc5e2a6a3cf30"
+    },
+    {
+      "collection": "importantquestions",
+      "id": "6aec4562754d0154175a4f9c"
+    },
+    {
+      "collection": "notes",
+      "id": "6ae1e68df9bcc5e2a6a3cf2b"
+    },
+    {
+      "collection": "notes",
+      "id": "6ae1e68df9bcc5e2a6a3cf2c"
+    },
+    {
+      "collection": "notes",
+      "id": "6ae30b39b34e1e0610ea1060"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef199c9580f87437ecbcf5"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef199e9580f87437ecbd22"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a09580f87437ecbd4f"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a29580f87437ecbd7c"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a39580f87437ecbda9"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a59580f87437ecbdd6"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a79580f87437ecbe03"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19a99580f87437ecbe30"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19ab9580f87437ecbe5d"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef19ad9580f87437ecbe8a"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68bf9bcc5e2a6a3cf00"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68bf9bcc5e2a6a3cf09"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf10"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf16"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf1c"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf24"
+    },
+    {
+      "collection": "questions",
+      "id": "6ae3098ab34e1e0610ea104d"
+    },
+    {
+      "collection": "questions",
+      "id": "6aeebf5d3f0eefc08721725b"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199c9580f87437ecbcf8"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199d9580f87437ecbd04"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199d9580f87437ecbd10"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199e9580f87437ecbd25"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199e9580f87437ecbd31"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef199f9580f87437ecbd3d"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a09580f87437ecbd52"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a09580f87437ecbd5e"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a19580f87437ecbd6a"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a29580f87437ecbd7f"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a29580f87437ecbd8b"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a39580f87437ecbd97"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a49580f87437ecbdac"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a49580f87437ecbdb8"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a59580f87437ecbdc4"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbdd9"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbde5"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbdf1"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a79580f87437ecbe06"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a89580f87437ecbe12"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a89580f87437ecbe1e"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19a99580f87437ecbe33"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19aa9580f87437ecbe3f"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19aa9580f87437ecbe4b"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ab9580f87437ecbe60"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ac9580f87437ecbe6c"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ac9580f87437ecbe78"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ad9580f87437ecbe8d"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ae9580f87437ecbe99"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef19ae9580f87437ecbea5"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ef9bcc5e2a6a3cf47"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ef9bcc5e2a6a3cf48"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ef9bcc5e2a6a3cf49"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4a"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4b"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae1e68ff9bcc5e2a6a3cf4c"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae245ecb34e1e0610ea0f61"
+    },
+    {
+      "collection": "resources",
+      "id": "6ae9a173a9892d9c84ce8009"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68bf9bcc5e2a6a3cf01"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf0a"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf11"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf17"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68cf9bcc5e2a6a3cf1e"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae1e68df9bcc5e2a6a3cf25"
+    },
+    {
+      "collection": "solutions",
+      "id": "6ae3098ab34e1e0610ea104e"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aeebf5d3f0eefc087217260"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199c9580f87437ecbcf9"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199d9580f87437ecbd05"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199d9580f87437ecbd11"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199e9580f87437ecbd26"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199e9580f87437ecbd32"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef199f9580f87437ecbd3e"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a09580f87437ecbd53"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a09580f87437ecbd5f"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a19580f87437ecbd6b"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a29580f87437ecbd80"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a29580f87437ecbd8c"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a39580f87437ecbd98"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a49580f87437ecbdad"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a49580f87437ecbdb9"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a59580f87437ecbdc5"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a69580f87437ecbdda"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a69580f87437ecbde6"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a69580f87437ecbdf2"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a79580f87437ecbe07"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a89580f87437ecbe13"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a89580f87437ecbe1f"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19a99580f87437ecbe34"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19aa9580f87437ecbe40"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19aa9580f87437ecbe4c"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ab9580f87437ecbe61"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ac9580f87437ecbe6d"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ac9580f87437ecbe79"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ad9580f87437ecbe8e"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ae9580f87437ecbe9a"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef19ae9580f87437ecbea6"
+    },
+    {
+      "collection": "subjects",
+      "id": "6ae1e67ff9bcc5e2a6a3ceb8"
+    }
+  ],
+  "finishedAt": "2026-11-07T17:05:41.491Z",
+  "ok": true
+}

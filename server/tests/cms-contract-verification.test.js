@@ -87,12 +87,15 @@ test('Reference Books CMS API Contract: Book -> Class -> Chapter -> Exercise -> 
   assert.equal(classesRes.status, 200);
   assert.ok(classesRes.body.items.some((c) => c.number === 12));
 
+  // Classes must exist before a book membership can reference them.
+  await owner.post("/api/content/classes").send({number:11,name:{en:"Class 11"},subjects:[subject._id],status:"published"}).expect(201);
   // 5. POST /api/content/books/:id/classes
   const addClassRes = await owner.post(`/api/content/books/${bookId}/classes`).send({
     classNumber: 11,
   });
   assert.equal(addClassRes.status, 201);
-  assert.ok(addClassRes.body.availableClasses.includes(11));
+  assert.ok(addClassRes.body.class);
+  assert.equal(addClassRes.body.book, bookId);
 
   // 6. POST /api/content/books/:id/chapters
   const chCreate = await owner.post(`/api/content/books/${bookId}/chapters`).send({

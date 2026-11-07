@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils';
 
 export function BooksList() {
   useUiLanguage();
+  const memberships = useResourceList('book-classes', { limit: 200 });
   const [filters, setFilter, active] = useQueryFilters(['class', 'category']);
   return (
     <ResourceListPage
@@ -79,7 +80,7 @@ export function BooksList() {
         {
           get header() { return uiText("Available Classes"); },
           cell: (b) => {
-            const classes = b.availableClasses?.length ? b.availableClasses : (b.class?.number ? [b.class.number] : []);
+            const classes = (memberships.data?.items || []).filter(row => (row.book?._id || row.book) === b._id).map(row => row.class?.number).filter(Boolean);
             return (
               <div className="flex flex-wrap gap-1 max-w-[200px]">
                 {classes.map((c) => (
@@ -153,7 +154,6 @@ export function BooksList() {
 export function BookEditor({ id }) {
   useUiLanguage();
   const [params] = useSearchParams();
-  const [customClass, setCustomClass] = useState('');
 
   const form = useEditorForm({
     resource: 'books',
@@ -205,39 +205,6 @@ export function BookEditor({ id }) {
       set('subject', mathSubject._id || mathSubject);
     }
   }, [mathSubject, doc?.subject, set]);
-
-  const currentClasses = Array.isArray(doc?.availableClasses)
-    ? doc.availableClasses
-    : (doc?.class?.number ? [doc.class.number] : []);
-
-  const toggleClass = (num) => {
-    const list = [...currentClasses];
-    const idx = list.indexOf(num);
-    if (idx >= 0) {
-      list.splice(idx, 1);
-    } else {
-      list.push(num);
-      list.sort((a, b) => a - b);
-    }
-    set('availableClasses', list);
-  };
-
-  const addCustomClass = () => {
-    const num = parseInt(customClass.trim(), 10);
-    if (!Number.isNaN(num) && num > 0 && !currentClasses.includes(num)) {
-      const list = [...currentClasses, num].sort((a, b) => a - b);
-      set('availableClasses', list);
-      setCustomClass('');
-    }
-  };
-
-  const selectAllClasses = () => {
-    set('availableClasses', [6, 7, 8, 9, 10, 11, 12]);
-  };
-
-  const clearClasses = () => {
-    set('availableClasses', []);
-  };
 
   return (
     <EditorGate form={form}>
@@ -337,65 +304,8 @@ export function BookEditor({ id }) {
             />
           </Panel>
 
-          {/* Panel 2: Available Classes for Solutions */}
-          <Panel title={uiText("Available Classes for Solutions (कक्षा चयन)")}>
-            <p className="text-xs text-muted-foreground mb-3">
-              {uiText("Select which classes have solutions for this book. These will appear as interactive chips in the Reference Books mega menu and on the book's class selection page.")}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              {[6, 7, 8, 9, 10, 11, 12].map((num) => {
-                const isSelected = currentClasses.includes(num);
-                return (
-                  <button
-                    key={num}
-                    type="button"
-                    onClick={() => toggleClass(num)}
-                    className={cn(
-                      'rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all border shadow-2xs',
-                      isSelected
-                        ? 'bg-brand text-white border-brand'
-                        : 'bg-muted/60 text-muted-foreground border-border hover:bg-muted hover:text-foreground',
-                    )}
-                  >
-                    {uiText("Class")}{' '}{num} {isSelected && '✓'}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Custom Class Adder */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/50">
-              <input
-                type="number"
-                placeholder={uiText("Class #")}
-                value={customClass}
-                onChange={(e) => setCustomClass(e.target.value)}
-                className="h-8 w-24 rounded-md border bg-transparent px-2 text-xs font-mono"
-              />
-              <Button type="button" size="sm" variant="outline" onClick={addCustomClass}>
-                <Plus className="mr-1 size-3.5" />
-                {uiText("Add Class")}
-              </Button>
-              <Button type="button" size="sm" variant="ghost" onClick={selectAllClasses}>
-                {uiText("Select 6–12")}
-              </Button>
-              <Button type="button" size="sm" variant="ghost" onClick={clearClasses}>
-                {uiText("Clear")}
-              </Button>
-            </div>
-
-            {/* Live URL Preview */}
-            {doc.slug && (
-              <div className="mt-4 rounded-xl bg-muted/40 p-3 text-xs border border-border/60">
-                <span className="font-bold text-foreground">{uiText("Book Solutions URL:")}</span>
-                <span className="ml-2 font-mono text-brand">/reference-solutions/{doc.slug}</span>
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  {uiText("Individual class URLs will be /reference-solutions/")}
-                  <span className="font-mono">{doc.slug}/class-[6-12]</span>
-                </p>
-              </div>
-            )}
+          <Panel title="Book classes">
+            <Link className="text-brand underline" to={adminUrl(`book-classes?book=${doc._id || ''}`)}>Manage class names, descriptions, SEO, order, publication and visibility</Link>
           </Panel>
 
           {/* Panel 3: Cover Image & Visuals */}

@@ -6,7 +6,7 @@ export function localizePublicContent(raw,language) {
   const result = projectLanguage(raw,language);
   if (!result?.seo) return result;
   const data = raw.data || {};
-  const entity = data[raw.type] || data.category || data.book || data.subject || data.class || {};
+  const entity = raw.type === 'referenceSolutions' && data.level === 'class' ? data.class : data[raw.type] || data.category || data.book || data.subject || data.class || {};
   const custom = raw.seo.translations?.[language] || {};
   const selected = value => localizedValue(value,language);
   const labels = { studyMaterials:{en:'Study materials',hi:'अध्ययन सामग्री'}, referenceSolutions:{en:'Reference solutions',hi:'संदर्भ पुस्तक हल'}, notesList:{en:'Notes',hi:'नोट्स'}, importantQuestions:{en:'Important questions',hi:'महत्वपूर्ण प्रश्न'}, booksList:{en:'Books',hi:'पुस्तकें'}, resourcesList:{en:'Resources',hi:'संसाधन'} };

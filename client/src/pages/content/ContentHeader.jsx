@@ -10,7 +10,7 @@ import { useEntrance } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 import { LandingContext } from './LandingContext.jsx';
 
-export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark, children, aside, actions, className }) {
+export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark, children, aside, actions, className, inheritLandingHero = true }) {
   useUiLanguage();
   const t = useInterfaceL10n();
   const landing = useContext(LandingContext);
@@ -25,7 +25,7 @@ export function ContentHeader({ breadcrumbs, eyebrow, title, subtitle, watermark
     )
   );
   const useLandingHero = Boolean(
-    hasLandingCustomization && (
+    inheritLandingHero && hasLandingCustomization && (
       !landing.landingKey ||
       location.pathname === `/${landing.landingKey}` ||
       location.pathname.startsWith(`/${landing.landingKey}/`) ||

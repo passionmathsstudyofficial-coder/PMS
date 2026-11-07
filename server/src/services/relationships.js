@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { ApiError } from '../middleware/error.js';
 import { cache } from '../lib/cache.js';
 const parents = { class: 'Class', subject: 'Subject', chapter: 'Chapter', exercise: 'Exercise', question: 'Question', topic: 'Topic', book: 'Book' };
-const content = ['Class', 'Subject', 'Chapter', 'Exercise', 'Question', 'Topic', 'Resource', 'Book', 'Note', 'ImportantQuestion', 'Video'];
+const content = ['BookClass', 'Class', 'Subject', 'Chapter', 'Exercise', 'Question', 'Topic', 'Resource', 'Book', 'Note', 'ImportantQuestion', 'Video'];
 
 async function chapterFor(doc) {
   if (doc.get('chapter')) return mongoose.model('Chapter').findById(doc.get('chapter')).select('book').lean();
@@ -32,11 +32,13 @@ export async function validateReferences(doc) {
     const count = await mongoose.model(ref).countDocuments({ _id: { $in: [...new Set(ids)] } });
     if (count !== new Set(ids).size) throw new ApiError(400, `Selected ${path} does not exist. Refresh and choose an existing record.`);
   }
-  if (doc.schema.path('book') && doc.book && doc.class &&
+  if (doc.constructor.modelName !== 'BookClass' && doc.schema.path('book') && doc.book && doc.class &&
       (doc.isNew || doc.isModified('book') || doc.isModified('class'))) {
     const book = await mongoose.model('Book').findById(doc.book).select('class availableClasses').lean();
     const cls = await mongoose.model('Class').findById(doc.class).select('number').lean();
-    if (book?.availableClasses?.length
+    const memberships = await mongoose.model('BookClass').exists({ book: doc.book });
+    const membership = memberships && await mongoose.model('BookClass').exists({ book: doc.book, class: doc.class });
+    if (memberships ? !membership : book?.availableClasses?.length
       ? !book.availableClasses.includes(cls?.number)
       : book?.class && String(book.class) !== String(doc.class)) {
       throw new ApiError(400, 'Selected book is not configured for this class. Choose the correct book or update its supported classes.');
@@ -88,6 +90,10 @@ export async function protectParent(doc) {
 }
 
 export async function visibleParents(doc, visited = new Set()) {
+  if (doc.book && doc.class && mongoose.models.BookClass) {
+    const entry = await mongoose.model('BookClass').findOne({ book: doc.book?._id || doc.book, class: doc.class?._id || doc.class }).lean();
+    if (entry && !await mongoose.model('BookClass').exists(mongoose.model('BookClass').publicFilter({ _id: entry._id }))) return false;
+  }
   for (const [field, name] of Object.entries(parents)) {
     const value = doc[field];
     if (!value) continue;
@@ -104,6 +110,11 @@ export async function visibleParents(doc, visited = new Set()) {
 
 export async function publicParentFilter(Model, visited = new Set()) {
   const conditions = [];
+  if (Model.modelName !== 'BookClass' && Model.schema.path('book') && Model.schema.path('class') && mongoose.models.BookClass) {
+    const entries = await mongoose.model('BookClass').find().select('book class status isVisible publishedAt').lean();
+    const hidden = entries.filter(row => row.status !== 'published' || !row.isVisible || row.publishedAt && new Date(row.publishedAt) > new Date());
+    if (hidden.length) conditions.push({ $nor: hidden.map(row => ({book: row.book, class: row.class})) });
+  }
   const next = new Set([...visited, Model.modelName]);
   for (const [field, name] of Object.entries(parents)) {
     const Parent = mongoose.models[name];

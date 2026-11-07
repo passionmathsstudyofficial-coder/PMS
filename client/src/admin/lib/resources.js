@@ -5,6 +5,7 @@ import { toast } from '@/lib/notifications.jsx';
 import { api, errorMessage, get } from '@/lib/api';
 
 export const RESOURCES = {
+  'book-classes': { endpoint: '/book-classes', singular: 'Book class', plural: 'Book classes', entityType: 'BookClass' },
   classes: { endpoint: '/classes', get singular() { return uiText("Class"); }, get plural() { return uiText("Classes"); }, entityType: 'Class' },
   subjects: { endpoint: '/subjects', get singular() { return uiText("Subject"); }, get plural() { return uiText("Subjects"); }, entityType: 'Subject' },
   chapters: { endpoint: '/chapters', get singular() { return uiText("अध्याय (Chapter)"); }, get plural() { return uiText("Chapters"); }, entityType: 'Chapter' },

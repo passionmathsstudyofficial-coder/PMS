@@ -267,11 +267,9 @@ export function ReferenceBooksSection({ section }) {
         {books.map((book) => {
           const bookTitle = t(book.title) || book.author || book.name || book.slug;
           const bookDesc = t(book.description) || (t(book.subtitle) || '');
-          const classes = (book.availableClasses || [])
-            .slice()
-            .sort((a, b) => a - b);
+          const classes = (book.availableClasses || []);
           const classRangeLabel = classes.length > 1
-            ? `${classText} ${classes[0]}–${classes[classes.length - 1]}`
+            ? `${classText} ${Math.min(...classes)}–${Math.max(...classes)}`
             : (classes.length === 1 ? `${classText} ${classes[0]}` : mathSubjectText);
 
           const bookUrl = book.url || `/reference-solutions/${book.slug}`;
@@ -329,7 +327,7 @@ export function ReferenceBooksSection({ section }) {
                     {classes.map((clsNum) => (
                       <Link
                         key={clsNum}
-                        to={`/reference-solutions/${book.slug}/class-${clsNum}`}
+                        to={book.classRecords?.find(c => c.number === clsNum)?.url}
                         className="rounded-lg border border-border/60 bg-background/70 px-2 py-0.5 text-[11px] font-bold text-foreground/85 transition hover:border-brand hover:bg-brand hover:text-white"
                         title={uiTemplate`${bookTitle} - Class ${clsNum}`}
                       >
