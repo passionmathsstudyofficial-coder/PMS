@@ -93,3 +93,22 @@ test('direct HTML loads redirect the legacy NCERT URL and retain genuine 404s', 
     fs.rmSync(temp, { recursive: true, force: true });
   }
 });
+
+test('draft and missing API responses cannot be cached across publication', async () => {
+  const page = await create('pages', { slug: 'publication-cache-probe', title: { en: 'Cache probe' }, content: { en: '<p>Published content</p>' }, status: 'draft' });
+  const draft = await resolve('/publication-cache-probe');
+  assert.equal(draft.status, 404);
+  assert.equal(draft.headers['cache-control'], 'no-store');
+  const published = await owner.patch(`/api/pages/${page._id}/status`).send({ status: 'published' });
+  assert.equal(published.status, 200);
+  const visible = await resolve('/publication-cache-probe');
+  assert.equal(visible.status, 200);
+  assert.match(visible.body.data.page.content.en, /Published content/);
+  await owner.patch(`/api/pages/${page._id}/status`).send({ status: 'draft' });
+  const hidden = await resolve('/publication-cache-probe');
+  assert.equal(hidden.status, 404);
+  assert.equal(hidden.headers['cache-control'], 'no-store');
+  const unauthenticated = await request(app).get('/api/pages?scope=admin');
+  assert.equal(unauthenticated.status, 401);
+  assert.equal(unauthenticated.headers['cache-control'], 'no-store');
+});

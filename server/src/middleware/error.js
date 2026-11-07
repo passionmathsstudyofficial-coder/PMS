@@ -17,6 +17,9 @@ export const notFound = (req, res, next) => next(new ApiError(404, `Not found: $
 export function errorHandler(err, req, res, next) {
   if (res.headersSent) return next(err);
   res.removeHeader('Content-Disposition');
+  // A draft's 404 must never survive publishing in a browser or CDN cache.
+  // This also keeps authenticated/validation errors out of shared caches.
+  res.set('Cache-Control', 'no-store');
   res.type('application/json');
   let status = err.status || err.statusCode || 500;
   let message = err.message || 'Something went wrong';
