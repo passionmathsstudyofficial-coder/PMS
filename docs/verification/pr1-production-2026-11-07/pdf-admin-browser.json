@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+      "width": 1366,
+      "browserDownload": true,
+      "bytes": 622,
+      "sha256": "0c65b370c4b1cf1a4bf0c1f913418d3b41227b7fc9b140243623b71d9deaa9cd",
+      "previewCanvas": true
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+      "width": 390,
+      "browserDownload": true,
+      "bytes": 622,
+      "sha256": "0c65b370c4b1cf1a4bf0c1f913418d3b41227b7fc9b140243623b71d9deaa9cd",
+      "previewCanvas": true
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-control-room/login",
+      "status": 200,
+      "adminLoginForm": true
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "result": "PASS"
+}

@@ -4,6 +4,23 @@ import { cache } from '../lib/cache.js';
 const parents = { class: 'Class', subject: 'Subject', chapter: 'Chapter', exercise: 'Exercise', question: 'Question', topic: 'Topic', book: 'Book' };
 const content = ['Class', 'Subject', 'Chapter', 'Exercise', 'Question', 'Topic', 'Resource', 'Book', 'Note', 'ImportantQuestion', 'Video'];
 
+async function chapterFor(doc) {
+  if (doc.get('chapter')) return mongoose.model('Chapter').findById(doc.get('chapter')).select('book').lean();
+  if (doc.get('exercise')) {
+    const exercise = await mongoose.model('Exercise').findById(doc.get('exercise')).select('chapter').lean();
+    return exercise?.chapter
+      ? mongoose.model('Chapter').findById(exercise.chapter).select('book').lean()
+      : null;
+  }
+  if (doc.get('topic')) {
+    const topic = await mongoose.model('Topic').findById(doc.get('topic')).select('chapter').lean();
+    return topic?.chapter
+      ? mongoose.model('Chapter').findById(topic.chapter).select('book').lean()
+      : null;
+  }
+  return null;
+}
+
 /** Reject new dangling references, including optional parents, instead of silently saving unusable records. */
 export async function validateReferences(doc) {
   for (const [path, schema] of Object.entries(doc.schema.paths)) {
@@ -46,6 +63,15 @@ export async function validateReferences(doc) {
     for (const scope of ['class', 'subject', 'chapter']) {
       if (scope === field || !record?.[scope] || !doc.get(scope)) continue;
       if (String(record[scope]) !== String(doc.get(scope))) throw new ApiError(400, `Selected ${field} belongs to a different ${scope}.`);
+    }
+  }
+  if (doc.schema.path('book')) {
+    const chapter = await chapterFor(doc);
+    if (chapter?.book) {
+      if (doc.book && String(doc.book) !== String(chapter.book)) {
+        throw new ApiError(400, 'Selected book does not match the book that owns this chapter.');
+      }
+      if (!doc.book) doc.book = chapter.book;
     }
   }
 }

@@ -1,0 +1,150 @@
+{
+  "database": "test",
+  "verifiedAt": "2026-11-07T16:26:08.737Z",
+  "backupSha256": "9367bb90e41d78b99e0b215d1e7eb92378757e0d590e7b61ca43e2d135e694fd",
+  "exactlyUnchanged": 290,
+  "adminLoginTimestampsOnly": 1,
+  "missingOriginalRecords": [],
+  "changedOriginalContent": [],
+  "newNonAuditRecords": [],
+  "counts": {
+    "academicsessions": {
+      "before": 3,
+      "after": 3
+    },
+    "admins": {
+      "before": 1,
+      "after": 1
+    },
+    "adslots": {
+      "before": 5,
+      "after": 5
+    },
+    "announcements": {
+      "before": 1,
+      "after": 1
+    },
+    "backups": {
+      "before": 16,
+      "after": 16
+    },
+    "books": {
+      "before": 4,
+      "after": 4
+    },
+    "chapters": {
+      "before": 67,
+      "after": 67
+    },
+    "classes": {
+      "before": 7,
+      "after": 7
+    },
+    "exercises": {
+      "before": 23,
+      "after": 23
+    },
+    "importantquestions": {
+      "before": 3,
+      "after": 3
+    },
+    "media": {
+      "before": 6,
+      "after": 6
+    },
+    "navigations": {
+      "before": 3,
+      "after": 3
+    },
+    "notes": {
+      "before": 13,
+      "after": 13
+    },
+    "pages": {
+      "before": 31,
+      "after": 31
+    },
+    "questions": {
+      "before": 38,
+      "after": 38
+    },
+    "relatedcontents": {
+      "before": 0,
+      "after": 0
+    },
+    "resources": {
+      "before": 8,
+      "after": 8
+    },
+    "sections": {
+      "before": 9,
+      "after": 9
+    },
+    "seosettings": {
+      "before": 2,
+      "after": 2
+    },
+    "sitesettings": {
+      "before": 1,
+      "after": 1
+    },
+    "solutions": {
+      "before": 38,
+      "after": 38
+    },
+    "subjects": {
+      "before": 1,
+      "after": 1
+    },
+    "templates": {
+      "before": 3,
+      "after": 3
+    },
+    "topics": {
+      "before": 3,
+      "after": 3
+    },
+    "users": {
+      "before": 0,
+      "after": 0
+    },
+    "videos": {
+      "before": 5,
+      "after": 5
+    }
+  },
+  "temporaryCmsRecordsRemaining": [
+    {
+      "collection": "pages",
+      "id": "6aef3f8c8079c9018dc9df2a",
+      "exists": false
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef3f8c8079c9018dc9df36",
+      "exists": false
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef3f8c8079c9018dc9df3e",
+      "exists": false
+    },
+    {
+      "collection": "questions",
+      "id": "6aef3f8d8079c9018dc9df46",
+      "exists": false
+    },
+    {
+      "collection": "notes",
+      "id": "6aef3f8e8079c9018dc9df54",
+      "exists": false
+    },
+    {
+      "collection": "importantquestions",
+      "id": "6aef3f8e8079c9018dc9df5c",
+      "exists": false
+    }
+  ],
+  "temporaryPdfRemaining": false,
+  "result": "PASS"
+}

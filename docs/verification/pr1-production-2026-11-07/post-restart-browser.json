@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "width": 1366,
+      "newAnonymousContext": false,
+      "status": 200,
+      "reload": true,
+      "postRestartUpdateVisible": true
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "width": 1366,
+      "newAnonymousContext": true,
+      "status": 200,
+      "reload": true,
+      "postRestartUpdateVisible": true
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "width": 390,
+      "newAnonymousContext": false,
+      "status": 200,
+      "reload": true,
+      "postRestartUpdateVisible": true
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "width": 390,
+      "newAnonymousContext": true,
+      "status": 200,
+      "reload": true,
+      "postRestartUpdateVisible": true
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "result": "PASS"
+}

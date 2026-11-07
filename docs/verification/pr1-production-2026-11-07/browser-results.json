@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "finishedAt": "2026-11-07T15:23:58.434Z",
+  "run": "pms-verify-1794064264209",
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics for Classes 6 to 12",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:48.394Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "phase": "real nested menu click",
+      "referenceLinks": [
+        "/reference-solutions/mathematics-for-class-10-by-r-d-sharma",
+        "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10"
+      ]
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths",
+      "status": 200,
+      "phrase": "NCERT Class 6 Mathematics",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:49.499Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED PAGE",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:49.940Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-verify-1794064264209",
+      "phase": "browser refresh",
+      "phrase": "pms-verify-1794064264209 UPDATED PAGE",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED CHAPTER",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:50.629Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+      "phase": "browser refresh",
+      "phrase": "pms-verify-1794064264209 UPDATED CHAPTER",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED QUESTION",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:51.604Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+      "phase": "browser refresh",
+      "phrase": "pms-verify-1794064264209 UPDATED QUESTION",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED NOTE",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:52.448Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "phase": "browser refresh",
+      "phrase": "pms-verify-1794064264209 UPDATED NOTE",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/important-questions",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED IMPORTANT",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:53.255Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/important-questions",
+      "phase": "browser refresh",
+      "phrase": "pms-verify-1794064264209 UPDATED IMPORTANT",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED PAGE",
+      "phase": "fresh anonymous browser context",
+      "at": "2026-11-07T15:23:54.694Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED QUESTION",
+      "phase": "fresh anonymous browser context",
+      "at": "2026-11-07T15:23:55.003Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794064264209",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED NOTE",
+      "phase": "fresh anonymous browser context",
+      "at": "2026-11-07T15:23:55.388Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/important-questions",
+      "status": 200,
+      "phrase": "pms-verify-1794064264209 UPDATED IMPORTANT",
+      "phase": "fresh anonymous browser context",
+      "at": "2026-11-07T15:23:55.701Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics for Classes 6 to 12",
+      "phase": "initial",
+      "at": "2026-11-07T15:23:56.868Z"
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "phase": "mobile touch nested-menu navigation"
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "admin-login.png",
+    "browser-results.json",
+    "desktop-1366.png",
+    "desktop-1920.png",
+    "fresh-session-important.png",
+    "hindi-notes-interface.png",
+    "language-browser-results.json",
+    "mobile-menu-320.png",
+    "mobile-menu-375.png",
+    "mobile-menu-430.png",
+    "mobile-menu-768.png",
+    "mobile-reference-menu.png",
+    "navigation-results.json",
+    "ncert-class-6.png",
+    "pdf-admin-browser.json",
+    "pdf-preview-1366.png",
+    "pdf-preview-390.png",
+    "published-chapter.png",
+    "published-important.png",
+    "published-note.png",
+    "published-page.png",
+    "published-question.png",
+    "reference-menu.png"
+  ],
+  "note": "Actual production HTTPS pages, installed Chrome in headless mode; independent anonymous browser contexts, reloads and mobile touch."
+}

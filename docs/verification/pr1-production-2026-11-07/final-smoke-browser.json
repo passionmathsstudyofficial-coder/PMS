@@ -1,0 +1,168 @@
+{
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-control-room/login",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-fractions-pms-revision",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/important-questions",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-11/maths/adhyay-1/prashnavali-1-1",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/books",
+      "width": 1366,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/pms-control-room/login",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-fractions-pms-revision",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/important-questions",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-11/maths/adhyay-1/prashnavali-1-1",
+      "width": 390,
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/books",
+      "width": 390,
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "expectedAuthenticationResponses": [
+    {
+      "url": "https://passionmathstudy.in/api/auth/me",
+      "status": 401
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 ()",
+      "location": {
+        "url": "https://passionmathstudy.in/api/auth/me",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    },
+    {
+      "url": "https://passionmathstudy.in/api/auth/me",
+      "status": 401
+    },
+    {
+      "text": "Failed to load resource: the server responded with a status of 401 ()",
+      "location": {
+        "url": "https://passionmathstudy.in/api/auth/me",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "result": "PASS"
+}
