@@ -166,12 +166,30 @@ export async function getSiteBootstrap() {
     ];
     const academicSessions = sessions?.length ? sessions : defaultSessions;
 
+    const defaultAnnouncement = {
+      badge: { hi: 'नया सत्र 2026-27', en: 'NEW SESSION 2026-27' },
+      text: {
+        hi: 'नए शैक्षणिक सत्र 2026-27 में आपका स्वागत है! नए सत्र की सभी कक्षाएं और स्टडी मटेरियल अब उपलब्ध हैं।',
+        en: '"Dear students, welcome to the new academic session 2026-27! New content and study materials are now available."',
+      },
+      linkLabel: { hi: 'शुरू करें →', en: 'Start Learning →' },
+      linkUrl: '/#classes',
+      variant: 'brand',
+      isVisible: true,
+    };
+
+    const cleanAnnouncements = announcements
+      .filter((a) => (a.text?.en && a.text.en.trim() && !a.text._translationMissing) || (a.text?.hi && a.text.hi.trim()))
+      .map(({ createdBy, updatedBy, ...rest }) => rest);
+
+    const effectiveAnnouncements = cleanAnnouncements.length > 0 ? cleanAnnouncements : [defaultAnnouncement];
+
     return {
       settings,
       terms,
       navigation,
       navigationConfigured: Object.fromEntries(NAV_KEYS.map(key => [key, navDocs.some(doc => doc.key === key)])),
-      announcements: announcements.map(({ createdBy, updatedBy, ...rest }) => rest),
+      announcements: effectiveAnnouncements,
       classes,
       seoRoutes: Object.fromEntries(seoRoutes.map((r) => [r.routeKey, r])),
       adSlots,

@@ -2,7 +2,7 @@ export { Admin } from './Admin.js';
 export { User } from './User.js';
 export { Session } from './Session.js';
 export { SiteSettings, DEFAULT_TERMINOLOGY } from './SiteSettings.js';
-export { Navigation, NAV_KEYS } from './Navigation.js';
+export { Navigation, NAV_KEYS, ensureDefaultHeaderFooter } from './Navigation.js';
 export { Announcement } from './Announcement.js';
 export { Page, ensureDefaultLandingPages } from './Page.js';
 export { ClassLevel } from './ClassLevel.js';

@@ -263,7 +263,7 @@ export function MobileMenu({ open, onClose }) {
   const configuredItems = (site?.navigation?.header || []).filter((i) => i.isVisible !== false);
   const rawItems = configuredItems.length ? configuredItems : [
     { label: { en: 'Home', hi: 'होम' }, url: '/', type: 'link' },
-    { label: { en: 'Mathematics', hi: 'गणित' }, type: 'classes' },
+    { label: { en: 'NCERT Mathematics', hi: 'NCERT गणित' }, type: 'classes' },
     { label: { en: 'Important Questions', hi: 'महत्वपूर्ण प्रश्न' }, url: '/study-materials/important-questions' },
     { label: { en: 'Notes', hi: 'नोट्स' }, url: '/study-materials/ncert-notes' },
     { label: { en: 'About Us', hi: 'हमारे बारे में' }, url: '/about-us', type: 'link' },

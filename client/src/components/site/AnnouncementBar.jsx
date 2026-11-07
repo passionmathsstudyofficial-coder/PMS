@@ -41,10 +41,25 @@ export function AnnouncementBar() {
     }
   };
 
-  const badgeText = t(announcement.badge) || uiText("नया सत्र 2026-27");
-  const mainText = t(announcement.text) || uiText("नए शैक्षणिक सत्र 2026-27 में आपका स्वागत है! नए सत्र की सभी कक्षाएं और स्टडी मटेरियल अब उपलब्ध हैं।");
-  const linkLabel = t(announcement.linkLabel) || uiText("पढ़ाई शुरू करें");
-  const linkUrl = announcement.linkUrl || '/#classes';
+  const DEFAULT_ANNOUNCEMENT = {
+    badge: { hi: 'नया सत्र 2026-27', en: 'NEW SESSION 2026-27' },
+    text: {
+      hi: 'नए शैक्षणिक सत्र 2026-27 में आपका स्वागत है! नए सत्र की सभी कक्षाएं और स्टडी मटेरियल अब उपलब्ध हैं।',
+      en: '"Dear students, welcome to the new academic session 2026-27! New content and study materials are now available."',
+    },
+    linkLabel: { hi: 'शुरू करें →', en: 'Start Learning →' },
+  };
+
+  const rawBadge = announcement ? t(announcement.badge) : '';
+  const rawText = announcement ? t(announcement.text) : '';
+  const rawLinkLabel = announcement ? t(announcement.linkLabel) : '';
+
+  const isInvalid = (val) => !val || val.includes('Content not available in English.') || val.includes('इस भाषा में सामग्री उपलब्ध नहीं है।');
+
+  const badgeText = isInvalid(rawBadge) ? t(DEFAULT_ANNOUNCEMENT.badge) : rawBadge;
+  const mainText = isInvalid(rawText) ? t(DEFAULT_ANNOUNCEMENT.text) : rawText;
+  const linkLabel = isInvalid(rawLinkLabel) ? t(DEFAULT_ANNOUNCEMENT.linkLabel) : rawLinkLabel;
+  const linkUrl = announcement?.linkUrl || '/#classes';
 
   return (
     <AnimatePresence initial={false}>

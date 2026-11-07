@@ -1,7 +1,7 @@
 import { env } from './config/env.js';
 import { connectDB, disconnectDB } from './config/db.js';
 import { createApp } from './app.js';
-import { SiteSettings, ensureDefaultSessions, ensureDefaultLandingPages, ensureDefaultHomepageSections } from './models/index.js';
+import { SiteSettings, ensureDefaultSessions, ensureDefaultLandingPages, ensureDefaultHomepageSections, ensureDefaultHeaderFooter } from './models/index.js';
 import { scheduleBackups } from './services/backup.js';
 
 async function main() {
@@ -10,6 +10,7 @@ async function main() {
   await ensureDefaultSessions();
   await ensureDefaultLandingPages();
   await ensureDefaultHomepageSections();
+  await ensureDefaultHeaderFooter();
   console.log(`[db] connected (${env.MONGODB_URI.replace(/\/\/[^@]*@/, '//***@')})`);
 
   const app = createApp();

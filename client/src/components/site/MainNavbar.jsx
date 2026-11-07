@@ -249,7 +249,19 @@ export function MainNavbar({ onOpenMobileMenu }) {
           };
         }
       } else {
-        result.push(item);
+        const isMathItem = item.type === 'classes' || enLabel === 'mathematics' || enLabel === 'maths' || enLabel.includes('ncert math');
+        if (isMathItem) {
+          result.push({
+            ...item,
+            type: 'classes',
+            label: {
+              hi: 'NCERT गणित',
+              en: 'NCERT Mathematics',
+            },
+          });
+        } else {
+          result.push(item);
+        }
       }
     }
 
