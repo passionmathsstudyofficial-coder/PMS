@@ -14,6 +14,7 @@ import { Icon } from '@/lib/icons';
 import { hasContent, useInterfaceL10n } from '@/lib/i18n';
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from '@/lib/motion';
 import { getReferenceBooks } from '@/lib/referenceBooks.js';
+import { bookCoverUrl } from '@/lib/media';
 import { useSite, useTerm } from '@/lib/site';
 import { uiText } from '@/lib/uiLanguage.js';
 import { cn } from '@/lib/utils';
@@ -201,12 +202,10 @@ function ReferenceBookIllustration({ slug, author }) {
 }
 
 function BookCoverImage({ book, bookTitle }) {
-  const [failed, setFailed] = useState(false);
-  const rawSrc = book.coverUrl || book.coverImage?.url;
-  // Discard external amazon URLs that fail due to hotlink/CSP protection
-  const src = (rawSrc && !rawSrc.includes('media-amazon.com')) ? rawSrc : null;
+  const [failedSrc, setFailedSrc] = useState('');
+  const src = bookCoverUrl(book);
 
-  if (!src || failed) {
+  if (!src || failedSrc === src) {
     return <ReferenceBookIllustration slug={book.slug} title={bookTitle} author={book.author} />;
   }
 
@@ -216,7 +215,7 @@ function BookCoverImage({ book, bookTitle }) {
       alt={bookTitle}
       className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
       loading="lazy"
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(src)}
     />
   );
 }

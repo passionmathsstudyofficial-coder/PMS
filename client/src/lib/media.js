@@ -1,5 +1,14 @@
 import { API_BASE } from './config.js';
 import { driveDocument } from '../../../shared/documents.js';
+import { permittedImageUrl } from '../../../shared/mediaPolicy.js';
+
+export function bookCoverUrl(book, ownOrigin = globalThis.window?.location?.origin || '') {
+  for (const value of [book?.coverImage?.url, book?.coverUrl]) {
+    const url = permittedImageUrl(resolveMediaUrl(value), ownOrigin);
+    if (url) return url;
+  }
+  return '';
+}
 
 export function resolveMediaUrl(value, apiBase = API_BASE) {
   const url = String(value || '').trim();

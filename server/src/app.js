@@ -1,4 +1,5 @@
 import { Media } from './models/index.js';
+import { REMOTE_IMAGE_ORIGINS } from '../../shared/mediaPolicy.js';
 import { prepareDocumentResponse } from './services/documents.js';
 import { mapLegacyLanguages } from '../../shared/languages.js';
 import fs from 'node:fs';
@@ -33,7 +34,7 @@ export function createApp({ sendRecoveryEmail } = {}) {
     next();
   });
 
-  const imgSources = ["'self'", 'data:', 'blob:', 'https://i.ytimg.com', 'https://img.youtube.com', 'https://res.cloudinary.com'];
+  const imgSources = ["'self'", 'data:', 'blob:', ...REMOTE_IMAGE_ORIGINS];
   app.use(
     helmet({
       contentSecurityPolicy: {

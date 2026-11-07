@@ -9,6 +9,14 @@ import { EmptyState } from '@/components/site/States.jsx';
 import { useL10n, useLang } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
+import { bookCoverUrl } from '@/lib/media';
+
+function CatalogBookCover({ book, title }) {
+  const src = bookCoverUrl(book);
+  const [failedSrc, setFailedSrc] = useState('');
+  if (src && failedSrc !== src) return <img src={src} alt={title} className="size-full object-cover" onError={() => setFailedSrc(src)} />;
+  return <div className="grid size-full place-items-center bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 dark:from-amber-950 dark:to-orange-900 dark:text-orange-300"><BookOpen className="size-10" /></div>;
+}
 
 export default function BooksListPage({ data, breadcrumbs }) {
   useUiLanguage();
@@ -99,7 +107,6 @@ export default function BooksListPage({ data, breadcrumbs }) {
               const title = t(b.title) || 'Mathematics Book';
               const desc = t(b.description);
               const rec = t(b.recommendedFor);
-              const coverUrl = b.coverUrl || b.coverImage?.url;
 
               return (
                 <div
@@ -111,13 +118,7 @@ export default function BooksListPage({ data, breadcrumbs }) {
                   <div className="p-5">
                     <div className="flex gap-4">
                       <div className="relative aspect-[3/4] w-28 shrink-0 overflow-hidden rounded-xl bg-muted shadow-md">
-                        {coverUrl ? (
-                          <img src={coverUrl} alt={title} className="size-full object-cover" />
-                        ) : (
-                          <div className="grid size-full place-items-center bg-gradient-to-br from-amber-100 to-orange-200 text-orange-700 dark:from-amber-950 dark:to-orange-900 dark:text-orange-300">
-                            <BookOpen className="size-10" />
-                          </div>
-                        )}
+                        <CatalogBookCover book={b} title={title} />
                       </div>
                       <div className="min-w-0 flex-1">
                         <span className="inline-block rounded-md bg-brand-soft px-2 py-0.5 text-[10px] font-bold text-brand uppercase">

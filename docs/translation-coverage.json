@@ -468,25 +468,25 @@
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 348,
+      "line": 347,
       "text": "{v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 389,
+      "line": 388,
       "text": "{v0} {v1}{v2}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 452,
+      "line": 451,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 453,
+      "line": 452,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
@@ -534,7 +534,7 @@
     },
     {
       "file": "client/src/pages/content/BooksListPage.jsx",
-      "line": 128,
+      "line": 129,
       "text": "• {v0}",
       "reason": "Data-only formatting template; values retain their own language"
     },
