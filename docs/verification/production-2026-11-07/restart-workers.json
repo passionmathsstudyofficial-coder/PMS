@@ -1,0 +1,21 @@
+{
+  "requestedAt": "2026-11-07T11:26:39.714845Z",
+  "method": "Graceful SIGTERM of exact verified LiteSpeed-managed application workers after restart markers did not replace old workers",
+  "workers": [
+    {
+      "pid": 2539181,
+      "cwd": "/home/u583042336/domains/passionmathstudy.in/hbuilds/versions/01a1b4d6-4f94-7249-a29f-267ccbc66bce/nodejs",
+      "socket": "/usr/local/lsws/extapp-sock/passionmathstudy.in:_.sock"
+    },
+    {
+      "pid": 2540192,
+      "cwd": "/home/u583042336/domains/passionmathstudy.in/hbuilds/versions/01a1b4d6-4f94-7249-a29f-267ccbc66bce/nodejs",
+      "socket": "/usr/local/lsws/extapp-sock/gray-scorpion-651284.hostingersite.com:_.sock"
+    },
+    {
+      "pid": 2636099,
+      "cwd": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-456d2e9-0710/nodejs",
+      "socket": "/usr/local/lsws/extapp-sock/www.passionmathstudy.in:_.sock"
+    }
+  ]
+}

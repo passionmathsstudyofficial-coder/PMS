@@ -1,0 +1,58 @@
+{
+  "run": "pms-verify-1794035716424",
+  "database": "test",
+  "startedAt": "2026-11-07T07:15:16.424Z",
+  "backupSha256": "8d1a85cf77fce5c7a3c204d375e3169113e4ca2336c205702daceecaacbbbec5",
+  "records": [
+    {
+      "resource": "pages",
+      "collection": "pages",
+      "id": "6aeed00426b19ac4c7b79e53"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/login",
+      "status": 200,
+      "time": "2026-11-07T07:15:16.844Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/site?lang=en",
+      "status": 200,
+      "time": "2026-11-07T07:15:16.906Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/pages",
+      "status": 201,
+      "time": "2026-11-07T07:15:16.968Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794035716424&lang=en",
+      "status": 404,
+      "time": "2026-11-07T07:15:16.998Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/pages/6aeed00426b19ac4c7b79e53",
+      "status": 200,
+      "time": "2026-11-07T07:15:17.060Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794035716424&lang=en",
+      "status": 404,
+      "time": "2026-11-07T07:15:17.073Z"
+    }
+  ],
+  "assertions": [],
+  "urls": {
+    "page": "/pms-verify-1794035716424"
+  },
+  "marker": "pms-verify-1794035716424 UPDATED",
+  "baseClass": "/class-10/maths",
+  "lastError": "GET /api/public/resolve?path=%2Fpms-verify-1794035716424&lang=en: {\"message\":\"Page not found\"}\n\n404 !== 200\n"
+}

@@ -1,0 +1,233 @@
+{
+  "database": "test",
+  "verifiedAt": "2026-11-07T13:43:31.951Z",
+  "beforeBackupSha256": "585dd179298e1f3061c13e05e9492434f4a9c176351966ab0529fc638af9592c",
+  "exactlyUnchanged": 177,
+  "auditOrSchemaNormalizationOnly": 4,
+  "schemaNormalizations": [
+    {
+      "collection": "sitesettings",
+      "id": "6ae1e67ff9bcc5e2a6a3ceb3",
+      "reason": "All pre-existing non-audit values preserved; schema defaults added on CMS save"
+    }
+  ],
+  "intendedExistingChanges": [
+    {
+      "collection": "chapters",
+      "id": "6aedd7468e0483251e20a4c3",
+      "fields": [
+        "isVisible",
+        "updatedAt"
+      ]
+    },
+    {
+      "collection": "exercises",
+      "id": "6aedd7708e0483251e20a4d2",
+      "fields": [
+        "chapter",
+        "searchText",
+        "updatedAt"
+      ]
+    },
+    {
+      "collection": "navigations",
+      "id": "6ae1e690f9bcc5e2a6a3cf65",
+      "fields": [
+        "items",
+        "updatedAt",
+        "__v"
+      ]
+    },
+    {
+      "collection": "navigations",
+      "id": "6ae1e690f9bcc5e2a6a3cf5b",
+      "fields": [
+        "items",
+        "updatedAt",
+        "__v"
+      ]
+    }
+  ],
+  "missingOriginalRecords": [],
+  "newEducationalRecords": 90,
+  "counts": {
+    "academicsessions": {
+      "before": 3,
+      "after": 3
+    },
+    "admins": {
+      "before": 1,
+      "after": 1
+    },
+    "adslots": {
+      "before": 5,
+      "after": 5
+    },
+    "announcements": {
+      "before": 1,
+      "after": 1
+    },
+    "books": {
+      "before": 4,
+      "after": 4
+    },
+    "chapters": {
+      "before": 57,
+      "after": 67
+    },
+    "classes": {
+      "before": 7,
+      "after": 7
+    },
+    "exercises": {
+      "before": 13,
+      "after": 23
+    },
+    "importantquestions": {
+      "before": 3,
+      "after": 3
+    },
+    "media": {
+      "before": 6,
+      "after": 6
+    },
+    "navigations": {
+      "before": 3,
+      "after": 3
+    },
+    "notes": {
+      "before": 3,
+      "after": 13
+    },
+    "pages": {
+      "before": 31,
+      "after": 31
+    },
+    "questions": {
+      "before": 8,
+      "after": 38
+    },
+    "relatedcontents": {
+      "before": 0,
+      "after": 0
+    },
+    "resources": {
+      "before": 8,
+      "after": 8
+    },
+    "sections": {
+      "before": 9,
+      "after": 9
+    },
+    "seosettings": {
+      "before": 2,
+      "after": 2
+    },
+    "sitesettings": {
+      "before": 1,
+      "after": 1
+    },
+    "solutions": {
+      "before": 8,
+      "after": 38
+    },
+    "subjects": {
+      "before": 1,
+      "after": 1
+    },
+    "templates": {
+      "before": 3,
+      "after": 3
+    },
+    "topics": {
+      "before": 3,
+      "after": 3
+    },
+    "users": {
+      "before": 0,
+      "after": 0
+    },
+    "videos": {
+      "before": 5,
+      "after": 5
+    }
+  },
+  "temporaryRecordsRemaining": [
+    {
+      "resource": "subjects",
+      "id": "6aef1a8b9580f87437ecbec8",
+      "exists": false
+    },
+    {
+      "resource": "classes",
+      "id": "6aef1a8b9580f87437ecbed0",
+      "exists": false
+    },
+    {
+      "resource": "chapters",
+      "id": "6aef1a8b9580f87437ecbed4",
+      "exists": false
+    },
+    {
+      "resource": "exercises",
+      "id": "6aef1a8b9580f87437ecbee3",
+      "exists": false
+    },
+    {
+      "resource": "topics",
+      "id": "6aef1a8b9580f87437ecbee6",
+      "exists": false
+    },
+    {
+      "resource": "books",
+      "id": "6aef1a8c9580f87437ecbef6",
+      "exists": false
+    },
+    {
+      "resource": "resources",
+      "id": "6aef1a8c9580f87437ecbefa",
+      "exists": false
+    },
+    {
+      "resource": "media",
+      "id": "6aef1b009580f87437ecbf1c",
+      "exists": false
+    },
+    {
+      "resource": "sections",
+      "id": "6aef1b009580f87437ecbf20",
+      "exists": false
+    },
+    {
+      "resource": "announcements",
+      "id": "6aef1b009580f87437ecbf24",
+      "exists": false
+    },
+    {
+      "resource": "templates",
+      "id": "6aef1b009580f87437ecbf27",
+      "exists": false
+    },
+    {
+      "resource": "questions",
+      "id": "6aef1b009580f87437ecbf2b",
+      "exists": false
+    },
+    {
+      "resource": "related-content",
+      "id": "6aef1b019580f87437ecbf30",
+      "exists": false
+    },
+    {
+      "resource": "academic-sessions",
+      "id": "6aef1b019580f87437ecbf34",
+      "exists": false
+    },
+    {
+      "resource": "ad-slots",
+      "id": "6aef1b019580f87437ecbf4a",
+      "exists": false
+    }
+  ],
+  "result": "PASS"
+}

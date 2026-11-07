@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-11-07T11:41:26.543Z",
+  "broken": [
+    "/secondary-school-mathematics-for-class-10-by-r-s-aggarwal",
+    "/class-11/maths/adhyay-1/prashnavali-1-1"
+  ],
+  "duplicateChapterCandidates": [
+    {
+      "_id": "6aedd7468e0483251e20a4c3",
+      "slug": "adhyay-1",
+      "title": {
+        "en": "SET"
+      },
+      "book": {
+        "_id": "6ae1e68ff9bcc5e2a6a3cf4d",
+        "title": {
+          "en": "NCERT Mathematics Textbook for Class 10"
+        },
+        "author": "NCERT Editorial Board",
+        "slug": "ncert-mathematics-textbook-for-class-10"
+      },
+      "session": "2026-27"
+    },
+    {
+      "_id": "6ae1e684f9bcc5e2a6a3cee5",
+      "slug": "adhyay-1",
+      "title": {
+        "en": "Sets"
+      }
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "chapters": 10,
+  "originalPracticeSets": 10,
+  "questionsWithSolutions": 30,
+  "revisionNotes": 10,
+  "verifiedTextbookPages": true,
+  "numericChecks": [
+    {
+      "chapter": 1,
+      "question": 1,
+      "checkedValue": "25",
+      "answer": "25, 36"
+    },
+    {
+      "chapter": 1,
+      "question": 1,
+      "checkedValue": "36",
+      "answer": "25, 36"
+    },
+    {
+      "chapter": 1,
+      "question": 2,
+      "checkedValue": "21",
+      "answer": "21 dots"
+    },
+    {
+      "chapter": 1,
+      "question": 3,
+      "checkedValue": "56",
+      "answer": "14, 28, 56"
+    },
+    {
+      "chapter": 2,
+      "question": 2,
+      "checkedValue": "116",
+      "answer": "116°"
+    },
+    {
+      "chapter": 3,
+      "question": 1,
+      "checkedValue": "22",
+      "answer": "22; no"
+    },
+    {
+      "chapter": 3,
+      "question": 2,
+      "checkedValue": "121",
+      "answer": "121; yes"
+    },
+    {
+      "chapter": 3,
+      "question": 3,
+      "checkedValue": "1000",
+      "answer": "Estimate 1000; exact total 1000"
+    },
+    {
+      "chapter": 4,
+      "question": 1,
+      "checkedValue": "22",
+      "answer": "22 votes; badminton"
+    },
+    {
+      "chapter": 4,
+      "question": 2,
+      "checkedValue": "28",
+      "answer": "28 books"
+    },
+    {
+      "chapter": 4,
+      "question": 3,
+      "checkedValue": "9",
+      "answer": "9 more plants"
+    },
+    {
+      "chapter": 6,
+      "question": 1,
+      "checkedValue": "36",
+      "answer": "Perimeter 36 cm; area 77 cm²"
+    },
+    {
+      "chapter": 6,
+      "question": 1,
+      "checkedValue": "77",
+      "answer": "Perimeter 36 cm; area 77 cm²"
+    },
+    {
+      "chapter": 6,
+      "question": 2,
+      "checkedValue": "49",
+      "answer": "Side 7 cm; area 49 cm²"
+    },
+    {
+      "chapter": 6,
+      "question": 3,
+      "checkedValue": "36",
+      "answer": "Both areas 36 cm²; perimeters 26 cm and 30 cm"
+    },
+    {
+      "chapter": 6,
+      "question": 3,
+      "checkedValue": "30",
+      "answer": "Both areas 36 cm²; perimeters 26 cm and 30 cm"
+    },
+    {
+      "chapter": 7,
+      "question": 1,
+      "checkedValue": "7/12",
+      "answer": "7/12"
+    },
+    {
+      "chapter": 7,
+      "question": 3,
+      "checkedValue": "3/4",
+      "answer": "3/4 metre"
+    },
+    {
+      "chapter": 9,
+      "question": 1,
+      "checkedValue": "90",
+      "answer": "4 lines; 90°"
+    },
+    {
+      "chapter": 9,
+      "question": 3,
+      "checkedValue": "60",
+      "answer": "60°"
+    },
+    {
+      "chapter": 10,
+      "question": 1,
+      "checkedValue": "5",
+      "answer": "5°C"
+    },
+    {
+      "chapter": 10,
+      "question": 3,
+      "checkedValue": "-4",
+      "answer": "Floor −4"
+    }
+  ],
+  "additionalChecks": [
+    "Prime factorisation, co-prime and divisibility checks",
+    "Fraction comparison and integer ordering",
+    "Geometry construction, angle classification and symmetry explanations reviewed against mathematical definitions"
+  ],
+  "source": {
+    "book": "Ganita Prakash — Mathematics, Grade 6, English",
+    "officialUrl": "https://ncert.nic.in/textbook.php?fegp1=0-10",
+    "reviewedGovernmentMirror": "https://scertharyana.gov.in/saksham-resource/",
+    "reviewedEdition": "Haryana 2025 authorised NCERT adoption; original NCERT 2024 text",
+    "currentCurriculumCrossCheck": "https://ciet.ncert.gov.in/activity/grade6?lang=en",
+    "copyright": "NCERT textbook remains NCERT material. PMS explanations, revision notes, practice questions and worked solutions below are independently written original material. No official exercise set is reproduced.",
+    "editionLimitation": "Direct NCERT downloads were unavailable during review. No claim is made to have inspected an unavailable 2026 reprint."
+  }
+}

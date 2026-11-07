@@ -1,0 +1,18 @@
+{
+  "deployedCommit": "d3770be96dbd4d294fe32b3a007160ac2a058b06",
+  "hostingerVersion": "01a1b643-9552-7084-89e3-b301d1866796",
+  "database": "test",
+  "httpChecks": 176,
+  "unexpectedHttpErrors": [],
+  "assetChecks": 35,
+  "assetErrors": [],
+  "originalRecordsMissing": 0,
+  "newEducationalRecords": 90,
+  "temporaryRecordsRemaining": 0,
+  "additionalCmsModulesVerified": 15,
+  "limitations": [
+    "A current 2026 NCERT reprint was not directly retrievable; source review used the authorised Haryana 2025 NCERT adoption plus current NCERT CIET curriculum resources.",
+    "Additional temporary-module browser navigation returned HTTP 403; module synchronization passed public API and database checks, but that browser test did not pass.",
+    "Global advertisements are disabled. Disabled visibility was verified; enabled advertising was not activated in production."
+  ]
+}

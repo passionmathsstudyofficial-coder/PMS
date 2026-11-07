@@ -1,0 +1,68 @@
+{
+  "startedAt": "2026-11-07T13:48:52.460Z",
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 320,
+      "noHorizontalOverflow": true
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 375,
+      "noHorizontalOverflow": true
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 430,
+      "noHorizontalOverflow": true
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 768,
+      "noHorizontalOverflow": true
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 1366,
+      "noHorizontalOverflow": true
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "phase": "responsive and keyboard",
+      "width": 1920,
+      "noHorizontalOverflow": true
+    }
+  ],
+  "errors": [],
+  "result": "PASS",
+  "finishedAt": "2026-11-07T13:49:08.641Z"
+}
