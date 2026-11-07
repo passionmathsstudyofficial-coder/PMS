@@ -1,0 +1,74 @@
+{
+  "capturedAt": "2026-11-07T15:18:51.174074+00:00",
+  "phase": "before",
+  "releaseRoot": "/home/u583042336/domains/passionmathstudy.in/hbuilds/versions/01a1b68c-cb07-72b1-a738-c7784ffe2b76/nodejs",
+  "deployedCommit": "dab682fe9978fe3cb0437f2166c48ea2fe95fc9f",
+  "nodeVersion": "v22.23.4",
+  "processes": [
+    {
+      "pid": 1619352,
+      "environmentKeys": [
+        "ADMIN_PATH",
+        "CLIENT_ORIGINS",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_FOLDER",
+        "CSRF_SECRET",
+        "ENCRYPTION_KEY",
+        "JWT_SECRET",
+        "MONGODB_URI",
+        "NODE_ENV",
+        "PUBLIC_SITE_URL",
+        "SEED_ADMIN_EMAIL",
+        "SEED_ADMIN_NAME",
+        "SEED_ADMIN_PASSWORD"
+      ],
+      "environmentFingerprint": "56590e53929484310e02b5cef71ad76a29d8421056c48519e56d2acb0b5dbb4e"
+    },
+    {
+      "pid": 1666858,
+      "environmentKeys": [
+        "ADMIN_PATH",
+        "CLIENT_ORIGINS",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_FOLDER",
+        "CSRF_SECRET",
+        "ENCRYPTION_KEY",
+        "JWT_SECRET",
+        "MONGODB_URI",
+        "NODE_ENV",
+        "PUBLIC_SITE_URL",
+        "SEED_ADMIN_EMAIL",
+        "SEED_ADMIN_NAME",
+        "SEED_ADMIN_PASSWORD"
+      ],
+      "environmentFingerprint": "56590e53929484310e02b5cef71ad76a29d8421056c48519e56d2acb0b5dbb4e"
+    }
+  ],
+  "sourceChecksums": {
+    "server/src/index.js": "d887f989db03c9eee19f8ec68ade629e8f273ba82761708c0a777d96fe2fcf25",
+    "client/dist/index.html": "817937a35fbf7c3c59c2a59a1e81178548dd6465b416bcdfe0208d7ec79d0c17"
+  },
+  "environmentFileFingerprint": null,
+  "passengerConfig": "DirectoryIndex index.html index.php\n\n<IfModule mod_rewrite.c>\n  RewriteEngine On\n  RewriteBase /\n  RewriteRule ^index\\.html$ - [L]\n  RewriteCond %{REQUEST_FILENAME} !-f\n  RewriteCond %{REQUEST_FILENAME} !-d\n  RewriteCond %{REQUEST_FILENAME} !-l\n  RewriteRule . /index.html [L]\n</IfModule>\nPassengerAppRoot /home/u583042336/domains/passionmathstudy.in/hbuilds/current/nodejs\nPassengerAppType node\nPassengerNodejs /opt/alt/alt-nodejs22/root/bin/node\nPassengerStartupFile server/src/index.js\nPassengerBaseURI /\nPassengerRestartDir /home/u583042336/domains/passionmathstudy.in/hbuilds/current/nodejs/tmp\nSetEnv NODE_OPTIONS \"--require /home/u583042336/domains/passionmathstudy.in/hbuilds/config/preload-timestamp.js\"\nSetEnv LSNODE_CONSOLE_LOG console.log\nSetEnv TOKIO_WORKER_THREADS 2",
+  "deploymentVersion": "01a1b68c-cb07-72b1-a738-c7784ffe2b76",
+  "deploymentComplete": true,
+  "applicationLogLines": 582,
+  "applicationErrors": [
+    "{\"timestamp\":\"2026-11-07T15:08:09.307Z\",\"level\":\"ERROR\",\"message\":\"App did not call listen() within 3 seconds. Possible causes: (1) Entry file uses \\\"if (require.main === module)\\\" to guard server.listen() \u2014 remove that condition, it is not supported on Hostinger Node.js hosting; (2) App is hanging at startup \u2014 check for unresolved promises or blocking calls before listen().\"}",
+    "{\"timestamp\":\"2026-11-07T15:08:21.198Z\",\"level\":\"ERROR\",\"message\":\"App did not call listen() within 3 seconds. Possible causes: (1) Entry file uses \\\"if (require.main === module)\\\" to guard server.listen() \u2014 remove that condition, it is not supported on Hostinger Node.js hosting; (2) App is hanging at startup \u2014 check for unresolved promises or blocking calls before listen().\"}",
+    "{\"timestamp\":\"2026-11-07T15:08:25.813Z\",\"level\":\"ERROR\",\"message\":\"App did not call listen() within 3 seconds. Possible causes: (1) Entry file uses \\\"if (require.main === module)\\\" to guard server.listen() \u2014 remove that condition, it is not supported on Hostinger Node.js hosting; (2) App is hanging at startup \u2014 check for unresolved promises or blocking calls before listen().\"}",
+    "{\"timestamp\":\"2026-11-07T15:11:07.374Z\",\"level\":\"ERROR\",\"message\":\"App did not call listen() within 3 seconds. Possible causes: (1) Entry file uses \\\"if (require.main === module)\\\" to guard server.listen() \u2014 remove that condition, it is not supported on Hostinger Node.js hosting; (2) App is hanging at startup \u2014 check for unresolved promises or blocking calls before listen().\"}"
+  ],
+  "listenerBoundMessages": 0,
+  "applicationReadyMessages": 0,
+  "rollbackPresent": {
+    "rollback-623ffc0": true,
+    "repair-6b6014e": true,
+    "repair-d3770be": true,
+    "repair-dab682f": false
+  }
+}

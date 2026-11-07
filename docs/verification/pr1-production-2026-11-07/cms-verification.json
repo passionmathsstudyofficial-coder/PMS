@@ -1,0 +1,591 @@
+{
+  "run": "pms-verify-1794064264209",
+  "database": "test",
+  "startedAt": "2026-11-07T15:11:04.209Z",
+  "backupSha256": "9367bb90e41d78b99e0b215d1e7eb92378757e0d590e7b61ca43e2d135e694fd",
+  "records": [
+    {
+      "resource": "pages",
+      "collection": "pages",
+      "id": "6aef3f8c8079c9018dc9df2a",
+      "cleaned": true
+    },
+    {
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef3f8c8079c9018dc9df36",
+      "cleaned": true
+    },
+    {
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef3f8c8079c9018dc9df3e",
+      "cleaned": true
+    },
+    {
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef3f8d8079c9018dc9df46",
+      "cleaned": true
+    },
+    {
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef3f8e8079c9018dc9df54",
+      "cleaned": true
+    },
+    {
+      "resource": "important-questions",
+      "collection": "importantquestions",
+      "id": "6aef3f8e8079c9018dc9df5c",
+      "cleaned": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/login",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.297Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/site?lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.363Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/pages",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.417Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794064264209&lang=en",
+      "status": 404,
+      "cacheControl": "no-store",
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.449Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/pages/6aef3f8c8079c9018dc9df2a",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.504Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.544Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/chapters",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.838Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/chapters/6aef3f8c8079c9018dc9df36",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.891Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:08 GMT",
+      "time": "2026-11-07T15:11:08.955Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/exercises",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.059Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/exercises/6aef3f8c8079c9018dc9df3e",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.124Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.195Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/questions",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.845Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/questions/6aef3f8d8079c9018dc9df46",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.939Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/solutions/6aef3f8d8079c9018dc9df47",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:09 GMT",
+      "time": "2026-11-07T15:11:09.985Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.091Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.107Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/notes",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.183Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/notes/6aef3f8e8079c9018dc9df54",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.236Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fnotes%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.295Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/important-questions",
+      "status": 201,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.368Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/important-questions/6aef3f8e8079c9018dc9df5c",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.865Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fimportant-questions&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.917Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.940Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:10 GMT",
+      "time": "2026-11-07T15:11:10.986Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.048Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.113Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.123Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fnotes%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.176Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fimportant-questions&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.187Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/logout",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:11:11 GMT",
+      "time": "2026-11-07T15:11:11.215Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/login",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.171Z"
+    },
+    {
+      "method": "PUT",
+      "endpoint": "/api/notes/6aef3f8e8079c9018dc9df54",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.239Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.281Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.339Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.430Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.505Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.522Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fnotes%2Fpms-verify-1794064264209&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.572Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fimportant-questions&lang=en",
+      "status": 200,
+      "cacheControl": "public, no-cache",
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.615Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/logout",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:25:40 GMT",
+      "time": "2026-11-07T15:25:40.641Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/login",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.074Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/important-questions/6aef3f8e8079c9018dc9df5c",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.120Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/notes/6aef3f8e8079c9018dc9df54",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.183Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/questions/6aef3f8d8079c9018dc9df46",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.246Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/exercises/6aef3f8c8079c9018dc9df3e",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.312Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/chapters/6aef3f8c8079c9018dc9df36",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.416Z"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/pages/6aef3f8c8079c9018dc9df2a",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.468Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fpms-verify-1794064264209&lang=en",
+      "status": 404,
+      "cacheControl": "no-store",
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.520Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fnotes%2Fpms-verify-1794064264209&lang=en",
+      "status": 404,
+      "cacheControl": "no-store",
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.551Z"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/public/resolve?path=%2Freference-solutions%2Fmathematics-for-class-10-by-r-d-sharma%2Fclass-10%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209%2Fpms-verify-1794064264209&lang=en",
+      "status": 404,
+      "cacheControl": "no-store",
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.591Z"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/auth/logout",
+      "status": 200,
+      "cacheControl": null,
+      "responseDate": "Sat, 07 Nov 2026 15:27:32 GMT",
+      "time": "2026-11-07T15:27:32.650Z"
+    }
+  ],
+  "assertions": [
+    {
+      "collection": "pages",
+      "id": "6aef3f8c8079c9018dc9df2a",
+      "field": "content.en",
+      "value": "<p>pms-verify-1794064264209 UPDATED PAGE</p><p>$x^2+1=5$</p>",
+      "url": "/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:08.544Z"
+    },
+    {
+      "collection": "chapters",
+      "id": "6aef3f8c8079c9018dc9df36",
+      "field": "title.en",
+      "value": "pms-verify-1794064264209 UPDATED CHAPTER",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:08.955Z"
+    },
+    {
+      "collection": "exercises",
+      "id": "6aef3f8c8079c9018dc9df3e",
+      "field": "title.en",
+      "value": "pms-verify-1794064264209 UPDATED EXERCISE",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:09.196Z"
+    },
+    {
+      "collection": "questions",
+      "id": "6aef3f8d8079c9018dc9df46",
+      "field": "text.en",
+      "value": "<p>pms-verify-1794064264209 UPDATED QUESTION</p>",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:10.093Z"
+    },
+    {
+      "collection": "solutions",
+      "id": "6aef3f8d8079c9018dc9df47",
+      "field": "blocks.0.latex",
+      "value": "x=7",
+      "url": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:10.109Z"
+    },
+    {
+      "collection": "notes",
+      "id": "6aef3f8e8079c9018dc9df54",
+      "field": "content.en",
+      "value": "<p>pms-verify-1794064264209 UPDATED NOTE</p><p>Post-restart production synchronization verified.</p>",
+      "url": "/class-10/maths/notes/pms-verify-1794064264209",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:10.296Z"
+    },
+    {
+      "collection": "importantquestions",
+      "id": "6aef3f8e8079c9018dc9df5c",
+      "field": "text.en",
+      "value": "<p>pms-verify-1794064264209 UPDATED IMPORTANT</p>",
+      "url": "/class-10/maths/important-questions",
+      "databaseReadback": true,
+      "publicReadback": true,
+      "time": "2026-11-07T15:11:10.918Z"
+    }
+  ],
+  "urls": {
+    "page": "/pms-verify-1794064264209",
+    "chapter": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209",
+    "exercise": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209",
+    "question": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794064264209/pms-verify-1794064264209/pms-verify-1794064264209",
+    "note": "/class-10/maths/notes/pms-verify-1794064264209",
+    "important": "/class-10/maths/important-questions"
+  },
+  "marker": "pms-verify-1794064264209 UPDATED",
+  "baseClass": "/class-10/maths",
+  "solutionId": "6aef3f8d8079c9018dc9df47",
+  "apiVerification": "PASS",
+  "readyForBrowserAt": "2026-11-07T15:11:11.188Z",
+  "postRestart": {
+    "verifiedAt": "2026-11-07T15:25:40.617Z",
+    "commit": "5cdfc2196d86b288fbfa8ebece453aba50f34b81",
+    "noteUrl": "/class-10/maths/notes/pms-verify-1794064264209",
+    "marker": "Post-restart production synchronization verified.",
+    "databaseAssertions": 7,
+    "publicAssertions": 7
+  },
+  "contentCounts": {
+    "books": {
+      "before": 4,
+      "after": 4
+    },
+    "chapters": {
+      "before": 67,
+      "after": 67
+    },
+    "exercises": {
+      "before": 23,
+      "after": 23
+    },
+    "questions": {
+      "before": 38,
+      "after": 38
+    },
+    "solutions": {
+      "before": 38,
+      "after": 38
+    },
+    "notes": {
+      "before": 13,
+      "after": 13
+    },
+    "importantquestions": {
+      "before": 3,
+      "after": 3
+    },
+    "pages": {
+      "before": 31,
+      "after": 31
+    }
+  },
+  "cleanedAt": "2026-11-07T15:27:32.626Z",
+  "cleanup": "PASS: test records and owned solution absent from database; public detail URLs return 404"
+}

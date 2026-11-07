@@ -1,0 +1,28 @@
+{
+  "latestMainCommit": "7a49c9ae2c6b3addf216a4e312ca65f6a4d79fea",
+  "initialMainAndHostingerCommit": "dab682fe9978fe3cb0437f2166c48ea2fe95fc9f",
+  "actualHostingerCommit": "7a49c9ae2c6b3addf216a4e312ca65f6a4d79fea",
+  "activeVersion": "01a1b6d2-afe2-708e-a453-321aa8aa22c6",
+  "deploymentStatus": "LIVE VERIFIED",
+  "environmentValuesUnchanged": true,
+  "environmentFileUnchanged": true,
+  "database": "test",
+  "databaseIntegrity": "PASS",
+  "originalDocumentsUnchanged": 290,
+  "adminAuthenticationTimestampsOnly": 1,
+  "missingOriginalRecords": 0,
+  "changedOriginalContent": 0,
+  "temporaryRecordsRemaining": 0,
+  "httpChecks": 176,
+  "unexpectedHttpErrors": 0,
+  "entryAssets200": 35,
+  "finalBrowserPageChecks": 26,
+  "javascriptErrors": 0,
+  "unexpectedConsoleErrors": 0,
+  "applicationLogErrors": 0,
+  "rollbackPreserved": true,
+  "remainingIssues": [
+    "One earlier automated browser profile returned HTTP 403 on the admin login route; the configured en-IN desktop and mobile browser checks subsequently passed.",
+    "External NCERT/third-party PDF availability and unauthored Hindi educational translations are outside the verified deployment scope."
+  ]
+}

@@ -90,6 +90,62 @@ test('a private configured reference book is never restored by a default menu en
   await owner.del(`/api/books/${item._id}`);
 });
 
+test('reference questions cannot be assigned to a book different from their chapter owner', async () => {
+  const [bookA, bookB] = await Promise.all([
+    create('books', { title, slug: 'ownership-book-a', category: 'reference', availableClasses: [10], status: 'published' }),
+    create('books', { title, slug: 'ownership-book-b', category: 'reference', availableClasses: [10], status: 'published' }),
+  ]);
+  const ownedChapter = await create('chapters', {
+    class: cls._id,
+    subject: subject._id,
+    book: bookA._id,
+    number: 91,
+    slug: 'ownership-chapter',
+    title,
+    status: 'published',
+  });
+  const ownedExercise = await create('exercises', {
+    chapter: ownedChapter._id,
+    number: '91.1',
+    title,
+    status: 'published',
+  });
+  const attachedQuestion = await create('questions', {
+    exercise: ownedExercise._id,
+    number: '0',
+    text: title,
+    status: 'draft',
+  });
+  assert.equal(String(attachedQuestion.book._id), bookA._id);
+
+  const mismatchedQuestion = await owner.post('/api/questions').send({
+    exercise: ownedExercise._id,
+    book: bookB._id,
+    number: '1',
+    text: title,
+    status: 'draft',
+  });
+  assert.equal(mismatchedQuestion.status, 400, JSON.stringify(mismatchedQuestion.body));
+  assert.match(mismatchedQuestion.body.error.message, /does not match the book that owns this chapter/i);
+
+  const mismatchedNote = await owner.post('/api/notes').send({
+    class: cls._id,
+    subject: subject._id,
+    chapter: ownedChapter._id,
+    book: bookB._id,
+    title,
+    slug: 'mismatched-book-note',
+    status: 'draft',
+  });
+  assert.equal(mismatchedNote.status, 400, JSON.stringify(mismatchedNote.body));
+
+  await owner.del(`/api/questions/${attachedQuestion._id}`);
+  await owner.del(`/api/exercises/${ownedExercise._id}`);
+  await owner.del(`/api/chapters/${ownedChapter._id}`);
+  await owner.del(`/api/books/${bookA._id}`);
+  await owner.del(`/api/books/${bookB._id}`);
+});
+
 test('advertisement edits revalidate and disabled slots stop serving code', async () => {
   await owner.put('/api/site-settings').send({ ads: { enabled: true } });
   const item = await create('ad-slots', { name: 'Fresh ad', placement: 'belowHeader', isEnabled: true, code: '<p>Original ad</p>' });

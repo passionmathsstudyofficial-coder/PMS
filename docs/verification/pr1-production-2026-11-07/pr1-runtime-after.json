@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-11-07T16:25:46.737056+00:00",
+  "phase": "after",
+  "releaseRoot": "/home/u583042336/domains/passionmathstudy.in/hbuilds/versions/01a1b6d2-afe2-708e-a453-321aa8aa22c6/nodejs",
+  "deployedCommit": "7a49c9ae2c6b3addf216a4e312ca65f6a4d79fea",
+  "nodeVersion": "v22.23.4",
+  "processes": [
+    {
+      "pid": 3478307,
+      "environmentKeys": [
+        "ADMIN_PATH",
+        "CLIENT_ORIGINS",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_FOLDER",
+        "CSRF_SECRET",
+        "ENCRYPTION_KEY",
+        "JWT_SECRET",
+        "MONGODB_URI",
+        "NODE_ENV",
+        "PUBLIC_SITE_URL",
+        "SEED_ADMIN_EMAIL",
+        "SEED_ADMIN_NAME",
+        "SEED_ADMIN_PASSWORD"
+      ],
+      "environmentFingerprint": "56590e53929484310e02b5cef71ad76a29d8421056c48519e56d2acb0b5dbb4e"
+    },
+    {
+      "pid": 3479236,
+      "environmentKeys": [
+        "ADMIN_PATH",
+        "CLIENT_ORIGINS",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_FOLDER",
+        "CSRF_SECRET",
+        "ENCRYPTION_KEY",
+        "JWT_SECRET",
+        "MONGODB_URI",
+        "NODE_ENV",
+        "PUBLIC_SITE_URL",
+        "SEED_ADMIN_EMAIL",
+        "SEED_ADMIN_NAME",
+        "SEED_ADMIN_PASSWORD"
+      ],
+      "environmentFingerprint": "56590e53929484310e02b5cef71ad76a29d8421056c48519e56d2acb0b5dbb4e"
+    }
+  ],
+  "sourceChecksums": {
+    "server/src/index.js": "1daa384ea3eae51468548728a9e4c38e2319375a98a790221edb57fce4d2f99e",
+    "server/src/services/httpStartup.js": "27357b8ab498f14b2b7a19d70e1f2f31865b71dc4c3f4b9fcb41122f7be3b46b",
+    "client/dist/index.html": "5d6128ca5e447d5b33d5e05c58d8359299dd15850bd1844771ddcd5dee451e49"
+  },
+  "environmentFileFingerprint": null,
+  "passengerConfig": "DirectoryIndex index.html index.php\n\n<IfModule mod_rewrite.c>\n  RewriteEngine On\n  RewriteBase /\n  RewriteRule ^index\\.html$ - [L]\n  RewriteCond %{REQUEST_FILENAME} !-f\n  RewriteCond %{REQUEST_FILENAME} !-d\n  RewriteCond %{REQUEST_FILENAME} !-l\n  RewriteRule . /index.html [L]\n</IfModule>\nPassengerAppRoot /home/u583042336/domains/passionmathstudy.in/hbuilds/current/nodejs\nPassengerAppType node\nPassengerNodejs /opt/alt/alt-nodejs22/root/bin/node\nPassengerStartupFile server/src/index.js\nPassengerBaseURI /\nPassengerRestartDir /home/u583042336/domains/passionmathstudy.in/hbuilds/current/nodejs/tmp\nSetEnv NODE_OPTIONS \"--require /home/u583042336/domains/passionmathstudy.in/hbuilds/config/preload-timestamp.js\"\nSetEnv LSNODE_CONSOLE_LOG console.log\nSetEnv TOKIO_WORKER_THREADS 2",
+  "deploymentVersion": "01a1b6d2-afe2-708e-a453-321aa8aa22c6",
+  "deploymentComplete": true,
+  "applicationLogLines": 677,
+  "applicationErrors": [],
+  "listenerBoundMessages": 4,
+  "applicationReadyMessages": 4,
+  "rollbackPresent": {
+    "rollback-623ffc0": true,
+    "repair-6b6014e": true,
+    "repair-d3770be": true,
+    "repair-dab682f": true
+  }
+}
