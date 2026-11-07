@@ -147,17 +147,18 @@ test('actual header omits student login even when legacy settings enable it',asy
 
 test('footer uses published books and never invents unavailable class links',async()=>{
  const {Footer}=await vite.ssrLoadModule('/src/components/site/Footer.jsx');
+ const {SearchBar}=await vite.ssrLoadModule('/src/components/site/SearchBar.jsx');
  const {ReferenceBooksDropdown}=await vite.ssrLoadModule('/src/components/site/ReferenceBooksDropdown.jsx');
  const {SiteProvider}=await vite.ssrLoadModule('/src/lib/site.jsx');
  const {QueryClient,QueryClientProvider}=await import('@tanstack/react-query');
  const {MemoryRouter}=await import('react-router');
  for(const books of [[],[{slug:'audit-only',title:{en:'Only published book'},availableClasses:[10]}]]){
   const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
-  client.setQueryData(['site','en'],{settings:{whatsappBanner:{enabled:false}},navigation:{footer:[{label:{en:'RS Aggarwal — Book details'},url:'/class-10/maths/books#book-audit',newTab:true,isVisible:true}],footerBottom:[]},navigationConfigured:{footer:true,footerBottom:true},referenceBooks:books,terms:{}});
+  client.setQueryData(['site','en'],{settings:{whatsappBanner:{enabled:false},header:{searchPlaceholder:{en:'',hi:'',_translationMissing:true}}},navigation:{footer:[{label:{en:'RS Aggarwal — Book details'},url:'/class-10/maths/books#book-audit',newTab:true,isVisible:true}],footerBottom:[]},navigationConfigured:{footer:true,footerBottom:true},referenceBooks:books,terms:{}});
   const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
-  await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}))))));
+  await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}),React.createElement(SearchBar))))));
   const button=host.querySelector('button');await act(async()=>button.click());
-  assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));
+  assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));assert.equal(host.querySelector('input[type="search"]').placeholder,'Search…');
  assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,2);
  assert.equal(host.querySelectorAll('footer h2').length,2+books.length);
  assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
@@ -272,7 +273,7 @@ test('mobile navigation is an accessible modal and Escape closes it',async()=>{
   const dialog=document.querySelector('[role="dialog"]');assert.ok(dialog);assert.equal(dialog.getAttribute('aria-modal'),'true');
   await act(async()=>document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
   assert.equal(closes,1);assert.ok(host.textContent.includes('drawer-closed'));
- }finally{await act(async()=>root.unmount());assert.equal(document.activeElement,opener);opener.remove();host.remove();client.clear();}
+ }finally{await act(async()=>root.unmount());await new Promise(resolve=>setTimeout(resolve,10));assert.equal(document.activeElement,opener);opener.remove();host.remove();client.clear();}
 });
 
 

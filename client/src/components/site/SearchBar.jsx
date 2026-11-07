@@ -98,7 +98,8 @@ export function SearchBar({ className, autoFocus = false, onNavigate, size = 'md
     }
   };
 
-  const placeholder = placeholderOverride || t(site?.settings?.header?.searchPlaceholder) || uiText('Search…');
+  const configuredPlaceholder = site?.settings?.header?.searchPlaceholder;
+  const placeholder = placeholderOverride || (configuredPlaceholder?._translationMissing ? '' : t(configuredPlaceholder)) || uiText('Search…');
   const showPanel = open && debounced.length >= 2;
 
   return (
