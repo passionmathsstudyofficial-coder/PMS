@@ -1,0 +1,300 @@
+{
+  "startedAt": "2026-11-07T12:33:05.174Z",
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-10/maths/books#book-6ae1e68ff9bcc5e2a6a3cf4f",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-11/maths/adhyay-1/prashnavali-1-1",
+      "status": 200
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths",
+      "status": 200,
+      "phrase": "Patterns in Mathematics"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/patterns-in-mathematics",
+      "status": 200,
+      "phrase": "Patterns in Mathematics"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Using the rule “add the next odd number”, continue 1, 4, 9, 16 by two terms."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "A dot triangle has rows containing 1, 2, 3, 4, 5 and 6 dots. How many dots does it contain?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "Starting at 7, double the previous term each time. Write the next three terms and explain the rule."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-patterns-in-mathematics-pms-revision",
+      "status": 200,
+      "phrase": "Patterns in Mathematics — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/lines-and-angles",
+      "status": 200,
+      "phrase": "Lines and Angles"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Classify angles of 38°, 90°, 127° and 180°."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "Two adjoining angles make a straight angle. One measures 64°. Find the other."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "Draw a ray AB. Use a protractor to construct an angle of 52° at A. Describe the steps."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-lines-and-angles-pms-revision",
+      "status": 200,
+      "phrase": "Lines and Angles — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/number-play",
+      "status": 200,
+      "phrase": "Number Play"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/number-play/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Find the digit sum of 5836. Is 5836 a palindrome?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/number-play/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "Apply reverse-and-add once to 47. Is the result a palindrome?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/number-play/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "Estimate 392 + 608 by rounding each number to the nearest hundred, then calculate the exact total."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-number-play-pms-revision",
+      "status": 200,
+      "phrase": "Number Play — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/data-handling-and-presentation",
+      "status": 200,
+      "phrase": "Data Handling and Presentation"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "A class votes for a game: chess 7 votes, badminton 9, kho-kho 6. Find the total and the most popular game."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "In a pictograph, one complete star represents 4 books. A shelf has 7 complete stars. How many books are shown?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "A bar graph uses 1 vertical division for 3 plants. The Monday bar is 5 divisions high and the Tuesday bar is 8 divisions high. How many more plants were counted on Tuesday?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-data-handling-and-presentation-pms-revision",
+      "status": 200,
+      "phrase": "Data Handling and Presentation — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/prime-time",
+      "status": 200,
+      "phrase": "Prime Time"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/prime-time/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Write the prime factorisation of 84."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/prime-time/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "Are 14 and 25 co-prime? Justify using their factors."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/prime-time/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "Is 438 divisible by 2, 3 and 9? Explain each decision."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-prime-time-pms-revision",
+      "status": 200,
+      "phrase": "Prime Time — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/perimeter-and-area",
+      "status": 200,
+      "phrase": "Perimeter and Area"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "A rectangular card measures 11 cm by 7 cm. Find its perimeter and area."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "A square has perimeter 28 cm. Find its side length and area."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "Rectangles A and B measure 9 cm by 4 cm and 12 cm by 3 cm. Compare their areas and perimeters."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-perimeter-and-area-pms-revision",
+      "status": 200,
+      "phrase": "Perimeter and Area — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions",
+      "status": 200,
+      "phrase": "Fractions"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Calculate 5/12 + 1/6 in simplest form."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "Which is greater, 7/10 or 2/3? Show a common-denominator comparison."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "A 3-metre ribbon is shared equally among 4 children. How much ribbon does each receive?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-fractions-pms-revision",
+      "status": 200,
+      "phrase": "Fractions — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/playing-with-constructions",
+      "status": 200,
+      "phrase": "Playing with Constructions"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Describe how to construct a square ABCD of side 4.5 cm using a ruler and set square."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "A student draws a rectangle 8 cm long and 5 cm wide. What lengths must its opposite sides have, and how should each corner be checked?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "The diagonals AC and BD of a constructed rectangle are measured. AC is 9.2 cm. What should BD measure, allowing for drawing accuracy?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-playing-with-constructions-pms-revision",
+      "status": 200,
+      "phrase": "Playing with Constructions — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/symmetry",
+      "status": 200,
+      "phrase": "Symmetry"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/symmetry/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "For an unmarked square, state the number of lines of symmetry and the smallest angle of rotational symmetry."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/symmetry/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "An unmarked rectangle is 10 cm by 6 cm. How many reflection axes does it have? Does a 90° turn map it onto itself?"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/symmetry/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "A figure has rotational symmetry of order 6. Find its smallest positive angle of rotation."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-symmetry-pms-revision",
+      "status": 200,
+      "phrase": "Symmetry — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/the-other-side-of-zero",
+      "status": 200,
+      "phrase": "The Other Side of Zero"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "At dawn the temperature is −4°C. It rises by 9°C. Find the new temperature."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "phrase": "Arrange −8, 3, 0, −2 and 5 in increasing order."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "phrase": "A lift starts on floor +3 and goes down 7 floors. At which numbered floor does it stop? Count floor 0 as a floor."
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/notes/ganita-prakash-the-other-side-of-zero-pms-revision",
+      "status": 200,
+      "phrase": "The Other Side of Zero — PMS Revision Notes"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Calculate 5/12"
+    },
+    {
+      "phase": "refresh persistence",
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1"
+    },
+    {
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "phrase": "Calculate 5/12"
+    },
+    {
+      "phase": "new anonymous browser session persistence",
+      "url": "https://passionmathstudy.in/class-6/maths/fractions/pms-original-practice-1/pms-question-1"
+    },
+    {
+      "url": "https://passionmathstudy.in/",
+      "status": 200,
+      "phrase": "NCERT Mathematics"
+    }
+  ],
+  "errors": [],
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Escape restores opener focus\n    at file:///D:/study/PMS/scripts/verify-remaining-browser.mjs:26:505",
+  "finishedAt": "2026-11-07T12:33:43.443Z"
+}

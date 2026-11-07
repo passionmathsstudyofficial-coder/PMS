@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-11-07T11:41:26.361Z",
+  "checks": [
+    {
+      "type": "page",
+      "url": "https://passionmathstudy.in/pms-verify-1794050813712",
+      "status": 404
+    },
+    {
+      "type": "chapter",
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794050813712",
+      "status": 404
+    },
+    {
+      "type": "exercise",
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794050813712/pms-verify-1794050813712",
+      "status": 404
+    },
+    {
+      "type": "question",
+      "url": "https://passionmathstudy.in/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10/pms-verify-1794050813712/pms-verify-1794050813712/pms-verify-1794050813712",
+      "status": 404
+    },
+    {
+      "type": "note",
+      "url": "https://passionmathstudy.in/class-10/maths/notes/pms-verify-1794050813712",
+      "status": 404
+    },
+    {
+      "type": "important question list",
+      "status": 200,
+      "markerAbsent": true
+    }
+  ]
+}

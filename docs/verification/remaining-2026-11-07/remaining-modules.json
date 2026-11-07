@@ -1,0 +1,913 @@
+{
+  "startedAt": "2026-11-07T12:33:14.460Z",
+  "marker": "pms-module-1794054794460",
+  "records": [
+    {
+      "key": "subject",
+      "resource": "subjects",
+      "collection": "subjects",
+      "id": "6aef1a8b9580f87437ecbec8",
+      "cleaned": true
+    },
+    {
+      "key": "class",
+      "resource": "classes",
+      "collection": "classes",
+      "id": "6aef1a8b9580f87437ecbed0",
+      "cleaned": true
+    },
+    {
+      "key": "chapter",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef1a8b9580f87437ecbed4",
+      "cleaned": true
+    },
+    {
+      "key": "exercise",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef1a8b9580f87437ecbee3",
+      "cleaned": true
+    },
+    {
+      "key": "topic",
+      "resource": "topics",
+      "collection": "topics",
+      "id": "6aef1a8b9580f87437ecbee6",
+      "cleaned": true
+    },
+    {
+      "key": "book",
+      "resource": "books",
+      "collection": "books",
+      "id": "6aef1a8c9580f87437ecbef6",
+      "cleaned": true
+    },
+    {
+      "key": "resource",
+      "resource": "resources",
+      "collection": "resources",
+      "id": "6aef1a8c9580f87437ecbefa",
+      "cleaned": true
+    },
+    {
+      "key": "media",
+      "resource": "media",
+      "collection": "media",
+      "id": "6aef1b009580f87437ecbf1c",
+      "cleaned": true
+    },
+    {
+      "key": "section",
+      "resource": "sections",
+      "collection": "sections",
+      "id": "6aef1b009580f87437ecbf20",
+      "cleaned": true
+    },
+    {
+      "key": "announcement",
+      "resource": "announcements",
+      "collection": "announcements",
+      "id": "6aef1b009580f87437ecbf24",
+      "cleaned": true
+    },
+    {
+      "key": "template",
+      "resource": "templates",
+      "collection": "templates",
+      "id": "6aef1b009580f87437ecbf27",
+      "cleaned": true
+    },
+    {
+      "key": "question",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef1b009580f87437ecbf2b",
+      "cleaned": true
+    },
+    {
+      "key": "related",
+      "resource": "related-content",
+      "collection": "relatedcontents",
+      "id": "6aef1b019580f87437ecbf30",
+      "cleaned": true
+    },
+    {
+      "key": "session",
+      "resource": "academic-sessions",
+      "collection": "academicsessions",
+      "id": "6aef1b019580f87437ecbf34",
+      "cleaned": true
+    },
+    {
+      "key": "ad",
+      "resource": "ad-slots",
+      "collection": "adslots",
+      "id": "6aef1b019580f87437ecbf4a",
+      "cleaned": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:33:15.123Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/subjects",
+      "status": 201,
+      "at": "2026-11-07T12:33:15.174Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/subjects/6aef1a8b9580f87437ecbec8",
+      "status": 200,
+      "at": "2026-11-07T12:33:15.211Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/classes",
+      "status": 201,
+      "at": "2026-11-07T12:33:15.257Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/classes/6aef1a8b9580f87437ecbed0",
+      "status": 200,
+      "at": "2026-11-07T12:33:15.303Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:33:15.669Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:33:15.759Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/topics",
+      "status": 201,
+      "at": "2026-11-07T12:33:15.860Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:33:16.656Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/books",
+      "status": 201,
+      "at": "2026-11-07T12:33:16.730Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/books/6aef1a8c9580f87437ecbef6",
+      "status": 200,
+      "at": "2026-11-07T12:33:16.785Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/resources",
+      "status": 201,
+      "at": "2026-11-07T12:33:16.878Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/resources/6aef1a8c9580f87437ecbefa",
+      "status": 200,
+      "at": "2026-11-07T12:33:17.668Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/videos",
+      "status": 409,
+      "at": "2026-11-07T12:33:17.698Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:35:09.847Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/subjects/6aef1a8b9580f87437ecbec8",
+      "status": 200,
+      "at": "2026-11-07T12:35:09.894Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/classes/6aef1a8b9580f87437ecbed0",
+      "status": 200,
+      "at": "2026-11-07T12:35:09.947Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:35:10.027Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/books/6aef1a8c9580f87437ecbef6",
+      "status": 200,
+      "at": "2026-11-07T12:35:10.082Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/resources/6aef1a8c9580f87437ecbefa",
+      "status": 200,
+      "at": "2026-11-07T12:35:10.150Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/videos/6ae1e68df9bcc5e2a6a3cf34",
+      "status": 200,
+      "at": "2026-11-07T12:35:10.197Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:35:10.261Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/media/6aef1b009580f87437ecbf1c",
+      "status": 200,
+      "at": "2026-11-07T12:35:12.617Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:35:12.686Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/sections",
+      "status": 201,
+      "at": "2026-11-07T12:35:12.736Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/sections/6aef1b009580f87437ecbf20",
+      "status": 200,
+      "at": "2026-11-07T12:35:12.784Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/announcements",
+      "status": 201,
+      "at": "2026-11-07T12:35:12.830Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/announcements/6aef1b009580f87437ecbf24",
+      "status": 200,
+      "at": "2026-11-07T12:35:12.865Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/templates",
+      "status": 201,
+      "at": "2026-11-07T12:35:12.898Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:35:13.000Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/related-content",
+      "status": 201,
+      "at": "2026-11-07T12:35:13.046Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/academic-sessions",
+      "status": 201,
+      "at": "2026-11-07T12:35:13.093Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/site-settings?scope=admin",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.129Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/site-settings",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.598Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.606Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.644Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/seo-settings",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.667Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/seo-settings/search",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.707Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/ad-slots",
+      "status": 201,
+      "at": "2026-11-07T12:35:13.741Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.818Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.887Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:13.959Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Freference-solutions%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.010Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fresources&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.603Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.628Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.651Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/home?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.739Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.775Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.840Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.869Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.892Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.916Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.948Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/site?lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:35:14.970Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "status": 200,
+      "at": "2026-11-07T12:35:15.016Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:38:28.863Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/classes/6aef1a8b9580f87437ecbed0",
+      "status": 200,
+      "at": "2026-11-07T12:38:28.909Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/subjects/6aef1a8b9580f87437ecbec8",
+      "status": 200,
+      "at": "2026-11-07T12:38:28.948Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/chapters/6aef1a8b9580f87437ecbed4",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.015Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/exercises/6aef1a8b9580f87437ecbee3",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.101Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.165Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/questions/6aef1b009580f87437ecbf2b",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.243Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/related-content/6aef1b019580f87437ecbf30",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.289Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.302Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.336Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "status": 200,
+      "at": "2026-11-07T12:38:29.396Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.365Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.429Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/site-settings",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.481Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.519Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/videos/6ae1e68df9bcc5e2a6a3cf34",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.561Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/seo-settings/search",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.595Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/ad-slots/6aef1b019580f87437ecbf4a",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.626Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/academic-sessions/6aef1b019580f87437ecbf34",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.669Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/related-content/6aef1b019580f87437ecbf30",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.706Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/questions/6aef1b009580f87437ecbf2b",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.751Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/templates/6aef1b009580f87437ecbf27",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.787Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/announcements/6aef1b009580f87437ecbf24",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.823Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/sections/6aef1b009580f87437ecbf20",
+      "status": 200,
+      "at": "2026-11-07T12:39:48.859Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/media/6aef1b009580f87437ecbf1c",
+      "status": 200,
+      "at": "2026-11-07T12:39:50.925Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/resources/6aef1a8c9580f87437ecbefa",
+      "status": 200,
+      "at": "2026-11-07T12:39:50.962Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/books/6aef1a8c9580f87437ecbef6",
+      "status": 200,
+      "at": "2026-11-07T12:39:51.032Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/topics/6aef1a8b9580f87437ecbee6",
+      "status": 200,
+      "at": "2026-11-07T12:39:51.136Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/exercises/6aef1a8b9580f87437ecbee3",
+      "status": 200,
+      "at": "2026-11-07T12:39:51.683Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/chapters/6aef1a8b9580f87437ecbed4",
+      "status": 200,
+      "at": "2026-11-07T12:39:51.773Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/classes/6aef1a8b9580f87437ecbed0",
+      "status": 200,
+      "at": "2026-11-07T12:39:51.874Z"
+    },
+    {
+      "method": "DELETE",
+      "url": "/api/subjects/6aef1a8b9580f87437ecbec8",
+      "status": 200,
+      "at": "2026-11-07T12:39:52.699Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "status": 200,
+      "at": "2026-11-07T12:39:52.758Z"
+    }
+  ],
+  "checks": [
+    {
+      "collection": "subjects",
+      "id": "6aef1a8b9580f87437ecbec8",
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460 SUBJECT UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "classes",
+      "id": "6aef1a8b9580f87437ecbed0",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 CLASS UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "topics",
+      "id": "6aef1a8b9580f87437ecbee6",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 TOPIC UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "books",
+      "id": "6aef1a8c9580f87437ecbef6",
+      "url": "/api/public/resolve?path=%2Freference-solutions%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 BOOK UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "resources",
+      "id": "6aef1a8c9580f87437ecbefa",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fresources&lang=en",
+      "value": "pms-module-1794054794460 RESOURCE UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "videos",
+      "id": "6ae1e68df9bcc5e2a6a3cf34",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 VIDEO UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "media",
+      "id": "6aef1b009580f87437ecbf1c",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Ftopic%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 MEDIA UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "sections",
+      "id": "6aef1b009580f87437ecbf20",
+      "url": "/api/public/home?lang=en",
+      "value": "pms-module-1794054794460 SECTION UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "announcements",
+      "id": "6aef1b009580f87437ecbf24",
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460 ANNOUNCEMENT UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "templates",
+      "id": "6aef1b009580f87437ecbf27",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 TEMPLATE UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "relatedcontents",
+      "id": "6aef1b019580f87437ecbf30",
+      "url": "/api/public/resolve?path=%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460%2Fpms-module-1794054794460&lang=en",
+      "value": "pms-module-1794054794460 RELATED UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "academicsessions",
+      "id": "6aef1b019580f87437ecbf34",
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "sitesettings",
+      "id": "6ae1e67ff9bcc5e2a6a3ceb3",
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460 SETTINGS UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    },
+    {
+      "collection": "navigations",
+      "id": null,
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460 NAVIGATION UPDATED",
+      "publicReadback": true,
+      "databaseReadback": false
+    },
+    {
+      "collection": "seosettings",
+      "id": "6ae1e690f9bcc5e2a6a3cf8d",
+      "url": "/api/public/site?lang=en",
+      "value": "pms-module-1794054794460 SEO UPDATED",
+      "publicReadback": true,
+      "databaseReadback": true
+    }
+  ],
+  "before": {
+    "video": {
+      "id": "6ae1e68df9bcc5e2a6a3cf34",
+      "description": {
+        "hi": "द्विघात समीकरण की मूल अवधारणा और मानक रूप को समझने के लिए विस्तृत वीडियो व्याख्यान।",
+        "en": "Comprehensive conceptual video on standard forms and identifying quadratic equations.",
+        "mixed": ""
+      }
+    },
+    "footerDisclaimer": {
+      "hi": "NCERT पाठ्यपुस्तक सामग्री NCERT, नई दिल्ली के पाठ्यक्रम पर आधारित है। यह एक स्वतंत्र शैक्षिक मंच है।",
+      "en": "NCERT textbook content follows the curriculum of NCERT, New Delhi. This is an independent educational platform.",
+      "mixed": ""
+    },
+    "navigation": {
+      "key": "footerBottom",
+      "items": [
+        {
+          "label": {
+            "hi": "गोपनीयता नीति",
+            "en": "Privacy Policy",
+            "mixed": ""
+          },
+          "url": "/privacy-policy",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf66"
+        },
+        {
+          "label": {
+            "hi": "नियम एवं शर्तें",
+            "en": "Terms & Conditions",
+            "mixed": ""
+          },
+          "url": "/terms-and-conditions",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf67"
+        },
+        {
+          "label": {
+            "hi": "संपर्क",
+            "en": "Contact",
+            "mixed": ""
+          },
+          "url": "/contact",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf68"
+        },
+        {
+          "label": {
+            "hi": "आर.एस. अग्रवाल — पुस्तक विवरण",
+            "en": "R.S. Aggarwal — Book details",
+            "mixed": ""
+          },
+          "url": "/class-10/maths/books#book-6ae1e68ff9bcc5e2a6a3cf4f",
+          "type": "link",
+          "newTab": true,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae97fe0a9892d9c84ce7ed4"
+        }
+      ]
+    },
+    "seo": {
+      "title": {
+        "hi": "गणित खोजें",
+        "en": "Search Mathematics",
+        "mixed": ""
+      },
+      "description": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "ogImage": null,
+      "robots": "noindex,follow",
+      "canonical": ""
+    }
+  },
+  "urls": {
+    "topic": "/class-20/cms-test-maths/cms-sync-check/topic/sync-topic",
+    "book": "/reference-solutions/pms-module-1794054794460",
+    "resources": "/class-20/cms-test-maths/resources",
+    "home": "/",
+    "question": "/class-20/cms-test-maths/cms-sync-check/cms-practice/sync-question",
+    "search": "/search"
+  },
+  "backup": {
+    "ok": true,
+    "database": "test",
+    "file": "/home/u583042336/.codex-production-audit/test-pre-verification-2026-11-07T12-32-46-824Z.jsonl.gz",
+    "bytes": 109875,
+    "sha256": "6250171c8597db193312e5e32544e1a7daf7137af3184273929f053863d468f2",
+    "verifiedAt": "2026-11-07T12:32:47.231Z",
+    "counts": {
+      "academicsessions": 3,
+      "activitylogs": 345,
+      "admins": 1,
+      "adslots": 5,
+      "announcements": 1,
+      "backups": 16,
+      "books": 4,
+      "chapters": 67,
+      "classes": 7,
+      "exercises": 23,
+      "importantquestions": 3,
+      "media": 6,
+      "navigations": 3,
+      "notes": 13,
+      "pages": 31,
+      "passwordrecoveries": 0,
+      "questions": 38,
+      "relatedcontents": 0,
+      "resources": 8,
+      "sections": 9,
+      "seosettings": 2,
+      "sessions": 5,
+      "sitesettings": 1,
+      "solutions": 38,
+      "studentsessions": 0,
+      "subjects": 1,
+      "templates": 3,
+      "topics": 3,
+      "users": 0,
+      "videos": 5
+    },
+    "documents": 641,
+    "verification": "Full gzip decompression, BSON/EJSON deserialization, header/footer and per-collection counts; indexes/options included. No production restore performed."
+  },
+  "error": "AssertionError [ERR_ASSERTION]: POST /api/videos: {\"message\":\"Duplicate value: youtubeId already exists\",\"details\":{\"youtubeId\":\"gT8_4k7_o_Q\"}}\n\n409 !== 201\n\n    at api (file:///home/u583042336/.codex-production-audit/production-remaining-modules.mjs:13:582)\n    at async create (file:///home/u583042336/.codex-production-audit/production-remaining-modules.mjs:17:239)\n    at async file:///home/u583042336/.codex-production-audit/production-remaining-modules.mjs:51:15",
+  "advertising": {
+    "globalEnabled": false,
+    "frameStatus": 404,
+    "positiveFrameVerified": false,
+    "reason": "Global ads remain disabled; visibility gate tested without activating existing advertising code"
+  },
+  "readyForBrowserAt": "2026-11-07T12:35:14.978Z",
+  "cleanedAt": "2026-11-07T12:39:52.709Z"
+}

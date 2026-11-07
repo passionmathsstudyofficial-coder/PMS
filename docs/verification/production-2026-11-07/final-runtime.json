@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-11-07T11:34:40.127235Z",
+  "applicationRoot": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-6b6014e/nodejs",
+  "commit": "6b6014e751f582431eddf7d440b773c57a319611",
+  "workers": [
+    {
+      "pid": "463934",
+      "cwd": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-6b6014e/nodejs"
+    },
+    {
+      "pid": "465406",
+      "cwd": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-6b6014e/nodejs"
+    }
+  ],
+  "originalRollbackPresent": true,
+  "previousRepairPresent": true
+}

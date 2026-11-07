@@ -1,0 +1,1610 @@
+{
+  "startedAt": "2026-11-07T12:27:25.470Z",
+  "records": [
+    {
+      "key": "c6-chapter-1",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef199c9580f87437ecbcef"
+    },
+    {
+      "key": "c6-exercise-1",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef199c9580f87437ecbcf2"
+    },
+    {
+      "key": "c6-note-1",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef199c9580f87437ecbcf5"
+    },
+    {
+      "key": "c6-question-1-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199c9580f87437ecbcf8"
+    },
+    {
+      "key": "c6-question-1-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199d9580f87437ecbd04"
+    },
+    {
+      "key": "c6-question-1-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199d9580f87437ecbd10"
+    },
+    {
+      "key": "c6-chapter-2",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef199e9580f87437ecbd1c"
+    },
+    {
+      "key": "c6-exercise-2",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef199e9580f87437ecbd1f"
+    },
+    {
+      "key": "c6-note-2",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef199e9580f87437ecbd22"
+    },
+    {
+      "key": "c6-question-2-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199e9580f87437ecbd25"
+    },
+    {
+      "key": "c6-question-2-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199e9580f87437ecbd31"
+    },
+    {
+      "key": "c6-question-2-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef199f9580f87437ecbd3d"
+    },
+    {
+      "key": "c6-chapter-3",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef199f9580f87437ecbd49"
+    },
+    {
+      "key": "c6-exercise-3",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a09580f87437ecbd4c"
+    },
+    {
+      "key": "c6-note-3",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a09580f87437ecbd4f"
+    },
+    {
+      "key": "c6-question-3-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a09580f87437ecbd52"
+    },
+    {
+      "key": "c6-question-3-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a09580f87437ecbd5e"
+    },
+    {
+      "key": "c6-question-3-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a19580f87437ecbd6a"
+    },
+    {
+      "key": "c6-chapter-4",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19a19580f87437ecbd76"
+    },
+    {
+      "key": "c6-exercise-4",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a19580f87437ecbd79"
+    },
+    {
+      "key": "c6-note-4",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a29580f87437ecbd7c"
+    },
+    {
+      "key": "c6-question-4-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a29580f87437ecbd7f"
+    },
+    {
+      "key": "c6-question-4-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a29580f87437ecbd8b"
+    },
+    {
+      "key": "c6-question-4-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a39580f87437ecbd97"
+    },
+    {
+      "key": "c6-chapter-5",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19a39580f87437ecbda3"
+    },
+    {
+      "key": "c6-exercise-5",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a39580f87437ecbda6"
+    },
+    {
+      "key": "c6-note-5",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a39580f87437ecbda9"
+    },
+    {
+      "key": "c6-question-5-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a49580f87437ecbdac"
+    },
+    {
+      "key": "c6-question-5-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a49580f87437ecbdb8"
+    },
+    {
+      "key": "c6-question-5-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a59580f87437ecbdc4"
+    },
+    {
+      "key": "c6-chapter-6",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19a59580f87437ecbdd0"
+    },
+    {
+      "key": "c6-exercise-6",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a59580f87437ecbdd3"
+    },
+    {
+      "key": "c6-note-6",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a59580f87437ecbdd6"
+    },
+    {
+      "key": "c6-question-6-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbdd9"
+    },
+    {
+      "key": "c6-question-6-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbde5"
+    },
+    {
+      "key": "c6-question-6-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a69580f87437ecbdf1"
+    },
+    {
+      "key": "c6-chapter-7",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19a79580f87437ecbdfd"
+    },
+    {
+      "key": "c6-exercise-7",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a79580f87437ecbe00"
+    },
+    {
+      "key": "c6-note-7",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a79580f87437ecbe03"
+    },
+    {
+      "key": "c6-question-7-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a79580f87437ecbe06"
+    },
+    {
+      "key": "c6-question-7-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a89580f87437ecbe12"
+    },
+    {
+      "key": "c6-question-7-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a89580f87437ecbe1e"
+    },
+    {
+      "key": "c6-chapter-8",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19a99580f87437ecbe2a"
+    },
+    {
+      "key": "c6-exercise-8",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19a99580f87437ecbe2d"
+    },
+    {
+      "key": "c6-note-8",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19a99580f87437ecbe30"
+    },
+    {
+      "key": "c6-question-8-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19a99580f87437ecbe33"
+    },
+    {
+      "key": "c6-question-8-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19aa9580f87437ecbe3f"
+    },
+    {
+      "key": "c6-question-8-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19aa9580f87437ecbe4b"
+    },
+    {
+      "key": "c6-chapter-9",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19ab9580f87437ecbe57"
+    },
+    {
+      "key": "c6-exercise-9",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19ab9580f87437ecbe5a"
+    },
+    {
+      "key": "c6-note-9",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19ab9580f87437ecbe5d"
+    },
+    {
+      "key": "c6-question-9-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ab9580f87437ecbe60"
+    },
+    {
+      "key": "c6-question-9-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ac9580f87437ecbe6c"
+    },
+    {
+      "key": "c6-question-9-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ac9580f87437ecbe78"
+    },
+    {
+      "key": "c6-chapter-10",
+      "resource": "chapters",
+      "collection": "chapters",
+      "id": "6aef19ad9580f87437ecbe84"
+    },
+    {
+      "key": "c6-exercise-10",
+      "resource": "exercises",
+      "collection": "exercises",
+      "id": "6aef19ad9580f87437ecbe87"
+    },
+    {
+      "key": "c6-note-10",
+      "resource": "notes",
+      "collection": "notes",
+      "id": "6aef19ad9580f87437ecbe8a"
+    },
+    {
+      "key": "c6-question-10-1",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ad9580f87437ecbe8d"
+    },
+    {
+      "key": "c6-question-10-2",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ae9580f87437ecbe99"
+    },
+    {
+      "key": "c6-question-10-3",
+      "resource": "questions",
+      "collection": "questions",
+      "id": "6aef19ae9580f87437ecbea5"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:27:26.083Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fbooks&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:27:26.174Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/navigation/footer",
+      "status": 200,
+      "at": "2026-11-07T12:27:26.186Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:28:47.867Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-10%2Fmaths%2Fbooks&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:28:47.936Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/navigation/footer",
+      "status": 200,
+      "at": "2026-11-07T12:28:47.948Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/navigation/footer",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.000Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.019Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/navigation/footerBottom",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.058Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/exercises/6aedd7708e0483251e20a4d2",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.232Z"
+    },
+    {
+      "method": "PUT",
+      "url": "/api/chapters/6aedd7468e0483251e20a4c3",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.290Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-11%2Fmaths%2Fadhyay-1%2Fprashnavali-1-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.395Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "status": 200,
+      "at": "2026-11-07T12:28:48.621Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/login",
+      "status": 200,
+      "at": "2026-11-07T12:29:16.438Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:16.537Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:16.630Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:16.724Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:16.875Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fpatterns-in-mathematics%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:17.010Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:17.125Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fpatterns-in-mathematics%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:17.221Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:17.332Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fpatterns-in-mathematics%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:17.990Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:18.072Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:18.163Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:18.240Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:18.350Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Flines-and-angles%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:18.465Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:19.067Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Flines-and-angles%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:19.163Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:19.269Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Flines-and-angles%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:19.379Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:20.000Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:20.265Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:20.339Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:20.436Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fnumber-play%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:20.531Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:21.036Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fnumber-play%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:21.140Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:21.260Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fnumber-play%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:21.358Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:21.434Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:22.037Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:22.113Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:22.234Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fdata-handling-and-presentation%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:22.324Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:22.443Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fdata-handling-and-presentation%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:23.066Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:23.172Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fdata-handling-and-presentation%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:23.262Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:23.330Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:23.418Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:24.043Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:24.170Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fprime-time%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:24.270Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:24.388Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fprime-time%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:25.020Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:25.124Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fprime-time%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:25.214Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:25.335Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:25.419Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:26.021Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:26.124Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fperimeter-and-area%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:26.213Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:26.323Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fperimeter-and-area%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:26.438Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:27.073Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fperimeter-and-area%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:27.160Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:27.238Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:27.323Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:27.413Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:28.055Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Ffractions%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:28.139Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:28.241Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Ffractions%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:28.325Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:29.035Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Ffractions%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:29.126Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:29.196Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:29.281Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:29.381Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:30.071Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fplaying-with-constructions%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:30.162Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:30.277Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fplaying-with-constructions%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:30.371Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:31.020Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fplaying-with-constructions%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:31.126Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:31.198Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:31.283Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:31.373Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:31.474Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fsymmetry%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:32.056Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:32.154Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fsymmetry%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:32.280Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:32.381Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fsymmetry%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:33.036Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/chapters",
+      "status": 201,
+      "at": "2026-11-07T12:29:33.110Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/exercises",
+      "status": 201,
+      "at": "2026-11-07T12:29:33.205Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/notes",
+      "status": 201,
+      "at": "2026-11-07T12:29:33.299Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:33.422Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fthe-other-side-of-zero%2Fpms-original-practice-1%2Fpms-question-1&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:34.010Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:34.118Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fthe-other-side-of-zero%2Fpms-original-practice-1%2Fpms-question-2&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:34.208Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/questions",
+      "status": 201,
+      "at": "2026-11-07T12:29:34.317Z"
+    },
+    {
+      "method": "GET",
+      "url": "/api/public/resolve?path=%2Fclass-6%2Fmaths%2Fthe-other-side-of-zero%2Fpms-original-practice-1%2Fpms-question-3&lang=en",
+      "status": 200,
+      "at": "2026-11-07T12:29:34.996Z"
+    },
+    {
+      "method": "POST",
+      "url": "/api/auth/logout",
+      "status": 200,
+      "at": "2026-11-07T12:29:35.039Z"
+    }
+  ],
+  "checks": [
+    {
+      "type": "RS footer",
+      "key": "footer",
+      "target": "/class-10/maths/books#book-6ae1e68ff9bcc5e2a6a3cf4f",
+      "changed": 1
+    },
+    {
+      "type": "RS footer",
+      "key": "footerBottom",
+      "target": "/class-10/maths/books#book-6ae1e68ff9bcc5e2a6a3cf4f",
+      "changed": 1
+    },
+    {
+      "type": "Class11",
+      "url": "/class-11/maths/adhyay-1/prashnavali-1-1",
+      "duplicateRetained": true,
+      "exerciseRetained": true
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef199c9580f87437ecbcf8"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef199d9580f87437ecbd04"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef199d9580f87437ecbd10"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef199e9580f87437ecbd25"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef199e9580f87437ecbd31"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef199f9580f87437ecbd3d"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/number-play/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a09580f87437ecbd52"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/number-play/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19a09580f87437ecbd5e"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/number-play/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19a19580f87437ecbd6a"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a29580f87437ecbd7f"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19a29580f87437ecbd8b"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19a39580f87437ecbd97"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a49580f87437ecbdac"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19a49580f87437ecbdb8"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19a59580f87437ecbdc4"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a69580f87437ecbdd9"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19a69580f87437ecbde5"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19a69580f87437ecbdf1"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a79580f87437ecbe06"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/fractions/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19a89580f87437ecbe12"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/fractions/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19a89580f87437ecbe1e"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19a99580f87437ecbe33"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19aa9580f87437ecbe3f"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19aa9580f87437ecbe4b"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19ab9580f87437ecbe60"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19ac9580f87437ecbe6c"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19ac9580f87437ecbe78"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-1",
+      "questionId": "6aef19ad9580f87437ecbe8d"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-2",
+      "questionId": "6aef19ae9580f87437ecbe99"
+    },
+    {
+      "type": "Class6 published question and solution",
+      "url": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-3",
+      "questionId": "6aef19ae9580f87437ecbea5"
+    }
+  ],
+  "before": {
+    "navigation-footer": {
+      "key": "footer",
+      "items": [
+        {
+          "label": {
+            "hi": "गणित",
+            "en": "MATHEMATICS",
+            "mixed": ""
+          },
+          "url": "",
+          "type": "classes",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf5c"
+        },
+        {
+          "label": {
+            "hi": "महत्वपूर्ण लिंक",
+            "en": "IMPORTANT LINKS",
+            "mixed": ""
+          },
+          "url": "",
+          "type": "column",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [
+            {
+              "label": {
+                "hi": "होम",
+                "en": "Home",
+                "mixed": ""
+              },
+              "url": "/",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf5e"
+            },
+            {
+              "label": {
+                "hi": "गणित",
+                "en": "Mathematics",
+                "mixed": ""
+              },
+              "url": "/#classes",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf5f"
+            },
+            {
+              "label": {
+                "hi": "खोजें",
+                "en": "Search",
+                "mixed": ""
+              },
+              "url": "/search",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf60"
+            },
+            {
+              "label": {
+                "hi": "हमारे बारे में",
+                "en": "About Us",
+                "mixed": ""
+              },
+              "url": "/about-us",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf61"
+            },
+            {
+              "label": {
+                "hi": "संपर्क करें",
+                "en": "Contact",
+                "mixed": ""
+              },
+              "url": "/contact",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf62"
+            },
+            {
+              "label": {
+                "hi": "गोपनीयता नीति",
+                "en": "Privacy Policy",
+                "mixed": ""
+              },
+              "url": "/privacy-policy",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf63"
+            },
+            {
+              "label": {
+                "hi": "नियम एवं शर्तें",
+                "en": "Terms & Conditions",
+                "mixed": ""
+              },
+              "url": "/terms-and-conditions",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6ae1e690f9bcc5e2a6a3cf64"
+            }
+          ],
+          "_id": "6ae1e690f9bcc5e2a6a3cf5d"
+        },
+        {
+          "label": {
+            "hi": "R.S. Aggarwal Solutions",
+            "en": "R.S. Aggarwal Solutions",
+            "mixed": ""
+          },
+          "url": "/secondary-school-mathematics-for-class-10-by-r-s-aggarwal",
+          "type": "column",
+          "newTab": true,
+          "isVisible": true,
+          "icon": "",
+          "children": [
+            {
+              "label": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "url": "https://in.indeed.com/?from=gnav-homepage",
+              "newTab": false,
+              "isVisible": true,
+              "description": {
+                "hi": "",
+                "en": "",
+                "mixed": ""
+              },
+              "_id": "6aeca5753e63b7bd54f1b292"
+            }
+          ],
+          "_id": "6ae980afa9892d9c84ce7efc"
+        }
+      ]
+    },
+    "navigation-footerBottom": {
+      "key": "footerBottom",
+      "items": [
+        {
+          "label": {
+            "hi": "गोपनीयता नीति",
+            "en": "Privacy Policy",
+            "mixed": ""
+          },
+          "url": "/privacy-policy",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf66"
+        },
+        {
+          "label": {
+            "hi": "नियम एवं शर्तें",
+            "en": "Terms & Conditions",
+            "mixed": ""
+          },
+          "url": "/terms-and-conditions",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf67"
+        },
+        {
+          "label": {
+            "hi": "संपर्क",
+            "en": "Contact",
+            "mixed": ""
+          },
+          "url": "/contact",
+          "type": "link",
+          "newTab": false,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae1e690f9bcc5e2a6a3cf68"
+        },
+        {
+          "label": {
+            "hi": "R.S. Aggarwal Solutions",
+            "en": "R.S. Aggarwal Solutions",
+            "mixed": ""
+          },
+          "url": "/secondary-school-mathematics-for-class-10-by-r-s-aggarwal",
+          "type": "link",
+          "newTab": true,
+          "isVisible": true,
+          "icon": "",
+          "children": [],
+          "_id": "6ae97fe0a9892d9c84ce7ed4"
+        }
+      ]
+    },
+    "class11Chapter": {
+      "_id": "6aedd7468e0483251e20a4c3",
+      "class": "6ae1e67ff9bcc5e2a6a3ceba",
+      "subject": "6ae1e67ff9bcc5e2a6a3ceb8",
+      "number": 1,
+      "title": {
+        "hi": "SET",
+        "en": "SET",
+        "mixed": ""
+      },
+      "shortDescription": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "book": "6ae1e68ff9bcc5e2a6a3cf4d",
+      "academicSession": "2026-27",
+      "pdfUrl": "",
+      "relatedChapters": [],
+      "featured": false,
+      "languageMode": "auto",
+      "status": "published",
+      "isVisible": true,
+      "sortOrder": 0,
+      "introduction": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "formulas": [],
+      "notes": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "seo": {
+        "title": "",
+        "translations": {
+          "en": {
+            "title": "",
+            "description": "",
+            "ogTitle": "",
+            "ogDescription": ""
+          },
+          "hi": {
+            "title": "",
+            "description": "",
+            "ogTitle": "",
+            "ogDescription": ""
+          }
+        },
+        "description": "",
+        "canonical": "",
+        "ogTitle": "",
+        "ogDescription": "",
+        "robots": "index,follow",
+        "keywords": [],
+        "keywordsByLanguage": {
+          "en": [],
+          "hi": []
+        },
+        "h1": {
+          "hi": "",
+          "en": "",
+          "mixed": ""
+        }
+      },
+      "createdBy": "6ae1ec987ddd2fddf29985d6",
+      "updatedBy": "6ae1ec987ddd2fddf29985d6",
+      "slug": "adhyay-1",
+      "searchText": "class 11 कक्षा 11 chapter 1 अध्याय 1 ch 1 SET SET",
+      "createdAt": "2026-11-06T13:33:58.522Z",
+      "updatedAt": "2026-11-06T13:33:58.522Z",
+      "publishedAt": "2026-11-06T13:33:58.522Z",
+      "__v": 0
+    },
+    "class11Exercise": {
+      "_id": "6aedd7708e0483251e20a4d2",
+      "chapter": "6aedd7468e0483251e20a4c3",
+      "class": "6ae1e67ff9bcc5e2a6a3ceba",
+      "academicSession": "2026-27",
+      "number": "1.1",
+      "title": {
+        "hi": "",
+        "en": "1.1",
+        "mixed": ""
+      },
+      "pdfUrl": "",
+      "languageMode": "auto",
+      "status": "published",
+      "isVisible": true,
+      "sortOrder": 0,
+      "description": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "instructions": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "notes": {
+        "hi": "",
+        "en": "",
+        "mixed": ""
+      },
+      "seo": {
+        "title": "",
+        "translations": {
+          "en": {
+            "title": "",
+            "description": "",
+            "ogTitle": "",
+            "ogDescription": ""
+          },
+          "hi": {
+            "title": "",
+            "description": "",
+            "ogTitle": "",
+            "ogDescription": ""
+          }
+        },
+        "description": "",
+        "canonical": "",
+        "ogTitle": "",
+        "ogDescription": "",
+        "robots": "index,follow",
+        "keywords": [],
+        "keywordsByLanguage": {
+          "en": [],
+          "hi": []
+        },
+        "h1": {
+          "hi": "",
+          "en": "",
+          "mixed": ""
+        }
+      },
+      "createdBy": "6ae1ec987ddd2fddf29985d6",
+      "updatedBy": "6ae1ec987ddd2fddf29985d6",
+      "subject": "6ae1e67ff9bcc5e2a6a3ceb8",
+      "slug": "prashnavali-1-1",
+      "searchText": "class 11 कक्षा 11 chapter 1 अध्याय 1 ch 1 SET SET exercise 1.1 प्रश्नावली 1.1 ex 1.1 1.1",
+      "createdAt": "2026-11-06T13:34:40.872Z",
+      "updatedAt": "2026-11-06T13:34:40.872Z",
+      "publishedAt": "2026-11-06T13:34:40.873Z",
+      "__v": 0
+    }
+  },
+  "backup": {
+    "ok": true,
+    "database": "test",
+    "file": "/home/u583042336/.codex-production-audit/test-pre-verification-2026-11-07T12-24-50-954Z.jsonl.gz",
+    "bytes": 86375,
+    "sha256": "585dd179298e1f3061c13e05e9492434f4a9c176351966ab0529fc638af9592c",
+    "verifiedAt": "2026-11-07T12:24:51.362Z",
+    "counts": {
+      "academicsessions": 3,
+      "activitylogs": 216,
+      "admins": 1,
+      "adslots": 5,
+      "announcements": 1,
+      "backups": 16,
+      "books": 4,
+      "chapters": 57,
+      "classes": 7,
+      "exercises": 13,
+      "importantquestions": 3,
+      "media": 6,
+      "navigations": 3,
+      "notes": 3,
+      "pages": 31,
+      "passwordrecoveries": 0,
+      "questions": 8,
+      "relatedcontents": 0,
+      "resources": 8,
+      "sections": 9,
+      "seosettings": 2,
+      "sessions": 4,
+      "sitesettings": 1,
+      "solutions": 8,
+      "studentsessions": 0,
+      "subjects": 1,
+      "templates": 3,
+      "topics": 3,
+      "users": 0,
+      "videos": 5
+    },
+    "documents": 421,
+    "verification": "Full gzip decompression, BSON/EJSON deserialization, header/footer and per-collection counts; indexes/options included. No production restore performed."
+  },
+  "error": "The expression evaluated to a falsy value:\n\n  assert.ok(JSON.stringify(persisted).includes(target))\n",
+  "lastCompletedAction": "class6",
+  "completedAt": "2026-11-07T12:29:35.043Z",
+  "class6Source": {
+    "book": "Ganita Prakash — Mathematics, Grade 6, English",
+    "officialUrl": "https://ncert.nic.in/textbook.php?fegp1=0-10",
+    "reviewedGovernmentMirror": "https://scertharyana.gov.in/saksham-resource/",
+    "reviewedEdition": "Haryana 2025 authorised NCERT adoption; original NCERT 2024 text",
+    "currentCurriculumCrossCheck": "https://ciet.ncert.gov.in/activity/grade6?lang=en",
+    "copyright": "NCERT textbook remains NCERT material. PMS explanations, revision notes, practice questions and worked solutions below are independently written original material. No official exercise set is reproduced.",
+    "editionLimitation": "Direct NCERT downloads were unavailable during review. No claim is made to have inspected an unavailable 2026 reprint."
+  }
+}

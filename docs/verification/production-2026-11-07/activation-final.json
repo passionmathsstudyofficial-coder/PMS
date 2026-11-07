@@ -1,0 +1,10 @@
+{
+  "activatedAt": "2026-11-07T11:22:54.025943Z",
+  "activeTarget": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-6b6014e",
+  "previousTarget": "/home/u583042336/domains/passionmathstudy.in/codex-releases/repair-456d2e9-0710",
+  "originalRollback": "/home/u583042336/domains/passionmathstudy.in/codex-releases/rollback-623ffc0",
+  "commit": "6b6014e751f582431eddf7d440b773c57a319611",
+  "database": "test",
+  "backupSha256": "a87c2600eadff4243b53ec56332997d48749519e44f3f736d46f8cf393b1c490",
+  "restart": "Application and document-root tmp/restart.txt"
+}

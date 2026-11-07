@@ -1,0 +1,13 @@
+{
+  "marker": "pms-module-1794054794460",
+  "checks": [
+    {
+      "url": "https://passionmathstudy.in/class-20/cms-test-maths/cms-sync-check/topic/sync-topic",
+      "status": 403,
+      "phase": "initial response; retry recorded"
+    }
+  ],
+  "errors": [],
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: /class-20/cms-test-maths/cms-sync-check/topic/sync-topic <!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" c\n\n403 !== 200\n\n    at file:///D:/study/PMS/scripts/verify-remaining-cms-browser.mjs:4:576\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:472:9)"
+}

@@ -1,3 +1,5 @@
+> **Deployment update:** The live repair and controlled production verification are now completed at commit `6b6014e`. See [final deployment evidence](production-deployment-2026-11-07.md), including remaining content issues. Earlier access/staging statements below are historical.
+
 # Production repair evidence — 7 November 2026
 
 ## SSH follow-up — verified Hostinger staging

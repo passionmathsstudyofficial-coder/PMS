@@ -1,0 +1,2802 @@
+{
+  "startedAt": "2026-11-07T12:39:48.947Z",
+  "base": "https://passionmathstudy.in",
+  "limit": 180,
+  "checks": [
+    {
+      "requested": "http://passionmathstudy.in/",
+      "status": 301,
+      "url": "http://passionmathstudy.in/",
+      "headers": {
+        "content-type": "text/html",
+        "cache-control": null,
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": "https://passionmathstudy.in/"
+      }
+    },
+    {
+      "requested": "https://www.passionmathstudy.in/",
+      "status": 308,
+      "url": "https://www.passionmathstudy.in/",
+      "headers": {
+        "content-type": "text/plain; charset=utf-8",
+        "cache-control": null,
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": "https://passionmathstudy.in/"
+      }
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/reference-solutions/ncert/class-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-6/maths"
+    },
+    {
+      "path": "/reference-solutions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "referenceSolutions"
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": null,
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/api/public/site",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/api/public/home",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "public, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/api/public/revision",
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/search",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/this-page-does-not-exist-audit",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/class-10/maths/important-questions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "importantQuestions"
+    },
+    {
+      "path": "/class-10/maths/notes",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "notesList"
+    },
+    {
+      "path": "/about-us",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "page"
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "page"
+    },
+    {
+      "path": "/privacy-policy",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "page"
+    },
+    {
+      "path": "/terms-and-conditions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "page"
+    },
+    {
+      "path": "/class-10/maths/books",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "booksList"
+    },
+    {
+      "path": "/class-12/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-11/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-10/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-9/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-8/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-7/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-6/maths",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "subject"
+    },
+    {
+      "path": "/class-20/cms-test-maths",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 404,
+      "apiError": "Page not found"
+    },
+    {
+      "path": "/reference-solutions/pms-module-1794054794460",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 404,
+      "apiError": "Reference book not found"
+    },
+    {
+      "path": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "referenceSolutions"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-5",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-8",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-6/prashnavali-6-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-9/maths/important-questions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "importantQuestions"
+    },
+    {
+      "path": "/reference-solutions/pms-module-1794054794460/class-20",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 404,
+      "apiError": "Reference book not found"
+    },
+    {
+      "path": "/reference-solutions/mathematics-for-class-10-by-r-d-sharma/class-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "referenceSolutions"
+    },
+    {
+      "path": "/class-20",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 404,
+      "apiError": "Page not found"
+    },
+    {
+      "path": "/class-12",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-12/maths"
+    },
+    {
+      "path": "/class-11",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-11/maths"
+    },
+    {
+      "path": "/class-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-10/maths"
+    },
+    {
+      "path": "/class-9",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-9/maths"
+    },
+    {
+      "path": "/class-8",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-8/maths"
+    },
+    {
+      "path": "/class-7",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-7/maths"
+    },
+    {
+      "path": "/class-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "redirect",
+      "redirect": "/class-6/maths"
+    },
+    {
+      "path": "/class-10/maths/notes/arithmetic-progression-formulas",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-10/maths/adhyay-4",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-1/prashnavali-1-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-12/maths/adhyay-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-3/prashnavali-3-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-12/maths/adhyay-4",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-5",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-5/prashnavali-5-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-12/maths/adhyay-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-7",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-8",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-9",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-10/prashnavali-10-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-12/maths/adhyay-11",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-12",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-12/maths/adhyay-13",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-1/prashnavali-1-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-11/maths/adhyay-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-4",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-5",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-7",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-8",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-9",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-11",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-12",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-13",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-11/maths/adhyay-14",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-4/topic/introduction-to-quadratic-equations",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "topic"
+    },
+    {
+      "path": "/class-10/maths/adhyay-4/topic/solution-by-factorisation",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "topic"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/topic/arithmetic-progressions-introduction",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "topic"
+    },
+    {
+      "path": "/class-10/maths/adhyay-6",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-7",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-9",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-11",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-12",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-13",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-10/maths/adhyay-14",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/orienting-yourself-the-use-of-coordinates",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/orienting-yourself-the-use-of-coordinates/exercise-1-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-9/maths/adhyay-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-4",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-5/prashnavali-5-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-9/maths/adhyay-7",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-8",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-9",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-10",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-11",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-9/maths/adhyay-12",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/patterns-in-mathematics",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/lines-and-angles",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/lines-and-angles/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/number-play",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/number-play/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/data-handling-and-presentation",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/prime-time",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/prime-time/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/perimeter-and-area",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/perimeter-and-area/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/fractions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/fractions/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/playing-with-constructions",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/playing-with-constructions/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/symmetry",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/symmetry/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-6/maths/the-other-side-of-zero",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "chapter"
+    },
+    {
+      "path": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "exercise"
+    },
+    {
+      "path": "/class-9/maths/notes/lines-and-angles-key-points",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-9/maths/adhyay-6/prashnavali-6-1/prashn-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-9/maths/adhyay-6/prashnavali-6-1/prashn-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-12/maths/notes/class-12-mathematics-chapter-3-matrices-formulas",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-12/maths/adhyay-3/prashnavali-3-1/prashn-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-2/prashn-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-2/prashn-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-10/maths/adhyay-5/prashnavali-5-2/prashn-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-9/maths/adhyay-5/prashnavali-5-1/prashn-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-patterns-in-mathematics-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/patterns-in-mathematics/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-lines-and-angles-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/lines-and-angles/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-number-play-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/number-play/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/number-play/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/number-play/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-data-handling-and-presentation-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/data-handling-and-presentation/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-prime-time-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/prime-time/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-perimeter-and-area-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/perimeter-and-area/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-fractions-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/fractions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/fractions/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/fractions/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-playing-with-constructions-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/playing-with-constructions/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-symmetry-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/symmetry/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/notes/ganita-prakash-the-other-side-of-zero-pms-revision",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "note"
+    },
+    {
+      "path": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-1",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-2",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-6/maths/the-other-side-of-zero/pms-original-practice-1/pms-question-3",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "question"
+    },
+    {
+      "path": "/class-9/maths/notes",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "notesList"
+    },
+    {
+      "path": "/class-12/maths/notes",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "notesList"
+    },
+    {
+      "path": "/class-6/maths/notes",
+      "status": 200,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      },
+      "resolverStatus": 200,
+      "type": "notesList"
+    }
+  ],
+  "dns": {
+    "passionmathstudy.in:A": [
+      "93.127.173.41",
+      "147.79.69.195"
+    ],
+    "www.passionmathstudy.in:A": [
+      "91.108.106.25",
+      "93.127.173.148"
+    ],
+    "passionmathstudy.in:AAAA": [
+      "2a02:4780:1f:6d5:15c3:1136:1a26:9adf",
+      "2a02:4780:3c:fdbb:c80a:e8e0:8f5e:3bc7"
+    ],
+    "www.passionmathstudy.in:AAAA": [
+      "2a02:4780:3c:754c:d365:b921:72c6:3ed3",
+      "2a02:4780:1f:5bd0:d51a:417e:f82b:e11e"
+    ],
+    "passionmathstudy.in:NS": [
+      "orbit.dns-parking.com",
+      "horizon.dns-parking.com"
+    ],
+    "www.passionmathstudy.in:NS": {
+      "error": "ENODATA"
+    },
+    "passionmathstudy.in:CNAME": {
+      "error": "ENODATA"
+    },
+    "www.passionmathstudy.in:CNAME": [
+      "www.passionmathstudy.in.cdn.hstgr.net"
+    ]
+  },
+  "liveAssets": [
+    "/assets/index-C7ZBfP87.js",
+    "/assets/dist-8e70bPEi.js",
+    "/assets/react-dom-BAA5mxEa.js",
+    "/assets/useQuery-C8vjGtts.js",
+    "/assets/preload-helper-BZ1Pz5am.js",
+    "/assets/lib-BrIvUdTH.js",
+    "/assets/proxy-C_f5pclr.js",
+    "/assets/AnimatePresence-OZDQTsbH.js",
+    "/assets/createLucideIcon-BgL6RPoB.js",
+    "/assets/arrow-right-FcHp4Cqr.js",
+    "/assets/sparkles-BdqRc5ZP.js",
+    "/assets/sigma-CdVAdnQ7.js",
+    "/assets/circle-check-CVoU6HEV.js",
+    "/assets/dist-DaF3rOah.js",
+    "/assets/es2015-BSp7zI78.js",
+    "/assets/dist-CjSTIakl.js",
+    "/assets/graduation-cap-DSiBO6uu.js",
+    "/assets/image-OLBySvnX.js",
+    "/assets/search-jO9-JnGg.js",
+    "/assets/shield-check-CALJcswj.js",
+    "/assets/star-DwauLqV-.js",
+    "/assets/icons-DbpOwV8R.js",
+    "/assets/copy-DaqPHMoF.js",
+    "/assets/file-text-tx-LQBwK.js",
+    "/assets/loader-circle-ELBkAm1-.js",
+    "/assets/x-YJEQnJT8.js",
+    "/assets/button-Dwq5MdKR.js",
+    "/assets/mathContent-Cxh-4qad.js",
+    "/assets/localization-BjY5q7M8.js",
+    "/assets/i18n-Dhe1kVZ6.js",
+    "/assets/api-DaSeEhdr.js",
+    "/assets/media-qNKrK157.js",
+    "/assets/site-BRLQkp8q.js",
+    "/assets/RichContent-D-r8Q9Ar.js",
+    "/assets/index-C82oVtSS.css"
+  ],
+  "assets": [
+    {
+      "path": "/assets/index-C7ZBfP87.js",
+      "status": 404,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/dist-8e70bPEi.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/react-dom-BAA5mxEa.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/useQuery-C8vjGtts.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/preload-helper-BZ1Pz5am.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/lib-BrIvUdTH.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/proxy-C_f5pclr.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/AnimatePresence-OZDQTsbH.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/createLucideIcon-BgL6RPoB.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/arrow-right-FcHp4Cqr.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/sparkles-BdqRc5ZP.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/sigma-CdVAdnQ7.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/circle-check-CVoU6HEV.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/dist-DaF3rOah.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/es2015-BSp7zI78.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/dist-CjSTIakl.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/graduation-cap-DSiBO6uu.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/image-OLBySvnX.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/search-jO9-JnGg.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/shield-check-CALJcswj.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/star-DwauLqV-.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/icons-DbpOwV8R.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/copy-DaqPHMoF.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/file-text-tx-LQBwK.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/loader-circle-ELBkAm1-.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/x-YJEQnJT8.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/button-Dwq5MdKR.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/mathContent-Cxh-4qad.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/localization-BjY5q7M8.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/i18n-Dhe1kVZ6.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/api-DaSeEhdr.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/media-qNKrK157.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/site-BRLQkp8q.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/RichContent-D-r8Q9Ar.js",
+      "status": 200,
+      "headers": {
+        "content-type": "text/javascript; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    },
+    {
+      "path": "/assets/index-C82oVtSS.css",
+      "status": 200,
+      "headers": {
+        "content-type": "text/css; charset=utf-8",
+        "cache-control": "public, max-age=31536000, immutable",
+        "server": "hcdn",
+        "platform": "hostinger",
+        "location": null
+      }
+    }
+  ],
+  "finishedAt": "2026-11-07T12:41:33.861Z",
+  "discovered": 178,
+  "truncated": false,
+  "summary": {
+    "checked": 180,
+    "httpErrors": 5,
+    "resolverErrors": 4
+  }
+}

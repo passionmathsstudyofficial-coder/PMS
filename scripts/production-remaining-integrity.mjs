@@ -1,0 +1,25 @@
+// Read-only comparison against the verified pre-repair database backup.
+import fs from'node:fs/promises';import zlib from'node:zlib';import assert from'node:assert/strict';import path from'node:path';import{createRequire}from'node:module';
+const mongoose=createRequire(path.join(process.env.PMS_APP_ROOT,'package.json'))('mongoose'),{EJSON}=mongoose.mongo.BSON,dir=process.env.PMS_AUDIT_DIR;
+await mongoose.connect(process.env.MONGODB_URI);try{
+assert.equal(mongoose.connection.name,'test');const db=mongoose.connection.db;const repairs=JSON.parse(await fs.readFile(path.join(dir,'remaining-repairs.json'),'utf8')),modules=JSON.parse(await fs.readFile(path.join(dir,'remaining-modules.json'),'utf8'));
+assert.ok(modules.cleanedAt);assert.ok(modules.records.every(r=>r.cleaned));
+const before=EJSON.parse('{}');const backup=JSON.parse(await fs.readFile(path.join(dir,'backup-before-remaining-repairs.json'),'utf8'));
+const rows=zlib.gunzipSync(await fs.readFile(backup.file)).toString().split('\n').filter(Boolean).map(l=>EJSON.parse(l,{relaxed:false}));
+const excluded=new Set(['activitylogs','sessions','studentsessions','passwordrecoveries','backups']);const changed=[],missing=[],added=[],counts={};let exact=0,semantic=0;const normalizations=[];
+const metadata=new Set(['updatedAt','updatedBy','__v','lastLoginAt']);
+function canonical(value,strip=false){if(value===null||typeof value!=='object')return value;if(Array.isArray(value))return value.map(v=>canonical(v,strip));if(value instanceof Date||value._bsontype)return value;return Object.fromEntries(Object.keys(value).sort().filter(k=>!strip||(!metadata.has(k)&&value[k]!==null)).map(k=>[k,canonical(value[k],strip)]))}
+const serial=(v,strip)=>EJSON.stringify(canonical(v,strip),{relaxed:false});
+function preserved(old,current){
+ if(old==null&&current==null)return true;
+ if(old===null||current===null||typeof old!=='object'||typeof current!=='object'||old instanceof Date||current instanceof Date||old._bsontype||current._bsontype)return serial(old,false)===serial(current,false);
+ if(Array.isArray(old))return Array.isArray(current)&&old.length===current.length&&old.every((v,i)=>preserved(v,current[i]));
+ return Object.keys(old).filter(k=>!metadata.has(k)).every(k=>preserved(old[k],current[k]));
+}
+for(const row of rows.filter(r=>r.c&&!excluded.has(r.c))){const current=await db.collection(row.c).findOne({_id:row.d._id});if(!current){missing.push({collection:row.c,id:String(row.d._id)});continue}if(serial(row.d,false)===serial(current,false))exact++;else if(serial(row.d,true)===serial(current,true))semantic++;else if(preserved(row.d,current)){semantic++;normalizations.push({collection:row.c,id:String(row.d._id),reason:'All pre-existing non-audit values preserved; schema defaults added on CMS save'});}else changed.push({collection:row.c,id:String(row.d._id),fields:Object.keys(current).filter(k=>serial(current[k],false)!==serial(row.d[k],false))})}
+const expectedChanges=new Set(['chapters:6aedd7468e0483251e20a4c3','exercises:6aedd7708e0483251e20a4d2',...['footer','footerBottom'].map(key=>'navigations:'+String(rows.find(r=>r.c==='navigations'&&r.d.key===key)?.d._id))]);
+for(const c of changed)assert.ok(expectedChanges.has(c.collection+':'+c.id),'Unexpected original content change '+JSON.stringify(c));assert.deepEqual(missing,[]);
+for(const c of rows.filter(r=>r.collection&&!excluded.has(r.collection))){const original=rows.filter(r=>r.c===c.collection).map(r=>r.d._id);const fresh=await db.collection(c.collection).find({_id:{$nin:original}}).project({_id:1}).toArray();added.push(...fresh.map(x=>({collection:c.collection,id:String(x._id)})));counts[c.collection]={before:backup.counts[c.collection],after:await db.collection(c.collection).countDocuments()}}
+assert.equal(added.length,90);assert.equal(counts.chapters.after-counts.chapters.before,10);assert.equal(counts.exercises.after-counts.exercises.before,10);assert.equal(counts.notes.after-counts.notes.before,10);assert.equal(counts.questions.after-counts.questions.before,30);assert.equal(counts.solutions.after-counts.solutions.before,30);
+const result={database:'test',verifiedAt:new Date().toISOString(),beforeBackupSha256:backup.sha256,exactlyUnchanged:exact,auditOrSchemaNormalizationOnly:semantic,schemaNormalizations:normalizations,intendedExistingChanges:changed,missingOriginalRecords:missing,newEducationalRecords:added.length,counts,temporaryRecordsRemaining:await Promise.all(modules.records.map(async r=>({resource:r.resource,id:r.id,exists:Boolean(await db.collection(r.collection).findOne({_id:new mongoose.Types.ObjectId(r.id)}))}))),result:'PASS'};assert.ok(result.temporaryRecordsRemaining.every(r=>!r.exists));await fs.writeFile(path.join(dir,'remaining-integrity.json'),JSON.stringify(result,null,2),{mode:0o600});console.log(JSON.stringify({result:result.result,exactlyUnchanged:exact,onlyAuditMetadataChanged:semantic,intendedExistingChanges:changed,missingOriginalRecords:missing.length,newEducationalRecords:added.length}));
+}finally{await mongoose.disconnect()}

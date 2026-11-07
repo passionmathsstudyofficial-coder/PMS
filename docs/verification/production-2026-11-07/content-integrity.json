@@ -1,0 +1,103 @@
+{
+  "ok": true,
+  "checkedAt": "2026-11-07T11:38:53.104Z",
+  "database": "test",
+  "backupSha256": "a87c2600eadff4243b53ec56332997d48749519e44f3f736d46f8cf393b1c490",
+  "collections": [
+    {
+      "collection": "classes",
+      "documents": 7
+    },
+    {
+      "collection": "subjects",
+      "documents": 1
+    },
+    {
+      "collection": "books",
+      "documents": 4
+    },
+    {
+      "collection": "chapters",
+      "documents": 57
+    },
+    {
+      "collection": "exercises",
+      "documents": 13
+    },
+    {
+      "collection": "questions",
+      "documents": 8
+    },
+    {
+      "collection": "solutions",
+      "documents": 8
+    },
+    {
+      "collection": "notes",
+      "documents": 3
+    },
+    {
+      "collection": "importantquestions",
+      "documents": 3
+    },
+    {
+      "collection": "pages",
+      "documents": 31
+    },
+    {
+      "collection": "resources",
+      "documents": 8
+    },
+    {
+      "collection": "topics",
+      "documents": 3
+    },
+    {
+      "collection": "media",
+      "documents": 6
+    },
+    {
+      "collection": "navigations",
+      "documents": 3
+    },
+    {
+      "collection": "sections",
+      "documents": 9
+    },
+    {
+      "collection": "sitesettings",
+      "documents": 1
+    },
+    {
+      "collection": "academicsessions",
+      "documents": 3
+    },
+    {
+      "collection": "videos",
+      "documents": 5
+    },
+    {
+      "collection": "templates",
+      "documents": 3
+    },
+    {
+      "collection": "seosettings",
+      "documents": 2
+    },
+    {
+      "collection": "relatedcontents",
+      "documents": 0
+    },
+    {
+      "collection": "adslots",
+      "documents": 5
+    },
+    {
+      "collection": "announcements",
+      "documents": 1
+    }
+  ],
+  "documents": 184,
+  "mismatches": [],
+  "method": "Canonical BSON/EJSON SHA-256 comparison of every original educational/settings document against fresh pre-test backup; auth sessions/audit logs excluded"
+}
