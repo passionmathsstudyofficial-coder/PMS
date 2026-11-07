@@ -249,7 +249,7 @@ function MobileDropdownAccordion({ item, currentPath, open, onToggle, onClose })
   );
 }
 
-export function MobileMenu({ open, onClose }) {
+export function MobileMenu({ open, onClose, returnFocusRef }) {
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -315,7 +315,8 @@ export function MobileMenu({ open, onClose }) {
           /></DialogPrimitive.Overlay>
 
           {/* Drawer */}
-          <DialogPrimitive.Content asChild forceMount aria-modal="true" aria-describedby={undefined}><motion.div
+          <DialogPrimitive.Content asChild forceMount aria-modal="true" aria-describedby={undefined}
+            onCloseAutoFocus={event => { if (returnFocusRef?.current) { event.preventDefault(); returnFocusRef.current.focus(); } }}><motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}

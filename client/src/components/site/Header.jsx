@@ -1,6 +1,6 @@
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { AnnouncementBar } from './AnnouncementBar.jsx';
@@ -12,6 +12,7 @@ export function Header({ className }) {
   useUiLanguage();
   const site = useSite();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileTriggerRef = useRef(null);
   const isSticky = site?.settings?.header?.sticky !== false;
 
   return (
@@ -23,13 +24,13 @@ export function Header({ className }) {
       <AnnouncementBar />
 
       {/* Row 2: Main Desktop & Mobile Navigation Bar */}
-      <MainNavbar onOpenMobileMenu={() => setMobileOpen(true)} />
+      <MainNavbar onOpenMobileMenu={(event) => { mobileTriggerRef.current = event.currentTarget; setMobileOpen(true); }} />
 
       {/* Row 3: Sponsored Resources Bar */}
       <SponsoredResourcesBar />
 
       {/* Mobile Drawer Navigation */}
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} returnFocusRef={mobileTriggerRef} />
     </header>
   );
 }

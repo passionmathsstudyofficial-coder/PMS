@@ -166,6 +166,17 @@ test('footer uses published books and never invents unavailable class links',asy
   assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,0);
   assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,0);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);
+  if(books.length){
+   button.focus();await act(async()=>{button.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true}));await new Promise(r=>setTimeout(r,10));});
+   assert.equal(document.activeElement.getAttribute('href'),'/reference-solutions/audit-only');
+   await act(async()=>{document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));await new Promise(r=>setTimeout(r,10));});
+   assert.equal(document.activeElement.getAttribute('href'),'/reference-solutions/audit-only/class-10');
+   await act(async()=>document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true})));
+   assert.equal(document.activeElement.getAttribute('href'),'/reference-solutions/audit-only');
+   await act(async()=>document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
+   assert.equal(document.activeElement,button);assert.equal(button.getAttribute('aria-expanded'),'false');
+  }
+
   await act(async()=>root.unmount());host.remove();client.clear();
  }
 });
@@ -254,14 +265,14 @@ test('mobile navigation is an accessible modal and Escape closes it',async()=>{
  const {MemoryRouter}=await import('react-router');
  const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
  const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
- let closes=0;
- function Probe(){const [open,setOpen]=React.useState(true);return React.createElement(React.Fragment,null,React.createElement('p',null,open?'drawer-open':'drawer-closed'),React.createElement(MobileMenu,{open,onClose:()=>{closes++;setOpen(false);}}));}
+ let closes=0;const opener=document.createElement('button');opener.textContent='Open test menu';document.body.append(opener);opener.focus();
+ function Probe(){const [open,setOpen]=React.useState(true);return React.createElement(React.Fragment,null,React.createElement('p',null,open?'drawer-open':'drawer-closed'),React.createElement(MobileMenu,{open,returnFocusRef:{current:opener},onClose:()=>{closes++;setOpen(false);}}));}
  await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(Probe)))));
  try{
   const dialog=document.querySelector('[role="dialog"]');assert.ok(dialog);assert.equal(dialog.getAttribute('aria-modal'),'true');
   await act(async()=>document.activeElement.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Escape',bubbles:true})));
   assert.equal(closes,1);assert.ok(host.textContent.includes('drawer-closed'));
- }finally{await act(async()=>root.unmount());host.remove();client.clear();}
+ }finally{await act(async()=>root.unmount());assert.equal(document.activeElement,opener);opener.remove();host.remove();client.clear();}
 });
 
 

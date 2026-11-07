@@ -83,6 +83,32 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
       className="relative inline-block"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) { setIsOpen(false); setActiveBookSlug(null); } }}
+      onKeyDown={event => {
+        const trigger = containerRef.current?.querySelector('button');
+        const current = document.activeElement;
+        if (event.key === 'Escape' && isOpen) {
+          event.preventDefault(); event.stopPropagation(); setIsOpen(false); setActiveBookSlug(null); trigger?.focus();
+        } else if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+          event.preventDefault();
+          if (current === trigger) {
+            setIsOpen(true); clickedOpen.current = true;
+            setTimeout(() => { const links = containerRef.current?.querySelector('[role="menu"]')?.querySelectorAll(':scope > div > div > a'); links?.[event.key === 'ArrowUp' || event.key === 'End' ? links.length - 1 : 0]?.focus(); }, 0);
+          } else {
+            const menu = current?.closest('[role="menu"]');
+            const links = [...(menu?.querySelectorAll('[role="menuitem"]') || [])].filter(link => link.closest('[role="menu"]') === menu);
+            const index = links.indexOf(current);
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1 : (index + (event.key === 'ArrowUp' ? -1 : 1) + links.length) % links.length;
+            links[next]?.focus();
+          }
+        } else if (event.key === 'ArrowRight' && current?.dataset.referenceBook) {
+          event.preventDefault(); setActiveBookSlug(current.dataset.referenceBook);
+          setTimeout(() => current.parentElement?.querySelector('[role="menuitem"]:not([data-reference-book])')?.focus(), 0);
+        } else if (event.key === 'ArrowLeft' && current?.closest('[data-reference-submenu]')) {
+          event.preventDefault(); const parent = current.closest('[data-reference-submenu]').parentElement;
+          parent.querySelector('[data-reference-book]')?.focus(); setActiveBookSlug(null);
+        }
+      }}
     >
       {/* Trigger Button: Matches existing Mathematics dropdown design exactly */}
       <button
@@ -134,6 +160,11 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                   onMouseEnter={() => setActiveBookSlug(book.slug)}
                 >
                   <Link
+                    role="menuitem"
+                    data-reference-book={book.slug}
+                    aria-haspopup={classes.length ? 'menu' : undefined}
+                    aria-expanded={classes.length ? isHovered : undefined}
+                    onFocus={() => setActiveBookSlug(book.slug)}
                     to={referenceBookUrl(book)}
                     aria-current={isBookActive ? 'page' : undefined}
                     onClick={() => {
@@ -159,6 +190,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                   {/* Classes Submenu to the Right */}
                   {isHovered && (
                     <div
+                      data-reference-submenu="true"
                       role="menu"
                       aria-label={uiTemplate`${bookTitle} Classes`}
                       className="absolute left-full top-0 ml-1 z-50 w-36 sm:w-40 rounded-xl border border-border bg-popover/98 p-1.5 shadow-xl backdrop-blur-md animate-in fade-in-0 slide-in-from-left-2 duration-150"
@@ -169,6 +201,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
                       <div className="space-y-0.5 max-h-64 overflow-y-auto">
                         {classes.map((clsNum) => (
                           <Link
+                            role="menuitem"
                             key={clsNum}
                             to={`/reference-solutions/${book.slug}/class-${clsNum}`}
                             aria-current={isPathActive(`/reference-solutions/${book.slug}/class-${clsNum}`, path) ? 'page' : undefined}
