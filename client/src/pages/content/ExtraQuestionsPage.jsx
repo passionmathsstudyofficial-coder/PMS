@@ -65,7 +65,7 @@ export default function ExtraQuestionsPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="EXTRA"
-        eyebrow={<Chip tone="brand">CBSE Class {cls?.number || '6–12'} Mathematics</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("CBSE Class ")}{cls?.number || '6–12'}{uiText(" Mathematics")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित अतिरिक्त प्रश्न (Extra Questions)`,
           en: `CBSE Class ${cls?.number || '6–12'} Maths Extra Questions with Step-by-Step Solutions`,
@@ -129,8 +129,7 @@ export default function ExtraQuestionsPage({ data, breadcrumbs }) {
               >
                 <option value="all">{uiText("All Chapters")}</option>
                 {chapters.map((ch) => (
-                  <option key={ch._id} value={String(ch._id)}>
-                    Ch {ch.number}: {t(ch.title)}
+                  <option key={ch._id} value={String(ch._id)}>{uiText("Ch ")}{ch.number}: {t(ch.title)}
                   </option>
                 ))}
               </select>
@@ -177,7 +176,7 @@ export default function ExtraQuestionsPage({ data, breadcrumbs }) {
                 <div key={r._id} className="flex items-center justify-between rounded-xl border bg-card p-3 shadow-xs">
                   <div className="min-w-0 pr-2">
                     <h4 className="text-xs font-bold text-foreground truncate">{t(r.title)}</h4>
-                    <span className="text-[11px] text-muted-foreground">{r.fileSize || 'PDF Worksheet'}</span>
+                    <span className="text-[11px] text-muted-foreground">{r.fileSize || uiText('PDF Worksheet')}</span>
                   </div>
                   {r.fileUrl && (
                     <div className="flex items-center gap-1.5 shrink-0">
@@ -223,8 +222,7 @@ export default function ExtraQuestionsPage({ data, breadcrumbs }) {
                     {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
                     {q.isHots && (
                       <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-extrabold text-red-600">
-                        <Flame className="size-3" /> HOTS
-                      </span>
+                        <Flame className="size-3" />{uiText(" HOTS")}</span>
                     )}
                     {q.chapter && (
                       <span className="ml-auto text-xs font-semibold text-brand">

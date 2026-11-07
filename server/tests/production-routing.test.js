@@ -112,3 +112,34 @@ test('draft and missing API responses cannot be cached across publication', asyn
   assert.equal(unauthenticated.status, 401);
   assert.equal(unauthenticated.headers['cache-control'], 'no-store');
 });
+
+test('canonical www redirect preserves path and query and only matches the configured production host', async () => {
+ const old={isProd:env.isProd,PUBLIC_SITE_URL:env.PUBLIC_SITE_URL};
+ try {
+  env.isProd=true;env.PUBLIC_SITE_URL='https://passionmathstudy.in';
+  const web=createApp();
+  const r=await request(web).get('/class-6/maths?lang=en').set('Host','www.passionmathstudy.in');
+  assert.equal(r.status,308);assert.equal(r.headers.location,'https://passionmathstudy.in/class-6/maths?lang=en');
+  assert.notEqual((await request(web).get('/api/health').set('Host','passionmathstudy.in')).status,308);
+  assert.notEqual((await request(web).get('/api/health').set('Host','www.attacker.invalid')).status,308);
+  env.isProd=false;
+  assert.notEqual((await request(createApp()).get('/api/health').set('Host','www.passionmathstudy.in')).status,308);
+ }finally{Object.assign(env,old)}
+});
+
+test('NCERT chapter namespace excludes reference books and rejects ambiguous published chapters', async()=>{
+ const ref=await create('books',{slug:'namespace-reference',category:'reference',availableClasses:[6],title:{en:'Reference'},status:'published'});
+ const nc=await create('books',{slug:'namespace-ncert',category:'ncert',class:cls._id,title:{en:'NCERT'},status:'published'});
+ const data={class:cls._id,subject:subject._id,number:88,slug:'namespace-chapter',status:'published',academicSession:'2026-27'};
+ const chapter=await create('chapters',{...data,title:{en:'NCERT namespace'}});
+ await create('chapters',{...data,book:ref._id,title:{en:'Reference namespace'}});
+ const duplicate=await owner.post('/api/chapters').send({...data,book:nc._id});
+ assert.equal(duplicate.status,409);
+ const page=await resolve('/class-6/maths/namespace-chapter');
+ assert.equal(page.status,200);assert.equal(page.body.data.chapter._id,chapter._id);
+ const wrongClass=await create('classes',{number:11,subjects:[subject._id],status:'published'});
+ const invalid=await owner.post('/api/chapters').send({...data,class:wrongClass._id,book:nc._id});
+ assert.equal(invalid.status,400);assert.match(invalid.body.error.message,/not configured for this class/);
+ const valid=await owner.post('/api/chapters').send({...data,class:wrongClass._id,book:null,slug:'valid-class-11'});
+ assert.equal(valid.status,201);
+});

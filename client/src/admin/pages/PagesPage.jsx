@@ -144,7 +144,7 @@ export function PagesList() {
                   <h3 className="font-heading text-base font-bold text-foreground flex items-center gap-2">
                     <Sparkles className="size-4 text-brand" />
                     <span>{cat}</span>
-                    <span className="text-xs font-normal text-muted-foreground">({items.length} pages)</span>
+                    <span className="text-xs font-normal text-muted-foreground">({items.length}{uiText(" pages)")}</span>
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {items.map((item) => (

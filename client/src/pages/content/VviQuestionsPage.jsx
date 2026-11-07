@@ -64,7 +64,7 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="VVI"
-        eyebrow={<Chip tone="brand">Board Special Exam Booster</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("Board Special Exam Booster")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित VVI महत्वपूर्ण प्रश्न`,
           en: `CBSE Class ${cls?.number || '6–12'} Maths VVI Questions (Board Special)`,
@@ -139,8 +139,7 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
               >
                 <option value="all">{uiText("All Chapters")}</option>
                 {chapters.map((ch) => (
-                  <option key={ch._id} value={String(ch._id)}>
-                    Ch {ch.number}: {t(ch.title)}
+                  <option key={ch._id} value={String(ch._id)}>{uiText("Ch ")}{ch.number}: {t(ch.title)}
                   </option>
                 ))}
               </select>
@@ -152,10 +151,10 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
               </span>
               <div className="flex gap-1">
                 {[
-                  { id: 'all', label: 'All' },
-                  { id: 'short', label: 'Short (2-3M)' },
-                  { id: 'long', label: 'Long (5M)' },
-                  { id: 'case_study', label: 'Case Study' },
+                  { id: 'all', label: uiText('All') },
+                  { id: 'short', label: uiText('Short (2-3M)') },
+                  { id: 'long', label: uiText('Long (5M)') },
+                  { id: 'case_study', label: uiText('Case Study') },
                 ].map((type) => (
                   <button
                     key={type.id}
@@ -201,8 +200,7 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
                       {uiText("VVI Question")} {idx + 1}
                     </span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-extrabold text-red-600">
-                      <Flame className="size-3" /> Board Special
-                    </span>
+                      <Flame className="size-3" />{uiText(" Board Special")}</span>
                     {q.marks && (
                       <span className="rounded-full border bg-background px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
                         {q.marks} {term('marks')}

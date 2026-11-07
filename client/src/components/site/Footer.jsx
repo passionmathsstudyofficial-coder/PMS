@@ -87,6 +87,12 @@ export function Footer() {
     ...getReferenceBooks(site).map(book => ({ label: book.title, url: referenceBookUrl(book) })),
     link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
   ];
+  const displayedUrls = new Set([...columns.flatMap(column => column.children), ...retainedLinks].map(item => item.url));
+  for (const item of configuredLinks) {
+    if (!t(item.label) || displayedUrls.has(item.url)) continue;
+    retainedLinks.push(item);
+    displayedUrls.add(item.url);
+  }
 
   const socialList = settings.social?.length ? settings.social : DEFAULT_SOCIAL;
 
@@ -163,7 +169,7 @@ export function Footer() {
         </nav>
 
         <nav aria-label={uiText("More resources")} className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/60">
-          {retainedLinks.map(child => <SmartLink key={child.url} to={child.url} className="py-2 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
+          {retainedLinks.map(child => <SmartLink key={child.url} to={child.url} newTab={child.newTab} className="py-2 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
         </nav>
 
         {/* Brand, Description & Social Bar */}

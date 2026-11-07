@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState, useEffect } from 'react';
 import {
   FileCheck,
@@ -41,14 +42,14 @@ export default function ContentStatusPage() {
       ]);
 
       const combined = [
-        ...(chapters.items || []).map((x) => ({ ...x, entityType: 'Chapter', label: `Chapter ${x.number}: ${x.title?.en || x.title?.hi}` })),
-        ...(exercises.items || []).map((x) => ({ ...x, entityType: 'Exercise', label: `Exercise ${x.number}` })),
-        ...(questions.items || []).map((x) => ({ ...x, entityType: 'Question', label: `Question ${x.number}` })),
-        ...(notes.items || []).map((x) => ({ ...x, entityType: 'Note', label: x.title?.en || x.title?.hi || 'Note' })),
-        ...(importantQuestions.items || []).map((x) => ({ ...x, entityType: 'ImportantQuestion', label: x.title?.en || x.text?.en || x.text?.hi || 'Important question' })),
-        ...(resources.items || []).map((x) => ({ ...x, entityType: 'Resource', label: x.title?.en || x.title?.hi || 'Resource' })),
-        ...(books.items || []).map((x) => ({ ...x, entityType: 'Book', label: x.title?.en || x.title?.hi || 'Book' })),
-        ...(topics.items || []).map((x) => ({ ...x, entityType: 'Topic', label: x.title?.en || x.title?.hi || 'Topic' })),
+        ...(chapters.items || []).map((x) => ({ ...x, entityType: 'Chapter', label: uiTemplate`Chapter ${x.number}: ${x.title?.en || x.title?.hi}` })),
+        ...(exercises.items || []).map((x) => ({ ...x, entityType: 'Exercise', label: uiTemplate`Exercise ${x.number}` })),
+        ...(questions.items || []).map((x) => ({ ...x, entityType: 'Question', label: uiTemplate`Question ${x.number}` })),
+        ...(notes.items || []).map((x) => ({ ...x, entityType: 'Note', label: x.title?.en || x.title?.hi || uiText('Note') })),
+        ...(importantQuestions.items || []).map((x) => ({ ...x, entityType: 'ImportantQuestion', label: x.title?.en || x.text?.en || x.text?.hi || uiText('Important question') })),
+        ...(resources.items || []).map((x) => ({ ...x, entityType: 'Resource', label: x.title?.en || x.title?.hi || uiText('Resource') })),
+        ...(books.items || []).map((x) => ({ ...x, entityType: 'Book', label: x.title?.en || x.title?.hi || uiText('Book') })),
+        ...(topics.items || []).map((x) => ({ ...x, entityType: 'Topic', label: x.title?.en || x.title?.hi || uiText('Topic') })),
       ];
       setItems(combined);
     } catch (err) {
@@ -77,11 +78,11 @@ export default function ContentStatusPage() {
       {/* Tabs */}
       <div className="flex gap-2 border-b pb-3">
         {[
-          { id: 'all', label: 'All Content', count: items.length },
-          { id: 'published', label: 'Published', count: items.filter((x) => (x.status || 'published') === 'published').length },
-          { id: 'draft', label: 'Drafts', count: items.filter((x) => x.status === 'draft').length },
-          { id: 'scheduled', label: 'Scheduled', count: items.filter((x) => x.status === 'scheduled').length },
-          { id: 'archived', label: 'Archived', count: items.filter((x) => x.status === 'archived').length },
+          { id: 'all', label: uiText('All Content'), count: items.length },
+          { id: 'published', label: uiText('Published'), count: items.filter((x) => (x.status || 'published') === 'published').length },
+          { id: 'draft', label: uiText('Drafts'), count: items.filter((x) => x.status === 'draft').length },
+          { id: 'scheduled', label: uiText('Scheduled'), count: items.filter((x) => x.status === 'scheduled').length },
+          { id: 'archived', label: uiText('Archived'), count: items.filter((x) => x.status === 'archived').length },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -105,14 +106,14 @@ export default function ContentStatusPage() {
       {/* Items list */}
       <div className="rounded-2xl border bg-card shadow-xs overflow-hidden">
         <div className="p-4 border-b bg-muted/30 font-bold text-xs uppercase tracking-wider text-muted-foreground flex justify-between">
-          <span>Item & Entity</span>
-          <span>Status</span>
+          <span>{uiText("Item & Entity")}</span>
+          <span>{uiText("Status")}</span>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">Loading content statuses...</div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Loading content statuses...")}</div>
         ) : filtered.length === 0 ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">No content found in this state.</div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("No content found in this state.")}</div>
         ) : (
           <div className="divide-y divide-border/60">
             {filtered.map((item) => (
@@ -127,7 +128,7 @@ export default function ContentStatusPage() {
                       ({item.academicSession})
                     </span>
                   )}
-                  <Link className="ml-3 text-xs font-semibold text-brand hover:underline" to={adminUrl(({ Chapter: 'chapters', Exercise: 'exercises', Question: 'questions', Note: 'notes', ImportantQuestion: 'important-questions-legacy', Resource: 'resources', Book: 'books', Topic: 'topics' })[item.entityType] + `/${item._id}`)}>Edit</Link>
+                  <Link className="ml-3 text-xs font-semibold text-brand hover:underline" to={adminUrl(({ Chapter: 'chapters', Exercise: 'exercises', Question: 'questions', Note: 'notes', ImportantQuestion: 'important-questions-legacy', Resource: 'resources', Book: 'books', Topic: 'topics' })[item.entityType] + `/${item._id}`)}>{uiText("Edit")}</Link>
                 </div>
 
                 <span
@@ -140,7 +141,7 @@ export default function ContentStatusPage() {
                       : 'bg-muted text-muted-foreground'
                   )}
                 >
-                  {item.status || 'published'}
+                  {item.status || uiText('published')}
                 </span>
               </div>
             ))}

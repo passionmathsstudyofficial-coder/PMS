@@ -56,7 +56,7 @@ export default function ReferenceBookNotesPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="NOTES"
-        eyebrow={<Chip tone="brand">{bookTitle} Mathematics</Chip>}
+        eyebrow={<Chip tone="brand">{bookTitle}{uiText(" Mathematics")}</Chip>}
         title={{
           hi: `${bookTitle} कक्षा ${cls?.number || '6-12'} गणित सूत्र व अध्याय नोट्स`,
           en: `${bookTitle} Class ${cls?.number || '6–12'} Maths Formulas & Notes`,
@@ -136,7 +136,7 @@ export default function ReferenceBookNotesPage({ data, breadcrumbs }) {
                 <div key={r._id} className="flex items-center justify-between rounded-xl border bg-card p-3 shadow-xs">
                   <div className="min-w-0 pr-2">
                     <h4 className="text-xs font-bold text-foreground truncate">{t(r.title)}</h4>
-                    <span className="text-[11px] text-muted-foreground">{r.fileSize || 'PDF Document'}</span>
+                    <span className="text-[11px] text-muted-foreground">{r.fileSize || uiText('PDF Document')}</span>
                   </div>
                   {r.fileUrl && (
                     <div className="flex items-center gap-1.5 shrink-0">

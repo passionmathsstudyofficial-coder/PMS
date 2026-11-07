@@ -23,6 +23,16 @@ export function createApp({ sendRecoveryEmail } = {}) {
   app.set('trust proxy', env.TRUST_PROXY);
   app.disable('x-powered-by');
 
+  app.use((req, res, next) => {
+    const canonical = new URL(env.PUBLIC_SITE_URL);
+    const hostname = canonical.hostname.replace(/^www\./i, '');
+    if (env.isProd && req.hostname.toLowerCase() === `www.${hostname}`) {
+      canonical.hostname = hostname;
+      return res.redirect(308, `${canonical.origin}${req.originalUrl}`);
+    }
+    next();
+  });
+
   const imgSources = ["'self'", 'data:', 'blob:', 'https://i.ytimg.com', 'https://img.youtube.com', 'https://res.cloudinary.com'];
   app.use(
     helmet({

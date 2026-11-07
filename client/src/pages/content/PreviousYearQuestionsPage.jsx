@@ -73,7 +73,7 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="PYQ"
-        eyebrow={<Chip tone="brand">CBSE Class {cls?.number || '6–12'} Mathematics</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("CBSE Class ")}{cls?.number || '6–12'}{uiText(" Mathematics")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} पिछले वर्षों के प्रश्नपत्र (PYQ)`,
           en: `CBSE Class ${cls?.number || '6–12'} Maths Previous Year Question Papers (PYQ)`,
@@ -186,7 +186,7 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <span className="rounded-lg bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand">
-                        {paper.year || 'PYQ'}
+                        {paper.year || uiText('PYQ')}
                       </span>
                       {paper.paperSet && (
                         <span className="rounded-lg border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">

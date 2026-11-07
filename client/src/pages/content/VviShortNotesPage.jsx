@@ -40,7 +40,7 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="REVISION"
-        eyebrow={<Chip tone="brand">Last Minute Exam Booster</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("Last Minute Exam Booster")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित VVI प्रश्न व संक्षिप्त नोट्स`,
           en: `VVI Questions & Short Notes for Class ${cls?.number || '6–12'} Maths`,
@@ -100,9 +100,7 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
             shortNotes.map((sn) => (
               <article key={sn._id} className="rounded-2xl border bg-card p-5 shadow-xs">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-extrabold text-brand">
-                    Quick Revision
-                  </span>
+                  <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-extrabold text-brand">{uiText("Quick Revision")}</span>
                   {sn.chapter && (
                     <span className="text-xs font-semibold text-muted-foreground">
                       {term('chapter')} {sn.chapter.number}: {t(sn.chapter.title)}
@@ -169,8 +167,7 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
                   )}
                   {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
                   {q.chapter && (
-                    <span className="ml-auto text-xs font-semibold text-brand">
-                      Ch {q.chapter.number}: {t(q.chapter.title)}
+                    <span className="ml-auto text-xs font-semibold text-brand">{uiText("Ch ")}{q.chapter.number}: {t(q.chapter.title)}
                     </span>
                   )}
                 </header>

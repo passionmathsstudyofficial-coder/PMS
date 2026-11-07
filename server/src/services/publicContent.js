@@ -1503,8 +1503,13 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   const subjectTitle = combine(classLabel, subject.name);
   const scope = { class: cls._id, subject: subject._id };
 
+  // Reference-book chapters have their own namespace. A matching slug must not
+  // make the NCERT menu point into a different book's chapter or exercise.
+  const ncertBooks = await Book.find(vis(Book, preview, { category: 'ncert' })).select('_id').lean();
+  const chapterScope = { ...scope, book: { $in: [null, ...ncertBooks.map(book => book._id)] } };
+
   const chapterList = async (withExercises, withTopics) => {
-    const chapters = await Chapter.find(vis(Chapter, preview, scope))
+    const chapters = await Chapter.find(vis(Chapter, preview, chapterScope))
       .sort({ sortOrder: 1, number: 1 })
       .select('number title slug shortDescription image status featured')
       .populate({ path: 'image', select: MEDIA_SELECT })
@@ -1756,7 +1761,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   }
 
   // Chapter → Topic / Exercise → Question
-  const chapter = await Chapter.findOne(vis(Chapter, preview, { ...scope, slug: segments[2] })).populate([
+  const chapter = await Chapter.findOne(vis(Chapter, preview, { ...chapterScope, slug: segments[2] })).populate([
     { path: 'image', select: MEDIA_SELECT },
     { path: 'featuredImage', select: MEDIA_SELECT },
     { path: 'introVideo', select: VIDEO_SELECT },
@@ -1806,7 +1811,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     ]);
 
     const qCounts = await countsForExercises(exercises.map((e) => e._id), preview, effectiveSession);
-    const siblings = await Chapter.find(vis(Chapter, preview, scope)).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean();
+    const siblings = await Chapter.find(vis(Chapter, preview, chapterScope)).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean();
     const index = siblings.findIndex((s) => String(s._id) === String(ch._id));
     const nav = (s) => s && { label: term(terms, 'chapter', s.number), title: s.title, url: urls.chapter(cls, subject, s) };
 

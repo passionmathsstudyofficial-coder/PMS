@@ -15,6 +15,30 @@ export async function validateReferences(doc) {
     const count = await mongoose.model(ref).countDocuments({ _id: { $in: [...new Set(ids)] } });
     if (count !== new Set(ids).size) throw new ApiError(400, `Selected ${path} does not exist. Refresh and choose an existing record.`);
   }
+  if (doc.schema.path('book') && doc.book && doc.class &&
+      (doc.isNew || doc.isModified('book') || doc.isModified('class'))) {
+    const book = await mongoose.model('Book').findById(doc.book).select('class availableClasses').lean();
+    const cls = await mongoose.model('Class').findById(doc.class).select('number').lean();
+    if (book?.availableClasses?.length
+      ? !book.availableClasses.includes(cls?.number)
+      : book?.class && String(book.class) !== String(doc.class)) {
+      throw new ApiError(400, 'Selected book is not configured for this class. Choose the correct book or update its supported classes.');
+    }
+  }
+  if (doc.constructor.modelName === 'Chapter' && doc.status === 'published' && doc.isVisible &&
+      (doc.isNew || ['class','subject','book','slug','academicSession','status','isVisible'].some(field => doc.isModified(field)))) {
+    const Book = mongoose.model('Book');
+    const book = doc.book ? await Book.findById(doc.book).select('category').lean() : null;
+    if (!doc.book || book?.category === 'ncert') {
+      const ncertBooks = await Book.find({category:'ncert'}).select('_id').lean();
+      const duplicate = await mongoose.model('Chapter').exists({
+        _id: {$ne:doc._id}, class:doc.class, subject:doc.subject, slug:doc.slug,
+        academicSession:doc.academicSession, status:'published', isVisible:true,
+        book:{$in:[null,...ncertBooks.map(item=>item._id)]},
+      });
+      if (duplicate) throw new ApiError(409, 'This NCERT chapter URL is already published for the class and academic session. Edit the existing chapter or choose a unique slug.');
+    }
+  }
   // A supplied child cannot belong to another class/chapter/subject.
   for (const [field, parent] of Object.entries(parents)) {
     if (!doc.schema.path(field) || !doc.get(field) || !['topic', 'exercise', 'chapter'].includes(field)) continue;

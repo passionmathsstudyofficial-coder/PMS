@@ -94,9 +94,7 @@ export function AcademicSessionSelector({ sessions = [], currentSession, onSelec
                   <span className="flex items-center gap-2">
                     {s.name || s}
                     {s.isCurrent && (
-                      <span className={cn('rounded px-1.5 py-0.2 text-[10px] font-extrabold', isSelected ? 'bg-white/20 text-white' : 'bg-brand/15 text-brand')}>
-                        Current
-                      </span>
+                      <span className={cn('rounded px-1.5 py-0.2 text-[10px] font-extrabold', isSelected ? 'bg-white/20 text-white' : 'bg-brand/15 text-brand')}>{uiText("Current")}</span>
                     )}
                   </span>
                   {isSelected && <Check className="size-4 shrink-0" />}

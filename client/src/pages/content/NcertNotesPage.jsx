@@ -61,7 +61,7 @@ export default function NcertNotesPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="NOTES"
-        eyebrow={<Chip tone="brand">Chapter-wise NCERT Revision Notes</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("Chapter-wise NCERT Revision Notes")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित NCERT अध्याय-वार नोट्स`,
           en: `CBSE Class ${cls?.number || '6–12'} Maths NCERT Chapter-wise Notes`,
@@ -122,8 +122,7 @@ export default function NcertNotesPage({ data, breadcrumbs }) {
             >
               <option value="all">{uiText("All Chapters")}</option>
               {chapters.map((ch) => (
-                <option key={ch._id} value={String(ch._id)}>
-                  Ch {ch.number}: {t(ch.title)}
+                <option key={ch._id} value={String(ch._id)}>{uiText("Ch ")}{ch.number}: {t(ch.title)}
                 </option>
               ))}
             </select>
@@ -145,7 +144,7 @@ export default function NcertNotesPage({ data, breadcrumbs }) {
                 <div key={r._id} className="flex items-center justify-between rounded-xl border bg-card p-3 shadow-xs">
                   <div className="min-w-0 pr-2">
                     <h4 className="text-xs font-bold text-foreground truncate">{t(r.title)}</h4>
-                    <span className="text-[11px] text-muted-foreground">{r.fileSize || 'PDF Notes'}</span>
+                    <span className="text-[11px] text-muted-foreground">{r.fileSize || uiText('PDF Notes')}</span>
                   </div>
                   {r.fileUrl && (
                     <div className="flex items-center gap-1.5 shrink-0">

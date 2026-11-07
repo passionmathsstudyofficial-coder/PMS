@@ -104,7 +104,9 @@ export default function BooksListPage({ data, breadcrumbs }) {
               return (
                 <div
                   key={b._id}
-                  className="flex flex-col justify-between overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:border-brand/40 hover:shadow-lg"
+                  id={`book-${b._id}`}
+                  tabIndex={-1}
+                  className="scroll-mt-36 flex flex-col justify-between overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:border-brand/40 hover:shadow-lg"
                 >
                   <div className="p-5">
                     <div className="flex gap-4">

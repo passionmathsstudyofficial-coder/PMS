@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import {
@@ -49,13 +50,13 @@ export default function NotesManagerPage({ fixedCategory }) {
   });
 
   const CATEGORY_MAP = {
-    ncert: { label: 'NCERT Chapter-wise Notes', dbCat: 'ncert_notes' },
-    formulas: { label: 'All Maths Formula Sheets', dbCat: 'formula_sheet' },
-    'rs-aggarwal': { label: 'RS Aggarwal Formulas & Notes', dbCat: 'rs_aggarwal_notes' },
-    'rd-sharma': { label: 'RD Sharma Formulas & Notes', dbCat: 'rd_sharma_notes' },
-    'kc-sinha': { label: 'KC Sinha Formulas & Notes', dbCat: 'kc_sinha_notes' },
-    'ml-aggarwal': { label: 'ML Aggarwal Formulas & Notes', dbCat: 'ml_aggarwal_notes' },
-    vvi: { label: 'VVI Questions & Short Notes', dbCat: 'vvi_short_notes' },
+    ncert: { label: uiText('NCERT Chapter-wise Notes'), dbCat: 'ncert_notes' },
+    formulas: { label: uiText('All Maths Formula Sheets'), dbCat: 'formula_sheet' },
+    'rs-aggarwal': { label: uiText('RS Aggarwal Formulas & Notes'), dbCat: 'rs_aggarwal_notes' },
+    'rd-sharma': { label: uiText('RD Sharma Formulas & Notes'), dbCat: 'rd_sharma_notes' },
+    'kc-sinha': { label: uiText('KC Sinha Formulas & Notes'), dbCat: 'kc_sinha_notes' },
+    'ml-aggarwal': { label: uiText('ML Aggarwal Formulas & Notes'), dbCat: 'ml_aggarwal_notes' },
+    vvi: { label: uiText('VVI Questions & Short Notes'), dbCat: 'vvi_short_notes' },
   };
 
   useEffect(() => {
@@ -147,10 +148,10 @@ export default function NotesManagerPage({ fixedCategory }) {
 
       if (editingId) {
         await patch(`/content/notes/${editingId}`, payload);
-        toast.success('Note updated successfully');
+        toast.success(uiText('Note updated successfully'));
       } else {
         await post('/content/notes', payload);
-        toast.success('Note published successfully');
+        toast.success(uiText('Note published successfully'));
       }
 
       setModalOpen(false);
@@ -172,7 +173,7 @@ export default function NotesManagerPage({ fixedCategory }) {
     if (!window.confirm('Delete this note?')) return;
     try {
       await del(`/content/notes/${id}`);
-      toast.success('Note deleted');
+      toast.success(uiText('Note deleted'));
       loadNotes();
     } catch (err) {
       toast.apiError(err);
@@ -196,7 +197,7 @@ export default function NotesManagerPage({ fixedCategory }) {
   return (
     <div className="space-y-6">
       <Panel
-        title={`${currentCategoryMeta.label} Management`}
+        title={uiTemplate`${currentCategoryMeta.label} Management`}
         description={uiText("Publish chapter-wise revision notes, mathematical formulas, theorem proofs, and definitions.")}
       />
 
@@ -221,7 +222,7 @@ export default function NotesManagerPage({ fixedCategory }) {
       {/* Class & Chapter Filters */}
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border bg-card p-4 shadow-xs">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-bold text-foreground">Class:</span>
+          <span className="text-xs font-bold text-foreground">{uiText("Class:")}</span>
           <div className="flex gap-1">
             {classes.map((c) => (
               <button
@@ -242,20 +243,19 @@ export default function NotesManagerPage({ fixedCategory }) {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
-          <span className="text-xs font-bold text-foreground">Session:</span>
+          <span className="text-xs font-bold text-foreground">{uiText("Session:")}</span>
           <select value={selectedSession} onChange={(e) => setSelectedSession(e.target.value)} className="h-8 rounded-xl border border-border bg-background px-3 text-xs font-semibold">
             {sessions.map((session) => <option key={session._id} value={session.slug}>{session.name}</option>)}
           </select>
-          <span className="text-xs font-bold text-foreground">Chapter:</span>
+          <span className="text-xs font-bold text-foreground">{uiText("Chapter:")}</span>
           <select
             value={selectedChapter}
             onChange={(e) => setSelectedChapter(e.target.value)}
             className="h-8 rounded-xl border border-border bg-background px-3 text-xs font-semibold focus:ring-1 focus:ring-brand"
           >
-            <option value="all">All Chapters</option>
+            <option value="all">{uiText("All Chapters")}</option>
             {chapters.map((ch) => (
-              <option key={ch._id} value={ch._id}>
-                Ch {ch.number}: {ch.title?.en || ch.title?.hi}
+              <option key={ch._id} value={ch._id}>{uiText("Ch ")}{ch.number}: {ch.title?.en || ch.title?.hi}
               </option>
             ))}
           </select>
@@ -266,23 +266,21 @@ export default function NotesManagerPage({ fixedCategory }) {
       <div className="rounded-2xl border bg-card shadow-xs overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex items-center justify-between">
           <h3 className="text-sm font-bold text-foreground">
-            {currentCategoryMeta.label} — {selectedClass ? `Class ${selectedClass.number}` : 'Select Class'} ({notes.length})
+            {currentCategoryMeta.label} — {selectedClass ? uiTemplate`Class ${selectedClass.number}` : uiText('Select Class')} ({notes.length})
           </h3>
           <div className="flex items-center gap-2">
             <Button type="button" size="sm" variant="outline" onClick={handleEditLanding} className="gap-1.5 font-bold cursor-pointer">
               <FileText className="size-3.5 text-brand" />
-              <span>Edit Landing Page</span>
+              <span>{uiText("Edit Landing Page")}</span>
             </Button>
-            <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`notes/new?${new URLSearchParams({ class: selectedClass?._id || '', chapter: selectedChapter !== 'all' ? selectedChapter : chapters[0]?._id || '', category: currentCategoryMeta.dbCat, session: selectedSession, ...(selectedBook?._id ? { book: selectedBook._id } : {}) })}`)}><Plus className="size-3.5" /><span>Add Note / Formula Sheet</span></Link></Button>
+            <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`notes/new?${new URLSearchParams({ class: selectedClass?._id || '', chapter: selectedChapter !== 'all' ? selectedChapter : chapters[0]?._id || '', category: currentCategoryMeta.dbCat, session: selectedSession, ...(selectedBook?._id ? { book: selectedBook._id } : {}) })}`)}><Plus className="size-3.5" /><span>{uiText("Add Note / Formula Sheet")}</span></Link></Button>
           </div>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">Loading notes...</div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Loading notes...")}</div>
         ) : notes.length === 0 ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">
-            No notes added in this section yet. Click "+ Add Note / Formula Sheet" to publish.
-          </div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("No notes added in this section yet. Click \"+ Add Note / Formula Sheet\" to publish.")}</div>
         ) : (
           <div className="divide-y divide-border/60">
             {notes.map((note) => (
@@ -290,8 +288,7 @@ export default function NotesManagerPage({ fixedCategory }) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     {note.chapter && (
-                      <span className="rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-bold">
-                        Ch {note.chapter.number}: {note.chapter.title?.en || note.chapter.title?.hi}
+                      <span className="rounded-md bg-brand/10 text-brand px-2 py-0.5 text-xs font-bold">{uiText("Ch ")}{note.chapter.number}: {note.chapter.title?.en || note.chapter.title?.hi}
                       </span>
                     )}
                   </div>
@@ -306,7 +303,7 @@ export default function NotesManagerPage({ fixedCategory }) {
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  <Button asChild variant="ghost" size="icon-sm" title="Edit note with full draft and media controls" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Button asChild variant="ghost" size="icon-sm" title={uiText("Edit note with full draft and media controls")} className="h-8 w-8 text-muted-foreground hover:text-foreground">
                     <Link to={adminUrl(`notes/${note._id}`)}><Edit2 className="size-3.5" /></Link>
                   </Button>
                   <Button
@@ -329,31 +326,30 @@ export default function NotesManagerPage({ fixedCategory }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
           <div className="w-full max-w-xl rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95 my-8">
             <h3 className="text-base font-bold text-foreground mb-4">
-              {editingId ? 'Edit Note' : 'Add Note / Formula Sheet'} (Class {selectedClass?.number})
+              {editingId ? uiText('Edit Note') : uiText('Add Note / Formula Sheet')}{uiText(" (Class ")}{selectedClass?.number})
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold block mb-1">Assign Chapter</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Assign Chapter")}</label>
                 <select
                   value={form.chapter}
                   onChange={(e) => setForm({ ...form, chapter: e.target.value })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
                 >
-                  <option value="">General (No specific chapter)</option>
+                  <option value="">{uiText("General (No specific chapter)")}</option>
                   {chapters.map((ch) => (
-                    <option key={ch._id} value={ch._id}>
-                      Ch {ch.number}: {ch.title?.en || ch.title?.hi}
+                    <option key={ch._id} value={ch._id}>{uiText("Ch ")}{ch.number}: {ch.title?.en || ch.title?.hi}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Note Title (English) *</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Note Title (English) *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Fundamental Theorem of Arithmetic & Proofs"
+                  placeholder={uiText("e.g. Fundamental Theorem of Arithmetic & Proofs")}
                   value={form.title.en}
                   onChange={(e) => setForm({ ...form, title: { ...form.title, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
@@ -362,10 +358,10 @@ export default function NotesManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Note Title (Hindi)</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Note Title (Hindi)")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. अंकगणित की आधारभूत प्रमेय"
+                  placeholder={uiText("e.g. अंकगणित की आधारभूत प्रमेय")}
                   value={form.title.hi}
                   onChange={(e) => setForm({ ...form, title: { ...form.title, hi: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
@@ -373,10 +369,10 @@ export default function NotesManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Summary / Key Concept</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Summary / Key Concept")}</label>
                 <textarea
                   rows={2}
-                  placeholder="Brief summary of theorems and definitions"
+                  placeholder={uiText("Brief summary of theorems and definitions")}
                   value={form.summary.en}
                   onChange={(e) => setForm({ ...form, summary: { ...form.summary, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
@@ -384,10 +380,10 @@ export default function NotesManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Detailed Content (LaTeX: $...$)</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Detailed Content (LaTeX: $...$)")}</label>
                 <textarea
                   rows={6}
-                  placeholder="Detailed notes, formula proofs, and worked examples"
+                  placeholder={uiText("Detailed notes, formula proofs, and worked examples")}
                   value={form.content.en}
                   onChange={(e) => setForm({ ...form, content: { ...form.content, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm font-mono text-xs"
@@ -395,11 +391,9 @@ export default function NotesManagerPage({ fixedCategory }) {
               </div>
 
               <div className="flex gap-2 justify-end pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setModalOpen(false)}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setModalOpen(false)}>{uiText("Cancel")}</Button>
                 <Button type="submit" size="sm" className="font-bold">
-                  {editingId ? 'Update Note' : 'Publish Note'}
+                  {editingId ? uiText('Update Note') : uiText('Publish Note')}
                 </Button>
               </div>
             </form>

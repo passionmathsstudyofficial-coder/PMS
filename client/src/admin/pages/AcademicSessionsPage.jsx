@@ -41,7 +41,7 @@ export default function AcademicSessionsPage() {
   const handleSave = async (e) => {
     e.preventDefault();
     if (!form.name.trim()) {
-      toast.error('Session name is required');
+      toast.error(uiText('Session name is required'));
       return;
     }
     try {
@@ -52,10 +52,10 @@ export default function AcademicSessionsPage() {
       };
       if (editingId) {
         await patch(`/content/sessions/${editingId}`, payload);
-        toast.success('Session updated successfully');
+        toast.success(uiText('Session updated successfully'));
       } else {
         await post('/content/sessions', payload);
-        toast.success('Session created successfully');
+        toast.success(uiText('Session created successfully'));
       }
       setEditingId(null);
       setForm({
@@ -88,7 +88,7 @@ export default function AcademicSessionsPage() {
     if (!window.confirm('Are you sure you want to delete this session?')) return;
     try {
       await del(`/content/sessions/${id}`);
-      toast.success('Session deleted');
+      toast.success(uiText('Session deleted'));
       loadSessions();
     } catch (err) {
       toast.apiError(err);
@@ -98,7 +98,7 @@ export default function AcademicSessionsPage() {
   const handleSetCurrent = async (id) => {
     try {
       await patch(`/content/sessions/${id}`, { isCurrent: true });
-      toast.success('Current session updated');
+      toast.success(uiText('Current session updated'));
       loadSessions();
     } catch (err) {
       toast.apiError(err);
@@ -127,7 +127,7 @@ export default function AcademicSessionsPage() {
               </label>
               <input
                 type="text"
-                placeholder="e.g. 2026–27"
+                placeholder={uiText("e.g. 2026–27")}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand"
@@ -137,11 +137,10 @@ export default function AcademicSessionsPage() {
 
             <div>
               <label className="text-xs font-semibold text-foreground block mb-1">
-                {uiText("URL Slug")} (optional)
-              </label>
+                {uiText("URL Slug")}{uiText(" (optional)")}</label>
               <input
                 type="text"
-                placeholder="e.g. 2026-27"
+                placeholder={uiText("e.g. 2026-27")}
                 value={form.slug}
                 onChange={(e) => setForm({ ...form, slug: e.target.value })}
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand"
@@ -166,7 +165,7 @@ export default function AcademicSessionsPage() {
               </label>
               <textarea
                 rows={2}
-                placeholder="e.g. Current session for CBSE Class 6-12"
+                placeholder={uiText("e.g. Current session for CBSE Class 6-12")}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
                 className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-brand"
@@ -233,11 +232,9 @@ export default function AcademicSessionsPage() {
             </div>
 
             {loading ? (
-              <div className="p-8 text-center text-xs text-muted-foreground">Loading sessions...</div>
+              <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Loading sessions...")}</div>
             ) : sessions.length === 0 ? (
-              <div className="p-8 text-center text-xs text-muted-foreground">
-                No academic sessions configured yet. Add your first session using the form.
-              </div>
+              <div className="p-8 text-center text-xs text-muted-foreground">{uiText("No academic sessions configured yet. Add your first session using the form.")}</div>
             ) : (
               <div className="divide-y divide-border/60">
                 {sessions.map((s) => (
@@ -247,13 +244,10 @@ export default function AcademicSessionsPage() {
                         <span className="font-bold text-sm text-foreground">{s.name}</span>
                         {s.isCurrent && (
                           <span className="rounded-full bg-brand/10 text-brand px-2 py-0.5 text-[10px] font-extrabold flex items-center gap-1">
-                            <Star className="size-3 fill-current" /> Current
-                          </span>
+                            <Star className="size-3 fill-current" />{uiText(" Current")}</span>
                         )}
                         {!s.isActive && (
-                          <span className="rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-[10px] font-semibold">
-                            Inactive
-                          </span>
+                          <span className="rounded-full bg-muted text-muted-foreground px-2 py-0.5 text-[10px] font-semibold">{uiText("Inactive")}</span>
                         )}
                       </div>
                       {s.description && (
@@ -261,8 +255,7 @@ export default function AcademicSessionsPage() {
                           {s.description.en || s.description.hi || (typeof s.description === 'string' ? s.description : '')}
                         </p>
                       )}
-                      <span className="text-[11px] text-muted-foreground block mt-1">
-                        Year: {s.year} | Slug: {s.slug || '—'}
+                      <span className="text-[11px] text-muted-foreground block mt-1">{uiText("Year: ")}{s.year}{uiText(" | Slug: ")}{s.slug || '—'}
                       </span>
                     </div>
 
@@ -273,9 +266,7 @@ export default function AcademicSessionsPage() {
                           size="sm"
                           onClick={() => handleSetCurrent(s._id)}
                           className="h-8 text-xs text-brand hover:text-brand"
-                        >
-                          Set Current
-                        </Button>
+                        >{uiText("Set Current")}</Button>
                       )}
                       <Button
                         variant="ghost"

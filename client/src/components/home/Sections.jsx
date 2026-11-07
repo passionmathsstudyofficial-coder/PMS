@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ArrowRight, BookOpen, FileText, Star } from 'lucide-react';
 import { useRef, useState } from 'react';
@@ -192,8 +193,8 @@ function ReferenceBookIllustration({ slug, author }) {
 
       {/* Bottom book publisher or edition */}
       <div className="relative z-10 flex items-center justify-between border-t border-border/40 pt-2 text-[10px] font-semibold text-muted-foreground">
-        <span className="truncate max-w-[150px]">{author || 'Mathematics'}</span>
-        <span className="font-mono opacity-80">Class 6–12</span>
+        <span className="truncate max-w-[150px]">{author || uiText('Mathematics')}</span>
+        <span className="font-mono opacity-80">{uiText("Class 6–12")}</span>
       </div>
     </div>
   );
@@ -331,7 +332,7 @@ export function ReferenceBooksSection({ section }) {
                         key={clsNum}
                         to={`/reference-solutions/${book.slug}/class-${clsNum}`}
                         className="rounded-lg border border-border/60 bg-background/70 px-2 py-0.5 text-[11px] font-bold text-foreground/85 transition hover:border-brand hover:bg-brand hover:text-white"
-                        title={`${bookTitle} - Class ${clsNum}`}
+                        title={uiTemplate`${bookTitle} - Class ${clsNum}`}
                       >
                         {clsNum}
                       </Link>

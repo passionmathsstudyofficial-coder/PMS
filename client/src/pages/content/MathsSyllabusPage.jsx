@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -50,7 +51,7 @@ export default function MathsSyllabusPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="SYLLABUS"
-        eyebrow={<Chip tone="brand">Curriculum & Course Structure</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("Curriculum & Course Structure")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित पाठ्यक्रम (${currentSession})`,
           en: `CBSE Class ${cls?.number || '6–12'} Mathematics Syllabus ${currentSession}`,
@@ -104,11 +105,9 @@ export default function MathsSyllabusPage({ data, breadcrumbs }) {
           <div className="mb-10 rounded-2xl border border-brand/20 bg-brand/5 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="rounded-md bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand uppercase tracking-wider">
-                  Syllabus
-                </span>
+                <span className="rounded-md bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand uppercase tracking-wider">{uiText("Syllabus")}</span>
                 <h3 className="text-base font-bold text-foreground mt-1">
-                  {t(resources[0].title) || `CBSE Class ${cls?.number || '6-12'} Maths Official Syllabus PDF`}
+                  {t(resources[0].title) || uiTemplate`CBSE Class ${cls?.number || '6-12'} Maths Official Syllabus PDF`}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {uiText("Published syllabus document for the selected academic session.")}
@@ -152,9 +151,9 @@ export default function MathsSyllabusPage({ data, breadcrumbs }) {
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="border-b bg-muted/50 font-bold text-muted-foreground">
                 <tr>
-                  <th className="px-4 py-3">Unit No.</th>
-                  <th className="px-4 py-3">Unit Name</th>
-                  <th className="px-4 py-3 text-right">Marks Weightage</th>
+                  <th className="px-4 py-3">{uiText("Unit No.")}</th>
+                  <th className="px-4 py-3">{uiText("Unit Name")}</th>
+                  <th className="px-4 py-3 text-right">{uiText("Marks Weightage")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60 font-medium">

@@ -357,7 +357,7 @@ export function ImportantQuestionEditor({ id }) {
       {() => (
         <>
           <EditorShell
-            title={editor.isNew ? uiText("New important question") : adminText(form.title) || (form.number ? `Q${form.number}` : uiText("Important question"))}
+            title={editor.isNew ? uiText("New important question") : adminText(form.title) || (form.number ? uiTemplate`Q${form.number}` : uiText("Important question"))}
             description={classNumber ? uiTemplate`Class ${classNumber} — ${form.category ? form.category.toUpperCase() : ''}` : undefined}
             backTo={adminUrl('important-questions')}
             backLabel={uiText("Important Questions Management")}
@@ -431,12 +431,12 @@ export function ImportantQuestionEditor({ id }) {
                 />
                 <SelectField label={uiText("Difficulty")} value={form.difficulty} onChange={(v) => setField('difficulty', v)} options={DIFFICULTY_OPTIONS} />
 
-                <TextField label={uiText("Question Number / Code")} value={form.number} onChange={(v) => setField('number', v)} placeholder="1 or 1(a)" />
+                <TextField label={uiText("Question Number / Code")} value={form.number} onChange={(v) => setField('number', v)} placeholder={uiText("1 or 1(a)")} />
                 <NumberField label={uiText("Marks")} value={form.marks} onChange={(v) => setField('marks', v)} min={0} max={100} />
                 <TextField label={uiText("Board (e.g. CBSE, ICSE)")} value={form.board} onChange={(v) => setField('board', v)} placeholder="CBSE" />
 
                 <NumberField label={uiText("Exam Year")} value={form.year} onChange={(v) => setField('year', v)} min={2000} max={2100} />
-                <TextField label={uiText("Paper Set")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder="Set 1 (Code 30/1/1)" />
+                <TextField label={uiText("Paper Set")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder={uiText("Set 1 (Code 30/1/1)")} />
                 <TextField label={uiText("Source")} value={form.source} onChange={(v) => setField('source', v)} placeholder={uiText("CBSE 2024 · NCERT Exemplar")} />
 
                 <div className="sm:col-span-2">

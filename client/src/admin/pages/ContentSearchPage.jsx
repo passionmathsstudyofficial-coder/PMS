@@ -54,28 +54,25 @@ export default function ContentSearchPage() {
           <Search className="size-4 text-muted-foreground absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by keyword, formula, chapter number, or question..."
+            placeholder={uiText("Search by keyword, formula, chapter number, or question...")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full rounded-2xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
           />
         </div>
-        <Button type="submit" className="font-bold px-6">
-          Search
-        </Button>
+        <Button type="submit" className="font-bold px-6">{uiText("Search")}</Button>
       </form>
 
       {/* Results */}
       <div className="rounded-2xl border bg-card shadow-xs overflow-hidden">
-        <div className="p-4 border-b bg-muted/30 font-bold text-xs uppercase tracking-wider text-muted-foreground">
-          Search Results ({results.length})
+        <div className="p-4 border-b bg-muted/30 font-bold text-xs uppercase tracking-wider text-muted-foreground">{uiText("Search Results (")}{results.length})
         </div>
 
         {searching ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">Searching database...</div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Searching database...")}</div>
         ) : results.length === 0 ? (
           <div className="p-8 text-center text-xs text-muted-foreground">
-            {query ? 'No matching educational content found.' : 'Enter a query above to search.'}
+            {query ? uiText('No matching educational content found.') : uiText('Enter a query above to search.')}
           </div>
         ) : (
           <div className="divide-y divide-border/60">
@@ -88,7 +85,7 @@ export default function ContentSearchPage() {
                 {r.snippet && (
                   <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{r.snippet}</p>
                 )}
-                <a href={r.url} className="text-xs font-semibold text-brand hover:underline block mt-1">Edit {r.status === 'draft' ? '(draft)' : ''}</a>
+                <a href={r.url} className="text-xs font-semibold text-brand hover:underline block mt-1">{uiText("Edit ")}{r.status === 'draft' ? uiText('(draft)') : ''}</a>
               </div>
             ))}
           </div>

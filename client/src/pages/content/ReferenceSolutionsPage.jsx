@@ -509,8 +509,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                       key={q._id}
                       href={`#q-${q.slug}`}
                       className="rounded-lg border bg-background px-2.5 py-1 text-xs font-bold text-foreground transition hover:border-brand hover:bg-brand hover:text-white"
-                    >
-                      Q{q.number}
+                    >{uiText("Q")}{q.number}
                     </a>
                   ))}
                 </div>

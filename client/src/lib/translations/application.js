@@ -1,7 +1,9 @@
 import { production } from './production.js';
+import { completion } from './completion.js';
 // Reviewed interface labels, dynamic messages and API errors.
 export const application = {
   ...production,
+  ...completion,
   "Starts at": { "en": "Starts at", "hi": "शुरू होने का समय" },
   "Ends at": { "en": "Ends at", "hi": "समाप्त होने का समय" },
   "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.": {

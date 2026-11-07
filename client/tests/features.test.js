@@ -153,7 +153,7 @@ test('footer uses published books and never invents unavailable class links',asy
  const {MemoryRouter}=await import('react-router');
  for(const books of [[],[{slug:'audit-only',title:{en:'Only published book'},availableClasses:[10]}]]){
   const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}});
-  client.setQueryData(['site','en'],{settings:{whatsappBanner:{enabled:false}},navigation:{footer:[],footerBottom:[]},navigationConfigured:{footer:true,footerBottom:true},referenceBooks:books,terms:{}});
+  client.setQueryData(['site','en'],{settings:{whatsappBanner:{enabled:false}},navigation:{footer:[{label:{en:'RS Aggarwal — Book details'},url:'/class-10/maths/books#book-audit',newTab:true,isVisible:true}],footerBottom:[]},navigationConfigured:{footer:true,footerBottom:true},referenceBooks:books,terms:{}});
   const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
   await act(async()=>root.render(React.createElement(QueryClientProvider,{client},React.createElement(MemoryRouter,null,React.createElement(SiteProvider,null,React.createElement(Footer),React.createElement(ReferenceBooksDropdown,{label:'Audit books'}))))));
   const button=host.querySelector('button');await act(async()=>button.click());
@@ -162,6 +162,7 @@ test('footer uses published books and never invents unavailable class links',asy
  assert.equal(host.querySelectorAll('footer h2').length,2+books.length);
  assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
  assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
+   const custom=host.querySelector('footer a[href="/class-10/maths/books#book-audit"]');assert.ok(custom);assert.match(custom.textContent,/Book details/);assert.equal(custom.target,'_blank');
   assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,0);
   assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,0);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);

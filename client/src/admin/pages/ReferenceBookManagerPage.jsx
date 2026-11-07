@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router';
 import {
@@ -356,12 +357,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
       if (editingChapterId) {
         const updated = await put(`/content/chapters/${editingChapterId}`, payload);
-        toast.success('Chapter updated');
+        toast.success(uiText('Chapter updated'));
         setChapters((prev) => prev.map((c) => (c._id === editingChapterId ? updated : c)));
         if (selectedChapter?._id === editingChapterId) setSelectedChapter(updated);
       } else {
         const created = await post('/content/chapters', payload);
-        toast.success('Chapter added');
+        toast.success(uiText('Chapter added'));
         setChapters((prev) => [...prev, created]);
         setSelectedChapter(created);
       }
@@ -375,7 +376,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (!window.confirm(`Delete Chapter ${ch.number}: "${ch.title?.en || ''}"? This will delete its exercises and questions.`)) return;
     try {
       await del(`/content/chapters/${ch._id}`);
-      toast.success('Chapter deleted');
+      toast.success(uiText('Chapter deleted'));
       setChapters((prev) => prev.filter((c) => c._id !== ch._id));
       if (selectedChapter?._id === ch._id) {
         setSelectedChapter(chapters.find((c) => c._id !== ch._id) || null);
@@ -422,12 +423,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
       if (editingExerciseId) {
         const updated = await put(`/content/exercises/${editingExerciseId}`, payload);
-        toast.success('Exercise updated');
+        toast.success(uiText('Exercise updated'));
         setExercises((prev) => prev.map((e) => (e._id === editingExerciseId ? updated : e)));
         if (selectedExercise?._id === editingExerciseId) setSelectedExercise(updated);
       } else {
         const created = await post('/content/exercises', payload);
-        toast.success('Exercise created');
+        toast.success(uiText('Exercise created'));
         setExercises((prev) => [...prev, created]);
         setSelectedExercise(created);
       }
@@ -441,7 +442,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (!window.confirm(`Delete Exercise ${ex.number}? All its questions will be removed.`)) return;
     try {
       await del(`/content/exercises/${ex._id}`);
-      toast.success('Exercise deleted');
+      toast.success(uiText('Exercise deleted'));
       setExercises((prev) => prev.filter((e) => e._id !== ex._id));
       if (selectedExercise?._id === ex._id) {
         setSelectedExercise(exercises.find((e) => e._id !== ex._id) || null);
@@ -471,7 +472,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (!window.confirm(`Delete Question ${q.number}? This will permanently remove the question and its solution.`)) return;
     try {
       await del(`/content/questions/${q._id}`);
-      toast.success('Question deleted');
+      toast.success(uiText('Question deleted'));
       reloadQuestions();
     } catch (err) {
       toast.apiError(err);
@@ -481,7 +482,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   const handleDuplicateQuestion = async (q) => {
     try {
       await post(`/content/questions/${q._id}/duplicate`, {});
-      toast.success('Question duplicated');
+      toast.success(uiText('Question duplicated'));
       reloadQuestions();
     } catch (err) {
       toast.apiError(err);
@@ -492,7 +493,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleToggleSolutionStatus = async (q) => {
     if (!q.solution?._id) {
-      toast.error('No solution exists yet for this question. Click "Edit Solution" to write one.');
+      toast.error(uiText('No solution exists yet for this question. Click "Edit Solution" to write one.'));
       return;
     }
     const nextStatus = q.solution.status === 'published' ? 'draft' : 'published';
@@ -549,7 +550,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       {/* Top Header & Overview */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Panel
-          title={`${getBookDisplayName()} Solutions CMS`}
+          title={uiTemplate`${getBookDisplayName()} Solutions CMS`}
           description={uiText(
             'Complete Manual Educational Authoring Workflow: Book → Class → Subject → Chapter → Exercise → Question → Multiple Solution Methods (Standard & Shortcut).'
           )}
@@ -603,7 +604,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           >
             {books.map((b) => (
               <option key={b.slug} value={b.slug}>
-                {b.title?.en || b.slug} {b.author ? `(${b.author})` : ''}
+                {b.title?.en || b.slug} {b.author ? uiTemplate`(${b.author})` : ''}
               </option>
             ))}
           </select>
@@ -630,7 +631,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                         ? 'border-border bg-background text-foreground hover:bg-muted'
                         : 'border-border/40 bg-muted/30 text-muted-foreground/60 cursor-not-allowed line-through'
                   )}
-                  title={isAvailable ? `Class ${num}` : `Class ${num} not enabled for this book`}
+                  title={isAvailable ? uiTemplate`Class ${num}` : uiTemplate`Class ${num} not enabled for this book`}
                 >
                   {num}
                 </button>
@@ -650,7 +651,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           >
             {sessions.map((s) => (
               <option key={s.slug || s.name || s} value={s.slug || s.name || s}>
-                {s.name || s} {s.isCurrent ? '(Current)' : ''}
+                {s.name || s} {s.isCurrent ? uiText('(Current)') : ''}
               </option>
             ))}
           </select>
@@ -664,7 +665,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           <div className="flex items-center justify-between pb-3 border-b mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <Layers className="size-3.5 text-brand" />
-              <span>Chapters ({chapters.length})</span>
+              <span>{uiText("Chapters (")}{chapters.length})</span>
             </h3>
             <Button
               type="button"
@@ -673,17 +674,14 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               onClick={() => handleOpenChapterModal(null)}
               className="h-7 px-2 text-xs gap-1 cursor-pointer font-bold"
             >
-              <Plus className="size-3" /> Add
-            </Button>
+              <Plus className="size-3" />{uiText(" Add")}</Button>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-[550px]">
             {loadingChapters ? (
-              <div className="p-4 text-center text-xs text-muted-foreground">Loading chapters...</div>
+              <div className="p-4 text-center text-xs text-muted-foreground">{uiText("Loading chapters...")}</div>
             ) : chapters.length === 0 ? (
-              <div className="p-4 text-center text-xs text-muted-foreground">
-                No chapters added for this book & class. Click "+ Add" to create Chapter 1.
-              </div>
+              <div className="p-4 text-center text-xs text-muted-foreground">{uiText("No chapters added for this book & class. Click \"+ Add\" to create Chapter 1.")}</div>
             ) : (
               chapters.map((ch) => {
                 const isSelected = selectedChapter?._id === ch._id;
@@ -702,14 +700,14 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                       onClick={() => setSelectedChapter(ch)}
                       className="flex-1 text-left text-xs font-semibold truncate cursor-pointer pr-1"
                     >
-                      <span className="font-mono text-brand font-bold mr-1.5">Ch {ch.number}:</span>
-                      <span>{ch.title?.en || ch.title?.hi || `Chapter ${ch.number}`}</span>
+                      <span className="font-mono text-brand font-bold mr-1.5">{uiText("Ch ")}{ch.number}:</span>
+                      <span>{ch.title?.en || ch.title?.hi || uiTemplate`Chapter ${ch.number}`}</span>
                     </button>
                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
                       <Link
                         to={adminUrl(`chapters/${ch._id}`)}
                         className="p-1 hover:text-brand cursor-pointer"
-                        title="Open Full Chapter Editor (Image, Video, Formulas, Notes, PDF, SEO)"
+                        title={uiText("Open Full Chapter Editor (Image, Video, Formulas, Notes, PDF, SEO)")}
                       >
                         <ExternalLink className="size-3" />
                       </Link>
@@ -720,7 +718,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           handleOpenChapterModal(ch);
                         }}
                         className="p-1 hover:text-brand cursor-pointer"
-                        title="Edit Chapter"
+                        title={uiText("Edit Chapter")}
                       >
                         <Edit2 className="size-3" />
                       </button>
@@ -731,7 +729,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           handleDeleteChapter(ch);
                         }}
                         className="p-1 hover:text-destructive cursor-pointer"
-                        title="Delete Chapter"
+                        title={uiText("Delete Chapter")}
                       >
                         <Trash2 className="size-3" />
                       </button>
@@ -748,7 +746,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           <div className="flex items-center justify-between pb-3 border-b mb-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <ListOrdered className="size-3.5 text-brand" />
-              <span>Exercises ({exercises.length})</span>
+              <span>{uiText("Exercises (")}{exercises.length})</span>
             </h3>
             {selectedChapter && (
               <Button
@@ -758,19 +756,17 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 onClick={() => handleOpenExerciseModal(null)}
                 className="h-7 px-2 text-xs gap-1 cursor-pointer font-bold"
               >
-                <Plus className="size-3" /> Add
-              </Button>
+                <Plus className="size-3" />{uiText(" Add")}</Button>
             )}
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-[550px]">
             {!selectedChapter ? (
-              <div className="p-4 text-center text-xs text-muted-foreground">Select a chapter first</div>
+              <div className="p-4 text-center text-xs text-muted-foreground">{uiText("Select a chapter first")}</div>
             ) : loadingExercises ? (
-              <div className="p-4 text-center text-xs text-muted-foreground">Loading exercises...</div>
+              <div className="p-4 text-center text-xs text-muted-foreground">{uiText("Loading exercises...")}</div>
             ) : exercises.length === 0 ? (
-              <div className="p-4 text-center text-xs text-muted-foreground">
-                No exercises found. Click "+ Add" to add Exercise {selectedChapter.number}.1.
+              <div className="p-4 text-center text-xs text-muted-foreground">{uiText("No exercises found. Click \"+ Add\" to add Exercise ")}{selectedChapter.number}.1.
               </div>
             ) : (
               exercises.map((ex) => {
@@ -790,14 +786,14 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                       onClick={() => setSelectedExercise(ex)}
                       className="flex-1 text-left text-xs font-semibold cursor-pointer truncate pr-1"
                     >
-                      <span className="font-mono font-bold mr-1.5">Ex {ex.number}</span>
+                      <span className="font-mono font-bold mr-1.5">{uiText("Ex ")}{ex.number}</span>
                       {ex.title?.en && <span className="text-muted-foreground text-[11px]">({ex.title.en})</span>}
                     </button>
                     <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
                       <Link
                         to={adminUrl(`exercises/${ex._id}`)}
                         className="p-1 hover:text-brand cursor-pointer"
-                        title="Open Full Exercise Editor"
+                        title={uiText("Open Full Exercise Editor")}
                       >
                         <ExternalLink className="size-3" />
                       </Link>
@@ -808,7 +804,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           handleOpenExerciseModal(ex);
                         }}
                         className="p-1 hover:text-brand cursor-pointer"
-                        title="Edit Exercise"
+                        title={uiText("Edit Exercise")}
                       >
                         <Edit2 className="size-3" />
                       </button>
@@ -819,7 +815,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           handleDeleteExercise(ex);
                         }}
                         className="p-1 hover:text-destructive cursor-pointer"
-                        title="Delete Exercise"
+                        title={uiText("Delete Exercise")}
                       >
                         <Trash2 className="size-3" />
                       </button>
@@ -838,8 +834,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <HelpCircle className="size-3.5 text-brand" />
-                <span>
-                  Questions & Solutions {selectedExercise ? `· Ex ${selectedExercise.number}` : ''} ({questions.length})
+                <span>{uiText("Questions & Solutions ")}{selectedExercise ? uiTemplate`· Ex ${selectedExercise.number}` : ''} ({questions.length})
                 </span>
               </h3>
             </div>
@@ -861,7 +856,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 <Search className="size-3.5 text-muted-foreground absolute left-2.5 top-2.5" />
                 <input
                   type="text"
-                  placeholder="Search Q# or text..."
+                  placeholder={uiText("Search Q# or text...")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full h-8 pl-8 pr-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-brand"
@@ -875,9 +870,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                   onChange={(e) => setQuestionStatusFilter(e.target.value)}
                   className="w-full h-8 text-xs rounded-lg border border-border bg-background px-2"
                 >
-                  <option value="all">Q: All</option>
-                  <option value="published">Q: Published</option>
-                  <option value="draft">Q: Draft</option>
+                  <option value="all">{uiText("Q: All")}</option>
+                  <option value="published">{uiText("Q: Published")}</option>
+                  <option value="draft">{uiText("Q: Draft")}</option>
                 </select>
               </div>
 
@@ -888,10 +883,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                   onChange={(e) => setSolutionStatusFilter(e.target.value)}
                   className="w-full h-8 text-xs rounded-lg border border-border bg-background px-2"
                 >
-                  <option value="all">Sol: All</option>
-                  <option value="published">Sol: Published</option>
-                  <option value="draft">Sol: Draft</option>
-                  <option value="missing">Sol: Missing</option>
+                  <option value="all">{uiText("Sol: All")}</option>
+                  <option value="published">{uiText("Sol: Published")}</option>
+                  <option value="draft">{uiText("Sol: Draft")}</option>
+                  <option value="missing">{uiText("Sol: Missing")}</option>
                 </select>
               </div>
             </div>
@@ -900,15 +895,13 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           {/* Questions Table / List */}
           <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 max-h-[550px]">
             {!selectedExercise ? (
-              <div className="p-8 text-center text-xs text-muted-foreground">
-                Select an exercise to manage its questions and step-by-step solutions
-              </div>
+              <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Select an exercise to manage its questions and step-by-step solutions")}</div>
             ) : loadingQuestions ? (
-              <div className="p-8 text-center text-xs text-muted-foreground">Loading questions...</div>
+              <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Loading questions...")}</div>
             ) : questions.length === 0 ? (
               <div className="p-8 text-center text-xs text-muted-foreground border border-dashed rounded-xl m-2">
-                <p className="font-semibold text-foreground mb-1">No questions created yet in Exercise {selectedExercise.number}</p>
-                <p className="mb-3 text-[11px]">Type question statements or upload scanned question images, then author step-by-step solutions.</p>
+                <p className="font-semibold text-foreground mb-1">{uiText("No questions created yet in Exercise ")}{selectedExercise.number}</p>
+                <p className="mb-3 text-[11px]">{uiText("Type question statements or upload scanned question images, then author step-by-step solutions.")}</p>
                 <Button asChild size="sm" className="font-bold">
                   <Link to={adminUrl(`questions/new?book=${selectedBook?._id || ''}&class=${selectedClass?._id || ''}&chapter=${selectedChapter?._id || ''}&exercise=${selectedExercise?._id || ''}&session=${selectedSession}`)}>
                     <Plus className="size-3.5 mr-1" /> {uiText('Create Question 1 (Full CMS Editor)')}
@@ -916,7 +909,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </Button>
               </div>
             ) : filteredQuestions.length === 0 ? (
-              <div className="p-6 text-center text-xs text-muted-foreground">No questions match the current search or filters.</div>
+              <div className="p-6 text-center text-xs text-muted-foreground">{uiText("No questions match the current search or filters.")}</div>
             ) : (
               filteredQuestions.map((q) => {
                 const hasSolution = Boolean(q.solution);
@@ -933,12 +926,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                     {/* Top Row: Q Number, Badges, Status Toggles */}
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-1.5">
-                        <span className="rounded-md bg-brand text-white font-extrabold text-xs px-2 py-0.5 font-mono">
-                          Q {q.number}
+                        <span className="rounded-md bg-brand text-white font-extrabold text-xs px-2 py-0.5 font-mono">{uiText("Q ")}{q.number}
                         </span>
 
                         <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded border border-border bg-muted/40 text-muted-foreground">
-                          {q.questionType || 'subjective'}
+                          {q.questionType || uiText('subjective')}
                         </span>
 
                         <span
@@ -951,20 +943,15 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                                 : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40'
                           )}
                         >
-                          {q.difficulty || 'medium'} · {q.marks || 2}M
-                        </span>
+                          {q.difficulty || uiText('medium')} · {q.marks || 2}{uiText("M")}</span>
 
                         {/* Language Badges */}
                         <div className="flex items-center gap-0.5 ml-1">
                           {q.text?.en && (
-                            <span className="text-[9px] font-extrabold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 px-1 rounded">
-                              EN
-                            </span>
+                            <span className="text-[9px] font-extrabold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 px-1 rounded">{uiText("EN")}</span>
                           )}
                           {q.text?.hi && (
-                            <span className="text-[9px] font-extrabold bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 px-1 rounded">
-                              HI
-                            </span>
+                            <span className="text-[9px] font-extrabold bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 px-1 rounded">{uiText("HI")}</span>
                           )}
                         </div>
                       </div>
@@ -981,9 +968,8 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800'
                               : 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/40 dark:border-amber-800'
                           )}
-                          title="Click to toggle Question Publication status"
-                        >
-                          Q: {q.status === 'published' ? 'Published' : 'Draft'}
+                          title={uiText("Click to toggle Question Publication status")}
+                        >{uiText("Q: ")}{q.status === 'published' ? uiText('Published') : uiText('Draft')}
                         </button>
 
                         {/* Solution Status Toggle */}
@@ -997,14 +983,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                                 ? 'bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800'
                                 : 'bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/40 dark:border-amber-800'
                             )}
-                            title="Click to toggle Solution Publication status"
-                          >
-                            Sol: {isSolPublished ? `Published (${methodsCount}M)` : 'Draft'}
+                            title={uiText("Click to toggle Solution Publication status")}
+                          >{uiText("Sol: ")}{isSolPublished ? uiTemplate`Published (${methodsCount}M)` : uiText('Draft')}
                           </button>
                         ) : (
-                          <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-muted text-muted-foreground border border-border">
-                            Sol: None
-                          </span>
+                          <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-muted text-muted-foreground border border-border">{uiText("Sol: None")}</span>
                         )}
                       </div>
                     </div>
@@ -1016,12 +999,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           type="button"
                           onClick={() => setPreviewImageModal(firstImage.url)}
                           className="shrink-0 relative group rounded-md border overflow-hidden size-12 bg-muted/30 cursor-pointer"
-                          title="Click to zoom scanned question image"
+                          title={uiText("Click to zoom scanned question image")}
                         >
-                          <img src={firstImage.url} alt="Question Diagram" className="size-full object-cover" />
-                          <span className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[9px] font-bold">
-                            Zoom
-                          </span>
+                          <img src={firstImage.url} alt={uiText("Question Diagram")} className="size-full object-cover" />
+                          <span className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[9px] font-bold">{uiText("Zoom")}</span>
                         </button>
                       )}
 
@@ -1030,10 +1011,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           <div dangerouslySetInnerHTML={{ __html: q.text?.en || q.text?.hi }} />
                         ) : hasImageAttachment ? (
                           <span className="text-muted-foreground italic flex items-center gap-1">
-                            <ImageIcon className="size-3" /> [Scanned question page / diagram attached]
-                          </span>
+                            <ImageIcon className="size-3" />{uiText(" [Scanned question page / diagram attached]")}</span>
                         ) : (
-                          <span className="text-muted-foreground italic">[No statement typed yet]</span>
+                          <span className="text-muted-foreground italic">{uiText("[No statement typed yet]")}</span>
                         )}
                       </div>
                     </div>
@@ -1045,20 +1025,20 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                         <Link
                           to={adminUrl(`questions/${q._id}`)}
                           className="font-bold text-foreground hover:text-brand inline-flex items-center gap-1 cursor-pointer"
-                          title="Open in Full Question Editor"
+                          title={uiText("Open in Full Question Editor")}
                         >
                           <Edit2 className="size-3" />
-                          <span>Edit Question</span>
+                          <span>{uiText("Edit Question")}</span>
                         </Link>
 
                         {/* Edit / Write Solution */}
                         <Link
                           to={adminUrl(`questions/${q._id}`)}
                           className="font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer ml-2"
-                          title="Open Full Solution Builder with Multiple Methods"
+                          title={uiText("Open Full Solution Builder with Multiple Methods")}
                         >
                           <Sparkles className="size-3" />
-                          <span>{hasSolution ? 'Edit Solution & Methods' : '+ Write Solution'}</span>
+                          <span>{hasSolution ? uiText('Edit Solution & Methods') : uiText('+ Write Solution')}</span>
                         </Link>
                       </div>
 
@@ -1068,9 +1048,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           to={`/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${selectedChapter?.slug}/${selectedExercise?.slug}`}
                           target="_blank"
                           className="text-muted-foreground hover:text-brand inline-flex items-center gap-1 font-semibold"
-                          title="Preview student view"
+                          title={uiText("Preview student view")}
                         >
-                          <span>Live</span>
+                          <span>{uiText("Live")}</span>
                           <ExternalLink className="size-3" />
                         </Link>
 
@@ -1079,7 +1059,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           type="button"
                           onClick={() => handleDuplicateQuestion(q)}
                           className="text-muted-foreground hover:text-foreground inline-flex items-center gap-0.5 cursor-pointer"
-                          title="Duplicate Question"
+                          title={uiText("Duplicate Question")}
                         >
                           <Copy className="size-3" />
                         </button>
@@ -1089,7 +1069,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           type="button"
                           onClick={() => handleDeleteQuestion(q)}
                           className="text-muted-foreground hover:text-destructive inline-flex items-center gap-0.5 cursor-pointer"
-                          title="Delete Question"
+                          title={uiText("Delete Question")}
                         >
                           <Trash2 className="size-3" />
                         </button>
@@ -1115,7 +1095,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           <div className="w-full max-w-xl rounded-2xl border bg-card p-6 shadow-2xl animate-in zoom-in-95 my-8">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <h3 className="text-base font-extrabold text-foreground">
-                {isEditingBook ? `Edit Reference Book: ${bookForm.title?.en}` : `Add New Reference Book`}
+                {isEditingBook ? uiTemplate`Edit Reference Book: ${bookForm.title?.en}` : uiTemplate`Add New Reference Book`}
               </h3>
               <button
                 type="button"
@@ -1128,10 +1108,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
             <form onSubmit={handleSaveBook} className="space-y-4">
               <div>
-                <label className="text-xs font-bold block mb-1">Book Name (English) *</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Book Name (English) *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. RS Aggarwal Solutions"
+                  placeholder={uiText("e.g. RS Aggarwal Solutions")}
                   value={bookForm.title.en}
                   onChange={(e) => setBookForm({ ...bookForm, title: { ...bookForm.title, en: e.target.value } })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
@@ -1140,10 +1120,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               </div>
 
               <div>
-                <label className="text-xs font-bold block mb-1">Book Name (Hindi)</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Book Name (Hindi)")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. आर.एस. अग्रवाल गणित समाधान"
+                  placeholder={uiText("e.g. आर.एस. अग्रवाल गणित समाधान")}
                   value={bookForm.title.hi}
                   onChange={(e) => setBookForm({ ...bookForm, title: { ...bookForm.title, hi: e.target.value } })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
@@ -1152,10 +1132,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold block mb-1">Author Name *</label>
+                  <label className="text-xs font-bold block mb-1">{uiText("Author Name *")}</label>
                   <input
                     type="text"
-                    placeholder="e.g. R.S. Aggarwal"
+                    placeholder={uiText("e.g. R.S. Aggarwal")}
                     value={bookForm.author}
                     onChange={(e) => setBookForm({ ...bookForm, author: e.target.value })}
                     className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
@@ -1164,10 +1144,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold block mb-1">Publisher</label>
+                  <label className="text-xs font-bold block mb-1">{uiText("Publisher")}</label>
                   <input
                     type="text"
-                    placeholder="e.g. Bharati Bhawan"
+                    placeholder={uiText("e.g. Bharati Bhawan")}
                     value={bookForm.publisher}
                     onChange={(e) => setBookForm({ ...bookForm, publisher: e.target.value })}
                     className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
@@ -1177,10 +1157,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold block mb-1">Edition / Publication</label>
+                  <label className="text-xs font-bold block mb-1">{uiText("Edition / Publication")}</label>
                   <input
                     type="text"
-                    placeholder="e.g. 2026-27 Edition"
+                    placeholder={uiText("e.g. 2026-27 Edition")}
                     value={bookForm.edition}
                     onChange={(e) => setBookForm({ ...bookForm, edition: e.target.value })}
                     className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
@@ -1188,23 +1168,21 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold block mb-1">Status</label>
+                  <label className="text-xs font-bold block mb-1">{uiText("Status")}</label>
                   <select
                     value={bookForm.status}
                     onChange={(e) => setBookForm({ ...bookForm, status: e.target.value })}
                     className="w-full h-8.5 rounded-xl border border-border bg-background px-2 text-xs font-bold text-brand"
                   >
-                    <option value="published">Published</option>
-                    <option value="draft">Draft (Private)</option>
+                    <option value="published">{uiText("Published")}</option>
+                    <option value="draft">{uiText("Draft (Private)")}</option>
                   </select>
                 </div>
               </div>
 
               {/* Available Classes Multi-Select */}
               <div>
-                <label className="text-xs font-bold block mb-1.5">
-                  Available Classes (Select classes enabled for this book) *
-                </label>
+                <label className="text-xs font-bold block mb-1.5">{uiText("Available Classes (Select classes enabled for this book) *")}</label>
                 <div className="flex flex-wrap gap-2">
                   {[6, 7, 8, 9, 10, 11, 12].map((num) => {
                     const checked = (bookForm.availableClasses || []).includes(num);
@@ -1223,8 +1201,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                             ? 'bg-brand text-white border-brand shadow-xs'
                             : 'bg-background text-muted-foreground border-border hover:bg-muted'
                         )}
-                      >
-                        Class {num} {checked ? '✓' : ''}
+                      >{uiText("Class ")}{num} {checked ? '✓' : ''}
                       </button>
                     );
                   })}
@@ -1232,12 +1209,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setBookModal(false)}>
-                  Cancel
-                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setBookModal(false)}>{uiText("Cancel")}</Button>
                 <Button type="submit" size="sm" className="font-bold bg-brand text-white hover:bg-brand/90">
                   <Save className="size-3.5 mr-1" />
-                  {isEditingBook ? 'Update Book Settings' : 'Create Book'}
+                  {isEditingBook ? uiText('Update Book Settings') : uiText('Create Book')}
                 </Button>
               </div>
             </form>
@@ -1252,11 +1227,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
             <h3 className="text-base font-extrabold text-foreground mb-4">
-              {editingChapterId ? 'Edit Chapter' : `Add Chapter to ${getBookDisplayName()}`}
+              {editingChapterId ? uiText('Edit Chapter') : uiTemplate`Add Chapter to ${getBookDisplayName()}`}
             </h3>
             <form onSubmit={handleSaveChapter} className="space-y-4">
               <div>
-                <label className="text-xs font-bold block mb-1">Chapter Number *</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Chapter Number *")}</label>
                 <input
                   type="number"
                   value={chapterForm.number}
@@ -1266,10 +1241,10 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold block mb-1">Chapter Title (English) *</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Chapter Title (English) *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Relations and Functions"
+                  placeholder={uiText("e.g. Relations and Functions")}
                   value={chapterForm.title.en}
                   onChange={(e) => setChapterForm({ ...chapterForm, title: { ...chapterForm.title, en: e.target.value } })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
@@ -1277,22 +1252,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold block mb-1">Chapter Title (Hindi)</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Chapter Title (Hindi)")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. सम्बन्ध एवं फलन"
+                  placeholder={uiText("e.g. सम्बन्ध एवं फलन")}
                   value={chapterForm.title.hi}
                   onChange={(e) => setChapterForm({ ...chapterForm, title: { ...chapterForm.title, hi: e.target.value } })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
                 />
               </div>
               <div className="flex gap-2 justify-end pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setChapterModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="font-bold">
-                  Save Chapter
-                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setChapterModal(false)}>{uiText("Cancel")}</Button>
+                <Button type="submit" size="sm" className="font-bold">{uiText("Save Chapter")}</Button>
               </div>
             </form>
           </div>
@@ -1306,14 +1277,14 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
             <h3 className="text-base font-extrabold text-foreground mb-4">
-              {editingExerciseId ? 'Edit Exercise' : `Add Exercise to Chapter ${selectedChapter?.number}`}
+              {editingExerciseId ? uiText('Edit Exercise') : uiTemplate`Add Exercise to Chapter ${selectedChapter?.number}`}
             </h3>
             <form onSubmit={handleSaveExercise} className="space-y-4">
               <div>
-                <label className="text-xs font-bold block mb-1">Exercise Number / Code *</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Exercise Number / Code *")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. 1.1, 1.2, Miscellaneous"
+                  placeholder={uiText("e.g. 1.1, 1.2, Miscellaneous")}
                   value={exerciseForm.number}
                   onChange={(e) => setExerciseForm({ ...exerciseForm, number: e.target.value })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
@@ -1321,22 +1292,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold block mb-1">Exercise Title (Optional)</label>
+                <label className="text-xs font-bold block mb-1">{uiText("Exercise Title (Optional)")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Types of Relations"
+                  placeholder={uiText("e.g. Types of Relations")}
                   value={exerciseForm.title.en}
                   onChange={(e) => setExerciseForm({ ...exerciseForm, title: { ...exerciseForm.title, en: e.target.value } })}
                   className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
                 />
               </div>
               <div className="flex gap-2 justify-end pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setExerciseModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="font-bold">
-                  Save Exercise
-                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setExerciseModal(false)}>{uiText("Cancel")}</Button>
+                <Button type="submit" size="sm" className="font-bold">{uiText("Save Exercise")}</Button>
               </div>
             </form>
           </div>
@@ -1352,7 +1319,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           onClick={() => setPreviewImageModal(null)}
         >
           <div className="relative max-w-4xl max-h-[90vh] overflow-hidden rounded-2xl bg-background p-2">
-            <img src={previewImageModal} alt="Zoom Preview" className="max-h-[85vh] object-contain mx-auto" />
+            <img src={previewImageModal} alt={uiText("Zoom Preview")} className="max-h-[85vh] object-contain mx-auto" />
             <button
               type="button"
               onClick={() => setPreviewImageModal(null)}

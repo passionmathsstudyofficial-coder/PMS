@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import {
@@ -142,7 +143,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
         status: 'published',
       };
       await post('/content/important-questions', payload);
-      toast.success('Question published successfully');
+      toast.success(uiText('Question published successfully'));
       setModalOpen(false);
       setForm({
         title: { en: '', hi: '' },
@@ -165,7 +166,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     if (!window.confirm('Delete this question?')) return;
     try {
       await del(`/content/important-questions/${id}`);
-      toast.success('Question deleted');
+      toast.success(uiText('Question deleted'));
       loadQuestions();
     } catch (err) {
       toast.apiError(err);
@@ -187,7 +188,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   return (
     <div className="space-y-6">
       <Panel
-        title={`${CATEGORY_NAMES[activeCategory] || 'Important Questions'} Management`}
+        title={uiTemplate`${CATEGORY_NAMES[activeCategory] || 'Important Questions'} Management`}
         description={uiText("Publish board questions, previous year papers, marking schemes, formulas, and step-by-step mathematical answers.")}
       />
 
@@ -196,7 +197,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
         {/* Category switcher */}
         <div className="flex items-center gap-1.5">
           <Star className="size-4 text-brand" />
-          <span className="text-xs font-bold text-foreground">Category:</span>
+          <span className="text-xs font-bold text-foreground">{uiText("Category:")}</span>
           <div className="flex flex-wrap gap-1">
             {Object.entries(CATEGORY_NAMES).map(([key, label]) => (
               <Link
@@ -217,7 +218,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
 
         {/* Class selector */}
         <div className="flex items-center gap-1.5 ml-auto">
-          <span className="text-xs font-bold text-foreground">Class:</span>
+          <span className="text-xs font-bold text-foreground">{uiText("Class:")}</span>
           <div className="flex gap-1">
             {classes.map((c) => (
               <button
@@ -236,27 +237,25 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
             ))}
           </div>
         </div>
-        <label className="flex items-center gap-2 text-xs font-bold">Session:
-          <select value={selectedSession} onChange={(e) => setSelectedSession(e.target.value)} className="h-8 rounded-lg border bg-background px-2">
+        <label className="flex items-center gap-2 text-xs font-bold">{uiText("Session:")}<select value={selectedSession} onChange={(e) => setSelectedSession(e.target.value)} className="h-8 rounded-lg border bg-background px-2">
             {sessions.map((session) => <option key={session._id} value={session.slug}>{session.name}</option>)}
           </select>
         </label>
-        <label className="flex items-center gap-2 text-xs font-bold">Exam year:
-          <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="h-8 rounded-lg border bg-background px-2">
-            <option value="all">All years</option>
+        <label className="flex items-center gap-2 text-xs font-bold">{uiText("Exam year:")}<select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} className="h-8 rounded-lg border bg-background px-2">
+            <option value="all">{uiText("All years")}</option>
             {[...new Set([2026, 2025, 2024, ...questions.map((q) => q.year).filter(Boolean)])].sort((a, b) => b - a).map((year) => <option key={year} value={year}>{year}</option>)}
           </select>
         </label>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-brand/5 p-3 text-sm">
-        <span>{activeCategory === 'syllabus' ? 'Syllabus PDFs are managed in the resource library; class chapters are managed under NCERT Mathematics → Chapter Management.' : 'Manage downloadable papers, marking schemes, and supporting PDFs for this category.'}</span>
+        <span>{activeCategory === 'syllabus' ? uiText('Syllabus PDFs are managed in the resource library; class chapters are managed under NCERT Mathematics → Chapter Management.') : uiText('Manage downloadable papers, marking schemes, and supporting PDFs for this category.')}</span>
         <div className="flex items-center gap-2">
           <Button type="button" size="sm" variant="outline" onClick={handleEditLanding} className="gap-1.5 font-bold cursor-pointer">
             <FileText className="size-3.5 text-brand" />
-            <span>Edit Landing Page</span>
+            <span>{uiText("Edit Landing Page")}</span>
           </Button>
-          <Button asChild size="sm" variant="outline"><Link to={adminUrl(`resources?resourceType=${resourceType}${selectedClass?._id ? `&class=${selectedClass._id}` : ''}`)}>Open related resources</Link></Button>
+          <Button asChild size="sm" variant="outline"><Link to={adminUrl(`resources?resourceType=${resourceType}${selectedClass?._id ? `&class=${selectedClass._id}` : ''}`)}>{uiText("Open related resources")}</Link></Button>
         </div>
       </div>
 
@@ -264,17 +263,15 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       <div className="rounded-2xl border bg-card shadow-xs overflow-hidden">
         <div className="p-4 border-b bg-muted/30 flex items-center justify-between">
           <h3 className="text-sm font-bold text-foreground">
-            {CATEGORY_NAMES[activeCategory]} — Class {selectedClass?.number} ({questions.length})
+            {CATEGORY_NAMES[activeCategory]}{uiText(" — Class ")}{selectedClass?.number} ({questions.length})
           </h3>
-          {activeCategory !== 'syllabus' && <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`important-questions-legacy/new?${new URLSearchParams({ class: selectedClass?._id || '', category: activeCategory, session: selectedSession, ...(selectedYear !== 'all' ? { year: selectedYear } : {}) })}`)}><Plus className="size-3.5" /><span>Add Question</span></Link></Button>}
+          {activeCategory !== 'syllabus' && <Button asChild size="sm" className="gap-1.5 font-bold"><Link to={adminUrl(`important-questions-legacy/new?${new URLSearchParams({ class: selectedClass?._id || '', category: activeCategory, session: selectedSession, ...(selectedYear !== 'all' ? { year: selectedYear } : {}) })}`)}><Plus className="size-3.5" /><span>{uiText("Add Question")}</span></Link></Button>}
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">Loading questions...</div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("Loading questions...")}</div>
         ) : questions.length === 0 ? (
-          <div className="p-8 text-center text-xs text-muted-foreground">
-            No questions added in this category yet. Click "+ Add Question" to publish one.
-          </div>
+          <div className="p-8 text-center text-xs text-muted-foreground">{uiText("No questions added in this category yet. Click \"+ Add Question\" to publish one.")}</div>
         ) : (
           <div className="divide-y divide-border/60">
             {questions.map((q) => (
@@ -292,21 +289,19 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
                       </span>
                     )}
                     <span className="text-[11px] font-semibold text-muted-foreground uppercase">
-                      {q.difficulty} · {q.marks} Marks
-                    </span>
+                      {q.difficulty} · {q.marks}{uiText(" Marks")}</span>
                   </div>
                   <h4 className="text-sm font-bold text-foreground line-clamp-2">
-                    {q.title?.en || q.title?.hi || q.text?.en || 'Question'}
+                    {q.title?.en || q.title?.hi || q.text?.en || uiText('Question')}
                   </h4>
                   {q.blocks?.length > 0 && (
                     <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1 mt-1">
-                      <CheckCircle2 className="size-3" /> Step-by-Step Solution Provided
-                    </span>
+                      <CheckCircle2 className="size-3" />{uiText(" Step-by-Step Solution Provided")}</span>
                   )}
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  <Button asChild variant="ghost" size="icon-sm" title="Edit full question and solution" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Button asChild variant="ghost" size="icon-sm" title={uiText("Edit full question and solution")} className="h-8 w-8 text-muted-foreground hover:text-foreground">
                     <Link to={adminUrl(`important-questions-legacy/${q._id}`)}><Edit2 className="size-3.5" /></Link>
                   </Button>
                   <Button
@@ -328,14 +323,13 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
           <div className="w-full max-w-xl rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95 my-8">
-            <h3 className="text-base font-bold text-foreground mb-4">
-              Add {CATEGORY_NAMES[activeCategory]} (Class {selectedClass?.number})
+            <h3 className="text-base font-bold text-foreground mb-4">{uiText("Add ")}{CATEGORY_NAMES[activeCategory]}{uiText(" (Class ")}{selectedClass?.number})
             </h3>
 
             <form onSubmit={handleSave} className="space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-xs font-semibold block mb-1">Exam Year</label>
+                  <label className="text-xs font-semibold block mb-1">{uiText("Exam Year")}</label>
                   <input
                     type="number"
                     value={form.year}
@@ -344,17 +338,17 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold block mb-1">Paper Set</label>
+                  <label className="text-xs font-semibold block mb-1">{uiText("Paper Set")}</label>
                   <input
                     type="text"
-                    placeholder="e.g. Set 1"
+                    placeholder={uiText("e.g. Set 1")}
                     value={form.paperSet}
                     onChange={(e) => setForm({ ...form, paperSet: e.target.value })}
                     className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold block mb-1">Marks</label>
+                  <label className="text-xs font-semibold block mb-1">{uiText("Marks")}</label>
                   <input
                     type="number"
                     value={form.marks}
@@ -365,10 +359,10 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Question Title / Topic (optional)</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Question Title / Topic (optional)")}</label>
                 <input
                   type="text"
-                  placeholder="e.g. Quadratic Formula Derivation"
+                  placeholder={uiText("e.g. Quadratic Formula Derivation")}
                   value={form.title.en}
                   onChange={(e) => setForm({ ...form, title: { ...form.title, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
@@ -376,10 +370,10 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Question Text (LaTeX formulas: $...$) *</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Question Text (LaTeX formulas: $...$) *")}</label>
                 <textarea
                   rows={3}
-                  placeholder="e.g. Find the roots of the quadratic equation: $2x^2 - 7x + 3 = 0$"
+                  placeholder={uiText("e.g. Find the roots of the quadratic equation: $2x^2 - 7x + 3 = 0$")}
                   value={form.text.en}
                   onChange={(e) => setForm({ ...form, text: { ...form.text, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
@@ -388,10 +382,10 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">Step-by-Step Mathematical Solution *</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Step-by-Step Mathematical Solution *")}</label>
                 <textarea
                   rows={6}
-                  placeholder={`Step 1: Compare with $ax^2 + bx + c = 0$
+                  placeholder={uiTemplate`Step 1: Compare with $ax^2 + bx + c = 0$
 Here $a = 2, b = -7, c = 3$
 
 Step 2: Apply the quadratic formula
@@ -404,12 +398,8 @@ $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$`}
               </div>
 
               <div className="flex gap-2 justify-end pt-3 border-t">
-                <Button type="button" variant="outline" size="sm" onClick={() => setModalOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="font-bold">
-                  Publish Question & Solution
-                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={() => setModalOpen(false)}>{uiText("Cancel")}</Button>
+                <Button type="submit" size="sm" className="font-bold">{uiText("Publish Question & Solution")}</Button>
               </div>
             </form>
           </div>

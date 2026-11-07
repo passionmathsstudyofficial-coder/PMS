@@ -75,7 +75,9 @@ export function uiTemplate(strings, ...values) {
   return translateUi(key, language, Object.fromEntries(values.map((value, i) => [`v${i}`, value])));
 }
 export function hasUiTranslation(source) {
-  return Boolean(application[source] || remaining[source] || hi[source]);
+  const text = String(source || '').trim();
+  return Boolean(application[text] || remaining[text] || hi[text] || canonicalEntries.has(text) || reverse.has(text) ||
+    messagePatterns.some(pattern => pattern.expression.test(text)));
 }
 
 if (typeof window !== 'undefined') {

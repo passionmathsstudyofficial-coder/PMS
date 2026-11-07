@@ -197,7 +197,7 @@ export function ResourceEditor({ id }) {
                 <input type="number" min="2000" max="2100" value={doc.year || ''} onChange={(e) => set('year', e.target.value ? Number(e.target.value) : undefined)} placeholder="2026" className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
               </Field>
               <Field label={uiText("Paper Set / Series")}>
-                <input type="text" value={doc.paperSet || ''} onChange={(e) => set('paperSet', e.target.value)} placeholder="Set 1" className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
+                <input type="text" value={doc.paperSet || ''} onChange={(e) => set('paperSet', e.target.value)} placeholder={uiText("Set 1")} className="h-9 w-full rounded-md border bg-transparent px-3 text-xs" />
               </Field>
             </div>
           </Panel>

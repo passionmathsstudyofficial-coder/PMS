@@ -1,0 +1,413 @@
+{
+  "source": {
+    "book": "Ganita Prakash — Mathematics, Grade 6, English",
+    "officialUrl": "https://ncert.nic.in/textbook.php?fegp1=0-10",
+    "reviewedGovernmentMirror": "https://scertharyana.gov.in/saksham-resource/",
+    "reviewedEdition": "Haryana 2025 authorised NCERT adoption; original NCERT 2024 text",
+    "currentCurriculumCrossCheck": "https://ciet.ncert.gov.in/activity/grade6?lang=en",
+    "copyright": "NCERT textbook remains NCERT material. PMS explanations, revision notes, practice questions and worked solutions below are independently written original material. No official exercise set is reproduced.",
+    "editionLimitation": "Direct NCERT downloads were unavailable during review. No claim is made to have inspected an unavailable 2026 reprint."
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Patterns in Mathematics",
+      "textbookPage": 1,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp101.pdf",
+      "objectives": "Recognise and explain number patterns; connect dot arrangements with triangular and square numbers.",
+      "revision": "Write several terms before guessing a rule. Consecutive square numbers differ by successive odd numbers: 1, 4, 9, 16 have gaps 3, 5, 7. Triangular numbers count rows of 1, 2, 3, ... dots. A pattern rule should explain every given term; a short list alone need not determine a unique continuation.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Using the rule “add the next odd number”, continue 1, 4, 9, 16 by two terms.",
+          "answer": "25, 36",
+          "steps": [
+            "The differences so far are 3, 5 and 7.",
+            "Add 9 to 16 to get 25.",
+            "Add 11 to 25 to get 36. These are the next two square numbers."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "A dot triangle has rows containing 1, 2, 3, 4, 5 and 6 dots. How many dots does it contain?",
+          "answer": "21 dots",
+          "steps": [
+            "Count each row once.",
+            "1 + 2 + 3 + 4 + 5 + 6 = (1 + 6) + (2 + 5) + (3 + 4).",
+            "The three pairs each total 7, so there are 3 × 7 = 21 dots."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "Starting at 7, double the previous term each time. Write the next three terms and explain the rule.",
+          "answer": "14, 28, 56",
+          "steps": [
+            "7 × 2 = 14.",
+            "14 × 2 = 28.",
+            "28 × 2 = 56. The rule multiplies the previous term by 2; it does not add a fixed number."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Lines and Angles",
+      "textbookPage": 13,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp102.pdf",
+      "objectives": "Distinguish a line, ray and line segment; measure, compare and classify angles.",
+      "revision": "A line extends endlessly in both directions. A ray has one endpoint; a line segment has two. An angle measures the opening between two rays with a common endpoint. Acute angles are smaller than 90°, a right angle is 90°, obtuse angles lie between 90° and 180°, and a straight angle is 180°. Use the protractor scale that begins at zero on the starting arm.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Classify angles of 38°, 90°, 127° and 180°.",
+          "answer": "Acute; right; obtuse; straight",
+          "steps": [
+            "38° is greater than 0° and less than 90°, so it is acute.",
+            "90° is a right angle.",
+            "127° is between 90° and 180°, so it is obtuse. 180° is a straight angle."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "Two adjoining angles make a straight angle. One measures 64°. Find the other.",
+          "answer": "116°",
+          "steps": [
+            "A straight angle measures 180°.",
+            "Subtract the known part: 180° − 64° = 116°.",
+            "Check: 64° + 116° = 180°."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "Draw a ray AB. Use a protractor to construct an angle of 52° at A. Describe the steps.",
+          "answer": "A 52° angle with vertex A",
+          "steps": [
+            "Place the protractor centre on A and align its zero line with ray AB.",
+            "On the scale beginning at zero along AB, mark point C at 52°.",
+            "Draw ray AC. Check that the opening from AB to AC is 52°; the drawing is acute."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Number Play",
+      "textbookPage": 55,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp103.pdf",
+      "objectives": "Explore digit operations, palindromes and estimation; explain each operation rather than assuming a pattern always holds.",
+      "revision": "A digit sum adds the digits of a number. A palindrome reads the same forwards and backwards. Reverse-and-add is an exploration, not a promise that every starting number quickly becomes a palindrome. When estimating, state what you rounded and use the estimate to judge whether an exact result is reasonable.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Find the digit sum of 5836. Is 5836 a palindrome?",
+          "answer": "22; no",
+          "steps": [
+            "Add the digits: 5 + 8 + 3 + 6 = 22.",
+            "The reversed digits give 6385.",
+            "Since 5836 and 6385 are different, 5836 is not a palindrome."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "Apply reverse-and-add once to 47. Is the result a palindrome?",
+          "answer": "121; yes",
+          "steps": [
+            "Reverse 47 to get 74.",
+            "Add: 47 + 74 = 121.",
+            "121 reads identically in either direction. This verifies this example only."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "Estimate 392 + 608 by rounding each number to the nearest hundred, then calculate the exact total.",
+          "answer": "Estimate 1000; exact total 1000",
+          "steps": [
+            "392 rounds to 400 and 608 rounds to 600.",
+            "The estimated total is 400 + 600 = 1000.",
+            "The exact total is 392 + 608 = 1000, which agrees with the estimate."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Data Handling and Presentation",
+      "textbookPage": 74,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp104.pdf",
+      "objectives": "Organise categorical data, interpret a key and read a bar graph with a stated scale.",
+      "revision": "A frequency is the number of times a category occurs. Give a table or graph a title and label its categories and scale. In a pictograph, the key tells how many objects one symbol represents. A bar graph uses separated bars for categories; read heights from the scale rather than comparing appearances alone.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "A class votes for a game: chess 7 votes, badminton 9, kho-kho 6. Find the total and the most popular game.",
+          "answer": "22 votes; badminton",
+          "steps": [
+            "Add the frequencies: 7 + 9 + 6 = 22.",
+            "Compare 7, 9 and 6. The largest is 9.",
+            "Badminton has 9 votes, so it is the most popular of these choices."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "In a pictograph, one complete star represents 4 books. A shelf has 7 complete stars. How many books are shown?",
+          "answer": "28 books",
+          "steps": [
+            "Read the key: 1 star means 4 books.",
+            "There are 7 stars, so multiply 7 × 4.",
+            "The shelf is represented by 28 books."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "A bar graph uses 1 vertical division for 3 plants. The Monday bar is 5 divisions high and the Tuesday bar is 8 divisions high. How many more plants were counted on Tuesday?",
+          "answer": "9 more plants",
+          "steps": [
+            "Monday represents 5 × 3 = 15 plants.",
+            "Tuesday represents 8 × 3 = 24 plants.",
+            "24 − 15 = 9 more plants were counted on Tuesday."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "Prime Time",
+      "textbookPage": 107,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp105.pdf",
+      "objectives": "Find factors and multiples, distinguish primes and composites, and use prime factorisation and divisibility tests.",
+      "revision": "A factor divides a number exactly; a multiple is obtained by multiplying by a whole number. A prime number has exactly two positive factors, 1 and itself. The number 1 is neither prime nor composite. Co-prime numbers have no common positive factor other than 1; they need not both be prime. Prime factorisation writes a number as a product of primes.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Write the prime factorisation of 84.",
+          "answer": "2 × 2 × 3 × 7",
+          "steps": [
+            "84 = 2 × 42.",
+            "42 = 2 × 21 and 21 = 3 × 7.",
+            "Therefore 84 = 2 × 2 × 3 × 7. All four factors are prime."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "Are 14 and 25 co-prime? Justify using their factors.",
+          "answer": "Yes",
+          "steps": [
+            "The positive factors of 14 are 1, 2, 7 and 14.",
+            "The positive factors of 25 are 1, 5 and 25.",
+            "Their only common factor is 1, so they are co-prime, although both are composite."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "Is 438 divisible by 2, 3 and 9? Explain each decision.",
+          "answer": "By 2 and 3, but not by 9",
+          "steps": [
+            "The last digit is 8, so 438 is divisible by 2.",
+            "The digit sum is 4 + 3 + 8 = 15. Since 15 is divisible by 3, so is 438.",
+            "15 is not divisible by 9, so 438 is not divisible by 9."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Perimeter and Area",
+      "textbookPage": 129,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp106.pdf",
+      "objectives": "Distinguish boundary length and surface covered; calculate rectangle and square measures with correct units.",
+      "revision": "Perimeter measures the total boundary length and uses units such as cm. Area measures the surface covered and uses square units such as cm². For a rectangle of length l and width w, perimeter = 2(l + w) and area = l × w. For a square of side s, perimeter = 4s and area = s². Equal areas do not force equal perimeters.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "A rectangular card measures 11 cm by 7 cm. Find its perimeter and area.",
+          "answer": "Perimeter 36 cm; area 77 cm²",
+          "steps": [
+            "Perimeter = 2 × (11 + 7) = 2 × 18 = 36 cm.",
+            "Area = 11 × 7 = 77 cm².",
+            "The perimeter is a length; the area is measured in square centimetres."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "A square has perimeter 28 cm. Find its side length and area.",
+          "answer": "Side 7 cm; area 49 cm²",
+          "steps": [
+            "A square has four equal sides.",
+            "Each side is 28 ÷ 4 = 7 cm.",
+            "Area = 7 × 7 = 49 cm²."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "Rectangles A and B measure 9 cm by 4 cm and 12 cm by 3 cm. Compare their areas and perimeters.",
+          "answer": "Both areas 36 cm²; perimeters 26 cm and 30 cm",
+          "steps": [
+            "Area of A = 9 × 4 = 36 cm²; area of B = 12 × 3 = 36 cm².",
+            "Perimeter of A = 2 × (9 + 4) = 26 cm.",
+            "Perimeter of B = 2 × (12 + 3) = 30 cm. Equal areas can have different perimeters."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "title": "Fractions",
+      "textbookPage": 151,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp107.pdf",
+      "objectives": "Interpret equal shares and number-line positions; compare and add fractions using equivalent units.",
+      "revision": "A fraction counts equal-sized parts of a whole. Equivalent fractions name the same quantity: multiplying or dividing numerator and denominator by the same non-zero number preserves the value. To compare or add fractions, express them with a common denominator. Never add denominators when adding fractions with the same denominator.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Calculate 5/12 + 1/6 in simplest form.",
+          "answer": "7/12",
+          "steps": [
+            "Use denominator 12: 1/6 = 2/12.",
+            "5/12 + 2/12 = 7/12.",
+            "7 and 12 have no common factor greater than 1, so 7/12 is simplest."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "Which is greater, 7/10 or 2/3? Show a common-denominator comparison.",
+          "answer": "7/10",
+          "steps": [
+            "A common denominator of 10 and 3 is 30.",
+            "7/10 = 21/30 and 2/3 = 20/30.",
+            "21/30 is greater than 20/30, so 7/10 is greater."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "A 3-metre ribbon is shared equally among 4 children. How much ribbon does each receive?",
+          "answer": "3/4 metre",
+          "steps": [
+            "Equal sharing means dividing the total by 4.",
+            "3 ÷ 4 = 3/4 metre per child.",
+            "Check: four shares of 3/4 metre make 12/4 = 3 metres."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Playing with Constructions",
+      "textbookPage": 187,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp108.pdf",
+      "objectives": "Use a ruler, compass and perpendicular lines to construct and check squares and rectangles.",
+      "revision": "A construction must meet its stated measurements, not merely look right. A rectangle has four right angles and opposite sides equal. A square also has all four sides equal. Keep a compass opening fixed while transferring a length. Check perpendicular sides and the final lengths; rectangle diagonals are equal, but equality of diagonals alone does not prove any quadrilateral is a rectangle.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "Describe how to construct a square ABCD of side 4.5 cm using a ruler and set square.",
+          "answer": "Four 4.5 cm sides and four right angles",
+          "steps": [
+            "Draw AB = 4.5 cm. At A and B, draw perpendicular rays on the same side of AB.",
+            "Mark AD = 4.5 cm and BC = 4.5 cm on these rays. Join C to D.",
+            "Check CD = 4.5 cm and all four angles are right angles. The construction gives square ABCD in order."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "A student draws a rectangle 8 cm long and 5 cm wide. What lengths must its opposite sides have, and how should each corner be checked?",
+          "answer": "Opposite lengths 8 cm and 5 cm; each corner 90°",
+          "steps": [
+            "Opposite sides of a rectangle have equal lengths.",
+            "The side opposite the 8 cm side must be 8 cm; the side opposite the 5 cm side must be 5 cm.",
+            "Use a set square or protractor to check all four corners are 90°. Equal opposite sides alone are insufficient."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "The diagonals AC and BD of a constructed rectangle are measured. AC is 9.2 cm. What should BD measure, allowing for drawing accuracy?",
+          "answer": "Approximately 9.2 cm",
+          "steps": [
+            "A rectangle has equal diagonals.",
+            "AC and BD join opposite vertices.",
+            "Therefore BD should also measure 9.2 cm, within the precision of the drawing and ruler."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "Symmetry",
+      "textbookPage": 217,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp109.pdf",
+      "objectives": "Identify reflection axes and rotational symmetry, including the smallest angle of turn.",
+      "revision": "A line of symmetry divides a figure so that reflection across the line maps the whole figure onto itself. Rotational symmetry means a turn smaller than a full turn maps the figure onto itself. The rotational order counts matches during one full 360° turn, including the final position. For an order n figure, the smallest angle of turn is 360° ÷ n.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "For an unmarked square, state the number of lines of symmetry and the smallest angle of rotational symmetry.",
+          "answer": "4 lines; 90°",
+          "steps": [
+            "Two symmetry axes pass through the midpoints of opposite sides. Two more follow the diagonals.",
+            "This gives 4 lines of reflection symmetry.",
+            "A quarter turn maps the square onto itself, so the smallest turn is 360° ÷ 4 = 90°."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "An unmarked rectangle is 10 cm by 6 cm. How many reflection axes does it have? Does a 90° turn map it onto itself?",
+          "answer": "2 axes; no",
+          "steps": [
+            "One axis passes through the midpoints of the two long sides; another passes through the midpoints of the two short sides.",
+            "Its diagonals are not reflection axes because the adjacent side lengths differ.",
+            "A 90° turn exchanges the 10 cm and 6 cm directions, so the rectangle does not match. A 180° turn does match."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "A figure has rotational symmetry of order 6. Find its smallest positive angle of rotation.",
+          "answer": "60°",
+          "steps": [
+            "A full turn is 360°.",
+            "Order 6 means six equally spaced matching positions in that turn.",
+            "The smallest angle is 360° ÷ 6 = 60°."
+          ]
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "title": "The Other Side of Zero",
+      "textbookPage": 242,
+      "officialChapterUrl": "https://ncert.nic.in/textbook/pdf/fegp110.pdf",
+      "objectives": "Represent signed quantities on a number line; compare integers and interpret addition and subtraction.",
+      "revision": "Integers extend the number line to include negative whole numbers. Moving right increases the number; moving left decreases it. Zero separates positive and negative numbers and is neither positive nor negative. Opposite integers such as 5 and −5 sum to zero. Use signed quantities consistently when representing temperatures, floors, gains or losses.",
+      "questions": [
+        {
+          "number": "1",
+          "text": "At dawn the temperature is −4°C. It rises by 9°C. Find the new temperature.",
+          "answer": "5°C",
+          "steps": [
+            "Start at −4 on the number line.",
+            "A rise of 9 moves nine units to the right: −4 + 9.",
+            "Four units reach zero; five more reach 5. The temperature is 5°C."
+          ]
+        },
+        {
+          "number": "2",
+          "text": "Arrange −8, 3, 0, −2 and 5 in increasing order.",
+          "answer": "−8, −2, 0, 3, 5",
+          "steps": [
+            "Increasing order goes from left to right on a number line.",
+            "Among these negatives, −8 is left of −2. Both are less than zero.",
+            "The positive numbers follow zero, with 3 before 5."
+          ]
+        },
+        {
+          "number": "3",
+          "text": "A lift starts on floor +3 and goes down 7 floors. At which numbered floor does it stop? Count floor 0 as a floor.",
+          "answer": "Floor −4",
+          "steps": [
+            "Going down is a negative change, so calculate 3 − 7.",
+            "Three floors down reaches 0. Four further floors down reaches −4.",
+            "The lift stops at floor −4."
+          ]
+        }
+      ]
+    }
+  ]
+}

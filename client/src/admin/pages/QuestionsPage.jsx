@@ -84,7 +84,7 @@ export function QuestionsList() {
         { get header() { return uiText("प्रश्नावली"); }, className: 'hidden md:table-cell', cell: (q) => (q.exercise ? q.exercise.number : '—') },
         { get header() { return uiText("Class"); }, className: 'hidden lg:table-cell', cell: (q) => (q.class ? uiTemplate`Class ${q.class.number}` : '—') },
         { get header() { return uiText("Level"); }, className: 'hidden sm:table-cell', cell: (q) => <DifficultyBadge difficulty={q.difficulty} /> },
-        { get header() { return uiText("Marks"); }, className: 'hidden sm:table-cell', cell: (q) => (q.marks ? `${q.marks}M` : '—') },
+        { get header() { return uiText("Marks"); }, className: 'hidden sm:table-cell', cell: (q) => (q.marks ? uiTemplate`${q.marks}M` : '—') },
       ]}
     />
   );
@@ -96,7 +96,7 @@ function QuestionPartsField({ value = [], onChange }) {
   const update = (index, patch) => onChange(value.map((p, i) => (i === index ? { ...p, ...patch } : p)));
   const addPart = () => {
     const nextChar = String.fromCharCode(97 + (value.length % 26));
-    onChange([...value, { label: `(${nextChar})`, text: {}, marks: 1, answer: {} }]);
+    onChange([...value, { label: uiTemplate`(${nextChar})`, text: {}, marks: 1, answer: {} }]);
   };
   const removePart = (index) => onChange(value.filter((_, i) => i !== index));
 
@@ -111,7 +111,7 @@ function QuestionPartsField({ value = [], onChange }) {
                 type="text"
                 value={part.label || ''}
                 onChange={(e) => update(index, { label: e.target.value })}
-                placeholder="(a) or (i)"
+                placeholder={uiText("(a) or (i)")}
                 className="h-8 w-24 rounded-lg border bg-transparent px-2.5 text-xs font-bold"
               />
             </div>
@@ -124,7 +124,7 @@ function QuestionPartsField({ value = [], onChange }) {
                 onChange={(e) => update(index, { marks: Number(e.target.value) })}
                 className="h-8 w-16 rounded-lg border bg-transparent px-2 text-xs"
               />
-              <Button type="button" variant="ghost" size="icon-sm" onClick={() => removePart(index)} className="text-destructive h-8 w-8" aria-label="Remove part">
+              <Button type="button" variant="ghost" size="icon-sm" onClick={() => removePart(index)} className="text-destructive h-8 w-8" aria-label={uiText("Remove part")}>
                 <Trash2 className="size-3.5" />
               </Button>
             </div>
@@ -170,7 +170,7 @@ function McqOptionsField({ options = [], onChange, explanation = {}, onExplanati
             )}
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-extrabold text-brand uppercase">Option {opt.key}</span>
+              <span className="text-xs font-extrabold text-brand uppercase">{uiText("Option ")}{opt.key}</span>
               <label className="flex items-center gap-1.5 text-xs font-bold cursor-pointer text-foreground">
                 <input
                   type="radio"
@@ -179,10 +179,10 @@ function McqOptionsField({ options = [], onChange, explanation = {}, onExplanati
                   onChange={() => setCorrect(opt.key)}
                   className="size-3.5 accent-brand"
                 />
-                <span className={opt.isCorrect ? 'text-brand' : ''}>Correct Option</span>
+                <span className={opt.isCorrect ? 'text-brand' : ''}>{uiText("Correct Option")}</span>
               </label>
             </div>
-            <L10nField label={`Option ${opt.key} Text`} value={opt.text} onChange={(text) => updateText(opt.key, text)} placeholder={`Option ${opt.key} value...`} />
+            <L10nField label={uiTemplate`Option ${opt.key} Text`} value={opt.text} onChange={(text) => updateText(opt.key, text)} placeholder={uiTemplate`Option ${opt.key} value...`} />
           </div>
         ))}
       </div>
@@ -202,36 +202,36 @@ function QuestionInfoPanel({ form, exercise, chapter }) {
         {form?.book && (
           <div className="flex justify-between py-1 border-b">
             <span className="text-muted-foreground">{uiText("Reference Book")}:</span>
-            <span className="font-semibold">{adminText(form.book.title) || form.book.name || 'Book'}</span>
+            <span className="font-semibold">{adminText(form.book.title) || form.book.name || uiText('Book')}</span>
           </div>
         )}
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("Class")}:</span>
-          <span className="font-semibold">{chapter?.class?.number ? `Class ${chapter.class.number}` : form?.class?.number ? `Class ${form.class.number}` : '—'}</span>
+          <span className="font-semibold">{chapter?.class?.number ? uiTemplate`Class ${chapter.class.number}` : form?.class?.number ? uiTemplate`Class ${form.class.number}` : '—'}</span>
         </div>
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("अध्याय (Chapter)")}:</span>
-          <span className="font-semibold">{chapter ? `Ch ${chapter.number}` : form?.chapter?.number ? `Ch ${form.chapter.number}` : '—'}</span>
+          <span className="font-semibold">{chapter ? uiTemplate`Ch ${chapter.number}` : form?.chapter?.number ? uiTemplate`Ch ${form.chapter.number}` : '—'}</span>
         </div>
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("प्रश्नावली (Exercise)")}:</span>
-          <span className="font-semibold">{exercise ? `Ex ${exercise.number}` : form?.exercise?.number ? `Ex ${form.exercise.number}` : '—'}</span>
+          <span className="font-semibold">{exercise ? uiTemplate`Ex ${exercise.number}` : form?.exercise?.number ? uiTemplate`Ex ${form.exercise.number}` : '—'}</span>
         </div>
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("Question No.")}:</span>
-          <span className="font-bold text-brand">{form?.number ? `Q ${form.number}` : '—'}</span>
+          <span className="font-bold text-brand">{form?.number ? uiTemplate`Q ${form.number}` : '—'}</span>
         </div>
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("Question Type")}:</span>
-          <span className="font-semibold uppercase">{form?.questionType || 'subjective'}</span>
+          <span className="font-semibold uppercase">{form?.questionType || uiText('subjective')}</span>
         </div>
         <div className="flex justify-between py-1 border-b">
           <span className="text-muted-foreground">{uiText("Difficulty")}:</span>
-          <span className="font-semibold uppercase">{form?.difficulty || 'medium'}</span>
+          <span className="font-semibold uppercase">{form?.difficulty || uiText('medium')}</span>
         </div>
         <div className="flex justify-between py-1">
           <span className="text-muted-foreground">{uiText("Marks")}:</span>
-          <span className="font-semibold">{form?.marks ?? 2} Marks</span>
+          <span className="font-semibold">{form?.marks ?? 2}{uiText(" Marks")}</span>
         </div>
       </div>
     </Panel>
@@ -503,7 +503,7 @@ export function QuestionEditor({ id }) {
                   onChange={(v) => setField('topic', v)}
                 />
                 <TextField label={uiText("Question Number")} required value={form.number} onChange={(v) => setField('number', v)} placeholder={uiText("1 or 1(a) or 2(ii)")} />
-                <TextField label={uiText("Question Code (Optional)")} value={form.code || ''} onChange={(v) => setField('code', v)} placeholder="e.g. Q-10-01-01" />
+                <TextField label={uiText("Question Code (Optional)")} value={form.code || ''} onChange={(v) => setField('code', v)} placeholder={uiText("e.g. Q-10-01-01")} />
 
                 <SelectField
                   label={uiText("Question Type")}
@@ -516,7 +516,7 @@ export function QuestionEditor({ id }) {
 
                 <TextField label={uiText("Board (e.g. CBSE, ICSE, State)")} value={form.board || ''} onChange={(v) => setField('board', v)} placeholder="CBSE" />
                 <NumberField label={uiText("Examination Year")} value={form.year} onChange={(v) => setField('year', v)} min={2000} max={2100} />
-                <TextField label={uiText("Paper Set (e.g. Set 1)")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder="Set 1 (Code 30/1/1)" />
+                <TextField label={uiText("Paper Set (e.g. Set 1)")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder={uiText("Set 1 (Code 30/1/1)")} />
                 <TextField className="sm:col-span-2" label={uiText("Source")} value={form.source || ''} onChange={(v) => setField('source', v)} placeholder={uiText("CBSE Board Exam 2024 · NCERT Exemplar")} />
 
                 <div className="sm:col-span-1">
@@ -712,7 +712,7 @@ export function QuestionEditor({ id }) {
                     return (
                       <div key={method._id || index} className="rounded-xl border bg-muted/10 p-4 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-brand uppercase">Method {index + 1}</span>
+                          <span className="text-xs font-bold text-brand uppercase">{uiText("Method ")}{index + 1}</span>
                           <div className="flex items-center gap-1">
                             <Button
                               type="button"

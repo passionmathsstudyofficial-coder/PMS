@@ -1,3 +1,4 @@
+import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -53,7 +54,7 @@ export default function FormulaSheetsPage({ data, breadcrumbs }) {
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="FORMULAS"
-        eyebrow={<Chip tone="brand">Complete Mathematics Formula Repository</Chip>}
+        eyebrow={<Chip tone="brand">{uiText("Complete Mathematics Formula Repository")}</Chip>}
         title={{
           hi: `CBSE कक्षा ${cls?.number || '6-12'} गणित संपूर्ण सूत्र पत्रक (Formula Sheet)`,
           en: `All Maths Formulas for Class ${cls?.number || '6–12'} | Complete Formula Sheet PDF`,
@@ -107,11 +108,9 @@ export default function FormulaSheetsPage({ data, breadcrumbs }) {
           <div className="mb-10 rounded-2xl border border-brand/20 bg-brand/5 p-5 sm:p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="rounded-md bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand uppercase tracking-wider">
-                  Quick Revision
-                </span>
+                <span className="rounded-md bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand uppercase tracking-wider">{uiText("Quick Revision")}</span>
                 <h3 className="text-base font-bold text-foreground mt-1">
-                  {t(resources[0].title) || `Complete Class ${cls?.number || '6-12'} Maths Formula Sheet PDF`}
+                  {t(resources[0].title) || uiTemplate`Complete Class ${cls?.number || '6-12'} Maths Formula Sheet PDF`}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   {uiText("Printable pocket formula sheet containing all theorems, formulas and proofs.")}
@@ -155,10 +154,10 @@ export default function FormulaSheetsPage({ data, breadcrumbs }) {
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead className="border-b bg-muted/50 font-bold text-muted-foreground">
                   <tr>
-                    <th className="px-4 py-3">Symbol</th>
-                    <th className="px-4 py-3">Symbol Name</th>
-                    <th className="px-4 py-3">Formula / Approximation</th>
-                    <th className="px-4 py-3">Common Usage</th>
+                    <th className="px-4 py-3">{uiText("Symbol")}</th>
+                    <th className="px-4 py-3">{uiText("Symbol Name")}</th>
+                    <th className="px-4 py-3">{uiText("Formula / Approximation")}</th>
+                    <th className="px-4 py-3">{uiText("Common Usage")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60 font-medium">
