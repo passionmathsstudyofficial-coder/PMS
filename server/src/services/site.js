@@ -43,6 +43,77 @@ export async function publicClasses(preview = false) {
   });
 }
 
+const EXCLUDED_REF_SLUGS = new Set([
+  'kc-sinha', // standalone K.C. Sinha only
+  'mathematics-for-class-10-by-r-d-sharma',
+  'ncert',
+  'ncert-solutions',
+  'ncert-mathematics-textbook-for-class-10',
+]);
+
+function isExcludedRefBook(book) {
+  if (!book) return true;
+  const rawSlug = (book.slug || '').trim().toLowerCase();
+  const cleanSlug = rawSlug.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+  const en = (book.title?.en || (typeof book.title === 'string' ? book.title : '') || book.author || '').toLowerCase().trim();
+  const hi = (book.title?.hi || '').toLowerCase().trim();
+
+  // Keep K.C. Sinha Mathematics!
+  const isKcSinhaMaths =
+    cleanSlug === 'kc-sinha-maths' ||
+    cleanSlug.includes('kc-sinha-math') ||
+    en.includes('k.c. sinha mathematics') ||
+    en.includes('kc sinha mathematics') ||
+    hi.includes('के. सी. सिन्हा गणित') ||
+    hi.includes('के.सी. सिन्हा गणित') ||
+    hi.includes('के सी सिन्हा गणित');
+
+  if (isKcSinhaMaths) {
+    return false;
+  }
+
+  // Standalone K.C. Sinha is excluded
+  if (
+    cleanSlug === 'kc-sinha' ||
+    rawSlug === 'kc-sinha' ||
+    en === 'k.c. sinha' ||
+    en === 'kc sinha' ||
+    en === 'k.c. sinha solutions' ||
+    en === 'kc sinha solutions' ||
+    hi === 'के.सी. सिन्हा' ||
+    hi === 'के. सी. सिन्हा' ||
+    hi === 'के.सी. सिन्हा समाधान' ||
+    hi === 'के.सी. सिन्हा हल'
+  ) {
+    return true;
+  }
+
+  if (EXCLUDED_REF_SLUGS.has(rawSlug) || EXCLUDED_REF_SLUGS.has(cleanSlug)) return true;
+
+  if (
+    cleanSlug === 'mathematics-for-class-10-by-r-d-sharma' ||
+    en.includes('mathematics for class 10 by r.d. sharma') ||
+    en.includes('mathematics for class 10 by rd sharma')
+  ) {
+    return true;
+  }
+
+  if (
+    cleanSlug === 'ncert' ||
+    cleanSlug === 'ncert-solutions' ||
+    cleanSlug === 'ncert-mathematics-textbook-for-class-10' ||
+    en === 'ncert solutions' ||
+    en.includes('ncert solution') ||
+    hi === 'ncert समाधान' ||
+    hi === 'ncert हल'
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 export async function publicReferenceBooks(preview = false) {
   // Use the same records, slugs and class constraints as the public resolver.
   const books = await Book.find(preview ? { category: 'reference' } : Book.publicFilter({ category: 'reference' }))
@@ -57,13 +128,25 @@ export async function publicReferenceBooks(preview = false) {
     { $group: { _id: '$book', count: { $sum: 1 } } },
   ]);
   const byId = new Map(counts.map(row => [String(row._id), row.count]));
-  return books.filter(book => book.slug).map(book => ({
-    ...book,
-    classRecords: entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number)).map(entry => ({ ...entry, number: entry.class.number, url: `/reference-solutions/${book.slug}/${entry.slug}` })),
-    availableClasses: entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number)).map(entry => entry.class.number),
-    url: urls.referenceBook(book),
-    chapterCount: byId.get(String(book._id)) || 0,
-  }));
+  return books
+    .filter(book => book.slug && !isExcludedRefBook(book))
+    .map(book => {
+      const bookEntries = entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number));
+      const availableClasses = bookEntries.length > 0
+        ? bookEntries.map(entry => entry.class.number)
+        : (Array.isArray(book.availableClasses) && book.availableClasses.length > 0 ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12]);
+      const classRecords = bookEntries.length > 0
+        ? bookEntries.map(entry => ({ ...entry, number: entry.class.number, url: `/reference-solutions/${book.slug}/${entry.slug}` }))
+        : availableClasses.map(num => ({ number: num, slug: `class-${num}`, url: `/reference-solutions/${book.slug}/class-${num}` }));
+
+      return {
+        ...book,
+        classRecords,
+        availableClasses,
+        url: urls.referenceBook(book),
+        chapterCount: byId.get(String(book._id)) || 0,
+      };
+    });
 }
 
 export async function getSiteBootstrap() {

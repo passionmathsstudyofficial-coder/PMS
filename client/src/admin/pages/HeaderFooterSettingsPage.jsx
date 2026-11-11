@@ -127,20 +127,6 @@ const RECOMMENDED_HEADER_NAV = [
 
 const REFERENCE_SCREENSHOT_FOOTER_COLUMNS = [
   {
-    label: { hi: 'NCERT Class 6 to 12 Math Solutions', en: 'NCERT Class 6 to 12 Math Solutions' },
-    type: 'column',
-    isVisible: true,
-    children: [
-      { label: { hi: 'NCERT Class 6 Mathematics', en: 'NCERT Class 6 Mathematics' }, url: '/class-6/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 7 Mathematics', en: 'NCERT Class 7 Mathematics' }, url: '/class-7/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 8 Mathematics', en: 'NCERT Class 8 Mathematics' }, url: '/class-8/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 9 Mathematics', en: 'NCERT Class 9 Mathematics' }, url: '/class-9/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 10 Mathematics', en: 'NCERT Class 10 Mathematics' }, url: '/class-10/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 11 Mathematics', en: 'NCERT Class 11 Mathematics' }, url: '/class-11/maths', isVisible: true },
-      { label: { hi: 'NCERT Class 12 Mathematics', en: 'NCERT Class 12 Mathematics' }, url: '/class-12/maths', isVisible: true },
-    ],
-  },
-  {
     label: { hi: 'R.S. Aggarwal Solutions', en: 'R.S. Aggarwal Solutions' },
     type: 'column',
     isVisible: true,
@@ -169,17 +155,31 @@ const REFERENCE_SCREENSHOT_FOOTER_COLUMNS = [
     ],
   },
   {
-    label: { hi: 'K.C. Sinha Solutions', en: 'K.C. Sinha Solutions' },
+    label: { hi: 'के. सी. सिन्हा गणित', en: 'K.C. Sinha Mathematics Solutions' },
     type: 'column',
     isVisible: true,
     children: [
-      { label: { hi: 'K.C. Sinha Class 6', en: 'K.C. Sinha Class 6' }, url: '/reference-solutions/kc-sinha/class-6', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 7', en: 'K.C. Sinha Class 7' }, url: '/reference-solutions/kc-sinha/class-7', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 8', en: 'K.C. Sinha Class 8' }, url: '/reference-solutions/kc-sinha/class-8', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 9', en: 'K.C. Sinha Class 9' }, url: '/reference-solutions/kc-sinha/class-9', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 10', en: 'K.C. Sinha Class 10' }, url: '/reference-solutions/kc-sinha/class-10', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 11', en: 'K.C. Sinha Class 11' }, url: '/reference-solutions/kc-sinha/class-11', isVisible: true },
-      { label: { hi: 'K.C. Sinha Class 12', en: 'K.C. Sinha Class 12' }, url: '/reference-solutions/kc-sinha/class-12', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 6', en: 'K.C. Sinha Mathematics Class 6' }, url: '/reference-solutions/kc-sinha-maths/class-6', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 7', en: 'K.C. Sinha Mathematics Class 7' }, url: '/reference-solutions/kc-sinha-maths/class-7', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 8', en: 'K.C. Sinha Mathematics Class 8' }, url: '/reference-solutions/kc-sinha-maths/class-8', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 9', en: 'K.C. Sinha Mathematics Class 9' }, url: '/reference-solutions/kc-sinha-maths/class-9', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 10', en: 'K.C. Sinha Mathematics Class 10' }, url: '/reference-solutions/kc-sinha-maths/class-10', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 11', en: 'K.C. Sinha Mathematics Class 11' }, url: '/reference-solutions/kc-sinha-maths/class-11', isVisible: true },
+      { label: { hi: 'के. सी. सिन्हा Class 12', en: 'K.C. Sinha Mathematics Class 12' }, url: '/reference-solutions/kc-sinha-maths/class-12', isVisible: true },
+    ],
+  },
+  {
+    label: { hi: 'M.L. Aggarwal Solutions', en: 'M.L. Aggarwal Solutions' },
+    type: 'column',
+    isVisible: true,
+    children: [
+      { label: { hi: 'M.L. Aggarwal Class 6', en: 'M.L. Aggarwal Class 6' }, url: '/reference-solutions/ml-aggarwal/class-6', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 7', en: 'M.L. Aggarwal Class 7' }, url: '/reference-solutions/ml-aggarwal/class-7', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 8', en: 'M.L. Aggarwal Class 8' }, url: '/reference-solutions/ml-aggarwal/class-8', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 9', en: 'M.L. Aggarwal Class 9' }, url: '/reference-solutions/ml-aggarwal/class-9', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 10', en: 'M.L. Aggarwal Class 10' }, url: '/reference-solutions/ml-aggarwal/class-10', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 11', en: 'M.L. Aggarwal Class 11' }, url: '/reference-solutions/ml-aggarwal/class-11', isVisible: true },
+      { label: { hi: 'M.L. Aggarwal Class 12', en: 'M.L. Aggarwal Class 12' }, url: '/reference-solutions/ml-aggarwal/class-12', isVisible: true },
     ],
   },
   {
@@ -813,7 +813,7 @@ export function HeaderFooterSettingsPage() {
                   onClick={async () => {
                     const ok = await confirm({
                       title: uiText("Load Screenshot Preset Layout?"),
-                      message: uiText("This will load the columns from the reference layout: NCERT Solutions, R.S. Aggarwal, R.D. Sharma, K.C. Sinha, and Important Links."),
+                      message: uiText("This will load the columns from the reference layout: R.S. Aggarwal, R.D. Sharma, M.L. Aggarwal, and Important Links."),
                       confirmText: uiText("Load Preset"),
                     });
                     if (ok) {

@@ -160,7 +160,7 @@ test('footer uses published books and never invents unavailable class links',asy
   const button=host.querySelector('button');await act(async()=>button.click());
   assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));assert.equal(host.querySelector('input[type="search"]').placeholder,'Search…');
  assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,2);
- assert.equal(host.querySelectorAll('footer h2').length,2+books.length);
+ assert.equal(host.querySelectorAll('footer h2').length, 1 + books.length);
  assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
  assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
    const custom=host.querySelector('footer a[href="/class-10/maths/books#book-audit"]');assert.ok(custom);assert.match(custom.textContent,/Book details/);assert.equal(custom.target,'_blank');

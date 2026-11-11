@@ -8,7 +8,8 @@ import { resolveMediaUrl } from '@/lib/media';
 import { Logo } from './Logo.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { SOCIAL_ICONS } from './SocialIcons.jsx';
-import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, isExcludedReferenceBook, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { cn } from '@/lib/utils';
 
 function Column({ title, children }) {
   useUiLanguage();
@@ -18,6 +19,60 @@ function Column({ title, children }) {
       <ul className="space-y-1 text-sm leading-relaxed">{children}</ul>
     </div>
   );
+}
+
+function isExcludedFooterItem(item) {
+  if (!item) return true;
+  const en = (item.label?.en || (typeof item.label === 'string' ? item.label : '') || '').toLowerCase().trim();
+  const hi = (item.label?.hi || '').toLowerCase().trim();
+  const url = (item.url || '').toLowerCase().trim();
+
+  // Keep K.C. Sinha Mathematics!
+  const isKcSinhaMaths =
+    url.includes('kc-sinha-maths') ||
+    url.includes('kc-sinha-math') ||
+    en.includes('k.c. sinha mathematics') ||
+    en.includes('kc sinha mathematics') ||
+    hi.includes('के. सी. सिन्हा गणित') ||
+    hi.includes('के.सी. सिन्हा गणित') ||
+    hi.includes('के सी सिन्हा गणित');
+
+  if (isKcSinhaMaths) {
+    return false;
+  }
+
+  // 1. Standalone K.C. Sinha is excluded
+  if (
+    url.includes('kc-sinha') ||
+    en.includes('k.c. sinha') ||
+    en.includes('kc sinha') ||
+    hi.includes('के.सी. सिन्हा') ||
+    hi.includes('के. सी. सिन्हा')
+  ) {
+    return true;
+  }
+
+  // 2. Mathematics for Class 10 by R.D. Sharma
+  if (
+    url.includes('mathematics-for-class-10-by-r-d-sharma') ||
+    en.includes('mathematics for class 10 by r.d. sharma') ||
+    en.includes('mathematics for class 10 by rd sharma')
+  ) {
+    return true;
+  }
+
+  // 3. NCERT Solutions / NCERT Class 6 to 12 Math Solution
+  if (
+    en.includes('ncert solution') ||
+    en.includes('ncert class 6 to 12 math') ||
+    hi.includes('ncert कक्षा 6 से 12 गणित') ||
+    hi.includes('ncert समाधान') ||
+    hi.includes('ncert हल')
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 const linkClass = 'block min-h-10 max-w-full rounded-sm py-2 break-words focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white text-white/70 transition-colors hover:text-white hover:underline decoration-white/30 underline-offset-2';
@@ -56,40 +111,62 @@ export function Footer() {
     return { ...configured, label: { en, hi }, url };
   };
   const classes = (site?.classes || []).map(cls => cls.number);
-  const columns = [
-    { label: { en: 'NCERT Class 6 to 12 Math Solution', hi: 'NCERT कक्षा 6 से 12 गणित हल' }, children: classes.map(number =>
-      link(`NCERT Class ${number} Mathematics`, `NCERT कक्षा ${number} गणित`, site?.classes?.find(cls => cls.number === number)?.url || `/class-${number}/maths`)) },
-    ...getReferenceBooks(site).map(book => ({
-      label: book.title,
-      children: (book.availableClasses || []).map(number => ({
-        label: {
-          en: `${book.title?.en || book.author} Class ${number}`,
-          hi: `${book.title?.hi || book.author} कक्षा ${number}`,
-        },
-        url: (book.classRecords?.find(c => c.number === number)?.url || `${referenceBookUrl(book)}/class-${number}`),
-      })),
-    })),
-    { label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' }, children: [
-      link('Home', 'होम', '/'),
-      link('Mathematics', 'गणित', '/study-materials/ncert-solutions'),
-      link('Search', 'खोजें', '/search'),
-      link('About Us', 'हमारे बारे में', '/about-us'),
-      link('Contact', 'संपर्क करें', '/contact'),
-      link('Privacy Policy', 'गोपनीयता नीति', '/privacy-policy'),
-      link('Terms & Conditions', 'नियम एवं शर्तें', '/terms-and-conditions'),
-    ] },
+
+  // If CMS has configured footer columns, filter out excluded items and empty columns
+  const rawCmsColumns = (site?.navigation?.footer || [])
+    .filter(item => item.isVisible !== false && !isExcludedFooterItem(item))
+    .map(col => ({
+      label: col.label,
+      children: (col.children || [])
+        .filter(child => child.isVisible !== false && child.url && !isExcludedFooterItem(child))
+        .map(child => ({ ...child, label: child.label, url: child.url })),
+    }))
+    .filter(col => col.children.length > 0);
+
+  // Dynamic fallback from live reference books (excluding removed categories) + Important Links
+  const dynamicColumns = [
+    ...getReferenceBooks(site)
+      .filter(book => !isExcludedReferenceBook(book))
+      .map(book => ({
+        label: book.title,
+        children: (book.availableClasses || []).map(number => ({
+          label: {
+            en: `${book.title?.en || book.author} Class ${number}`,
+            hi: `${book.title?.hi || book.author} कक्षा ${number}`,
+          },
+          url: (book.classRecords?.find(c => c.number === number)?.url || `${referenceBookUrl(book)}/class-${number}`),
+        })),
+      }))
+      .filter(col => col.children.length > 0),
+    {
+      label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' },
+      children: [
+        link('Home', 'होम', '/'),
+        link('Mathematics', 'गणित', '/study-materials/ncert-solutions'),
+        link('Search', 'खोजें', '/search'),
+        link('About Us', 'हमारे बारे में', '/about-us'),
+        link('Contact', 'संपर्क करें', '/contact'),
+        link('Privacy Policy', 'गोपनीयता नीति', '/privacy-policy'),
+        link('Terms & Conditions', 'नियम एवं शर्तें', '/terms-and-conditions'),
+      ].filter(child => !isExcludedFooterItem(child)),
+    },
   ];
+
+  const columns = (rawCmsColumns.length >= 2 ? rawCmsColumns : dynamicColumns)
+    .filter(col => col.children && col.children.length > 0 && !isExcludedFooterItem(col));
+
   const retainedLinks = [
     link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
     link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
     link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
     link('Solutions', 'हल', '/study-materials/ncert-solutions'),
-    ...getReferenceBooks(site).map(book => ({ label: book.title, url: referenceBookUrl(book) })),
+    ...getReferenceBooks(site).filter(book => !isExcludedReferenceBook(book)).map(book => ({ label: book.title, url: referenceBookUrl(book) })),
     link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
-  ];
+  ].filter(item => item && item.url && !isExcludedFooterItem(item));
+
   const displayedUrls = new Set([...columns.flatMap(column => column.children), ...retainedLinks].map(item => item.url));
   for (const item of configuredLinks) {
-    if (!t(item.label) || displayedUrls.has(item.url)) continue;
+    if (!t(item.label) || displayedUrls.has(item.url) || isExcludedFooterItem(item)) continue;
     retainedLinks.push(item);
     displayedUrls.add(item.url);
   }
@@ -109,6 +186,17 @@ export function Footer() {
   const bannerUrl = whatsappBanner.url || 'https://whatsapp.com/channel/0029Vb8ePtV6xCSKZnaBfu0N';
   const bannerButtonText = t(whatsappBanner.buttonText) || uiText("Follow on WhatsApp");
   const bannerIconUrl = resolveMediaUrl(whatsappBanner.icon) || whatsappBanner.iconUrl;
+
+  const gridClass =
+    columns.length <= 1
+      ? 'grid-cols-1'
+      : columns.length === 2
+        ? 'grid-cols-1 sm:grid-cols-2'
+        : columns.length === 3
+          ? 'grid-cols-1 sm:grid-cols-3 md:grid-cols-3'
+          : columns.length === 4
+            ? 'grid-cols-2 md:grid-cols-4'
+            : 'grid-cols-2 md:grid-cols-3 xl:grid-cols-5';
 
   return (
     <footer className="mt-12 bg-[#090909] text-white border-t border-white/5">
@@ -154,7 +242,7 @@ export function Footer() {
           </div>
         )}
 
-        <nav aria-label={uiText("Footer navigation")} className="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 xl:grid-cols-5 xl:gap-x-8">
+        <nav aria-label={uiText("Footer navigation")} className={cn('grid gap-x-5 gap-y-8 xl:gap-x-8', gridClass)}>
           {columns.map(column => (
             <Column key={column.label.en} title={t(column.label)}>
               {column.children.map(child => (
@@ -237,7 +325,7 @@ export function Footer() {
             )}
           </p>
           <nav aria-label={uiText("Legal links")} className="flex flex-wrap gap-x-4 gap-y-2">
-            {columns.at(-1).children.slice(-3).map(child => <SmartLink key={child.url} to={child.url} className="py-1 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
+            {(columns.at(-1)?.children || []).slice(-3).map(child => <SmartLink key={child.url} to={child.url} className="py-1 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
           </nav>
         </div>
       </div>

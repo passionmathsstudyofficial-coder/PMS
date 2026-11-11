@@ -1,6 +1,145 @@
 {
-  "rawInterfaceText": [],
-  "unresolvedKeys": [],
+  "rawInterfaceText": [
+    {
+      "file": "client/src/admin/components/nav.js",
+      "line": 61,
+      "kind": "expression",
+      "text": "Reference book classes"
+    },
+    {
+      "file": "client/src/admin/lib/resources.js",
+      "line": 8,
+      "kind": "expression",
+      "text": "Book class"
+    },
+    {
+      "file": "client/src/admin/lib/resources.js",
+      "line": 8,
+      "kind": "expression",
+      "text": "Book classes"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 12,
+      "kind": "attribute",
+      "text": "Reference book classes"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 13,
+      "kind": "attribute",
+      "text": "Each book has independent class names, descriptions, SEO, publication and visibility."
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 15,
+      "kind": "expression",
+      "text": "Book"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 15,
+      "kind": "expression",
+      "text": "Class"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 20,
+      "kind": "attribute",
+      "text": "Reference book class"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 21,
+      "kind": "attribute",
+      "text": "Class details"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 22,
+      "kind": "attribute",
+      "text": "Book"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 22,
+      "kind": "attribute",
+      "text": "Class"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 22,
+      "kind": "jsx",
+      "text": "Book and class ownership are preserved. Create a separate record for a different book or class."
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 23,
+      "kind": "attribute",
+      "text": "Class name"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 24,
+      "kind": "attribute",
+      "text": "Display order"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 26,
+      "kind": "attribute",
+      "text": "Description"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 27,
+      "kind": "attribute",
+      "text": "Subjects"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 28,
+      "kind": "attribute",
+      "text": "SEO"
+    },
+    {
+      "file": "client/src/admin/pages/BookClassesPage.jsx",
+      "line": 29,
+      "kind": "jsx",
+      "text": "Manage book chapters, exercises and questions"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 307,
+      "kind": "attribute",
+      "text": "Book classes"
+    },
+    {
+      "file": "client/src/admin/pages/BooksPage.jsx",
+      "line": 308,
+      "kind": "jsx",
+      "text": "Manage class names, descriptions, SEO, order, publication and visibility"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 615,
+      "kind": "jsx",
+      "text": "Manage classes and publication"
+    },
+    {
+      "file": "client/src/admin/pages/ReferenceBookManagerPage.jsx",
+      "line": 1186,
+      "kind": "jsx",
+      "text": "Manage classes independently"
+    }
+  ],
+  "unresolvedKeys": [
+    {
+      "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
+      "line": 237,
+      "key": "Browse available chapters and exercises for Class {v0} Mathematics."
+    }
+  ],
   "invalidEntries": [],
   "dynamicBypasses": [],
   "intentional": [
@@ -132,25 +271,13 @@
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 55,
+      "line": 56,
       "text": "{v0} — {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 392,
-      "text": "/reference-solutions/",
-      "reason": "Literal URL or route pattern; must remain unchanged in either language"
-    },
-    {
-      "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 395,
-      "text": "/class-[6-12]",
-      "reason": "Literal URL or route pattern; must remain unchanged in either language"
-    },
-    {
-      "file": "client/src/admin/pages/BooksPage.jsx",
-      "line": 414,
+      "line": 324,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
@@ -168,49 +295,49 @@
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 512,
+      "line": 498,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 619,
+      "line": 605,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 750,
+      "line": 736,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 984,
+      "line": 970,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1123,
+      "line": 1109,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1151,
+      "line": 1137,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1281,
+      "line": 1267,
       "text": "https://{v0}.com/...",
       "reason": "Literal URL or route pattern; must remain unchanged in either language"
     },
     {
       "file": "client/src/admin/pages/HeaderFooterSettingsPage.jsx",
-      "line": 1364,
+      "line": 1350,
       "text": "https://",
       "reason": "Literal URL, path, or account handle"
     },
@@ -468,55 +595,55 @@
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 347,
+      "line": 345,
       "text": "{v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 388,
+      "line": 386,
       "text": "{v0} {v1}{v2}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 451,
+      "line": 449,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/home/Sections.jsx",
-      "line": 452,
+      "line": 450,
       "text": "· {v0} {v1}",
       "reason": "Data-only formatting template; values retain their own language"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 26,
+      "line": 67,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 27,
+      "line": 68,
       "text": "YouTube",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 28,
+      "line": 69,
       "text": "Instagram",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 29,
+      "line": 70,
       "text": "Facebook",
       "reason": "Brand, product or established proper name"
     },
     {
       "file": "client/src/components/site/Footer.jsx",
-      "line": 123,
+      "line": 197,
       "text": "WhatsApp",
       "reason": "Brand, product or established proper name"
     },
@@ -594,7 +721,13 @@
     },
     {
       "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
-      "line": 269,
+      "line": 199,
+      "text": "{v0} {v1}",
+      "reason": "Data-only formatting template; values retain their own language"
+    },
+    {
+      "file": "client/src/pages/content/ReferenceSolutionsPage.jsx",
+      "line": 270,
       "text": "PDF",
       "reason": "Mathematical notation, unit, acronym or language selector identifier"
     },
@@ -642,8 +775,8 @@
     "applicationEntries": 1955,
     "remainingEntries": 127,
     "legacyEntries": 533,
-    "unresolved": 0,
-    "scannedFiles": 199,
+    "unresolved": 23,
+    "scannedFiles": 200,
     "scope": "AST audit of JSX text, UI attributes/metadata, conditional labels, UI templates and toasts. Data-driven interface values additionally require browser verification."
   }
 }

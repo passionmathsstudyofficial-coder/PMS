@@ -19,9 +19,9 @@ try {
  const originalIds = new Set((await BookClass.find().select('_id').lean()).map(row=>String(row._id)));
  let books = await Book.find({category:'reference'});
  const required = [
-   ['ncert','NCERT Solutions'], ['kc-sinha-maths','K.C. Sinha Mathematics'],
    ['rs-aggarwal','R.S. Aggarwal'], ['rd-sharma','R.D. Sharma'],
-   ['ml-aggarwal','M.L. Aggarwal'], ['kc-sinha','K.C. Sinha'],
+   ['kc-sinha-maths','K.C. Sinha Mathematics'],
+   ['ml-aggarwal','M.L. Aggarwal'],
  ];
  const missingBooks=[];
  for (const [slug,title] of required) {

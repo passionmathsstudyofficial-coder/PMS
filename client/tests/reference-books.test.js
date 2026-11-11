@@ -3,12 +3,12 @@ import { test } from 'node:test';
 import { getReferenceBooks, referenceBookUrl } from '../src/lib/referenceBooks.js';
 
 test('footer and navbar share live reference books, titles and canonical routes', () => {
-  const books = ['rs-aggarwal','rd-sharma','ml-aggarwal','kc-sinha','mathematics-for-class-10-by-r-d-sharma'].map(slug => ({slug, title:{en:slug},availableClasses:[10]}));
-  const result = getReferenceBooks({referenceBooks:[...books, {...books[0],title:{en:'Updated title'}}, {slug:'private',isVisible:false}]});
-  assert.equal(result.length,5);
+  const books = ['rs-aggarwal','rd-sharma','kc-sinha-maths','ml-aggarwal'].map(slug => ({slug, title:{en:slug},availableClasses:[10]}));
+  const result = getReferenceBooks({referenceBooks:[...books, {...books[0],title:{en:'Updated title'}}, {slug:'private',isVisible:false}, {slug:'kc-sinha',title:{en:'kc-sinha'}}, {slug:'mathematics-for-class-10-by-r-d-sharma',title:{en:'mathematics-for-class-10-by-r-d-sharma'}}]});
+  assert.equal(result.length,4);
   assert.equal(result[0].title.en,'Updated title');
   assert.deepEqual(result.map(referenceBookUrl),books.map(book=>`/reference-solutions/${book.slug}`));
-  assert.deepEqual(result[4].availableClasses,[10]);
+  assert.deepEqual(result[2].availableClasses,[10]);
 });
 
 test('explicit empty reference list never restores hidden books', () => {
