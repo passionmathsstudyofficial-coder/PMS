@@ -1056,11 +1056,25 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     .select('number name slug')
     .lean();
 
-  const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).sort({ sortOrder: 1 }).populate({ path: 'thumbnail', select: MEDIA_SELECT }).lean();
-  const entriesFor = book => entries.filter(entry => String(entry.book) === String(book._id)).map(entry => {
-    const parent = classes.find(cls => String(cls._id) === String(entry.class));
-    return parent ? { ...parent, ...entry, _id: parent._id, bookClassId: entry._id, number: parent.number, url: urls.referenceBookClass(book, entry) } : null;
-  }).filter(Boolean);
+  const entries = await BookClass.find().sort({ sortOrder: 1 }).populate({ path: 'thumbnail', select: MEDIA_SELECT }).lean();
+  const managedBooks = new Set(entries.map(entry => String(entry.book)));
+  const now = new Date();
+  const visibleEntries = preview ? entries : entries.filter(entry =>
+    entry.status === 'published' && entry.isVisible && (!entry.publishedAt || entry.publishedAt <= now),
+  );
+  const entriesFor = book => {
+    if (!managedBooks.has(String(book._id))) {
+      const numbers = book.availableClasses?.length ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12];
+      return numbers.flatMap(number => {
+        const cls = classes.find(item => item.number === number);
+        return cls ? [{ ...cls, slug: `class-${number}`, url: urls.referenceBookClass(book, { slug: `class-${number}` }) }] : [];
+      });
+    }
+    return visibleEntries.filter(entry => String(entry.book) === String(book._id)).map(entry => {
+      const parent = classes.find(cls => String(cls._id) === String(entry.class));
+      return parent ? { ...parent, ...entry, _id: parent._id, bookClassId: entry._id, number: parent.number, url: urls.referenceBookClass(book, entry) } : null;
+    }).filter(Boolean);
+  };
   for (const book of allBooks) { book.classRecords = entriesFor(book); book.classes = book.classRecords.map(cls => cls.number); }
 
   // 1. Hub: /reference-solutions

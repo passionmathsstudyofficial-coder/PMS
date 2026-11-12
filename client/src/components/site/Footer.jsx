@@ -9,6 +9,7 @@ import { Logo } from './Logo.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { SOCIAL_ICONS } from './SocialIcons.jsx';
 import { getReferenceBooks, isExcludedReferenceBook, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { navigationChildren, studyNavigationItem } from '@/lib/studyNavigation.js';
 import { cn } from '@/lib/utils';
 
 function Column({ title, children }) {
@@ -101,7 +102,10 @@ export function Footer() {
   const whatsappBanner = settings.whatsappBanner || {};
   // Reuse configured destinations for ordinary links and the navbar's live book list.
   const configuredLinks = [
-    ...(site?.navigation?.header || []),
+    ...(site?.navigation?.header || []).map(item => ({
+      ...item,
+      children: navigationChildren(studyNavigationItem(item), site?.classes),
+    })),
     ...(site?.navigation?.footer || []),
     ...(site?.navigation?.footerBottom || []),
   ].filter(item => item.isVisible !== false).flatMap(item => [item, ...(item.children || [])])
@@ -124,8 +128,14 @@ export function Footer() {
     .filter(col => col.children.length > 0);
 
   // Dynamic fallback from live reference books (excluding removed categories) + Important Links
+  const preferredOrder = ['kc-sinha-maths', 'rs-aggarwal', 'rd-sharma', 'ml-aggarwal'];
+  const rank = book => {
+    const index = preferredOrder.indexOf(book.slug);
+    return index < 0 ? preferredOrder.length : index;
+  };
+  const books = getReferenceBooks(site).sort((a, b) => rank(a) - rank(b));
   const dynamicColumns = [
-    ...getReferenceBooks(site)
+    ...books
       .filter(book => !isExcludedReferenceBook(book))
       .map(book => ({
         label: book.title,
@@ -160,15 +170,17 @@ export function Footer() {
     children: column.children.filter(child =>
       !defaultUrls.has(child.url) && !bookUrls.some(url => child.url === url || child.url.startsWith(url + '/')),
     ),
-  })).filter(column => column.children.length > 0);
+  })).filter(column => column.children.length > 1);
   const columns = [...dynamicColumns, ...customColumns];
 
   const retainedLinks = [
+    link('Important Questions Library', 'महत्वपूर्ण प्रश्न संग्रह', '/important-questions'),
+    link('Notes & Formulas', 'नोट्स और सूत्र', '/notes-formulas'),
     link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
     link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
     link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
     link('Solutions', 'हल', '/study-materials/ncert-solutions'),
-    ...getReferenceBooks(site).filter(book => !isExcludedReferenceBook(book)).map(book => ({ label: book.title, url: referenceBookUrl(book) })),
+    ...books.map(book => ({ label: book.title, url: referenceBookUrl(book) })),
     link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
   ].filter(item => item && item.url && !isExcludedFooterItem(item));
 

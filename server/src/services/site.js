@@ -123,6 +123,7 @@ export async function publicReferenceBooks(preview = false) {
   const classes = await ClassLevel.find(preview ? {} : ClassLevel.publicFilter()).select('number').lean();
   const numbers = new Set(classes.map(cls => cls.number));
   const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).populate('class', 'number slug').sort({ sortOrder: 1 }).lean();
+  const managedBooks = new Set((await BookClass.distinct('book')).map(String));
   const counts = await Chapter.aggregate([
     { $match: preview ? {} : Chapter.publicFilter() },
     { $group: { _id: '$book', count: { $sum: 1 } } },
@@ -132,9 +133,9 @@ export async function publicReferenceBooks(preview = false) {
     .filter(book => book.slug && !isExcludedRefBook(book))
     .map(book => {
       const bookEntries = entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number));
-      const availableClasses = bookEntries.length > 0
+      const availableClasses = managedBooks.has(String(book._id))
         ? bookEntries.map(entry => entry.class.number)
-        : (Array.isArray(book.availableClasses) && book.availableClasses.length > 0 ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12]);
+        : (book.availableClasses?.length ? book.availableClasses : [6, 7, 8, 9, 10, 11, 12]).filter(number => numbers.has(number));
       const classRecords = bookEntries.length > 0
         ? bookEntries.map(entry => ({ ...entry, number: entry.class.number, url: `/reference-solutions/${book.slug}/${entry.slug}` }))
         : availableClasses.map(num => ({ number: num, slug: `class-${num}`, url: `/reference-solutions/${book.slug}/class-${num}` }));
