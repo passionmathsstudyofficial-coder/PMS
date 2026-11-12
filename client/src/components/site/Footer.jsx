@@ -154,7 +154,8 @@ export function Footer() {
 
   const defaultUrls = new Set(dynamicColumns.flatMap(column => column.children.map(child => child.url)));
   const bookUrls = getReferenceBooks(site).map(referenceBookUrl);
-  const customColumns = rawCmsColumns.map(column => ({
+  const defaultLabels = new Set(dynamicColumns.map(column => t(column.label).trim().toLowerCase()));
+  const customColumns = rawCmsColumns.filter(column => !defaultLabels.has(t(column.label).trim().toLowerCase())).map(column => ({
     ...column,
     children: column.children.filter(child =>
       !defaultUrls.has(child.url) && !bookUrls.some(url => child.url === url || child.url.startsWith(url + '/')),
