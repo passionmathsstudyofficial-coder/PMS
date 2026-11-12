@@ -21,6 +21,7 @@ import SubjectPage from './content/SubjectPage.jsx';
 import TopicPage from './content/TopicPage.jsx';
 import BooksListPage from './content/BooksListPage.jsx';
 import ResourcesListPage from './content/ResourcesListPage.jsx';
+import StudyCmsPublicPage from './content/StudyCmsPublicPage.jsx';
 import StudyMaterialsPage from './content/StudyMaterialsPage.jsx';
 import ReferenceSolutionsPage from './content/ReferenceSolutionsPage.jsx';
 import StateBoardsPage from './content/StateBoardsPage.jsx';
@@ -46,6 +47,7 @@ const TEMPLATES = {
   resourcesList: ResourcesListPage,
   booksList: BooksListPage,
   studyMaterials: StudyMaterialsPage,
+  studyCms: StudyCmsPublicPage,
   referenceSolutions: ReferenceSolutionsPage,
   stateBoards: StateBoardsPage,
   topic: TopicPage,
@@ -76,6 +78,7 @@ export default function ContentPage() {
   const previewToken = params.get('previewToken') || undefined;
   const session = params.get('session') || window.localStorage.getItem('pms.academicSession') || undefined;
   const path = location.pathname;
+  const page = params.get('page') || undefined;
 
   useEffect(() => {
     if (!session) return;
@@ -90,8 +93,8 @@ export default function ContentPage() {
   }, [session, params, setParams]);
 
   const query = useQuery({
-    queryKey: ['resolve', path, preview, previewToken, lang, session],
-    queryFn: () => get('/public/resolve', { path, lang, preview: preview ? 1 : undefined, previewToken, session }),
+    queryKey: ['resolve', path, preview, previewToken, lang, session, page],
+    queryFn: () => get('/public/resolve', { path, lang, preview: preview ? 1 : undefined, previewToken, session, page }),
     staleTime: 0,
     refetchOnWindowFocus: true,
   });

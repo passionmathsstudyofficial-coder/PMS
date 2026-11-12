@@ -1,3 +1,4 @@
+import { resolveStudyCms } from './studyPublic.js';
 import { BookClass } from '../models/BookClass.js';
 import {
   AcademicSession,
@@ -572,7 +573,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'thumbnail', select: MEDIA_SELECT },
         ])
         .lean(),
-      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: 'pyq', ...classFilter }))
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: 'pyq', ...classFilter }))
         .sort({ year: -1, sortOrder: 1, createdAt: -1 })
         .limit(25)
         .populate([
@@ -657,7 +658,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
     const classFilter = cls ? { class: cls._id } : {};
     const [chapters, extraQuestions, resources] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean() : [],
-      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: { $in: ['extra_questions', 'general'] }, ...classFilter }))
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: { $in: ['extra_questions', 'general'] }, ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .limit(30)
         .populate([
@@ -703,7 +704,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
     const classFilter = cls ? { class: cls._id } : {};
     const [chapters, vviQuestions, resources] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug').lean() : [],
-      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: { $in: ['vvi', 'general'] }, ...classFilter }))
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: { $in: ['vvi', 'general'] }, ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .limit(35)
         .populate([
@@ -842,7 +843,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   if (subCategory === 'ncert-chapter-wise-notes' || subCategory === 'ncert-notes') {
     const [chapters, notes, resources] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug shortDescription formulas').lean() : [],
-      Note.find(vis(Note, preview, { category: { $in: ['ncert_notes', 'general'] }, ...classFilter }))
+      Note.find(vis(Note, preview, { studyClass: null, category: { $in: ['ncert_notes', 'general'] }, ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .populate([{ path: 'chapter', select: 'number title slug' }, { path: 'attachments.media', select: MEDIA_SELECT }])
         .lean(),
@@ -876,7 +877,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   if (subCategory === 'maths-formula-sheets' || subCategory === 'formula-sheets') {
     const [chapters, formulaNotes, resources] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
-      Note.find(vis(Note, preview, { category: 'formula_sheet', ...classFilter }))
+      Note.find(vis(Note, preview, { studyClass: null, category: 'formula_sheet', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .populate([{ path: 'chapter', select: 'number title slug' }])
         .lean(),
@@ -933,7 +934,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
         .sort({ sortOrder: 1, number: 1 })
         .select('number title slug shortDescription formulas')
         .lean(),
-      Note.find(vis(Note, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+      Note.find(vis(Note, preview, { studyClass: null, book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .lean(),
       Resource.find(vis(Resource, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
@@ -969,11 +970,11 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   if (subCategory === 'vvi-questions-short-notes' || subCategory === 'vvi-short-notes') {
     const [chapters, shortNotes, questions] = await Promise.all([
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
-      Note.find(vis(Note, preview, { category: 'vvi_short_notes', ...classFilter }))
+      Note.find(vis(Note, preview, { studyClass: null, category: 'vvi_short_notes', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .populate([{ path: 'chapter', select: 'number title slug' }])
         .lean(),
-      ImportantQuestion.find(vis(ImportantQuestion, preview, { category: 'vvi', ...classFilter }))
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: 'vvi', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .limit(20)
         .populate([
@@ -1055,7 +1056,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     .select('number name slug')
     .lean();
 
-  const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).sort({ sortOrder: 1 }).lean();
+  const entries = await BookClass.find(preview ? {} : BookClass.publicFilter()).sort({ sortOrder: 1 }).populate({ path: 'thumbnail', select: MEDIA_SELECT }).lean();
   const entriesFor = book => entries.filter(entry => String(entry.book) === String(book._id)).map(entry => {
     const parent = classes.find(cls => String(cls._id) === String(entry.class));
     return parent ? { ...parent, ...entry, _id: parent._id, bookClassId: entry._id, number: parent.number, url: urls.referenceBookClass(book, entry) } : null;
@@ -1132,10 +1133,11 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
 
   const rawChapters = await Chapter.find(vis(Chapter, preview, { class: cls._id, ...bookFilter }))
     .sort({ sortOrder: 1, number: 1 })
-    .select('number title slug shortDescription image pdfFile pdfUrl')
+    .select('number title slug shortDescription image pdfFile pdfUrl introduction notes formulas introVideo seo')
     .populate([
       { path: 'image', select: MEDIA_SELECT },
       { path: 'pdfFile', select: MEDIA_SELECT },
+      { path: 'introVideo', select: VIDEO_SELECT },
     ])
     .lean();
 
@@ -1210,6 +1212,11 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const nextChapter = chIndex < siblingChapters.length - 1 ? siblingChapters[chIndex + 1] : null;
 
   if (segments.length === 4) {
+    const topics = await Topic.find(vis(Topic, preview, { chapter: chapter._id }))
+      .sort({ sortOrder: 1, number: 1 })
+      .select('title number slug shortDescription notes formulas attachments image featuredImage languageMode')
+      .populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'featuredImage', select: MEDIA_SELECT }, { path: 'attachments.media', select: MEDIA_SELECT }])
+      .lean();
     return {
       type: 'referenceSolutions',
       data: {
@@ -1218,6 +1225,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         class: cls,
         chapter,
         exercises: chapterExercises,
+        topics,
         resources: resources.map(formatResource),
         siblingChapters,
         prev: prevChapter ? { label: prevChapter.title, url: urls.referenceChapter(book, cls, prevChapter) } : null,
@@ -1452,6 +1460,12 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   const home = { label: term(terms, 'home'), url: '/' };
 
   if (segments.length === 0) return { type: 'home' };
+
+  if (['important-questions', 'notes-formulas'].includes(segments[0])) {
+    const categoryScope = segments[0] === 'important-questions' && segments[1] === 'category';
+    if (!(categoryScope ? [3, 4, 5] : [1, 3]).includes(segments.length)) throw new ApiError(404, 'Page not found');
+    return resolveStudyCms(segments, { preview, override, home, page, limit });
+  }
 
   if (segments[0] === 'study-materials') {
     const key = segments.length > 1 ? `study-materials/${segments[1]}` : 'study-materials';

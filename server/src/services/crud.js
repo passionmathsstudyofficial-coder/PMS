@@ -101,12 +101,19 @@ export function crudRouter(Model, options = {}) {
     let filter;
     if (adminScope || !publicRead) {
       filter = { ...(await adminFilters(req.query, req)) };
-      if (hasStatus && req.query.status) filter.status = asString(req.query.status, 20);
+      if (hasStatus && req.query.status) {
+        const status = asString(req.query.status, 20);
+        filter.status = status === 'scheduled' ? 'published' : status;
+        if (status === 'scheduled') filter.publishedAt = { $gt: new Date() };
+      }
     } else {
       filter = hasStatus ? Model.publicFilter(await publicFilters(req.query, req)) : await publicFilters(req.query, req);
     }
     const q = asString(req.query.q, 100).trim();
-    if (!adminScope && publicRead) filter = { ...filter, ...await publicParentFilter(Model) };
+    if (!adminScope && publicRead) {
+      const parents = await publicParentFilter(Model);
+      if (parents.$and) filter.$and = [...(filter.$and || []), ...parents.$and];
+    }
     if (q && Model.schema.path('searchText')) filter.searchText = { $regex: escapeRegex(q), $options: 'i' };
     else if (q && !filter.$or) {
       const fields = ['name', 'title', 'text', 'email'].flatMap(field => {

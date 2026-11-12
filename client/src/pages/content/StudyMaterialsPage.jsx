@@ -75,6 +75,10 @@ export default function StudyMaterialsPage({ data, breadcrumbs }) {
         />
 
         <div className="container-page py-10">
+          <nav className="mb-6 flex flex-wrap gap-4" aria-label={uiText('Study materials')}>
+            <Link to="/important-questions" className="font-semibold text-brand underline">{uiText('Important Questions')}</Link>
+            <Link to="/notes-formulas" className="font-semibold text-brand underline">{uiText('Notes & Formulas')}</Link>
+          </nav>
           {/* Class selection banner */}
           <div className="mb-10 rounded-3xl border bg-gradient-to-br from-brand/5 via-card to-amber-500/5 p-6 sm:p-8">
             <h2 className="mb-2 font-heading text-lg font-bold text-foreground">{uiText("Select Your Class (अपनी कक्षा चुनें)")}</h2>

@@ -24,10 +24,11 @@ async function main() {
   ]);
   const { connectDB } = database;
   disconnectDB = database.disconnectDB;
-  const { SiteSettings, ensureDefaultSessions, ensureDefaultLandingPages, ensureDefaultHomepageSections, ensureDefaultHeaderFooter } = models;
+  const { SiteSettings, ensureDefaultSessions, ensureDefaultLandingPages, ensureDefaultHomepageSections, ensureDefaultHeaderFooter, initializeStudyCms } = models;
   await connectDB(env.MONGODB_URI);
   await SiteSettings.getSingleton();
   await ensureDefaultSessions();
+  await initializeStudyCms();
   await ensureDefaultLandingPages();
   await ensureDefaultHomepageSections();
   await ensureDefaultHeaderFooter();

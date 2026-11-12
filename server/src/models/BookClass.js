@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
   class: { type: ObjectId, ref: 'Class', required: true, immutable: true },
   name: l10n(), description: textL10n(), seo: seo(),
   slug: { type: String, required: true, trim: true, lowercase: true },
+  thumbnail: { type: ObjectId, ref: 'Media' },
   subjects: [{ type: ObjectId, ref: 'Subject' }],
 }, { timestamps: true });
 schema.plugin(contentPlugin);

@@ -1,4 +1,5 @@
-import { publicParentFilter } from '../services/relationships.js';
+import { StudyClass, StudyChapter, StudyTopic, QuestionCategory, QuestionSet } from '../models/StudyContent.js';
+import { publicParentFilter, visibleParents } from '../services/relationships.js';
 import crypto from 'node:crypto';
 import { cache } from '../lib/cache.js';
 import express from 'express';
@@ -54,11 +55,53 @@ const classPopulate = { path: 'class', select: 'number name slug' };
 const subjectPopulate = { path: 'subject', select: 'name slug' };
 const seoImage = { path: 'seo.ogImage', select: MEDIA_SELECT };
 
+const studyFilters = q => ({
+  ...idFilter(q, ['studyClass', 'studyChapter', 'studyTopic', 'questionCategory', 'questionSet']),
+  ...(q.module ? { module: String(q.module) } : {}),
+  ...(q.slug ? { slug: String(q.slug) } : {}),
+});
+const studyMedia = [{ path: 'thumbnail', select: MEDIA_SELECT }, { path: 'pdfFile', select: MEDIA_SELECT }, seoImage];
+
+for (const [path, Model] of [
+  ['study-classes', StudyClass],
+  ['study-chapters', StudyChapter],
+  ['study-topics', StudyTopic],
+  ['question-categories', QuestionCategory],
+  ['question-sets', QuestionSet],
+]) {
+  const filters = async q => {
+    const scope = studyFilters(q);
+    if (Model === StudyClass) return scope;
+    if (Model === QuestionSet && isObjectId(q.forChapter)) scope.$or = [{ studyChapter: null }, { studyChapter: q.forChapter }];
+    const module = scope.module;
+    delete scope.module;
+    if (module && [StudyChapter, StudyTopic].includes(Model)) {
+      const classes = await StudyClass.distinct('_id', { module, ...(scope.studyClass ? { _id: scope.studyClass } : {}) });
+      scope.studyClass = { $in: classes };
+    }
+    if (Model === StudyTopic && scope.studyClass) {
+      const chapters = await StudyChapter.distinct('_id', {
+        studyClass: scope.studyClass, ...(scope.studyChapter ? { _id: scope.studyChapter } : {}),
+      });
+      delete scope.studyClass;
+      scope.studyChapter = { $in: chapters };
+    }
+    return scope;
+  };
+  router.use('/' + path, crudRouter(Model, {
+    adminFilters: filters,
+    publicFilters: filters,
+    defaultSort: { sortOrder: 1, number: 1, _id: 1 },
+    populate: { list: studyMedia, detail: studyMedia },
+    prepareDuplicate: plain => ({ ...plain, slug: `${plain.slug.slice(0, 108)}-${copySuffix()}`, title: copyTitle(plain.title) }),
+  }));
+}
+
 router.use('/book-classes', crudRouter(BookClass, {
   entityType: 'BookClass',
   adminFilters: q => idFilter(q, ['book', 'class']),
   publicFilters: q => idFilter(q, ['book', 'class']),
-  populate: { list: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }], detail: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }] },
+  populate: { list: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }], detail: [classPopulate, { path: 'book', select: 'title slug' }, { path: 'subjects', select: 'name slug' }, { path: 'thumbnail', select: MEDIA_SELECT }] },
   beforeDelete: async doc => {
     for (const Model of [Chapter, Note, ImportantQuestion, Resource]) {
       await assertNoChildren(Model, { book: doc.book, class: doc.class }, 'This book class still has {count} linked records. Move or delete them first.');
@@ -182,7 +225,7 @@ router.use(
           chapter: req.params.id,
           ...(req.query.academicSession ? { academicSession: String(req.query.academicSession) } : {}),
         };
-        const items = await Exercise.find(admin ? filter : Exercise.publicFilter(filter))
+        const items = await Exercise.find(admin ? filter : { ...Exercise.publicFilter(filter), ...await publicParentFilter(Exercise) })
           .sort({ sortOrder: 1, number: 1 })
           .populate([{ path: 'chapter', select: 'number title slug' }])
           .lean();
@@ -217,8 +260,11 @@ router.use(
   crudRouter(Topic, {
     entityType: 'Topic',
     defaultSort: { sortOrder: 1, number: 1 },
-    adminFilters: (q) => ({
+    adminFilters: async (q) => ({
       ...idFilter(q, ['chapter', 'class', 'subject']),
+      ...(isObjectId(q.book) ? {
+        $and: [{ chapter: { $in: await Chapter.distinct('_id', { book: q.book }) } }],
+      } : {}),
       ...(q.difficulty ? { difficulty: String(q.difficulty) } : {}),
       ...(q.featured === 'true' ? { featured: true } : {}),
     }),
@@ -482,12 +528,13 @@ router.use(
           exercise: req.params.id,
           ...(req.query.academicSession ? { academicSession: String(req.query.academicSession) } : {}),
         };
-        const items = await Question.find(admin ? filter : Question.publicFilter(filter))
+        const items = await Question.find(admin ? filter : { ...Question.publicFilter(filter), ...await publicParentFilter(Question) })
           .sort({ sortOrder: 1, createdAt: 1 })
           .populate([{ path: 'attachments.media', select: MEDIA_SELECT }])
           .lean();
         const qIds = items.map((q) => q._id);
-        const solutions = await Solution.find({ question: { $in: qIds } }).select('question status methods blocks').lean();
+        const solutionFilter = { question: { $in: qIds } };
+        const solutions = await Solution.find(admin ? solutionFilter : Solution.publicFilter(solutionFilter)).select('question status methods blocks').lean();
         const solMap = new Map(solutions.map((s) => [String(s.question), s]));
         const serialized = items.map((q) => {
           const sol = solMap.get(String(q._id));
@@ -636,10 +683,13 @@ router.use(
     extend: (r) => {
       r.get('/:id/solutions', optionalAuth, async (req, res) => {
         if (!isObjectId(req.params.id)) throw new ApiError(400, 'Invalid question id');
-        const solution = await Solution.findOne({ question: req.params.id }).populate(solutionPopulate()).lean();
-        const canReadDraft = req.admin && hasPermission(req.admin.role, 'content:read');
-        const isVisible = canReadDraft || !solution?.status || solution?.status === 'published';
-        const data = isVisible && solution ? solution : null;
+        const admin = req.query.scope === 'admin' && req.admin && hasPermission(req.admin.role, 'content:read');
+        if (!admin) {
+          const question = await Question.findOne(Question.publicFilter({ _id: req.params.id })).lean();
+          if (!question || !await visibleParents(question)) throw new ApiError(404, 'Question not found');
+        }
+        const filter = { question: req.params.id };
+        const data = await Solution.findOne(admin ? filter : Solution.publicFilter(filter)).populate(solutionPopulate()).lean();
         res.json({ items: data ? [data] : [], solution: data, total: data ? 1 : 0 });
       });
 
@@ -708,19 +758,26 @@ router.use(
     entityType: 'Note',
     defaultSort: { sortOrder: 1, createdAt: -1 },
     adminFilters: (q) => ({
+      ...studyFilters(q),
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
+      ...(q.scoped === 'true' && !isObjectId(q.studyClass) ? { studyClass: { $ne: null } } : {}),
+      ...(q.legacy === 'true' ? { studyClass: null } : {}),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
+      ...studyFilters(q),
       ...idFilter(q, ['class', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     }),
     populate: {
-      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
+      list: [{ path: 'studyClass', select: 'number title slug' }, { path: 'studyChapter', select: 'number title slug' }, classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
       detail: [
+        { path: 'studyClass', select: 'number title slug' },
+        { path: 'studyChapter', select: 'number title slug' },
+        { path: 'studyTopic', select: 'title slug' },
         classPopulate,
         subjectPopulate,
         { path: 'chapter', select: 'number title slug' },
@@ -736,6 +793,7 @@ router.use(
       ],
     },
     beforeWrite: async (doc) => {
+      if (doc.studyClass) return;
       if (doc.chapter && (!doc.class || !doc.subject || !doc.academicSession)) {
         const ch = await Chapter.findById(doc.chapter).select('class subject academicSession').lean();
         if (ch) {
@@ -764,7 +822,10 @@ router.use(
     entityType: 'ImportantQuestion',
     defaultSort: { sortOrder: 1, createdAt: -1 },
     adminFilters: (q) => ({
+      ...studyFilters(q),
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
+      ...(q.scoped === 'true' && !isObjectId(q.studyClass) ? { studyClass: { $ne: null } } : {}),
+      ...(q.legacy === 'true' ? { studyClass: null } : {}),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.year ? { year: Number(q.year) } : {}),
@@ -773,6 +834,7 @@ router.use(
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
+      ...studyFilters(q),
       ...idFilter(q, ['class', 'chapter', 'topic', 'book']),
       ...(q.category ? { category: String(q.category) } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
@@ -781,8 +843,11 @@ router.use(
       ...(q.questionType ? { questionType: String(q.questionType) } : {}),
     }),
     populate: {
-      list: [classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
+      list: [{ path: 'studyClass', select: 'number title slug' }, { path: 'studyChapter', select: 'number title slug' }, classPopulate, { path: 'chapter', select: 'number title' }, { path: 'topic', select: 'number title' }, { path: 'book', select: 'title author slug' }, { path: 'pdfFile', select: MEDIA_SELECT }],
       detail: [
+        { path: 'studyClass', select: 'number title slug' },
+        { path: 'studyChapter', select: 'number title slug' },
+        { path: 'studyTopic', select: 'title slug' },
         classPopulate,
         subjectPopulate,
         { path: 'chapter', select: 'number title slug' },
@@ -799,6 +864,7 @@ router.use(
       ],
     },
     beforeWrite: async (doc) => {
+      if (doc.studyClass) return;
       if (doc.chapter && (!doc.class || !doc.subject || !doc.academicSession)) {
         const ch = await Chapter.findById(doc.chapter).select('class subject academicSession').lean();
         if (ch) {

@@ -19,7 +19,7 @@ router.use(async (req, res, next) => { await cache.sync(); next(); });
 router.use(languageResponse);
 // Browsers must revalidate (cheap 304 via ETag) so admin changes appear immediately; the server cache is cleared on every save.
 const FRESH = 'public, no-cache';
-const PREVIEW_TYPES = new Set(['Class', 'Chapter', 'Exercise', 'Question', 'Note', 'Page', 'Topic']);
+const PREVIEW_TYPES = new Set(['Class', 'Chapter', 'Exercise', 'Question', 'Note', 'Page', 'Topic', 'StudyClass', 'StudyChapter', 'StudyTopic', 'QuestionCategory', 'QuestionSet', 'ImportantQuestion']);
 
 const isPreview = (req) => req.query.preview === '1' && Boolean(req.admin);
 const intParam = (value, fallback) => Math.max(1, Number.parseInt(value, 10) || fallback);
@@ -55,7 +55,8 @@ router.get('/resolve', optionalAuth, async (req, res) => {
   const session = asString(req.query.session, 30) || undefined;
   const preview = isPreview(req);
   const cacheKey = `resolve:${path.replace(/\/+$/, '') || '/'}:${page}:${session || 'default'}`;
-  const data = preview
+  const studyPath = /^\/(?:important-questions|notes-formulas)(?:\/|$)/i.test(path);
+  const data = preview || studyPath
     ? await resolvePath(path, { preview, page, session, previewToken: asString(req.query.previewToken, 60) })
     : await cache.wrap(cacheKey, 60_000, () => resolvePath(path, { page, session }));
   res.set('Cache-Control', preview ? 'no-store' : FRESH);

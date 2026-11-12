@@ -29,19 +29,21 @@ import { EditorGate, useEditorForm } from '../lib/useEditorForm.jsx';
 export function TopicsList() {
   useUiLanguage();
   const [filters, setFilter, active] = useQueryFilters(['class', 'chapter']);
+  const [params] = useSearchParams();
+  const book = params.get('book');
   return (
     <ResourceListPage
       resource="topics"
       title={uiText("Topics (विषय / टॉपिक)")}
       description={uiText("Class → Mathematics → Chapter → Topics. Full digital classroom topic learning page.")}
-      baseParams={active}
+      baseParams={book ? { ...active, book } : active}
       filters={
         <div className="flex flex-wrap items-center gap-2">
           <ClassFilter value={filters.class} onChange={(v) => setFilter('class', v)} />
           {filters.class && (
             <RefSelect
               resource="chapters"
-              params={{ class: filters.class, limit: 100 }}
+              params={{ class: filters.class, ...(book ? { book } : {}), limit: 100 }}
               value={filters.chapter}
               onChange={(v) => setFilter('chapter', v)}
               placeholder={uiText("All Chapters (अध्याय)")}
@@ -51,7 +53,7 @@ export function TopicsList() {
           )}
         </div>
       }
-      createPath={adminUrl(`topics/new${filters.class ? `?class=${filters.class}` : ''}${filters.chapter ? `&chapter=${filters.chapter}` : ''}`)}
+      createPath={adminUrl('topics/new?' + new URLSearchParams(book ? { ...active, book } : active))}
       createLabel={uiText("New Topic")}
       editPath={(item) => adminUrl(`topics/${item._id}`)}
       reorderable
@@ -252,6 +254,7 @@ export function TopicEditor({ id }) {
   const { doc, set, isNew } = form;
   const classId = refId(doc?.class);
   const chapterId = refId(doc?.chapter);
+  const book = params.get('book');
 
   const classes = useResourceList('classes', { limit: 50 });
   const classItems = classes.data?.items || [];
@@ -300,7 +303,7 @@ export function TopicEditor({ id }) {
               <RefSelect
                 label={uiText("Chapter (अध्याय)")}
                 resource="chapters"
-                params={{ class: classId, limit: 100 }}
+                params={{ class: classId, ...(book ? { book } : {}), limit: 100 }}
                 disabled={!classId}
                 value={chapterId}
                 onChange={(ch) => set('chapter', ch)}

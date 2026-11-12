@@ -15,21 +15,26 @@ import {
   Topic,
   Resource,
   Book,
+  BookClass,
 } from '../models/index.js';
+import { StudyClass, StudyChapter, StudyTopic, QuestionCategory, QuestionSet } from '../models/StudyContent.js';
 import { labelOf } from './activity.js';
 
+const studyModels = [StudyClass, StudyChapter, StudyTopic, QuestionCategory, QuestionSet];
 const MEDIA_REFS = [
+  ...studyModels.map(Model => [Model, Model.modelName, ['thumbnail', 'pdfFile', 'seo.ogImage']]),
   [SiteSettings, 'Website Settings', ['brand.logo', 'brand.footerLogo', 'brand.favicon', 'seo.defaultOgImage']],
   [ClassLevel, 'Class', ['thumbnail', 'seo.ogImage']],
   [Chapter, 'Chapter', ['image', 'featuredImage', 'seo.ogImage', 'pdfFile']],
   [Exercise, 'Exercise', ['seo.ogImage', 'pdfFile']],
   [Resource, 'Resource', ['file', 'thumbnail']],
+  [BookClass, 'BookClass', ['thumbnail', 'seo.ogImage']],
   [Book, 'Book', ['pdfFile', 'coverImage']],
   [Topic, 'Topic', ['attachments.media', 'image', 'featuredImage']],
   [Question, 'Question', ['attachments.media', 'seo.ogImage']],
   [Solution, 'Solution', ['blocks.media.media']],
-  [Note, 'Note', ['attachments.media', 'seo.ogImage']],
-  [ImportantQuestion, 'Important Question', ['attachments.media', 'blocks.media.media', 'seo.ogImage']],
+  [Note, 'Note', ['attachments.media', 'seo.ogImage', 'pdfFile', 'image', 'featuredImage']],
+  [ImportantQuestion, 'Important Question', ['attachments.media', 'blocks.media.media', 'seo.ogImage', 'pdfFile', 'image', 'featuredImage']],
   [Section, 'Homepage Section', ['image', 'items.image', 'config.gallery']],
   [Page, 'Page', ['seo.ogImage']],
   [SeoSetting, 'SEO', ['ogImage']],
@@ -67,12 +72,13 @@ export async function findMediaUsage(id) {
   const escaped = media.url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const re = new RegExp(String.raw`(?:src|href)=["'](?:${escaped}|(?:https?://[^/]+)?/api/public/files/${id}(?:/[^"'?]+)?(?:\?[^"']*)?)["']`);
   const fields = [
+    ...studyModels.map(Model => [Model, Model.modelName, ['content']]),
     [Chapter, 'Chapter', ['introduction', 'notes']],
     [Exercise, 'Exercise', ['description', 'instructions', 'notes']],
     [Question, 'Question', ['text', 'hint', 'answer', 'importantPoint']],
     [Solution, 'Solution', ['blocks.content']],
     [Note, 'Note', ['content']],
-    [ImportantQuestion, 'Important Question', ['text', 'answer', 'blocks.content']],
+    [ImportantQuestion, 'Important Question', ['text', 'answer', 'explanation', 'mcqOptions.text', 'blocks.content']],
     [Page, 'Page', ['content']],
     [Topic, 'Topic', ['notes', 'practiceQuestions.solution']],
     [Template, 'Template', ['blocks.content']],

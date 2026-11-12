@@ -1,6 +1,6 @@
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router';
+import { useNavigate, useParams, Link } from 'react-router';
 import {
   BookOpen,
   Plus,
@@ -44,6 +44,7 @@ import { adminUrl } from '@/lib/config';
 export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   useUiLanguage();
   const params = useParams();
+  const navigate = useNavigate();
   const bookSlug = fixedBookSlug || params.bookSlug || 'rs-aggarwal';
 
   // 1. Core Data State
@@ -126,7 +127,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
         const dbBooks = booksRes.items || [];
         setBooks(dbBooks);
-        const match = dbBooks.find((b) => b.slug === bookSlug) || dbBooks[0] || null;
+        const match = dbBooks.find((b) => b.slug === bookSlug) || null;
         setSelectedBook(match);
 
         const dbClasses = (classesRes.items || []).map(entry => ({ ...entry, bookClassId: entry._id, _id: entry.class?._id, number: entry.class?.number })).filter(entry => entry._id).sort((a, b) => b.number - a.number);
@@ -599,8 +600,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           <select
             value={selectedBook?.slug || bookSlug}
             onChange={(e) => {
-              const b = books.find((x) => x.slug === e.target.value);
-              setSelectedBook(b);
+              navigate(adminUrl('reference-books-manager/' + e.target.value));
             }}
             className="h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:ring-1 focus:ring-brand"
           >
@@ -612,7 +612,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
           </select>
         </div>
 
-        <Link className="text-xs underline" to={adminUrl("book-classes")}>Manage classes and publication</Link>
+        {selectedBook && <Link className="text-xs underline" to={adminUrl('book-classes?book=' + selectedBook._id)}>Class Management</Link>}
+        {selectedBook && selectedClass && selectedChapter && (
+          <Link className="text-xs underline" to={adminUrl('topics?' + new URLSearchParams({
+            book: selectedBook._id, class: selectedClass._id, chapter: selectedChapter._id,
+          }))}>Topics Management</Link>
+        )}
         {/* Class Selector Pills */}
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold text-foreground">{uiText('Class')}:</span>

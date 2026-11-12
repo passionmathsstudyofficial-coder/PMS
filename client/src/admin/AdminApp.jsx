@@ -80,6 +80,7 @@ const ActivityPage = named(system, 'ActivityPage');
 const BackupsPage = named(system, 'BackupsPage');
 const AccountPage = named(system, 'AccountPage');
 
+const StudyCmsPage = lazy(() => import('./pages/StudyCmsPage.jsx'));
 const ReferenceBookManagerPage = lazy(() => import('./pages/ReferenceBookManagerPage.jsx'));
 const ImportantQuestionsManagerPage = lazy(() => import('./pages/ImportantQuestionsManagerPage.jsx'));
 const NotesManagerPage = lazy(() => import('./pages/NotesManagerPage.jsx'));
@@ -155,6 +156,7 @@ export default function AdminApp() {
               <Route path="reference-books-manager/:bookSlug" element={<ReferenceBookManagerPage />} />
               <Route path="announcements" element={<AnnouncementsList />} />
               <Route path="announcements/:id" element={<EditorRoute component={AnnouncementEditor} />} />
+              <Route path="study-cms/:module/:section/:id?" element={<StudyCmsPage />} />
               <Route path="important-questions" element={<ImportantQuestionsManagerPage />} />
               <Route path="important-questions/syllabus" element={<MathsSyllabusManagerPage />} />
               <Route path="important-questions/:category" element={<ImportantQuestionsManagerPage />} />

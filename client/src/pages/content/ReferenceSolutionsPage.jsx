@@ -20,6 +20,8 @@ import { Link } from 'react-router';
 import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
+import { Figure } from '@/components/content/Figure.jsx';
+import { MathFormula } from '@/components/content/MathFormula.jsx';
 import { LanguageNotice } from '@/components/content/LanguageNotice.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
 import { QuestionCard } from '@/components/content/QuestionCard.jsx';
@@ -50,6 +52,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     classes = [],
     chapters = [],
     exercises = [],
+    topics = [],
     resources = [],
     questions: initialQuestions = [],
     pagination = {},
@@ -241,6 +244,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         <div className="container-page py-10">
           <div className="grid gap-8 lg:grid-cols-12">
             <div className="space-y-6 lg:col-span-8">
+              {cls.thumbnail && <Figure media={cls.thumbnail} alt={t(cls.thumbnail.alt) || t(cls.name)} />}
               {/* Introduction box */}
               <div className="rounded-2xl border bg-card p-5 text-sm text-foreground/90">
                 <p>{uiText("Welcome to")}<strong>{interfaceL10n(book.title)}{uiText("Class")}{' '}{cls.number}</strong>{' '}{uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
@@ -367,6 +371,15 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                 </div>
               )}
 
+              {(chapter.image || hasContent(chapter.introduction) || hasContent(chapter.notes) || chapter.formulas?.length > 0) && (
+                <section className="space-y-4 rounded-2xl border bg-card p-5">
+                  <h2 className="font-heading text-lg font-bold">{uiText("Chapter content")}</h2>
+                  {chapter.image && <Figure media={chapter.image} alt={t(chapter.image.alt)} />}
+                  <RichContent html={t(chapter.introduction)} />
+                  <RichContent html={t(chapter.notes)} />
+                  <ReferenceFormulas items={chapter.formulas} />
+                </section>
+              )}
               {/* Clickable exercises list */}
               <section className="space-y-4">
                 <h2 className="font-heading text-lg font-bold text-foreground">{' '}{uiText("Select Exercise in Chapter")}{' '}{chapter.number}
@@ -395,6 +408,21 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                 </div>
               </section>
 
+              {topics.length > 0 && <section className="space-y-3">
+                <h2 className="font-heading text-lg font-bold">{uiText("Topics")}</h2>
+                {topics.map(topic => <details key={topic._id} id={topic.slug} className="scroll-mt-24 rounded-xl border bg-card p-4">
+                  <summary className="cursor-pointer font-semibold">{t(topic.title) || `Topic ${topic.number}`}</summary>
+                  <div className="mt-4 space-y-3">
+                    <p>{t(topic.shortDescription)}</p>
+                    {(topic.featuredImage || topic.image) && <Figure media={topic.featuredImage || topic.image} />}
+                    <RichContent html={t(topic.notes, topic.languageMode)} />
+                    <ReferenceFormulas items={topic.formulas} />
+                    {topic.attachments?.filter(item => item.media?.url).map(item => item.media.format === 'pdf'
+                      ? <a key={item._id} className="text-brand underline" href={resolveMediaUrl(item.media.url)}>{t(item.caption) || uiText("Open PDF")}</a>
+                      : <Figure key={item._id} media={item.media} alt={t(item.alt)} caption={t(item.caption)} />)}
+                  </div>
+                </details>)}
+              </section>}
               {/* Chapter overview if available */}
               {chapter.shortDescription && (
                 <div className="rounded-2xl border bg-card p-5">
@@ -559,4 +587,13 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
       />
     </>
   );
+}
+
+function ReferenceFormulas({ items }) {
+  const t = useL10n();
+  return items?.map((formula, index) => <div className="overflow-x-auto rounded-lg bg-muted/50 p-3" key={formula._id || index}>
+    <p className="font-semibold">{t(formula.title)}</p>
+    <MathFormula latex={formula.latex} />
+    <p>{t(formula.description)}</p>
+  </div>);
 }

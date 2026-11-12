@@ -1,7 +1,7 @@
 import { env } from '../src/config/env.js';
 import { connectDB } from '../src/config/db.js';
 import { createApp } from '../src/app.js';
-import { SiteSettings } from '../src/models/index.js';
+import { SiteSettings, initializeStudyCms } from '../src/models/index.js';
 
 let appPromise;
 
@@ -11,6 +11,7 @@ async function getApp() {
   if (!appPromise) {
     appPromise = (async () => {
       await SiteSettings.getSingleton();
+      await initializeStudyCms();
       return createApp();
     })();
   }

@@ -1,3 +1,4 @@
+import { studyPlacement } from './StudyContent.js';
 import mongoose from 'mongoose';
 import { slugify } from '../utils/slug.js';
 import { contentPlugin } from './plugins/content.js';
@@ -6,8 +7,9 @@ import { joinSearch, l10nText, labels } from '../services/searchText.js';
 
 const noteSchema = new mongoose.Schema(
   {
-    class: { type: ObjectId, ref: 'Class', required: true, index: true },
-    subject: { type: ObjectId, ref: 'Subject', required: true, index: true },
+    ...studyPlacement,
+    class: { type: ObjectId, ref: 'Class', required() { return !this.studyClass; }, index: true },
+    subject: { type: ObjectId, ref: 'Subject', required() { return !this.studyClass; }, index: true },
     chapter: { type: ObjectId, ref: 'Chapter', index: true },
     topic: { type: ObjectId, ref: 'Topic', index: true },
     book: { type: ObjectId, ref: 'Book', index: true },
@@ -47,6 +49,7 @@ noteSchema.index({ searchText: 'text' }, { default_language: 'none' });
 
 noteSchema.pre('validate', async function buildNote() {
   this.slug = slugify(this.slug || this.title?.en || this.title?.hi, 'note');
+  if (this.studyClass && this.isNew && !this.slug.endsWith(this._id.toString().slice(-8))) this.slug = this.slug.slice(0, 130) + '-' + this._id.toString().slice(-8);
   const [cls, chapter] = await Promise.all([
     this.class ? mongoose.model('Class').findById(this.class).select('number').lean() : null,
     this.chapter ? mongoose.model('Chapter').findById(this.chapter).select('number title').lean() : null,

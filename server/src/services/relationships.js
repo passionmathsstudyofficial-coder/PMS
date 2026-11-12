@@ -1,8 +1,9 @@
+import { validateStudyPlacement } from './studyPlacement.js';
 import mongoose from 'mongoose';
 import { ApiError } from '../middleware/error.js';
 import { cache } from '../lib/cache.js';
-const parents = { class: 'Class', subject: 'Subject', chapter: 'Chapter', exercise: 'Exercise', question: 'Question', topic: 'Topic', book: 'Book' };
-const content = ['BookClass', 'Class', 'Subject', 'Chapter', 'Exercise', 'Question', 'Topic', 'Resource', 'Book', 'Note', 'ImportantQuestion', 'Video'];
+const parents = { class: 'Class', subject: 'Subject', chapter: 'Chapter', exercise: 'Exercise', question: 'Question', topic: 'Topic', book: 'Book', studyClass: 'StudyClass', studyChapter: 'StudyChapter', studyTopic: 'StudyTopic', questionCategory: 'QuestionCategory', questionSet: 'QuestionSet' };
+const content = ['BookClass', 'Class', 'Subject', 'Chapter', 'Exercise', 'Question', 'Topic', 'Resource', 'Book', 'Note', 'ImportantQuestion', 'Video', 'StudyChapter', 'StudyTopic', 'QuestionSet'];
 
 async function chapterFor(doc) {
   if (doc.get('chapter')) return mongoose.model('Chapter').findById(doc.get('chapter')).select('book').lean();
@@ -32,6 +33,7 @@ export async function validateReferences(doc) {
     const count = await mongoose.model(ref).countDocuments({ _id: { $in: [...new Set(ids)] } });
     if (count !== new Set(ids).size) throw new ApiError(400, `Selected ${path} does not exist. Refresh and choose an existing record.`);
   }
+  await validateStudyPlacement(doc);
   if (doc.constructor.modelName !== 'BookClass' && doc.schema.path('book') && doc.book && doc.class &&
       (doc.isNew || doc.isModified('book') || doc.isModified('class'))) {
     const book = await mongoose.model('Book').findById(doc.book).select('class availableClasses').lean();
@@ -81,7 +83,7 @@ export async function validateReferences(doc) {
 /** Parent deletion is deliberately blocked until children are moved/deleted by an editor. */
 export async function protectParent(doc) {
   const field = Object.entries(parents).find(([, model]) => model === doc.constructor.modelName)?.[0];
-  if (!field || !['class', 'subject', 'chapter', 'topic', 'exercise', 'book'].includes(field)) return;
+  if (!field || !['class', 'subject', 'chapter', 'topic', 'exercise', 'book', 'studyClass', 'studyChapter', 'studyTopic', 'questionCategory', 'questionSet'].includes(field)) return;
   for (const name of content) {
     const Model = mongoose.models[name];
     if (!Model || !Model.schema.path(field)) continue;
@@ -119,10 +121,12 @@ export async function publicParentFilter(Model, visited = new Set()) {
   for (const [field, name] of Object.entries(parents)) {
     const Parent = mongoose.models[name];
     if (!Model.schema.path(field) || !Parent?.publicFilter || next.has(name)) continue;
-    const ids = await cache.wrap(`visible-parents:${[...next].sort().join(',')}:${name}`, 60_000, async () => {
+    const getIds = async () => {
       const scopes = await publicParentFilter(Parent, next);
       return (await Parent.find({ ...Parent.publicFilter(), ...(name === 'Subject' ? { isPublic: true } : {}), ...scopes }).select('_id').lean()).map(doc => doc._id);
-    });
+    };
+    const scopedParent = ['StudyClass', 'StudyChapter', 'StudyTopic', 'QuestionCategory', 'QuestionSet'].includes(name);
+    const ids = scopedParent ? await getIds() : await cache.wrap(`visible-parents:${[...next].sort().join(',')}:${name}`, 60_000, getIds);
     conditions.push({ $or: [{ [field]: null }, { [field]: { $in: ids } }] });
   }
   return conditions.length ? { $and: conditions } : {};

@@ -5,6 +5,11 @@ import { toast } from '@/lib/notifications.jsx';
 import { api, errorMessage, get } from '@/lib/api';
 
 export const RESOURCES = {
+  'study-classes': { endpoint: '/study-classes', singular: 'Class', plural: 'Classes', entityType: 'StudyClass' },
+  'study-chapters': { endpoint: '/study-chapters', singular: 'Chapter', plural: 'Chapters', entityType: 'StudyChapter' },
+  'study-topics': { endpoint: '/study-topics', singular: 'Topic', plural: 'Topics', entityType: 'StudyTopic' },
+  'question-categories': { endpoint: '/question-categories', singular: 'Question category', plural: 'Question categories', entityType: 'QuestionCategory' },
+  'question-sets': { endpoint: '/question-sets', singular: 'Question set', plural: 'Question sets', entityType: 'QuestionSet' },
   'book-classes': { endpoint: '/book-classes', singular: 'Book class', plural: 'Book classes', entityType: 'BookClass' },
   classes: { endpoint: '/classes', get singular() { return uiText("Class"); }, get plural() { return uiText("Classes"); }, entityType: 'Class' },
   subjects: { endpoint: '/subjects', get singular() { return uiText("Subject"); }, get plural() { return uiText("Subjects"); }, entityType: 'Subject' },
@@ -30,7 +35,7 @@ export const RESOURCES = {
 const REF_KEYS = new Set([
   'media', 'video', 'ogImage', 'image', 'featuredImage', 'introVideo', 'introVideoEn', 'introVideoHi', 'thumbnail', 'logo', 'footerLogo', 'favicon',
   'defaultOgImage', 'class', 'subject', 'chapter', 'exercise', 'question', 'linkedQuestion', 'template', 'target', 'source',
-  'topic', 'resource', 'book',
+  'topic', 'resource', 'book', 'studyClass', 'studyChapter', 'studyTopic', 'questionCategory', 'questionSet', 'pdfFile',
 ]);
 const REF_ARRAY_KEYS = new Set(['subjects', 'relatedChapters', 'classes', 'chapters', 'questions', 'importantQuestions', 'notes', 'videos', 'gallery', 'topics', 'resources', 'books']);
 const READ_ONLY = new Set(['__v', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'searchText']);

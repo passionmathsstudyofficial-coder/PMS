@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Media } from '../models/index.js';
+import { visibleParents } from './relationships.js';
 import { findMediaUsage } from './usage.js';
 
 export const isDocument = media => ['pdf', 'doc', 'docx'].includes(media?.format);
@@ -12,13 +13,8 @@ async function publishedWithParents(Model, id, visited = new Set()) {
   if (visited.has(key)) return true;
   visited.add(key);
   if (!Model.publicFilter) return false;
-  const doc = await Model.findOne(Model.publicFilter({ _id: id })).select('class subject chapter exercise question book topic isPublic').lean();
-  if (!doc || (Model.modelName === 'Subject' && doc.isPublic === false)) return false;
-  const parents = { class: 'Class', subject: 'Subject', chapter: 'Chapter', exercise: 'Exercise', question: 'Question', book: 'Book', topic: 'Topic' };
-  for (const [field, model] of Object.entries(parents)) {
-    if (doc[field] && !await publishedWithParents(mongoose.model(model), doc[field], visited)) return false;
-  }
-  return true;
+  const doc = await Model.findOne(Model.publicFilter({ _id: id })).lean();
+  return Boolean(doc && doc.isPublic !== false && await visibleParents(doc, visited));
 }
 
 function hasVisibleReference(value, media) {

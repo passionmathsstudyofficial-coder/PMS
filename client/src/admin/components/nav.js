@@ -58,6 +58,7 @@ export const NAV_GROUPS = [
       { to: 'reference-books-manager/rd-sharma', get label() { return uiText("RD Sharma Solutions"); }, icon: Library },
       { to: 'reference-books-manager/kc-sinha', get label() { return uiText("KC Sinha Solutions"); }, icon: Library },
       { to: 'reference-books-manager/ml-aggarwal', get label() { return uiText("ML Aggarwal Solutions"); }, icon: Library },
+      { to: 'reference-books-manager/kc-sinha-maths', label: 'K.C. Sinha Mathematics CMS', icon: Library },
       { to: 'book-classes', label: 'Reference book classes', icon: GraduationCap },
       { to: 'books', get label() { return uiText("All Reference Books"); }, icon: BookMarked },
     ],
@@ -65,6 +66,12 @@ export const NAV_GROUPS = [
   {
     get label() { return uiText("Important Questions"); },
     items: [
+      { to: 'study-cms/important-questions/categories', label: 'Question Category Management', icon: Star },
+      { to: 'study-cms/important-questions/classes', label: 'Class Management', icon: GraduationCap },
+      { to: 'study-cms/important-questions/chapters', label: 'Chapter Management', icon: BookOpen },
+      { to: 'study-cms/important-questions/sets', label: 'Question Set Management', icon: ListOrdered },
+      { to: 'study-cms/important-questions/questions', label: 'Question Management', icon: CircleHelp },
+      { to: 'study-cms/important-questions/topics', label: 'Topics Management', icon: Sparkles },
       { to: 'important-questions/pyq', get label() { return uiText("Previous Year Questions"); }, icon: Star },
       { to: 'important-questions/sample-papers', get label() { return uiText("CBSE Sample Papers"); }, icon: FileSpreadsheet },
       { to: 'important-questions/extra-questions', get label() { return uiText("CBSE Extra Questions"); }, icon: CircleHelp },
@@ -75,6 +82,11 @@ export const NAV_GROUPS = [
   {
     get label() { return uiText("Notes & Formulas"); },
     items: [
+      { to: 'study-cms/notes-formulas/classes', label: 'Class Management', icon: GraduationCap },
+      { to: 'study-cms/notes-formulas/chapters', label: 'Chapter Management', icon: BookOpen },
+      { to: 'study-cms/notes-formulas/notes', label: 'Notes Management', icon: NotebookPen },
+      { to: 'study-cms/notes-formulas/formulas', label: 'Formula Sheet Management', icon: FileSpreadsheet },
+      { to: 'study-cms/notes-formulas/topics', label: 'Topics Management', icon: Sparkles },
       { to: 'notes-manager/ncert', get label() { return uiText("NCERT Chapter-wise Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/formulas', get label() { return uiText("All Maths Formula Sheets"); }, icon: FileSpreadsheet },
       { to: 'notes-manager/rs-aggarwal', get label() { return uiText("RS Aggarwal Notes"); }, icon: NotebookPen },

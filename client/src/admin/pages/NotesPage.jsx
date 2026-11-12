@@ -1,3 +1,5 @@
+import { StudyPlacement } from '../components/StudyPlacement.jsx';
+import { Button } from '@/components/ui/button';
 import { adminText } from '../lib/format.js';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
@@ -30,6 +32,8 @@ export const IQ_QUESTION_TYPES = [
   { value: 'short_answer', get label() { return uiText("Short answer (लघु उत्तरीय)"); } },
   { value: 'long_answer', get label() { return uiText("Long answer (दीर्घ उत्तरीय)"); } },
   { value: 'mcq', get label() { return uiText("Multiple Choice (MCQ)"); } },
+  { value: 'true_false', label: 'True / false' },
+  { value: 'fill_blank', label: 'Fill in the blanks' },
   { value: 'numerical', get label() { return uiText("Numerical Problem (संख्यात्मक प्रश्न)"); } },
   { value: 'case_based', get label() { return uiText("Case-Based / Case Study"); } },
   { value: 'assertion_reason', get label() { return uiText("Assertion and Reason"); } },
@@ -41,12 +45,12 @@ export const IQ_QUESTION_TYPES = [
   { value: 'case_study', get label() { return uiText("Case Study (legacy)"); } },
 ];
 
-function useDefaultSubject(editor) {
+function useDefaultSubject(editor, scoped) {
   const subjects = useResourceList('subjects', { limit: 50 });
   useEffect(() => {
-    if (editor.isNew && editor.form && !editor.form.subject && subjects.data?.items?.length) editor.initialize({ subject: subjects.data.items[0] });
+    if (!scoped && editor.isNew && editor.form && !editor.form.subject && subjects.data?.items?.length) editor.initialize({ subject: subjects.data.items[0] });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor.isNew, subjects.data]);
+  }, [editor.isNew, scoped, subjects.data]);
 }
 
 /** Resolves class + subject slugs for preview URLs (form values may be ids or populated objects). */
@@ -68,7 +72,7 @@ export function NotesList() {
       resource="notes"
       title={uiText("Maths Notes")}
       description={uiText("Revision notes and formula sheets, class-wise and optionally linked to an अध्याय.")}
-      baseParams={active}
+      baseParams={{ ...active, legacy: 'true' }}
       filters={<ClassFilter value={filters.class} onChange={(v) => setFilter('class', v)} />}
       createPath={adminUrl(`notes/new${filters.class ? `?class=${filters.class}` : ''}`)}
       editPath={(item) => adminUrl(`notes/${item._id}`)}
@@ -113,27 +117,28 @@ const NOTE_DEFAULTS = {
   isVisible: true,
 };
 
-export function NoteEditor({ id }) {
+export function NoteEditor({ id, studyBasePath, studyCategory }) {
   useUiLanguage();
   const params = new URLSearchParams(window.location.search);
   const editor = useEditorForm({
     resource: 'notes',
     id,
-    basePath: adminUrl('notes'),
+    basePath: studyBasePath || adminUrl('notes'),
     defaults: {
       ...NOTE_DEFAULTS,
-      class: params.get('class') || null,
-      chapter: params.get('chapter') || null,
-      book: params.get('book') || null,
-      category: params.get('category') || NOTE_DEFAULTS.category,
+      ...(studyBasePath ? studyDefaults(params) : {}),
+      class: studyBasePath ? null : params.get('class') || null,
+      chapter: studyBasePath ? null : params.get('chapter') || null,
+      book: studyBasePath ? null : params.get('book') || null,
+      category: studyCategory || params.get('category') || NOTE_DEFAULTS.category,
       academicSession: params.get('session') || NOTE_DEFAULTS.academicSession,
     },
   });
-  useDefaultSubject(editor);
+  useDefaultSubject(editor, Boolean(studyBasePath));
   const [previewOpen, setPreviewOpen] = useState(false);
   const { form, setField } = editor;
   const { classSlug, subjectSlug } = useScopeSlugs(form);
-  const path = classSlug && subjectSlug && form?.slug ? `/${classSlug}/${subjectSlug}/notes/${form.slug}` : null;
+  const path = studyBasePath && !editor.isNew ? `/notes-formulas/note/${id}` : classSlug && subjectSlug && form?.slug ? `/${classSlug}/${subjectSlug}/notes/${form.slug}` : null;
 
   return (
     <EditorGate editor={editor}>
@@ -142,7 +147,7 @@ export function NoteEditor({ id }) {
           <EditorShell
             title={editor.isNew ? uiText("New note") : adminText(form.title) || uiText("Note")}
             description={uiText("Notes page: formulas, theory, PDF notes, video lessons, and related chapters.")}
-            backTo={adminUrl('notes')}
+            backTo={studyBasePath || adminUrl('notes')}
             backLabel={uiText("All notes")}
             doc={editor.doc}
             form={form}
@@ -165,6 +170,7 @@ export function NoteEditor({ id }) {
           >
             <Panel title={uiText("Location & title")}>
               <div className="grid gap-4 sm:grid-cols-3">
+                {studyBasePath ? <ScopedFields editor={editor} important={false} /> : <>
                 <RefSelect label={uiText("Class")} required resource="classes" value={form.class} onChange={(v) => editor.setForm((f) => ({ ...f, class: v, chapter: null, topic: null }))} />
                 <RefSelect label={uiText("Subject")} required resource="subjects" value={form.subject} onChange={(v) => setField('subject', v)} />
                 <RefSelect
@@ -207,6 +213,8 @@ export function NoteEditor({ id }) {
                     { value: 'general', get label() { return uiText("General Notes"); } },
                   ]}
                 />
+                </>}
+                {studyBasePath && <NumberField label="Display order" value={form.sortOrder ?? 0} onChange={v => setField('sortOrder', v)} />}
                 <div className="sm:col-span-2">
                   <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.title?.en} prefix={classSlug ? `/${classSlug}/${subjectSlug || 'maths'}/notes/` : undefined} />
                 </div>
@@ -271,7 +279,7 @@ export function ImportantQuestionsList() {
     <ResourceListPage
       resource="important-questions"
       description={uiText("Exam-oriented questions with their own step-by-step solutions.")}
-      baseParams={active}
+      baseParams={{ ...active, legacy: 'true' }}
       filters={<ClassFilter value={filters.class} onChange={(v) => setFilter('class', v)} />}
       createPath={adminUrl(`important-questions-legacy/new${filters.class ? `?class=${filters.class}` : ''}`)}
       editPath={(item) => adminUrl(`important-questions-legacy/${item._id}`)}
@@ -328,29 +336,30 @@ const IQ_DEFAULTS = {
   isVisible: true,
 };
 
-export function ImportantQuestionEditor({ id }) {
+export function ImportantQuestionEditor({ id, studyBasePath }) {
   useUiLanguage();
   const params = new URLSearchParams(window.location.search);
   const editor = useEditorForm({
     resource: 'important-questions',
     id,
-    basePath: adminUrl('important-questions-legacy'),
+    basePath: studyBasePath || adminUrl('important-questions-legacy'),
     defaults: {
       ...IQ_DEFAULTS,
-      class: params.get('class') || null,
-      chapter: params.get('chapter') || null,
-      book: params.get('book') || null,
+      ...(studyBasePath ? studyDefaults(params) : {}),
+      class: studyBasePath ? null : params.get('class') || null,
+      chapter: studyBasePath ? null : params.get('chapter') || null,
+      book: studyBasePath ? null : params.get('book') || null,
       category: ({ 'sample-papers': 'sample_paper', 'extra-questions': 'extra_questions' })[params.get('category')] || params.get('category') || IQ_DEFAULTS.category,
       academicSession: params.get('session') || IQ_DEFAULTS.academicSession,
       year: params.get('year') ? Number(params.get('year')) : IQ_DEFAULTS.year,
     },
     label: (doc) => stripTags(adminText(doc?.title) || adminText(doc?.text)).slice(0, 50) || uiText("this question"),
   });
-  useDefaultSubject(editor);
+  useDefaultSubject(editor, Boolean(studyBasePath));
   const [previewOpen, setPreviewOpen] = useState(false);
   const { form, setField } = editor;
   const { classSlug, subjectSlug, classNumber } = useScopeSlugs(form);
-  const path = classSlug && subjectSlug ? `/${classSlug}/${subjectSlug}/important-questions${form?.slug ? `#${form.slug}` : ''}` : null;
+  const path = studyBasePath && !editor.isNew ? `/${studyBasePath.includes('notes-formulas') ? 'notes-formulas/note' : 'important-questions/question'}/${id}` : classSlug && subjectSlug ? `/${classSlug}/${subjectSlug}/important-questions${form?.slug ? `#${form.slug}` : ''}` : null;
 
   return (
     <EditorGate editor={editor}>
@@ -359,7 +368,7 @@ export function ImportantQuestionEditor({ id }) {
           <EditorShell
             title={editor.isNew ? uiText("New important question") : adminText(form.title) || (form.number ? uiTemplate`Q${form.number}` : uiText("Important question"))}
             description={classNumber ? uiTemplate`Class ${classNumber} — ${form.category ? form.category.toUpperCase() : ''}` : undefined}
-            backTo={adminUrl('important-questions')}
+            backTo={studyBasePath || adminUrl('important-questions')}
             backLabel={uiText("Important Questions Management")}
             doc={editor.doc}
             form={form}
@@ -382,6 +391,7 @@ export function ImportantQuestionEditor({ id }) {
           >
             <Panel title={uiText("Location & details")}>
               <div className="grid gap-4 sm:grid-cols-3">
+                {studyBasePath ? <ScopedFields editor={editor} important /> : <>
                 <RefSelect label={uiText("Class")} required resource="classes" value={form.class} onChange={(v) => editor.setForm((f) => ({ ...f, class: v, chapter: null, topic: null }))} />
                 <RefSelect label={uiText("Subject")} required resource="subjects" value={form.subject} onChange={(v) => setField('subject', v)} />
                 <RefSelect
@@ -423,6 +433,7 @@ export function ImportantQuestionEditor({ id }) {
                     { value: 'general', get label() { return uiText("General"); } },
                   ]}
                 />
+                </>}
                 <SelectField
                   label={uiText("Question Type")}
                   value={form.questionType || 'short_answer'}
@@ -436,12 +447,14 @@ export function ImportantQuestionEditor({ id }) {
                 <TextField label={uiText("Board (e.g. CBSE, ICSE)")} value={form.board} onChange={(v) => setField('board', v)} placeholder="CBSE" />
 
                 <NumberField label={uiText("Exam Year")} value={form.year} onChange={(v) => setField('year', v)} min={2000} max={2100} />
-                <TextField label={uiText("Paper Set")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder={uiText("Set 1 (Code 30/1/1)")} />
+                {studyBasePath ? <TextField label="Examination type" value={form.examType} onChange={v => setField('examType', v)} /> : <TextField label={uiText("Paper Set")} value={form.paperSet || ''} onChange={(v) => setField('paperSet', v)} placeholder={uiText("Set 1 (Code 30/1/1)")} />}
                 <TextField label={uiText("Source")} value={form.source} onChange={(v) => setField('source', v)} placeholder={uiText("CBSE 2024 · NCERT Exemplar")} />
 
-                <div className="sm:col-span-2">
+                {studyBasePath && <NumberField label="Display order" value={form.sortOrder ?? 0} onChange={v => setField('sortOrder', v)} />}
+                {!studyBasePath && <div className="sm:col-span-2">
                   <RefSelect label={uiText("Linked NCERT question (optional)")} resource="questions" clearable value={form.linkedQuestion} params={refId(form.chapter) ? { chapter: refId(form.chapter) } : {}} onChange={(v) => setField('linkedQuestion', v)} />
                 </div>
+                }
                 <div className="sm:col-span-1">
                   <SlugField label={uiText("URL slug")} value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.title?.en || stripTags(form.text?.en).slice(0, 50)} />
                 </div>
@@ -463,6 +476,7 @@ export function ImportantQuestionEditor({ id }) {
               <RichL10nField value={form.text} onChange={(v) => setField('text', v)} />
             </Panel>
 
+            {form.questionType === 'mcq' && <ImportantMcqEditor form={form} setField={setField} />}
             <Panel title={uiText("Images, Diagrams & Video")}>
               <div className="grid gap-4 sm:grid-cols-2">
                 <MediaField label={uiText("Card Image")} value={form.image} onChange={(v) => setField('image', v)} />
@@ -512,4 +526,50 @@ export function ImportantQuestionEditor({ id }) {
       )}
     </EditorGate>
   );
+}
+
+const studyKeys = ['studyClass', 'studyChapter', 'studyTopic', 'questionCategory', 'questionSet'];
+
+function studyDefaults(params) {
+  return Object.fromEntries(studyKeys.map(key => [key, params.get(key)]));
+}
+
+function ScopedFields({ editor, important }) {
+  const keys = important
+    ? ['questionCategory', 'studyClass', 'studyChapter', 'studyTopic', 'questionSet']
+    : studyKeys.slice(0, 3);
+  const required = important ? ['studyClass', 'questionCategory', 'questionSet'] :
+    editor.form.category === 'formula_sheet' ? ['studyClass'] : ['studyClass', 'studyChapter'];
+  return <StudyPlacement module={important ? 'important-questions' : 'notes-formulas'} values={editor.form}
+    keys={keys} required={required} onChange={(key, value) => editor.setForm(current => {
+      const next = { ...current, [key]: value };
+      if (key === 'studyClass') { next.studyChapter = null; next.studyTopic = null; }
+      if (key === 'studyChapter') next.studyTopic = null;
+      if (['studyClass', 'studyChapter', 'questionCategory'].includes(key)) next.questionSet = null;
+      return next;
+    })} />;
+}
+
+function ImportantMcqEditor({ form, setField }) {
+  const options = form.mcqOptions?.length ? form.mcqOptions : Array.from({ length: 4 }, () => ({ text: {}, correct: false }));
+  const update = (index, patch) => setField('mcqOptions', options.map((option, i) => i === index ? { ...option, ...patch } : option));
+  return <Panel title="Multiple-choice options">
+    <div className="grid gap-4 sm:grid-cols-2">
+      {options.map((option, index) => <div className="space-y-2 rounded-lg border p-3" key={option._id || index}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <label className="text-sm">
+            <input type="radio" name="important-mcq-answer" checked={option.correct}
+              onChange={() => setField('mcqOptions', options.map((item, i) => ({ ...item, correct: i === index })))} /> Option {index + 1} is correct
+          </label>
+          {options.length > 4 && <Button type="button" variant="outline" size="sm"
+            onClick={() => setField('mcqOptions', options.filter((_, i) => i !== index))}>Remove</Button>}
+        </div>
+        <RichL10nField value={option.text} onChange={text => update(index, { text })} minimal />
+      </div>)}
+    </div>
+    <Button type="button" variant="outline" onClick={() => setField('mcqOptions', [...options, { text: {}, correct: false }])}>Add option</Button>
+    <NumberField label="Negative marks" min={0} max={form.marks} value={form.negativeMarks} onChange={value => setField('negativeMarks', value)} />
+    <h3 className="text-sm font-medium">Explanation</h3>
+    <RichL10nField value={form.explanation} onChange={value => setField('explanation', value)} />
+  </Panel>;
 }
