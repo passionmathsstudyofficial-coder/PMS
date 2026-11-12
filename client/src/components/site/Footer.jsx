@@ -152,8 +152,15 @@ export function Footer() {
     },
   ];
 
-  const columns = (rawCmsColumns.length >= 2 ? rawCmsColumns : dynamicColumns)
-    .filter(col => col.children && col.children.length > 0 && !isExcludedFooterItem(col));
+  const defaultUrls = new Set(dynamicColumns.flatMap(column => column.children.map(child => child.url)));
+  const bookUrls = getReferenceBooks(site).map(referenceBookUrl);
+  const customColumns = rawCmsColumns.map(column => ({
+    ...column,
+    children: column.children.filter(child =>
+      !defaultUrls.has(child.url) && !bookUrls.some(url => child.url === url || child.url.startsWith(url + '/')),
+    ),
+  })).filter(column => column.children.length > 0);
+  const columns = [...dynamicColumns, ...customColumns];
 
   const retainedLinks = [
     link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
