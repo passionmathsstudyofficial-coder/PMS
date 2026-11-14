@@ -34,6 +34,18 @@ import {
   Users,
 } from 'lucide-react';
 
+function makeBookSubNav(slug) {
+  return [
+    { to: `reference-books-manager/${slug}?tab=classes`, get label() { return uiText("Classes"); }, icon: GraduationCap },
+    { to: `reference-books-manager/${slug}?tab=chapters`, get label() { return uiText("Chapters"); }, icon: BookOpen },
+    { to: `reference-books-manager/${slug}?tab=exercises`, get label() { return uiText("Exercises"); }, icon: ListOrdered },
+    { to: `reference-books-manager/${slug}?tab=questions`, get label() { return uiText("Questions & Solutions"); }, icon: CircleHelp },
+    { to: `reference-books-manager/${slug}?tab=topics`, get label() { return uiText("Topics"); }, icon: Sparkles },
+    { to: `reference-books-manager/${slug}?tab=notes`, get label() { return uiText("Notes"); }, icon: NotebookPen },
+    { to: `reference-books-manager/${slug}?tab=important-questions`, get label() { return uiText("Important Questions"); }, icon: Star },
+  ];
+}
+
 // Sidebar structure (admin-only UI chrome). Permissions hide what an account cannot use.
 export const NAV_GROUPS = [
   {
@@ -53,13 +65,31 @@ export const NAV_GROUPS = [
   {
     get label() { return uiText("Reference Book Solutions"); },
     items: [
-      { to: 'reference-books-manager/ncert', get label() { return uiText("NCERT Solutions"); }, icon: BookOpen },
-      { to: 'reference-books-manager/rs-aggarwal', get label() { return uiText("RS Aggarwal Solutions"); }, icon: Library },
-      { to: 'reference-books-manager/rd-sharma', get label() { return uiText("RD Sharma Solutions"); }, icon: Library },
-      { to: 'reference-books-manager/kc-sinha', get label() { return uiText("KC Sinha Solutions"); }, icon: Library },
-      { to: 'reference-books-manager/ml-aggarwal', get label() { return uiText("ML Aggarwal Solutions"); }, icon: Library },
-      { to: 'reference-books-manager/kc-sinha-maths', label: 'K.C. Sinha Mathematics CMS', icon: Library },
-      { to: 'book-classes', label: 'Reference book classes', icon: GraduationCap },
+      {
+        to: 'reference-books-manager/rs-aggarwal',
+        get label() { return uiText("R.S. Aggarwal"); },
+        icon: Library,
+        children: makeBookSubNav('rs-aggarwal'),
+      },
+      {
+        to: 'reference-books-manager/rd-sharma',
+        get label() { return uiText("R.D. Sharma"); },
+        icon: Library,
+        children: makeBookSubNav('rd-sharma'),
+      },
+      {
+        to: 'reference-books-manager/ml-aggarwal',
+        get label() { return uiText("M.L. Aggarwal"); },
+        icon: Library,
+        children: makeBookSubNav('ml-aggarwal'),
+      },
+      {
+        to: 'reference-books-manager/kc-sinha-maths',
+        get label() { return uiText("K.C. Sinha Mathematics"); },
+        icon: Library,
+        children: makeBookSubNav('kc-sinha-maths'),
+      },
+      { to: 'book-classes', get label() { return uiText("Reference book classes"); }, icon: GraduationCap },
       { to: 'books', get label() { return uiText("All Reference Books"); }, icon: BookMarked },
     ],
   },
@@ -91,7 +121,7 @@ export const NAV_GROUPS = [
       { to: 'notes-manager/formulas', get label() { return uiText("All Maths Formula Sheets"); }, icon: FileSpreadsheet },
       { to: 'notes-manager/rs-aggarwal', get label() { return uiText("RS Aggarwal Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/rd-sharma', get label() { return uiText("RD Sharma Notes"); }, icon: NotebookPen },
-      { to: 'notes-manager/kc-sinha', get label() { return uiText("KC Sinha Notes"); }, icon: NotebookPen },
+      { to: 'notes-manager/kc-sinha-maths', get label() { return uiText("K.C. Sinha Mathematics Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/ml-aggarwal', get label() { return uiText("ML Aggarwal Notes"); }, icon: NotebookPen },
       { to: 'notes-manager/vvi', get label() { return uiText("VVI Short Notes"); }, icon: Sparkles },
     ],

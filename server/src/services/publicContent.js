@@ -1179,6 +1179,24 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   }));
 
   if (segments.length === 3) {
+    const [classNotes, classTopics, classImpQuestions] = await Promise.all([
+      Note.find(vis(Note, preview, { book: dbBookDoc._id, class: cls._id }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .select('title slug summary content formulas pdfFile pdfUrl')
+        .populate({ path: 'pdfFile', select: MEDIA_SELECT })
+        .lean(),
+      Topic.find(vis(Topic, preview, { $or: [{ book: dbBookDoc._id, class: cls._id }, { chapter: { $in: chapterIds } }] }))
+        .sort({ sortOrder: 1, number: 1 })
+        .select('title number slug shortDescription chapter')
+        .populate({ path: 'chapter', select: 'number title slug' })
+        .lean(),
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { book: dbBookDoc._id, class: cls._id }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .select('title number slug marks difficulty questionType category chapter')
+        .populate({ path: 'chapter', select: 'number title slug' })
+        .lean(),
+    ]);
+
     return {
       type: 'referenceSolutions',
       data: {
@@ -1188,6 +1206,9 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         chapters,
         books: allBooks,
         classes: entriesFor(book),
+        notes: classNotes,
+        topics: classTopics,
+        importantQuestions: classImpQuestions,
         academicSessions: activeSessions,
         currentSession,
       },
@@ -1226,11 +1247,24 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const nextChapter = chIndex < siblingChapters.length - 1 ? siblingChapters[chIndex + 1] : null;
 
   if (segments.length === 4) {
-    const topics = await Topic.find(vis(Topic, preview, { chapter: chapter._id }))
-      .sort({ sortOrder: 1, number: 1 })
-      .select('title number slug shortDescription notes formulas attachments image featuredImage languageMode')
-      .populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'featuredImage', select: MEDIA_SELECT }, { path: 'attachments.media', select: MEDIA_SELECT }])
-      .lean();
+    const [topics, notes, importantQuestions] = await Promise.all([
+      Topic.find(vis(Topic, preview, { chapter: chapter._id }))
+        .sort({ sortOrder: 1, number: 1 })
+        .select('title number slug shortDescription notes formulas attachments image featuredImage languageMode')
+        .populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'featuredImage', select: MEDIA_SELECT }, { path: 'attachments.media', select: MEDIA_SELECT }])
+        .lean(),
+      Note.find(vis(Note, preview, { $or: [{ chapter: chapter._id }, { book: dbBookDoc._id, class: cls._id, chapter: null }] }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .select('title slug summary content formulas pdfFile pdfUrl attachments image')
+        .populate([{ path: 'pdfFile', select: MEDIA_SELECT }, { path: 'image', select: MEDIA_SELECT }])
+        .lean(),
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { $or: [{ chapter: chapter._id }, { book: dbBookDoc._id, class: cls._id, chapter: null }] }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .select('title number slug text answer marks difficulty questionType category mcqOptions attachments image')
+        .populate([{ path: 'image', select: MEDIA_SELECT }])
+        .lean(),
+    ]);
+
     return {
       type: 'referenceSolutions',
       data: {
@@ -1240,6 +1274,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         chapter,
         exercises: chapterExercises,
         topics,
+        notes,
+        importantQuestions,
         resources: resources.map(formatResource),
         siblingChapters,
         prev: prevChapter ? { label: prevChapter.title, url: urls.referenceChapter(book, cls, prevChapter) } : null,

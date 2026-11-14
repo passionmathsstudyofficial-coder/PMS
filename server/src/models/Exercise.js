@@ -15,6 +15,7 @@ const exerciseSchema = new mongoose.Schema(
     chapter: { type: ObjectId, ref: 'Chapter', required: true, index: true },
     class: { type: ObjectId, ref: 'Class', index: true },
     subject: { type: ObjectId, ref: 'Subject', index: true },
+    book: { type: ObjectId, ref: 'Book', index: true },
     academicSession: { type: String, default: '2026-27', trim: true, index: true },
     number: { type: String, required: true, trim: true, maxlength: 20 },
     title: l10n(),
@@ -42,7 +43,7 @@ exerciseSchema.index({ searchText: 'text' }, { default_language: 'none' });
 exerciseSchema.pre('validate', async function buildExercise() {
   this.slug = slugify(this.slug || `prashnavali-${this.number}`, `prashnavali-${this.number}`);
   const chapter = this.chapter
-      ? await mongoose.model('Chapter').findById(this.chapter).select('class subject number title academicSession').lean()
+      ? await mongoose.model('Chapter').findById(this.chapter).select('class subject number title academicSession book').lean()
     : null;
     if (chapter) this.academicSession = chapter.academicSession || this.academicSession;
     if (!chapter) {
@@ -51,6 +52,7 @@ exerciseSchema.pre('validate', async function buildExercise() {
   }
   this.class = chapter.class;
   this.subject = chapter.subject;
+  if (chapter.book) this.book = chapter.book;
   const cls = await mongoose.model('Class').findById(chapter.class).select('number').lean();
   this.searchText = joinSearch(
     labels.class(cls?.number),

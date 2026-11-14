@@ -263,7 +263,7 @@ router.use(
     adminFilters: async (q) => ({
       ...idFilter(q, ['chapter', 'class', 'subject']),
       ...(isObjectId(q.book) ? {
-        $and: [{ chapter: { $in: await Chapter.distinct('_id', { book: q.book }) } }],
+        $or: [{ book: q.book }, { chapter: { $in: await Chapter.distinct('_id', { book: q.book }) } }],
       } : {}),
       ...(q.difficulty ? { difficulty: String(q.difficulty) } : {}),
       ...(q.featured === 'true' ? { featured: true } : {}),
@@ -477,8 +477,11 @@ router.use(
   crudRouter(Exercise, {
     entityType: 'Exercise',
     defaultSort: { sortOrder: 1, number: 1 },
-    adminFilters: (q) => ({
+    adminFilters: async (q) => ({
       ...idFilter(q, ['chapter', 'class', 'subject']),
+      ...(isObjectId(q.book) ? {
+        $or: [{ book: q.book }, { chapter: { $in: await Chapter.distinct('_id', { book: q.book }) } }],
+      } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),

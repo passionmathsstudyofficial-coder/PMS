@@ -53,6 +53,8 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     chapters = [],
     exercises = [],
     topics = [],
+    notes = [],
+    importantQuestions = [],
     resources = [],
     questions: initialQuestions = [],
     pagination = {},
@@ -301,6 +303,26 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                   </div>
                 )}
               </div>
+
+              {/* Class Notes if present */}
+              {notes?.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <h2 className="font-heading text-lg font-bold text-foreground">{uiText("Class Notes & Formulas")}</h2>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {notes.map((n) => (
+                      <div key={n._id} className="rounded-xl border bg-card p-4 space-y-1">
+                        <h3 className="font-heading text-sm font-bold">{t(n.title)}</h3>
+                        {n.summary && <p className="text-xs text-muted-foreground">{t(n.summary)}</p>}
+                        {(n.pdfUrl || n.pdfFile?.url) && (
+                          <Button size="sm" variant="outline" className="h-6 text-xs mt-1" onClick={() => openPdf(n.pdfUrl || n.pdfFile?.url, `${t(n.title)} PDF`)}>
+                            <Eye className="mr-1 size-3" /> PDF
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="lg:col-span-4">
@@ -423,6 +445,74 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                   </div>
                 </details>)}
               </section>}
+
+              {/* Chapter Notes & Formulas */}
+              {notes?.length > 0 && (
+                <section className="space-y-4 rounded-2xl border bg-card p-5">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="grid size-8 place-items-center rounded-lg bg-brand/10 text-brand">
+                        <FileText className="size-4" />
+                      </span>
+                      <h2 className="font-heading text-lg font-bold">{uiText("Chapter Notes & Formula Sheets")}</h2>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {notes.map((note) => (
+                      <div key={note._id} className="rounded-xl border bg-muted/20 p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-heading text-base font-bold text-foreground">{t(note.title)}</h3>
+                          {(note.pdfUrl || note.pdfFile?.url) && (
+                            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => openPdf(note.pdfUrl || note.pdfFile?.url, `${t(note.title)} PDF`)}>
+                              <Eye className="mr-1 size-3" /> PDF
+                            </Button>
+                          )}
+                        </div>
+                        {note.summary && <p className="text-xs text-muted-foreground">{t(note.summary)}</p>}
+                        {note.content && <RichContent html={t(note.content)} />}
+                        {note.formulas?.length > 0 && <ReferenceFormulas items={note.formulas} />}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Important Questions */}
+              {importantQuestions?.length > 0 && (
+                <section className="space-y-4 rounded-2xl border bg-card p-5">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="grid size-8 place-items-center rounded-lg bg-amber-500/10 text-amber-500">
+                        <Sparkles className="size-4" />
+                      </span>
+                      <h2 className="font-heading text-lg font-bold">{uiText("Important Practice Questions")}</h2>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {importantQuestions.map((iq) => (
+                      <div key={iq._id} className="rounded-xl border bg-muted/20 p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="font-heading text-xs font-extrabold text-brand uppercase">{uiText("Question")} {iq.number || ''}</span>
+                          <div className="flex items-center gap-1.5">
+                            {iq.marks && <Chip tone="brand">{iq.marks}M</Chip>}
+                            {iq.difficulty && <Chip>{iq.difficulty}</Chip>}
+                          </div>
+                        </div>
+                        {iq.title && <h3 className="font-heading text-sm font-bold">{t(iq.title)}</h3>}
+                        {iq.text && <RichContent html={t(iq.text)} />}
+                        {iq.answer && (
+                          <details className="rounded-lg border bg-background p-3 text-xs">
+                            <summary className="font-bold text-brand cursor-pointer">{uiText("View Solution / Explanation")}</summary>
+                            <div className="mt-2 pt-2 border-t">
+                              <RichContent html={t(iq.answer)} />
+                            </div>
+                          </details>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
               {/* Chapter overview if available */}
               {chapter.shortDescription && (
                 <div className="rounded-2xl border bg-card p-5">

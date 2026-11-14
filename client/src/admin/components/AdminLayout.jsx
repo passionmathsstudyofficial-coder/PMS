@@ -2,7 +2,7 @@ import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { LanguageSwitcher } from '@/components/site/LanguageSwitcher.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, LogOut, Menu, ShieldCheck, UserCog, X } from 'lucide-react';
+import { ExternalLink, LogOut, Menu, ShieldCheck, UserCog, X, ChevronDown } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
@@ -24,6 +24,108 @@ import { cn } from '@/lib/utils';
 import { useAdminAuth } from '../lib/auth.jsx';
 import { ConfirmProvider } from './ConfirmDialog.jsx';
 import { NAV_GROUPS } from './nav.js';
+
+function SidebarNavItem({ item, onNavigate }) {
+  const location = useLocation();
+  const currentPath = location.pathname + location.search;
+  const targetUrl = adminUrl(item.to);
+  const hasChildren = item.children && item.children.length > 0;
+
+  const isSelfActive = location.pathname === adminUrl(item.to).split('?')[0];
+  const isAnyChildActive = hasChildren && item.children.some((child) => {
+    const childTarget = adminUrl(child.to);
+    return currentPath === childTarget || (child.to.includes('?') && currentPath.endsWith(child.to.slice(child.to.indexOf('?'))));
+  });
+
+  const [expanded, setExpanded] = useState(isSelfActive || isAnyChildActive);
+
+  useEffect(() => {
+    if (isSelfActive || isAnyChildActive) {
+      setExpanded(true);
+    }
+  }, [isSelfActive, isAnyChildActive]);
+
+  const IconComponent = item.icon;
+
+  if (!hasChildren) {
+    return (
+      <li>
+        <NavLink
+          to={targetUrl}
+          end={item.end}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            cn(
+              'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-foreground/75 transition-colors hover:bg-muted hover:text-foreground',
+              isActive && 'bg-brand-soft font-semibold text-brand hover:bg-brand-soft hover:text-brand',
+            )
+          }
+        >
+          {IconComponent && <IconComponent className="size-4 shrink-0" aria-hidden="true" />}
+          <span className="truncate">{item.label}</span>
+        </NavLink>
+      </li>
+    );
+  }
+
+  return (
+    <li className="space-y-0.5">
+      <div className="flex items-center justify-between rounded-lg hover:bg-muted group">
+        <NavLink
+          to={targetUrl}
+          onClick={onNavigate}
+          className={({ isActive }) =>
+            cn(
+              'flex-1 flex items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-foreground/80 transition-colors group-hover:text-foreground',
+              (isActive || isAnyChildActive) && 'font-bold text-brand',
+            )
+          }
+        >
+          {IconComponent && <IconComponent className="size-4 shrink-0 text-brand" aria-hidden="true" />}
+          <span className="truncate">{item.label}</span>
+        </NavLink>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setExpanded((prev) => !prev);
+          }}
+          aria-expanded={expanded}
+          className="p-2 text-muted-foreground hover:text-foreground cursor-pointer"
+          aria-label={uiText("Toggle sub-menu")}
+        >
+          <ChevronDown className={cn('size-3.5 transition-transform duration-200', expanded && 'rotate-180 text-brand')} />
+        </button>
+      </div>
+
+      {expanded && (
+        <ul className="pl-4 pr-1 py-1 space-y-0.5 border-l-2 border-brand/30 ml-4">
+          {item.children.map((child) => {
+            const childUrl = adminUrl(child.to);
+            const ChildIcon = child.icon;
+            const isChildActive = currentPath === childUrl || (child.to.includes('?') && location.pathname === childUrl.split('?')[0] && location.search === child.to.slice(child.to.indexOf('?')));
+            return (
+              <li key={child.to}>
+                <Link
+                  to={childUrl}
+                  onClick={onNavigate}
+                  className={cn(
+                    'flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+                    isChildActive && 'bg-brand-soft font-bold text-brand hover:text-brand',
+                  )}
+                >
+                  {ChildIcon && <ChildIcon className="size-3.5 shrink-0" />}
+                  <span className="truncate">{child.label}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </li>
+  );
+}
 
 function SidebarNav({ onNavigate }) {
   useUiLanguage();
@@ -48,23 +150,8 @@ function SidebarNav({ onNavigate }) {
             <div key={group.label} className="mb-4">
               <p className="px-3 pb-1.5 text-[10px] font-extrabold tracking-[0.14em] text-muted-foreground uppercase">{group.label}</p>
               <ul className="space-y-0.5">
-                {items.map(({ to, label, icon: IconComponent, end }) => (
-                  <li key={to}>
-                    <NavLink
-                      to={adminUrl(to)}
-                      end={end}
-                      onClick={onNavigate}
-                      className={({ isActive }) =>
-                        cn(
-                          'group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-foreground/75 transition-colors hover:bg-muted hover:text-foreground',
-                          isActive && 'bg-brand-soft font-semibold text-brand hover:bg-brand-soft hover:text-brand',
-                        )
-                      }
-                    >
-                      <IconComponent className="size-4 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{label}</span>
-                    </NavLink>
-                  </li>
+                {items.map((item) => (
+                  <SidebarNavItem key={item.to} item={item} onNavigate={onNavigate} />
                 ))}
               </ul>
             </div>

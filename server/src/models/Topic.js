@@ -51,6 +51,7 @@ const topicSchema = new Schema(
     externalLinks: [ExternalLinkSchema],
     resources: [{ type: ObjectId, ref: 'Resource' }],
     books: [{ type: ObjectId, ref: 'Book' }],
+    book: { type: ObjectId, ref: 'Book', index: true },
     featured: { type: Boolean, default: false },
     languageMode,
     seo: seo(),
@@ -71,8 +72,9 @@ topicSchema.pre('validate', async function buildTopic() {
 
   const [cls, chapter] = await Promise.all([
     this.class ? mongoose.model('Class').findById(this.class).select('number').lean() : null,
-    this.chapter ? mongoose.model('Chapter').findById(this.chapter).select('number title').lean() : null,
+    this.chapter ? mongoose.model('Chapter').findById(this.chapter).select('number title book').lean() : null,
   ]);
+  if (!this.book && chapter?.book) this.book = chapter.book;
 
   this.searchText = joinSearch(
     labels.class(cls?.number),
