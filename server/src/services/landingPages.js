@@ -1,6 +1,8 @@
 import { Page } from '../models/Page.js';
 
 export const LANDING_KEY_ALIASES = {
+  'notes/kc-sinha-maths-formulas-notes': 'notes/kc-sinha-formulas-notes',
+  'notes/kc-sinha-formulas-notes': 'notes/kc-sinha-maths-formulas-notes',
   'study-materials/pyq': 'study-materials/previous-year-questions',
   'study-materials/previous-year-questions': 'study-materials/pyq',
   'study-materials/sample-papers': 'study-materials/cbse-sample-papers',

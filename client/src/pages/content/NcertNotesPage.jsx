@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -190,11 +191,7 @@ export default function NcertNotesPage({ data, breadcrumbs }) {
                     </div>
                   )}
 
-                  {note.content && (
-                    <div className="prose prose-sm max-w-none text-foreground font-normal">
-                      <RichContent html={t(note.content)} />
-                    </div>
-                  )}
+                  <StudyArticleContent record={note} showAttachments={false} />
 
                   {images.length > 0 && (
                     <div className="grid gap-3 sm:grid-cols-2 mt-4">
@@ -232,7 +229,7 @@ export default function NcertNotesPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

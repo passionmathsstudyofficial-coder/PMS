@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -214,11 +215,7 @@ export default function ReferenceBookNotesPage({ data, breadcrumbs }) {
               <article key={n._id} className="rounded-2xl border bg-card p-5 shadow-xs">
                 <h3 className="text-base font-bold text-foreground mb-2">{t(n.title)}</h3>
                 {n.summary && <p className="text-xs text-muted-foreground mb-3">{t(n.summary)}</p>}
-                {n.content && (
-                  <div className="prose prose-sm max-w-none text-foreground font-normal">
-                    <RichContent html={t(n.content)} />
-                  </div>
-                )}
+                <StudyArticleContent record={n} />
               </article>
             ))}
           </section>
@@ -228,7 +225,7 @@ export default function ReferenceBookNotesPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

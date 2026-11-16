@@ -29,6 +29,7 @@ import {
   cleanMethods,
   cleanVideoRef,
   questionPopulate,
+  studyMediaPopulate,
   solutionPopulate,
 } from './populate.js';
 import { getPreview } from './previewStore.js';
@@ -580,6 +581,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'class', select: 'number name slug' },
           { path: 'chapter', select: 'number title slug' },
           ...blockPopulate(),
+          ...studyMediaPopulate,
         ])
         .lean(),
     ]);
@@ -614,7 +616,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
   // B. Dedicated CBSE Sample Papers page
   if (categorySlug === 'cbse-sample-papers') {
     const classFilter = cls ? { class: cls._id } : {};
-    const [samplePapers, markingSchemes] = await Promise.all([
+    const [samplePapers, markingSchemes, sampleQuestions] = await Promise.all([
       Resource.find(vis(Resource, preview, { resourceType: { $in: ['cbse_sample_papers', 'sample_paper', 'practice_paper'] }, ...classFilter }))
         .sort({ createdAt: -1 })
         .populate([
@@ -630,6 +632,10 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'file', select: MEDIA_SELECT },
         ])
         .lean(),
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: 'sample_paper', ...classFilter }))
+        .sort({ sortOrder: 1, createdAt: -1 })
+        .populate([{ path: 'chapter', select: 'number title slug' }, ...blockPopulate(), ...studyMediaPopulate])
+        .lean(),
     ]);
 
     return {
@@ -641,6 +647,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
         academicSessions: activeSessions,
         currentSession,
         papers: samplePapers.map(formatResource),
+        questions: sampleQuestions.map(q => ({ ...q, attachments: cleanAttachments(q.attachments), blocks: cleanBlocks(q.blocks) })),
         markingSchemes: markingSchemes.map(formatResource),
         categories: STUDY_MATERIAL_CATEGORIES,
       },
@@ -665,6 +672,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'class', select: 'number name slug' },
           { path: 'chapter', select: 'number title slug' },
           ...blockPopulate(),
+          ...studyMediaPopulate,
         ])
         .lean(),
       Resource.find(vis(Resource, preview, { resourceType: { $in: ['extra_questions', 'question_bank', 'worksheet'] }, ...classFilter }))
@@ -711,6 +719,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'class', select: 'number name slug' },
           { path: 'chapter', select: 'number title slug' },
           ...blockPopulate(),
+          ...studyMediaPopulate,
         ])
         .lean(),
       Resource.find(vis(Resource, preview, { resourceType: { $in: ['important_questions', 'vvi'] }, ...classFilter }))
@@ -845,7 +854,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug shortDescription formulas').lean() : [],
       Note.find(vis(Note, preview, { studyClass: null, category: { $in: ['ncert_notes', 'general'] }, ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
-        .populate([{ path: 'chapter', select: 'number title slug' }, { path: 'attachments.media', select: MEDIA_SELECT }])
+        .populate([{ path: 'chapter', select: 'number title slug' }, ...studyMediaPopulate, { path: 'video', select: VIDEO_SELECT }])
         .lean(),
       Resource.find(vis(Resource, preview, { resourceType: { $in: ['ncert_notes', 'notes', 'revision'] }, ...classFilter }))
         .sort({ createdAt: -1 })
@@ -879,7 +888,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
       Note.find(vis(Note, preview, { studyClass: null, category: 'formula_sheet', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
-        .populate([{ path: 'chapter', select: 'number title slug' }])
+        .populate([{ path: 'chapter', select: 'number title slug' }, ...studyMediaPopulate, { path: 'video', select: VIDEO_SELECT }])
         .lean(),
       Resource.find(vis(Resource, preview, { resourceType: 'formula_sheet', ...classFilter }))
         .sort({ createdAt: -1 })
@@ -922,22 +931,27 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
   // 3. Reference Book Formulas & Notes: RS Aggarwal, RD Sharma, KC Sinha
   const isRs = subCategory === 'rs-aggarwal-formulas-notes' || subCategory === 'rs-aggarwal' || subCategory === 'reference-book-notes';
   const isRd = subCategory === 'rd-sharma-formulas-notes' || subCategory === 'rd-sharma';
-  const isKc = subCategory === 'kc-sinha-formulas-notes' || subCategory === 'kc-sinha';
+  const isKc = ['kc-sinha-formulas-notes', 'kc-sinha-maths-formulas-notes', 'kc-sinha', 'kc-sinha-maths'].includes(subCategory);
+  const isMl = subCategory === 'ml-aggarwal-formulas-notes' || subCategory === 'ml-aggarwal';
 
-  if (isRs || isRd || isKc) {
-    const bookSlug = isRs ? 'rs-aggarwal' : isRd ? 'rd-sharma' : 'kc-sinha';
-    const bookTitle = isRs ? 'RS Aggarwal' : isRd ? 'RD Sharma' : 'KC Sinha';
-    const bookDoc = await Book.findOne(vis(Book, preview, { slug: bookSlug })).lean();
+  if (isRs || isRd || isKc || isMl) {
+    const bookSlug = isRs ? 'rs-aggarwal' : isRd ? 'rd-sharma' : isMl ? 'ml-aggarwal' : 'kc-sinha-maths';
+    const bookTitle = isRs ? 'RS Aggarwal' : isRd ? 'RD Sharma' : isMl ? 'ML Aggarwal' : 'KC Sinha';
+    const bookDocs = await Book.find(vis(Book, preview, { slug: { $in: isKc ? ['kc-sinha-maths', 'kc-sinha'] : [bookSlug] } })).lean();
+    const bookDoc = bookDocs.find(book => book.slug === bookSlug) || bookDocs[0] || null;
+    const bookIds = bookDocs.map(book => book._id);
+    const noteCategory = isRs ? 'rs_aggarwal_notes' : isRd ? 'rd_sharma_notes' : isMl ? 'ml_aggarwal_notes' : 'kc_sinha_notes';
 
     const [chapters, bookNotes, resources] = await Promise.all([
-      Chapter.find(vis(Chapter, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+      Chapter.find(vis(Chapter, preview, { book: { $in: bookIds }, ...(cls ? { class: cls._id } : {}) }))
         .sort({ sortOrder: 1, number: 1 })
         .select('number title slug shortDescription formulas')
         .lean(),
-      Note.find(vis(Note, preview, { studyClass: null, book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+      Note.find(vis(Note, preview, { studyClass: null, $or: [{ book: { $in: bookIds } }, { book: null, category: noteCategory }], ...(cls ? { class: cls._id } : {}) }))
         .sort({ sortOrder: 1, createdAt: -1 })
+        .populate([...studyMediaPopulate, { path: 'video', select: VIDEO_SELECT }])
         .lean(),
-      Resource.find(vis(Resource, preview, { book: bookDoc?._id, ...(cls ? { class: cls._id } : {}) }))
+      Resource.find(vis(Resource, preview, { book: { $in: bookIds }, ...(cls ? { class: cls._id } : {}) }))
         .sort({ createdAt: -1 })
         .populate([{ path: 'file', select: MEDIA_SELECT }])
         .lean(),
@@ -972,7 +986,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
       cls ? Chapter.find(vis(Chapter, preview, { class: cls._id, book: null })).sort({ sortOrder: 1, number: 1 }).select('number title slug formulas').lean() : [],
       Note.find(vis(Note, preview, { studyClass: null, category: 'vvi_short_notes', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
-        .populate([{ path: 'chapter', select: 'number title slug' }])
+        .populate([{ path: 'chapter', select: 'number title slug' }, ...studyMediaPopulate, { path: 'video', select: VIDEO_SELECT }])
         .lean(),
       ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: 'vvi', ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
@@ -981,6 +995,7 @@ async function resolveNotesPath(segments, { preview, page, limit, session, terms
           { path: 'class', select: 'number name slug' },
           { path: 'chapter', select: 'number title slug' },
           ...blockPopulate(),
+          ...studyMediaPopulate,
         ])
         .lean(),
     ]);
@@ -1810,6 +1825,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
         .populate([
           { path: 'attachments.media', select: MEDIA_SELECT },
           ...blockPopulate(),
+          ...studyMediaPopulate,
           { path: 'chapter', select: 'number title slug' },
         ])
         .lean(),

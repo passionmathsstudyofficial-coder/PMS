@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -216,6 +217,7 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
 
                   <div className="space-y-4 p-5">
                     <RichContent html={t(q.text, q.languageMode)} className="text-base font-medium" />
+                    <StudyArticleContent record={q} question showContent={false} showAttachments={false} />
 
                     {q.attachments?.length > 0 && (
                       <div className="grid gap-4 sm:grid-cols-2">
@@ -270,7 +272,7 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

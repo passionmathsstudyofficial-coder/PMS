@@ -20,6 +20,12 @@ export const questionPopulate = [
   { path: 'video.video', select: VIDEO_SELECT },
 ];
 
+export const studyMediaPopulate = [
+  { path: 'attachments.media', select: MEDIA_SELECT },
+  ...['pdfFile', 'image', 'featuredImage'].map(path => ({ path, select: MEDIA_SELECT })),
+  { path: 'introVideo', select: VIDEO_SELECT },
+];
+
 const isVisibleVideo = (video) => video && video.isVisible !== false;
 
 export function cleanBlocks(blocks = []) {

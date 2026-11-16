@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -109,11 +110,7 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
                 </div>
                 <h3 className="text-base font-bold text-foreground mb-2">{t(sn.title)}</h3>
                 {sn.summary && <p className="text-xs text-muted-foreground mb-3">{t(sn.summary)}</p>}
-                {sn.content && (
-                  <div className="prose prose-sm max-w-none text-foreground font-normal">
-                    <RichContent html={t(sn.content)} />
-                  </div>
-                )}
+                <StudyArticleContent record={sn} />
               </article>
             ))
           ) : (
@@ -173,6 +170,7 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
                 </header>
                 <div className="space-y-4 p-4 sm:p-5">
                   <RichContent html={t(q.text, q.languageMode)} className="text-sm sm:text-base font-medium" />
+                    <StudyArticleContent record={q} question showContent={false} showAttachments={false} />
                   {q.blocks?.length > 0 && (
                     <div className="rounded-xl border border-brand/15 bg-brand/[0.02] p-4">
                       <h4 className="text-xs font-bold uppercase tracking-wider text-brand mb-2">

@@ -206,7 +206,7 @@ export default function MathsSyllabusPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

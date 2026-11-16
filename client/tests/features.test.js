@@ -20,6 +20,44 @@ globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const vite=await createServer({root:path.resolve(import.meta.dirname,'..'),configFile:path.resolve(import.meta.dirname,'../vite.config.js'),server:{middlewareMode:true},appType:'custom'});
 after(async()=>{await vite.close();dom.window.close();});
 
+test('study menu pages render full editor content and working document URLs', async () => {
+ globalThis.requestAnimationFrame=()=>0;globalThis.cancelAnimationFrame=()=>{};
+ window.matchMedia=()=>({matches:true,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});
+ const {default:gsap}=await import('gsap');
+ const {ScrollTrigger}=await import('gsap/ScrollTrigger');
+ after(()=>{ScrollTrigger.disable();gsap.ticker.sleep();});
+ const {MemoryRouter}=await import('react-router');
+ const {setUiLanguage}=await vite.ssrLoadModule('/src/lib/uiLanguage.js');
+ setUiLanguage('en');
+ const record={_id:'menu-record',title:{en:'Updated menu article'},text:{en:'Updated question body'},content:{en:'Updated notes body'},introduction:{en:'Updated introduction'},answer:{en:'Updated final answer'},markingScheme:{en:'Updated marking scheme'},pdfUrl:'https://example.com/updated.pdf',formulas:[{title:{en:'Updated formula'},latex:'a^2+b^2'}],blocks:[]};
+ const cases=[['NcertNotesPage','notes'],['FormulaSheetsPage','formulaNotes'],['ReferenceBookNotesPage','notes'],['VviShortNotesPage','shortNotes'],['SamplePapersPage','questions'],['PreviousYearQuestionsPage','solvedQuestions'],['ExtraQuestionsPage','questions'],['VviQuestionsPage','questions']];
+ for(const [name,field] of cases){
+  const {default:Page}=await vite.ssrLoadModule(`/src/pages/content/${name}.jsx`);
+  const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+  await act(async()=>root.render(React.createElement(MemoryRouter,null,React.createElement(Page,{data:{class:{number:10},bookSlug:'rs-aggarwal',bookTitle:'RS Aggarwal',[field]:[record]},breadcrumbs:[]}))));
+  assert.match(host.textContent,/Updated introduction/,name);
+  assert.match(host.textContent,/Updated formula/,name);
+  assert.ok(host.querySelector('a[href="https://example.com/updated.pdf"]'),name);
+  assert.match(host.textContent,field==='questions'||field==='solvedQuestions'?/Updated final answer/:/Updated notes body/,name);
+  await act(async()=>root.unmount());host.remove();
+ }
+});
+
+test('sample paper View button opens the saved PDF preview', async () => {
+ const {MemoryRouter}=await import('react-router');
+ const {default:Page}=await vite.ssrLoadModule('/src/pages/content/SamplePapersPage.jsx');
+ const driveId='1234567890abcdefghijk';
+ const host=document.createElement('div');document.body.append(host);const root=createRoot(host);
+ await act(async()=>root.render(React.createElement(MemoryRouter,null,React.createElement(Page,{data:{class:{number:10},papers:[{_id:'paper',title:{en:'Updated sample paper'},fileUrl:`https://drive.google.com/file/d/${driveId}/view`}]},breadcrumbs:[]}))));
+ const view=[...host.querySelectorAll('button')].find(button=>button.textContent.includes('View Sample Paper'));
+ assert.ok(view);
+ await act(async()=>view.click());
+ const dialog=document.querySelector('[role="dialog"]');
+ assert.ok(dialog,'View must open a dialog, not silently ignore the saved URL');
+ assert.match(dialog.querySelector('iframe').src,new RegExp(`${driveId}/preview`));
+ await act(async()=>root.unmount());host.remove();
+});
+
 test('exercise video switches language, resets playback and never falls back to legacy or the other language', async()=>{
  const {LanguageProvider}=await vite.ssrLoadModule('/src/lib/i18n.jsx');
  const {setUiLanguage}=await vite.ssrLoadModule('/src/lib/uiLanguage.js');
@@ -160,10 +198,12 @@ test('footer uses published books and never invents unavailable class links',asy
   const button=host.querySelector('button');await act(async()=>button.click());
   assert.ok(host.querySelector('footer a[href="/privacy-policy"]'));assert.equal(host.querySelector('input[type="search"]').placeholder,'Search…');
  assert.equal(host.querySelectorAll('footer a[href="/privacy-policy"]').length,2);
- assert.equal(host.querySelectorAll('footer h2').length, 1 + books.length);
+ assert.equal(host.querySelectorAll('footer h2').length, 2 + books.length);
  assert.equal(host.querySelector('footer a[href*="state-board"]'),null);
- assert.ok(host.querySelector('footer a[href="#footer-disclaimer"]'));
-   const custom=host.querySelector('footer a[href="/class-10/maths/books#book-audit"]');assert.ok(custom);assert.match(custom.textContent,/Book details/);assert.equal(custom.target,'_blank');
+ assert.equal(host.querySelector('footer nav[aria-label="More resources"]'), null);
+ assert.equal(host.querySelector('footer h2').textContent, 'NCERT Class 6 to 12 Math Solution');
+ assert.deepEqual([...host.querySelector('footer nav ul').querySelectorAll('a')].map(a => a.getAttribute('href')), [12,11,10,9,8,7,6].map(number => `/class-${number}/maths`));
+   assert.equal(host.querySelector('footer a[href="/class-10/maths/books#book-audit"]'), null);
   assert.equal(host.querySelectorAll('footer a[href*="rs-aggarwal/class-"]').length,0);
   assert.equal(host.querySelectorAll('footer a[href*="rd-sharma/class-"]').length,0);
   assert.equal(host.textContent.includes('Only published book'),books.length>0);

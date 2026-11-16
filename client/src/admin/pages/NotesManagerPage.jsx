@@ -36,7 +36,7 @@ export default function NotesManagerPage({ fixedCategory }) {
   const [selectedSession, setSelectedSession] = useState('2026–27');
   const [loading, setLoading] = useState(true);
   const bookSlug = ['rs-aggarwal', 'rd-sharma', 'kc-sinha', 'kc-sinha-maths', 'ml-aggarwal'].includes(activeCategory) ? (activeCategory === 'kc-sinha' ? 'kc-sinha-maths' : activeCategory) : null;
-  const selectedBook = books.find((book) => book.slug === bookSlug) || null;
+  const selectedBook = books.find((book) => (book.slug === bookSlug || (bookSlug === 'kc-sinha-maths' && book.slug === 'kc-sinha'))) || null;
 
   // Modal
   const [modalOpen, setModalOpen] = useState(false);
@@ -72,7 +72,7 @@ export default function NotesManagerPage({ fixedCategory }) {
         setBooks(booksRes.items || []);
         const clsList = (clsRes.items || []).sort((a, b) => b.number - a.number);
         setClasses(clsList);
-        const referenceBook = (booksRes.items || []).find((book) => book.slug === bookSlug);
+        const referenceBook = (booksRes.items || []).find((book) => (book.slug === bookSlug || (bookSlug === 'kc-sinha-maths' && book.slug === 'kc-sinha')));
         const refAllowed = referenceBook?.availableClasses?.length ? clsList.filter((c) => referenceBook.availableClasses.includes(c.number)) : [];
         const allowedClasses = refAllowed.length ? refAllowed : clsList;
         setSelectedClass(allowedClasses.find((c) => c.number === 10) || allowedClasses[0] || clsList[0] || null);
@@ -88,6 +88,8 @@ export default function NotesManagerPage({ fixedCategory }) {
     }
     init();
   }, [bookSlug]);
+
+  useEffect(() => { setSelectedChapter('all'); }, [activeCategory, selectedSession]);
 
   // Load chapters when class changes
   useEffect(() => {
@@ -185,7 +187,7 @@ export default function NotesManagerPage({ fixedCategory }) {
 
   const handleEditLanding = async () => {
     try {
-      const key = `notes/${activeCategory === 'ncert' ? 'ncert-chapter-wise-notes' : activeCategory === 'formulas' ? 'maths-formula-sheets' : activeCategory === 'vvi' ? 'vvi-questions-short-notes' : activeCategory + '-formulas-notes'}`;
+      const key = `notes/${activeCategory === 'ncert' ? 'ncert-chapter-wise-notes' : activeCategory === 'formulas' ? 'maths-formula-sheets' : activeCategory === 'vvi' ? 'vvi-questions-short-notes' : (activeCategory === 'kc-sinha-maths' ? 'kc-sinha' : activeCategory) + '-formulas-notes'}`;
       const res = await post('/content/landing-pages/ensure', { landingKey: key });
       if (res.item?._id) {
         window.location.href = adminUrl(`pages/${res.item._id}`);
@@ -229,7 +231,7 @@ export default function NotesManagerPage({ fixedCategory }) {
               <button
                 key={c.number}
                 type="button"
-                onClick={() => setSelectedClass(c)}
+                onClick={() => { setSelectedClass(c); setSelectedChapter('all'); }}
                 className={cn(
                   'h-8 min-w-8 rounded-lg px-2 text-xs font-bold transition cursor-pointer',
                   selectedClass?.number === c.number

@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import {
@@ -33,6 +34,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
     currentSession = '2026–27',
     papers = [],
     markingSchemes = [],
+    questions = [],
   } = data;
 
   const [activePdfUrl, setActivePdfUrl] = useState(null);
@@ -185,6 +187,14 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
           )}
         </section>
 
+        {questions.length > 0 && <section className="mb-12 space-y-4">
+          <h2 className="text-lg font-bold">{uiText('Important Questions')}</h2>
+          {questions.map(question => <article key={question._id} className="rounded-2xl border bg-card p-5">
+            <h3 className="mb-3 font-bold">{t(question.title)}</h3>
+            <StudyArticleContent record={question} question />
+          </article>)}
+        </section>}
+
         {/* Marking Schemes Section */}
         {markingSchemes.length > 0 && (
           <section className="mb-12">
@@ -243,7 +253,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

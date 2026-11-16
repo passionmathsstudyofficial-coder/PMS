@@ -1,3 +1,4 @@
+import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -226,11 +227,7 @@ export default function FormulaSheetsPage({ data, breadcrumbs }) {
               <article key={fn._id} className="rounded-2xl border bg-card p-5 shadow-xs">
                 <h3 className="text-base font-bold text-foreground mb-2">{t(fn.title)}</h3>
                 {fn.summary && <p className="text-xs text-muted-foreground mb-3">{t(fn.summary)}</p>}
-                {fn.content && (
-                  <div className="prose prose-sm max-w-none text-foreground font-normal">
-                    <RichContent html={t(fn.content)} />
-                  </div>
-                )}
+                <StudyArticleContent record={fn} />
               </article>
             ))}
           </section>
@@ -240,7 +237,7 @@ export default function FormulaSheetsPage({ data, breadcrumbs }) {
       <PdfViewerDialog
         open={Boolean(activePdfUrl)}
         onOpenChange={(open) => !open && setActivePdfUrl(null)}
-        fileUrl={activePdfUrl}
+        url={activePdfUrl}
         title={activePdfTitle}
       />
     </>

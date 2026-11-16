@@ -114,7 +114,6 @@ export function Footer() {
     const configured = configuredLinks.find(item => item.url === url);
     return { ...configured, label: { en, hi }, url };
   };
-  const classes = (site?.classes || []).map(cls => cls.number);
 
   // If CMS has configured footer columns, filter out excluded items and empty columns
   const rawCmsColumns = (site?.navigation?.footer || [])
@@ -135,6 +134,14 @@ export function Footer() {
   };
   const books = getReferenceBooks(site).sort((a, b) => rank(a) - rank(b));
   const dynamicColumns = [
+    {
+      label: { en: 'NCERT Class 6 to 12 Math Solution', hi: 'NCERT कक्षा 6 से 12 गणित समाधान' },
+      children: [12, 11, 10, 9, 8, 7, 6].map(number => link(
+        `NCERT Class ${number} Mathematics`,
+        `NCERT कक्षा ${number} गणित`,
+        site?.classes?.find(cls => cls.number === number)?.url || `/class-${number}/maths`,
+      )),
+    },
     ...books
       .filter(book => !isExcludedReferenceBook(book))
       .map(book => ({
@@ -172,24 +179,6 @@ export function Footer() {
     ),
   })).filter(column => column.children.length > 1);
   const columns = [...dynamicColumns, ...customColumns];
-
-  const retainedLinks = [
-    link('Important Questions Library', 'महत्वपूर्ण प्रश्न संग्रह', '/important-questions'),
-    link('Notes & Formulas', 'नोट्स और सूत्र', '/notes-formulas'),
-    link('Important Questions', 'महत्वपूर्ण प्रश्न', '/study-materials/important-questions'),
-    link('Notes', 'नोट्स', '/study-materials/ncert-notes'),
-    link('Exercises', 'प्रश्नावली', '/class-10/maths/prashnavali'),
-    link('Solutions', 'हल', '/study-materials/ncert-solutions'),
-    ...books.map(book => ({ label: book.title, url: referenceBookUrl(book) })),
-    link('Disclaimer', 'अस्वीकरण', '#footer-disclaimer'),
-  ].filter(item => item && item.url && !isExcludedFooterItem(item));
-
-  const displayedUrls = new Set([...columns.flatMap(column => column.children), ...retainedLinks].map(item => item.url));
-  for (const item of configuredLinks) {
-    if (!t(item.label) || displayedUrls.has(item.url) || isExcludedFooterItem(item)) continue;
-    retainedLinks.push(item);
-    displayedUrls.add(item.url);
-  }
 
   const socialList = settings.social?.length ? settings.social : DEFAULT_SOCIAL;
 
@@ -274,10 +263,6 @@ export function Footer() {
               ))}
             </Column>
           ))}
-        </nav>
-
-        <nav aria-label={uiText("More resources")} className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/60">
-          {retainedLinks.map(child => <SmartLink key={child.url} to={child.url} newTab={child.newTab} className="py-2 hover:text-white hover:underline">{t(child.label)}</SmartLink>)}
         </nav>
 
         {/* Brand, Description & Social Bar */}
