@@ -105,6 +105,10 @@ function applyOverride(doc, override, entityType) {
   return true;
 }
 
+function previewTarget(override, entityType, scope) {
+  return override?.entityType === entityType ? { ...scope, _id: override.id } : scope;
+}
+
 function describe(value, fallback = '') {
   const text = stripHtml(pick(value, 'en') || pick(value, 'hi'));
   return (text || fallback).slice(0, 158);
@@ -1888,7 +1892,9 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   }
 
   // Chapter → Topic / Exercise → Question
-  const chapter = await Chapter.findOne(vis(Chapter, preview, { ...chapterScope, slug: segments[2] })).populate([
+  const chapterFilter = previewTarget(override, 'Chapter', { ...chapterScope, slug: segments[2] });
+  if (['Exercise', 'Question', 'Topic'].includes(override?.entityType)) chapterFilter._id = override.data?.chapter;
+  const chapter = await Chapter.findOne(vis(Chapter, preview, chapterFilter)).populate([
     { path: 'image', select: MEDIA_SELECT },
     { path: 'featuredImage', select: MEDIA_SELECT },
     { path: 'introVideo', select: VIDEO_SELECT },
@@ -1988,7 +1994,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
 
   // Check for Topic page route: /class-10/maths/chapter/topic/topic-slug (segments.length === 5)
   if (segments.length === 5 && segments[3] === 'topic') {
-    const topicDoc = await Topic.findOne(vis(Topic, preview, { chapter: ch._id, slug: segments[4] })).populate([
+    const topicDoc = await Topic.findOne(vis(Topic, preview, previewTarget(override, 'Topic', { chapter: ch._id, slug: segments[4] }))).populate([
       { path: 'image', select: MEDIA_SELECT },
       { path: 'featuredImage', select: MEDIA_SELECT },
       { path: 'video', select: VIDEO_SELECT },
@@ -2012,7 +2018,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   // Check for segment 3 in 4-segment URLs
   if (segments.length === 4) {
     // 1. Is it a Topic slug directly under Chapter?
-    const topicDoc = await Topic.findOne(vis(Topic, preview, { chapter: ch._id, slug: segments[3] })).populate([
+    const topicDoc = await Topic.findOne(vis(Topic, preview, previewTarget(override, 'Topic', { chapter: ch._id, slug: segments[3] }))).populate([
       { path: 'image', select: MEDIA_SELECT },
       { path: 'featuredImage', select: MEDIA_SELECT },
       { path: 'video', select: VIDEO_SELECT },
@@ -2034,7 +2040,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     }
 
     // 2. Is it an Exercise?
-    const exercise = await Exercise.findOne(vis(Exercise, preview, { chapter: ch._id, slug: segments[3] })).populate([
+    const exercise = await Exercise.findOne(vis(Exercise, preview, previewTarget(override, 'Exercise', { chapter: ch._id, slug: segments[3] }))).populate([
       { path: 'introVideo', select: VIDEO_SELECT },
       { path: 'introVideoEn', select: VIDEO_SELECT },
       { path: 'introVideoHi', select: VIDEO_SELECT },
@@ -2092,7 +2098,9 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
 
   // 5 segments: Question under Exercise
   if (segments.length === 5) {
-    const exercise = await Exercise.findOne(vis(Exercise, preview, { chapter: ch._id, slug: segments[3] }));
+    const exerciseScope = previewTarget(override, 'Exercise', { chapter: ch._id, slug: segments[3] });
+    if (override?.entityType === 'Question') exerciseScope._id = override.data?.exercise;
+    const exercise = await Exercise.findOne(vis(Exercise, preview, exerciseScope));
     if (!exercise) throw new ApiError(404, 'प्रश्नावली not found');
     const ex = exercise.toObject();
     const exerciseUrl = urls.exercise(cls, subject, ch, ex);
@@ -2100,7 +2108,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     const exerciseCrumb = { label: exerciseLabel, url: exerciseUrl };
     const titlePrefix = `Class ${cls.number} Maths ${chapterLabel.hi} ${exerciseLabel.hi}`;
 
-    const question = await Question.findOne(vis(Question, preview, { exercise: ex._id, slug: segments[4] })).populate([
+    const question = await Question.findOne(vis(Question, preview, previewTarget(override, 'Question', { exercise: ex._id, slug: segments[4] }))).populate([
       ...questionPopulate,
       { path: 'seo.ogImage', select: MEDIA_SELECT },
     ]);

@@ -2,7 +2,7 @@ import { createAdmin, login, startServer, stopServer } from './helpers.js';
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import request from 'supertest';
-import { Solution } from '../src/models/index.js';
+import { Chapter, Exercise, Question, Solution } from '../src/models/index.js';
 
 let app;
 let owner;
@@ -294,6 +294,35 @@ test('preview shows unsaved changes and drafts to admins only', async () => {
   await owner.post('/api/questions').send({ exercise: ids.exercise, number: '5', text: { en: '<p>Draft</p>' } });
   assert.equal((await resolve(app, '/class-10/maths/adhyay-5/prashnavali-5-2/prashn-5')).status, 404);
   assert.equal((await resolve(owner, '/class-10/maths/adhyay-5/prashnavali-5-2/prashn-5', '&preview=1')).status, 200);
+});
+
+test('preview tokens select the exact record when saved slugs collide', async () => {
+  const chapter = await Chapter.create({
+    class: ids.class, subject: ids.subject, number: 5, slug: 'adhyay-5',
+    title: { en: 'Colliding draft chapter' }, academicSession: null, status: 'draft',
+  });
+  const exercise = await Exercise.create({
+    chapter: chapter._id, class: ids.class, subject: ids.subject,
+    number: '5.2', slug: 'prashnavali-5-2', status: 'draft',
+  });
+  const question = await Question.create({
+    chapter: chapter._id, exercise: exercise._id, class: ids.class, subject: ids.subject,
+    number: '3', slug: 'prashn-3', text: { en: '<p>Colliding draft</p>' }, status: 'draft',
+  });
+  for (const [entityType, id, path, field] of [
+    ['Chapter', String(chapter._id), '/class-10/maths/adhyay-5', 'chapter'],
+    ['Exercise', String(exercise._id), '/class-10/maths/adhyay-5/prashnavali-5-2', 'exercise'],
+    ['Question', String(question._id), '/class-10/maths/adhyay-5/prashnavali-5-2/prashn-3', 'question'],
+  ]) {
+    const snapshot = await owner.post('/api/public/preview').send({ entityType, id, data: {} });
+    assert.equal(snapshot.status, 200, JSON.stringify(snapshot.body));
+    const result = await resolve(owner, path, `&preview=1&previewToken=${snapshot.body.token}`);
+    assert.equal(result.status, 200, `${entityType}: ${JSON.stringify(result.body)}`);
+    assert.equal(result.body.data[field]._id, id);
+  }
+  await Question.deleteOne({ _id: question._id });
+  await Exercise.deleteOne({ _id: exercise._id });
+  await Chapter.deleteOne({ _id: chapter._id });
 });
 
 test('search finds classes, प्रश्नावली, Hindi words and formulas', async () => {

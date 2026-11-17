@@ -98,10 +98,11 @@ router.post('/preview', requireAuth, requirePermission('content:read'), async (r
   const token = await savePreview({
     entityType,
     id,
-    data: stripProtected(data || {}, extraStrip),
+    data: { ...stripProtected(data || {}, extraStrip), ...location.relationships },
     solution: entityType === 'Question' && solution ? { blocks: solution.blocks || [], languageMode: solution.languageMode } : null,
   });
-  res.set('Cache-Control', 'no-store').json({ token, ...location });
+  const { relationships, ...responseLocation } = location;
+  res.set('Cache-Control', 'no-store').json({ token, ...responseLocation });
 });
 
 // Advertisement code runs on its own document inside a sandboxed iframe (no access to the study page).

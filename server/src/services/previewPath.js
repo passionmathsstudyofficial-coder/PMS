@@ -27,5 +27,12 @@ export async function previewLocation(entityType, id) {
     path = reference ? urls.referenceExercise(book, bookClass, chapter, exercise) : urls.exercise(cls, subject, chapter, exercise);
     if (entityType === 'Question') path += `/${doc.slug}`;
   }
-  return { path, session: doc.academicSession || chapter.academicSession };
+  return {
+    path,
+    session: doc.academicSession || chapter.academicSession,
+    relationships: {
+      chapter: String(chapter._id),
+      ...(entityType === 'Exercise' || entityType === 'Question' ? { exercise: String(entityType === 'Exercise' ? doc._id : doc.exercise) } : {}),
+    },
+  };
 }
