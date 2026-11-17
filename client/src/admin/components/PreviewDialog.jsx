@@ -16,11 +16,12 @@ const DEVICES = {
   mobile: { width: 390, get label() { return uiText("Mobile"); }, icon: Smartphone },
 };
 
-function buildUrl(path, token, language) {
+function buildUrl(path, token, language, session) {
   const url = new URL(path,window.location.origin);
   url.searchParams.set('preview','1');
   url.searchParams.set('lang',language);
   if (token) url.searchParams.set('previewToken',token);
+  if (session) url.searchParams.set('session', session);
   return url.pathname + url.search + url.hash;
 }
 
@@ -29,6 +30,7 @@ export function PreviewDialog({ open, onOpenChange, path, entityType, id, data, 
   useUiLanguage();
   const [device, setDevice] = useState('desktop');
   const [src, setSrc] = useState(null);
+  const [failure, setFailure] = useState('');
   const [previewLanguage, setPreviewLanguage] = useState('en');
   const [scale, setScale] = useState(1);
   const frameBox = useRef(null);
@@ -37,8 +39,11 @@ export function PreviewDialog({ open, onOpenChange, path, entityType, id, data, 
     if (!open || !path) return undefined;
     let cancelled = false;
     setSrc(null);
+    setFailure('');
     (async () => {
       let token;
+      let previewPath = path;
+      let session = data?.academicSession;
       if (entityType && id && id !== 'new' && data) {
         try {
           const response = await api.post('/public/preview', {
@@ -48,11 +53,15 @@ export function PreviewDialog({ open, onOpenChange, path, entityType, id, data, 
             solution: solution ? normalizeRefs(solution) : undefined,
           });
           token = response.data.token;
+          previewPath = response.data.path || path;
+          session = response.data.session || session;
         } catch (error) {
           toast.error(uiTemplate`Preview of unsaved changes failed: ${errorMessage(error)}`);
+          if (!cancelled) setFailure(errorMessage(error));
+          return;
         }
       }
-      if (!cancelled) setSrc(buildUrl(path, token, previewLanguage));
+      if (!cancelled) setSrc(buildUrl(previewPath, token, previewLanguage, session));
     })();
     return () => {
       cancelled = true;
@@ -100,7 +109,9 @@ export function PreviewDialog({ open, onOpenChange, path, entityType, id, data, 
           )}
         </DialogHeader>
         <div ref={frameBox} className="relative flex-1 overflow-auto rounded-xl bg-muted p-3">
-          {!src ? (
+          {failure ? (
+            <p role="alert" className="p-4 text-destructive">{failure}</p>
+          ) : !src ? (
             <div className="grid h-full place-items-center">
               <Loader2 className="animate-spin text-muted-foreground" />
             </div>

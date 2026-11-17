@@ -174,11 +174,12 @@ async function shapeQuestion(question, { preview, override, base }) {
   };
 }
 
-async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, baseCrumbs, session }) {
+async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, baseCrumbs, session, referenceBook }) {
   const vis = (Model, isPreview, extra = {}) => sessionVis(Model, isPreview, extra, session);
   const tp = topic.toObject ? topic.toObject() : topic;
-  const topicUrl = urls.topic(cls, subject, ch, tp);
-  const chapterUrl = urls.chapter(cls, subject, ch);
+  const chapterUrl = referenceBook ? urls.referenceChapter(referenceBook, cls, ch) : urls.chapter(cls, subject, ch);
+  const topicLink = item => referenceBook ? `${chapterUrl}/topic/${item.slug}` : urls.topic(cls, subject, ch, item);
+  const topicUrl = topicLink(tp);
   const chapterLabel = term(terms, 'chapter', ch.number);
 
   // Fetch topic-specific or chapter-level resources and books
@@ -205,8 +206,8 @@ async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, b
   ]);
 
   const tpIndex = siblingTopics.findIndex((s) => String(s._id) === String(tp._id));
-  const prev = tpIndex > 0 ? { ...siblingTopics[tpIndex - 1], label: `Topic ${siblingTopics[tpIndex - 1].number}`, url: urls.topic(cls, subject, ch, siblingTopics[tpIndex - 1]) } : null;
-  const next = tpIndex < siblingTopics.length - 1 ? { ...siblingTopics[tpIndex + 1], label: `Topic ${siblingTopics[tpIndex + 1].number}`, url: urls.topic(cls, subject, ch, siblingTopics[tpIndex + 1]) } : null;
+  const prev = tpIndex > 0 ? { ...siblingTopics[tpIndex - 1], label: `Topic ${siblingTopics[tpIndex - 1].number}`, url: topicLink(siblingTopics[tpIndex - 1]) } : null;
+  const next = tpIndex < siblingTopics.length - 1 ? { ...siblingTopics[tpIndex + 1], label: `Topic ${siblingTopics[tpIndex + 1].number}`, url: topicLink(siblingTopics[tpIndex + 1]) } : null;
 
   return {
     type: 'topic',
@@ -231,8 +232,8 @@ async function shapeTopic(topic, { cls, subject, ch, preview, override, terms, b
         ...b,
         coverUrl: b.coverImage?.url || b.coverUrl || '',
       })),
-      siblings: siblingTopics.map((s) => ({ ...s, url: urls.topic(cls, subject, ch, s) })),
-      exercises: exercises.map((e) => ({ ...e, url: urls.exercise(cls, subject, ch, e) })),
+      siblings: siblingTopics.map((s) => ({ ...s, url: topicLink(s) })),
+      exercises: exercises.map((e) => ({ ...e, url: referenceBook ? urls.referenceExercise(referenceBook, cls, ch, e) : urls.exercise(cls, subject, ch, e) })),
       prev,
       next,
     },
@@ -1242,6 +1243,12 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const chNum = numMatch ? Number(numMatch[0]) : null;
   const chapter = chapters.find((c) => c.slug === chapterSegment || (chNum !== null && c.number === chNum));
   if (!chapter) throw new ApiError(404, 'Chapter not found');
+  if (override?.entityType === 'Chapter' && String(override.id) === String(chapter._id)) {
+    const draft = Chapter.hydrate(chapter);
+    applyOverride(draft, override, 'Chapter');
+    await draft.populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'pdfFile', select: MEDIA_SELECT }, { path: 'introVideo', select: VIDEO_SELECT }]);
+    Object.assign(chapter, draft.toObject());
+  }
 
   const chapterCrumb = { label: chapter.title, url: urls.referenceChapter(book, cls, chapter) };
   const chapterExercises = chapter.exercises || [];
@@ -1307,6 +1314,18 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     };
   }
 
+  if (segments.length === 6 && segments[4] === 'topic') {
+    const topic = await Topic.findOne(vis(Topic, preview, { chapter: chapter._id, slug: segments[5] }));
+    if (!topic) throw new ApiError(404, 'Topic not found');
+    applyOverride(topic, override, 'Topic');
+    await topic.populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'featuredImage', select: MEDIA_SELECT },
+      { path: 'video', select: VIDEO_SELECT }, { path: 'videos', select: VIDEO_SELECT },
+      { path: 'attachments.media', select: MEDIA_SELECT }, { path: 'seo.ogImage', select: MEDIA_SELECT }]);
+    const subject = await Subject.findById(topic.subject).lean();
+    return shapeTopic(topic, { cls, subject, ch: chapter, preview, override, terms,
+      baseCrumbs: [home, refCrumb, bookCrumb, classCrumb], session, referenceBook: book });
+  }
+
   // 5. Exercise page: /reference-solutions/:bookSlug/class-:number/:chapterSlug/:exerciseSlug
   const exerciseSegment = segments[4];
   const exClean = exerciseSegment.replace(/^(exercise|prashnavali)-?/i, '');
@@ -1323,6 +1342,12 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     .lean();
 
   if (!exercise) throw new ApiError(404, 'Exercise not found');
+  if (override?.entityType === 'Exercise' && String(override.id) === String(exercise._id)) {
+    const draft = Exercise.hydrate(exercise);
+    applyOverride(draft, override, 'Exercise');
+    await draft.populate([{ path: 'pdfFile', select: MEDIA_SELECT }, { path: 'introVideo', select: VIDEO_SELECT }, { path: 'introVideoEn', select: VIDEO_SELECT }, { path: 'introVideoHi', select: VIDEO_SELECT }]);
+    exercise = draft.toObject();
+  }
 
   const exerciseCrumb = { label: { hi: `अभ्यास ${exercise.number}`, en: `Exercise ${exercise.number}` }, url: urls.referenceExercise(book, cls, chapter, exercise) };
 
@@ -1521,7 +1546,8 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
     .map((s) => decodeURIComponent(s).toLowerCase());
   if (segments.length > 6) throw new ApiError(404, 'Page not found');
   const terms = await getTerms();
-  const override = preview ? getPreview(previewToken) : null;
+  const override = preview ? await getPreview(previewToken) : null;
+  if (preview && previewToken && !override) throw new ApiError(410, 'Preview expired. Reopen Preview from the editor.');
   const home = { label: term(terms, 'home'), url: '/' };
 
   if (segments.length === 0) return { type: 'home' };
@@ -1571,6 +1597,7 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   }
 
   const { cls, subjects } = ctx;
+  if (override?.entityType === 'Class' && String(override.id) === String(cls._id)) Object.assign(cls, override.data);
   const classLabel = term(terms, 'class', cls.number);
   const classCrumb = { label: classLabel, url: urls.class(cls) };
 
@@ -1831,6 +1858,15 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
         .lean(),
       ImportantQuestion.countDocuments(filter),
     ]);
+    if (override?.entityType === 'ImportantQuestion') {
+      const index = items.findIndex(item => String(item._id) === String(override.id));
+      if (index >= 0) {
+        const draft = ImportantQuestion.hydrate(items[index]);
+        applyOverride(draft, override, 'ImportantQuestion');
+        await draft.populate([...studyMediaPopulate, ...blockPopulate(), { path: 'chapter', select: 'number title slug' }]);
+        items[index] = draft.toObject();
+      }
+    }
     const label = term(terms, 'importantQuestions');
     return {
       type: 'importantQuestions',

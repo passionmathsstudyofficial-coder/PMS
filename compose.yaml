@@ -1,0 +1,59 @@
+services:
+  mongo:
+    image: mongo:7
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: [CMD, mongosh, --quiet, --eval, "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  app:
+    build:
+      context: .
+      target: production
+      args:
+        VITE_ADMIN_PATH: ${ADMIN_PATH:-/pms-control-room}
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/pms_docker
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
+      CSRF_SECRET: ${CSRF_SECRET:?Set CSRF_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?Set ENCRYPTION_KEY}
+      ADMIN_PATH: ${ADMIN_PATH:-/pms-control-room}
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:5000}
+      CLIENT_ORIGINS: ${PUBLIC_SITE_URL:-http://localhost:5000}
+      BACKUP_ENABLED: "false"
+      STORAGE_PROVIDER: local
+    volumes:
+      - uploads:/app/server/uploads
+      - backups:/app/server/backups
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:5000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+  tests:
+    profiles: [test]
+    build:
+      context: .
+      target: test
+    environment:
+      TEST_MONGODB_URI: mongodb://mongo:27017/pms_docker_tests
+    depends_on:
+      mongo:
+        condition: service_healthy
+    command: sh -c "npm test --prefix server && npm test --prefix client"
+volumes:
+  mongo-data:
+  uploads:
+  backups:

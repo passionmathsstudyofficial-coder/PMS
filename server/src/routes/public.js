@@ -10,6 +10,7 @@ import { searchLimiter } from '../middleware/rateLimits.js';
 import { stripProtected } from '../services/crud.js';
 import { buildHome } from '../services/home.js';
 import { savePreview } from '../services/previewStore.js';
+import { previewLocation } from '../services/previewPath.js';
 import { resolvePath } from '../services/publicContent.js';
 import { search } from '../services/search.js';
 import { getSiteBootstrap } from '../services/site.js';
@@ -93,13 +94,14 @@ router.post('/preview', requireAuth, requirePermission('content:read'), async (r
   const extraStrip = entityType === 'Topic'
     ? ['slug', 'status', 'publishedAt', 'class', 'subject', 'exercise']
     : ['slug', 'status', 'publishedAt', 'class', 'subject', 'chapter', 'exercise'];
-  const token = savePreview({
+  const location = await previewLocation(entityType, id);
+  const token = await savePreview({
     entityType,
     id,
     data: stripProtected(data || {}, extraStrip),
     solution: entityType === 'Question' && solution ? { blocks: solution.blocks || [], languageMode: solution.languageMode } : null,
   });
-  res.json({ token });
+  res.set('Cache-Control', 'no-store').json({ token, ...location });
 });
 
 // Advertisement code runs on its own document inside a sandboxed iframe (no access to the study page).

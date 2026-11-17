@@ -11,7 +11,7 @@ import { cloudinary } from '../lib/storage.js';
 import { Backup } from '../models/Backup.js';
 
 const { EJSON } = mongoose.mongo.BSON;
-const EXCLUDED_FROM_BACKUP = new Set(['sessions', 'studentsessions', 'passwordrecoveries']);
+const EXCLUDED_FROM_BACKUP = new Set(['sessions', 'studentsessions', 'passwordrecoveries', 'previewsnapshots']);
 // Restores bring back website content & settings; accounts and audit history stay as they are now.
 const SKIPPED_ON_RESTORE = new Set(['admins', 'users', 'sessions', 'studentsessions', 'passwordrecoveries', 'backups', 'activitylogs']);
 const backupDir = () => path.resolve(env.BACKUP_DIR);

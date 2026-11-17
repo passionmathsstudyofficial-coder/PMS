@@ -2,7 +2,7 @@ import { createAdmin, login, startServer, stopServer } from './helpers.js';
 import { before, after, test } from 'node:test';
 import assert from 'node:assert/strict';
 import request from 'supertest';
-import { Book, BookClass, ClassLevel, Chapter, Subject } from '../src/models/index.js';
+import { Book, BookClass, ClassLevel, Chapter, Exercise, Question, Subject, Topic } from '../src/models/index.js';
 import { ensureBookClasses } from '../src/services/bookClasses.js';
 let app, owner, a, b, subject;
 before(async()=>{
@@ -55,4 +55,39 @@ test('hidden memberships hide nested chapter APIs and additional classes get can
  const extra=await ClassLevel.create({number:13,name:{en:'Class 13'},slug:'class-13',status:'published'});
  const created=await owner.post('/api/book-classes').send({book:a._id,class:extra._id,name:{en:'Additional class'},status:'published'});
  assert.equal(created.status,201);assert.equal(created.body.slug,'class-13');
+});
+
+test('reference previews use custom membership paths, include unsaved edits and keep drafts private', async () => {
+  const cls = await ClassLevel.findOne({ number: 6 });
+  const chapter = await Chapter.create({ book: a._id, class: cls._id, subject: subject._id,
+    number: 9, slug: 'preview-chapter', title: { en: 'Saved chapter' }, status: 'draft' });
+  const exercise = await Exercise.create({ chapter: chapter._id, number: '9.1', slug: 'preview-exercise', status: 'draft' });
+  const question = await Question.create({ exercise: exercise._id, number: '1', slug: 'preview-question',
+    text: { en: '<p>Saved question $x^2$</p>', hi: '<p>सवाल</p>' }, status: 'draft' });
+  const topic = await Topic.create({ chapter: chapter._id, class: cls._id, subject: subject._id,
+    title: { en: 'Saved topic' }, slug: 'preview-topic', number: 1, status: 'draft' });
+  const base = '/reference-solutions/a/six/preview-chapter';
+  for (const [entityType, doc, path, data, field] of [
+    ['Chapter', chapter, base, { title: { en: 'Unsaved chapter' } }, 'chapter'],
+    ['Exercise', exercise, `${base}/preview-exercise`, { description: { en: '<p>Unsaved exercise</p>' } }, 'exercise'],
+    ['Question', question, `${base}/preview-exercise/preview-question`, { text: { en: '<p>Unsaved question $x^2$</p>' } }, 'question'],
+    ['Topic', topic, `${base}/topic/preview-topic`, { title: { en: 'Unsaved topic' } }, 'topic'],
+  ]) {
+    const snapshot = await owner.post('/api/public/preview').send({ entityType, id: String(doc._id), data });
+    assert.equal(snapshot.status, 200);
+    assert.equal(snapshot.body.path, path);
+    const query = { path, preview: 1, previewToken: snapshot.body.token, lang: 'en' };
+    const result = await owner.get('/api/public/resolve').query(query);
+    assert.equal(result.status, 200, JSON.stringify(result.body));
+    for (const [key, value] of Object.entries(data)) assert.equal(result.body.data[field][key].en, value.en);
+    assert.equal((await owner.get('/api/public/resolve').query(query)).status, 200, 'refresh retains snapshot');
+    assert.equal((await request(app).get('/api/public/resolve').query(query)).status, 404);
+    assert.equal((await doc.constructor.findById(doc._id)).status, 'draft');
+  }
+  const { getPreview } = await import('../src/services/previewStore.js');
+  const snapshot = await owner.post('/api/public/preview').send({ entityType: 'Question', id: String(question._id), data: {} });
+  assert.ok(await getPreview(snapshot.body.token));
+  const mongoose = (await import('mongoose')).default;
+  await mongoose.model('PreviewSnapshot').updateOne({ token: snapshot.body.token }, { $set: { expiresAt: new Date(0) } });
+  assert.equal(await getPreview(snapshot.body.token), null);
 });

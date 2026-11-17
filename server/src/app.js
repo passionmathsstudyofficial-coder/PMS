@@ -11,6 +11,7 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { env } from './config/env.js';
+import { optionalAuth } from './middleware/auth.js';
 import { csrfProtection } from './middleware/csrf.js';
 import { errorHandler, notFound } from './middleware/error.js';
 import { apiLimiter } from './middleware/rateLimits.js';
@@ -153,7 +154,7 @@ export function createApp({ sendRecoveryEmail } = {}) {
       express.static(path.join(env.CLIENT_DIST_DIR, 'assets'), { maxAge: '1y', immutable: true, index: false }),
     );
     app.use(express.static(env.CLIENT_DIST_DIR, { index: false, maxAge: '1h' }));
-    app.get('/{*splat}', renderAppHtml);
+    app.get('/{*splat}', optionalAuth, renderAppHtml);
   }
 
   app.use(notFound);

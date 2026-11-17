@@ -104,7 +104,7 @@ export function BooksList() {
               {b.slug && (
                 <div className="mt-0.5">
                   <a
-                    href={`/reference-solutions/${b.slug}`}
+                    href={`/reference-solutions/${b.slug}?preview=1`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand hover:underline"

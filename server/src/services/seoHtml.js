@@ -114,7 +114,15 @@ export async function renderAppHtml(req, res) {
   let status = 200;
   let head;
 
-  if (pathname.startsWith(env.ADMIN_PATH)) {
+  if (req.query.preview === '1' && req.admin) {
+    // Draft visibility is authenticated by the same session as the JSON resolver.
+    // The client retrieves the preview payload. Never redirect away its query parameters.
+    await resolvePath(pathname, { preview: true, session: req.query.session, previewToken: req.query.previewToken });
+    head = headTags({ settings, title: 'Preview', description: '', robots: 'noindex,nofollow', lang });
+    res.set('X-Robots-Tag', 'noindex, nofollow');
+    res.set('Cache-Control', 'no-store');
+    res.set('Referrer-Policy', 'no-referrer');
+  } else if (pathname.startsWith(env.ADMIN_PATH)) {
     head = headTags({ settings, title: 'Admin', description: '', robots: 'noindex,nofollow', lang });
     res.set('X-Robots-Tag', 'noindex, nofollow');
     res.set('Cache-Control', 'no-store');

@@ -237,7 +237,7 @@ export function PageEditor({ id }) {
   const editor = useEditorForm({ resource: 'pages', id, defaults: PAGE_DEFAULTS, basePath: adminUrl('pages') });
   const [previewOpen, setPreviewOpen] = useState(false);
   const { form, setField, setForm } = editor;
-  const previewPath = form.landingKey ? `/${form.landingKey}` : `/${form.slug}`;
+  const previewPath = form?.landingKey ? `/${form.landingKey}` : form?.slug ? `/${form.slug}` : null;
   const setItems = (sectionIndex, items) => setField('sections', form.sections.map((section, i) => i === sectionIndex ? { ...section, items } : section));
   const setPath = (path, value) => setForm((current) => {
     const keys = path.split('.');

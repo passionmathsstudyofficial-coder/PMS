@@ -95,7 +95,7 @@ export function ClassEditor({ id }) {
               <SeoFields value={form.seo} onChange={(v) => setField('seo', v)} fallbackTitle={`NCERT Solutions for Class ${form.number || ''} Maths`} fallbackDescription={form.description?.en} path={`/${form.slug || `class-${form.number || ''}`}`} />
             </Panel>
           </EditorShell>
-          <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} path={`/${form.slug}`} />
+          <PreviewDialog open={previewOpen} onOpenChange={setPreviewOpen} path={`/${form.slug}`} entityType="Class" id={id} data={form} />
         </>
       )}
     </EditorGate>

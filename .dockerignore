@@ -1,0 +1,16 @@
+.git
+**/node_modules
+**/.env
+**/.env.*
+!**/.env.example
+client/dist
+server/uploads
+server/backups
+tmp
+test-results
+.tmp-*
+*.log
+.audit-*
+docs
+scripts
+api
