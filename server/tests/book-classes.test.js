@@ -59,14 +59,16 @@ test('hidden memberships hide nested chapter APIs and additional classes get can
 
 test('reference previews use custom membership paths, include unsaved edits and keep drafts private', async () => {
   const cls = await ClassLevel.findOne({ number: 6 });
+  await Chapter.create({ book: a._id, class: cls._id, subject: subject._id,
+    number: 9, slug: 'earlier-chapter-9', title: { en: 'Different chapter with the same number' }, status: 'draft' });
   const chapter = await Chapter.create({ book: a._id, class: cls._id, subject: subject._id,
-    number: 9, slug: 'preview-chapter', title: { en: 'Saved chapter' }, status: 'draft' });
+    number: 9, slug: 'preview-chapter-9', title: { en: 'Saved chapter' }, status: 'draft' });
   const exercise = await Exercise.create({ chapter: chapter._id, number: '9.1', slug: 'preview-exercise', status: 'draft' });
   const question = await Question.create({ exercise: exercise._id, number: '1', slug: 'preview-question',
     text: { en: '<p>Saved question $x^2$</p>', hi: '<p>सवाल</p>' }, status: 'draft' });
   const topic = await Topic.create({ chapter: chapter._id, class: cls._id, subject: subject._id,
     title: { en: 'Saved topic' }, slug: 'preview-topic', number: 1, status: 'draft' });
-  const base = '/reference-solutions/a/six/preview-chapter';
+  const base = '/reference-solutions/a/six/preview-chapter-9';
   for (const [entityType, doc, path, data, field] of [
     ['Chapter', chapter, base, { title: { en: 'Unsaved chapter' } }, 'chapter'],
     ['Exercise', exercise, `${base}/preview-exercise`, { description: { en: '<p>Unsaved exercise</p>' } }, 'exercise'],

@@ -1241,7 +1241,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const chapterSegment = segments[3];
   const numMatch = chapterSegment.match(/\d+/);
   const chNum = numMatch ? Number(numMatch[0]) : null;
-  const chapter = chapters.find((c) => c.slug === chapterSegment || (chNum !== null && c.number === chNum));
+  const chapter = chapters.find((c) => c.slug === chapterSegment)
+    || chapters.find((c) => chNum !== null && c.number === chNum);
   if (!chapter) throw new ApiError(404, 'Chapter not found');
   if (override?.entityType === 'Chapter' && String(override.id) === String(chapter._id)) {
     const draft = Chapter.hydrate(chapter);
