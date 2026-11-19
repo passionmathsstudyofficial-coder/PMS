@@ -114,6 +114,13 @@ function isExcludedRefBook(book) {
   return false;
 }
 
+const CANONICAL_REF_TITLES = {
+  'ml-aggarwal': { en: 'M.L. Aggarwal', hi: 'एम. एल. अग्रवाल' },
+  'rd-sharma': { en: 'R.D. Sharma', hi: 'आर. डी. शर्मा' },
+  'rs-aggarwal': { en: 'R.S. Aggarwal', hi: 'आर. एस. अग्रवाल' },
+  'kc-sinha-maths': { en: 'K.C. Sinha Mathematics', hi: 'के. सी. सिन्हा गणित' },
+};
+
 export async function publicReferenceBooks(preview = false) {
   // Use the same records, slugs and class constraints as the public resolver.
   const books = await Book.find(preview ? { category: 'reference' } : Book.publicFilter({ category: 'reference' }))
@@ -132,6 +139,12 @@ export async function publicReferenceBooks(preview = false) {
   return books
     .filter(book => book.slug && !isExcludedRefBook(book))
     .map(book => {
+      const canonical = CANONICAL_REF_TITLES[book.slug];
+      const title = {
+        en: book.title?.en || canonical?.en || (typeof book.title === 'string' ? book.title : '') || book.author || book.name,
+        hi: book.title?.hi || canonical?.hi || book.title?.en || canonical?.en || book.author || book.name,
+      };
+      const author = book.author || (book.slug === 'rd-sharma' ? 'Dr. R.D. Sharma' : book.slug === 'kc-sinha-maths' ? 'Prof. K.C. Sinha' : canonical?.en || '');
       const bookEntries = entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number));
       const availableClasses = managedBooks.has(String(book._id))
         ? bookEntries.map(entry => entry.class.number)
@@ -142,6 +155,8 @@ export async function publicReferenceBooks(preview = false) {
 
       return {
         ...book,
+        title,
+        author,
         classRecords,
         availableClasses,
         url: urls.referenceBook(book),

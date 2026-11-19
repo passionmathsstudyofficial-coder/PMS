@@ -4,6 +4,11 @@ import { completion } from './completion.js';
 export const application = {
   ...production,
   ...completion,
+  "M.L. Aggarwal": { "en": "M.L. Aggarwal", "hi": "एम. एल. अग्रवाल" },
+  "R.D. Sharma": { "en": "R.D. Sharma", "hi": "आर. डी. शर्मा" },
+  "R.S. Aggarwal": { "en": "R.S. Aggarwal", "hi": "आर. एस. अग्रवाल" },
+  "K.C. Sinha Mathematics": { "en": "K.C. Sinha Mathematics", "hi": "के. सी. सिन्हा गणित" },
+  "Reference Books": { "en": "Reference Books", "hi": "संदर्भ पुस्तकें" },
   "Starts at": { "en": "Starts at", "hi": "शुरू होने का समय" },
   "Ends at": { "en": "Ends at", "hi": "समाप्त होने का समय" },
   "Complete dynamic content management for the Header Navigation Bar, Reference Books Footer, WhatsApp Banner, and Copyright.": {

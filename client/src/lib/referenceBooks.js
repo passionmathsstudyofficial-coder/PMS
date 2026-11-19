@@ -93,4 +93,27 @@ export function getReferenceBooks(site) {
   return [...bookMap.values()].filter(book => book.isVisible !== false && !isExcludedReferenceBook(book));
 }
 
+export const CANONICAL_REF_TITLES = {
+  'ml-aggarwal': { en: 'M.L. Aggarwal', hi: 'एम. एल. अग्रवाल' },
+  'rd-sharma': { en: 'R.D. Sharma', hi: 'आर. डी. शर्मा' },
+  'rs-aggarwal': { en: 'R.S. Aggarwal', hi: 'आर. एस. अग्रवाल' },
+  'kc-sinha-maths': { en: 'K.C. Sinha Mathematics', hi: 'के. सी. सिन्हा गणित' },
+};
+
+export function getReferenceBookDisplayTitle(book, lang = 'en', t = null) {
+  if (!book) return '';
+  const canonical = CANONICAL_REF_TITLES[book.slug];
+  const translated = t ? t(book.title) : '';
+  const isInvalid = !translated || translated.includes('Content not available') || translated.includes('उपलब्ध नहीं');
+  if (!isInvalid) return translated;
+  if (canonical) {
+    return lang === 'hi' ? canonical.hi : canonical.en;
+  }
+  const directHi = typeof book.title === 'object' ? book.title?.hi : '';
+  const directEn = typeof book.title === 'object' ? book.title?.en : (typeof book.title === 'string' ? book.title : '');
+  if (lang === 'hi' && directHi && !directHi.includes('उपलब्ध नहीं')) return directHi;
+  if (directEn && !directEn.includes('Content not available')) return directEn;
+  return book.author || book.name || book.slug || '';
+}
+
 export const referenceBookUrl = book => `/reference-solutions/${book.slug}`;

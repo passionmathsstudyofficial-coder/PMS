@@ -1,16 +1,17 @@
 import { isPathActive } from '@/lib/navigationActive.js';
-import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle, referenceBookUrl } from '@/lib/referenceBooks.js';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { useInterfaceL10n } from '@/lib/i18n';
+import { useInterfaceL10n, useLang } from '@/lib/i18n';
 import { useSite, useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
 export function ReferenceBooksDropdown({ label, currentPath }) {
+  const { lang } = useLang();
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -146,7 +147,7 @@ export function ReferenceBooksDropdown({ label, currentPath }) {
         >
           <div className="space-y-0.5">
             {books.map((book) => {
-              const bookTitle = t(book.title) || book.author || book.name || book.slug;
+              const bookTitle = getReferenceBookDisplayTitle(book, lang, t);
               const classes = (book.availableClasses || []);
               const isHovered = activeBookSlug === book.slug;
               const isBookActive = isPathActive(referenceBookUrl(book), path) && !/\/class-\d+/.test(path);

@@ -8,7 +8,7 @@ import { resolveMediaUrl } from '@/lib/media';
 import { Logo } from './Logo.jsx';
 import { SmartLink } from './SmartLink.jsx';
 import { SOCIAL_ICONS } from './SocialIcons.jsx';
-import { getReferenceBooks, isExcludedReferenceBook, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle, isExcludedReferenceBook, referenceBookUrl } from '@/lib/referenceBooks.js';
 import { navigationChildren, studyNavigationItem } from '@/lib/studyNavigation.js';
 import { cn } from '@/lib/utils';
 
@@ -144,16 +144,20 @@ export function Footer() {
     },
     ...books
       .filter(book => !isExcludedReferenceBook(book))
-      .map(book => ({
-        label: book.title,
-        children: (book.availableClasses || []).map(number => ({
-          label: {
-            en: `${book.title?.en || book.author} Class ${number}`,
-            hi: `${book.title?.hi || book.author} कक्षा ${number}`,
-          },
-          url: (book.classRecords?.find(c => c.number === number)?.url || `${referenceBookUrl(book)}/class-${number}`),
-        })),
-      }))
+      .map(book => {
+        const titleEn = getReferenceBookDisplayTitle(book, 'en');
+        const titleHi = getReferenceBookDisplayTitle(book, 'hi');
+        return {
+          label: { en: titleEn, hi: titleHi },
+          children: (book.availableClasses || []).map(number => ({
+            label: {
+              en: `${titleEn} Class ${number}`,
+              hi: `${titleHi} कक्षा ${number}`,
+            },
+            url: (book.classRecords?.find(c => c.number === number)?.url || `${referenceBookUrl(book)}/class-${number}`),
+          })),
+        };
+      })
       .filter(col => col.children.length > 0),
     {
       label: { en: 'Important Links', hi: 'महत्वपूर्ण लिंक' },

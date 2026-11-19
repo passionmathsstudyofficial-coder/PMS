@@ -1,4 +1,4 @@
-import { getReferenceBooks, referenceBookUrl } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle, referenceBookUrl } from '@/lib/referenceBooks.js';
 import { isPathActive, activeNavigationItem } from '@/lib/navigationActive.js';
 import { navigationChildren, navigationId, studyNavigationItem } from '@/lib/studyNavigation.js';
 import { uiText } from '@/lib/uiLanguage.js';
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useId, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { useInterfaceL10n } from '@/lib/i18n';
+import { useInterfaceL10n, useLang } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher.jsx';
@@ -26,6 +26,7 @@ import { ThemeToggle } from './ThemeToggle.jsx';
 // Multi-level accordion for Reference Books on Mobile:
 // Reference Books -> expands to Books -> expands to Classes (6-12)
 function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose }) {
+  const { lang } = useLang();
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -74,7 +75,7 @@ function MobileReferenceBooksAccordion({ currentPath, isOpen, onToggle, onClose 
             className="overflow-hidden pl-4 pr-1 pt-1 pb-2 space-y-2"
           >
             {books.map((book) => {
-              const bookTitle = t(book.title) || book.author || 'Book';
+              const bookTitle = getReferenceBookDisplayTitle(book, lang, t);
               const classes =
                 book.availableClasses && book.availableClasses.length > 0
                   ? book.availableClasses

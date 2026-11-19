@@ -57,7 +57,11 @@ export function useInterfaceL10n() {
   return useCallback((value, mode) => {
     const picked = pickL10n(value, lang, mode);
     if (picked) return translateUi(picked, lang);
-    if (value?._translationMissing) return missingContent(lang);
+    if (value?._translationMissing) {
+      const sibling = lang === 'hi' ? (value?.en || value?.mixed) : (value?.hi || value?.mixed);
+      if (typeof sibling === 'string' && sibling.trim()) return translateUi(sibling, lang);
+      return '';
+    }
     return '';
   }, [lang]);
 }

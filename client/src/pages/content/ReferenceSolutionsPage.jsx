@@ -357,8 +357,18 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
             </div>
           }
           title={{
-            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number}: ${t(chapter.title)}`,
-            en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number}: ${chapter.title?.en || t(chapter.title)}`,
+            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number}${(() => {
+              const chTitle = t(chapter.title);
+              const valid = chTitle && !chTitle.includes('Content not available') && !chTitle.includes('उपलब्ध नहीं');
+              const text = valid ? chTitle : (chapter.title?.hi || chapter.title?.en || '');
+              return text ? `: ${text}` : '';
+            })()}`,
+            en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number}${(() => {
+              const chTitle = chapter.title?.en || t(chapter.title);
+              const valid = chTitle && !chTitle.includes('Content not available') && !chTitle.includes('उपलब्ध नहीं');
+              const text = valid ? chTitle : (chapter.title?.hi || '');
+              return text ? `: ${text}` : '';
+            })()}`,
           }}
           subtitle={uiTemplate`Exercise-wise step-by-step solutions, key concept summaries, and PDF download for Chapter ${chapter.number}.`}
           actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
@@ -551,7 +561,12 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           <div className="flex items-center gap-2">
             <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
             <Chip>{interfaceL10n(book.title)}</Chip>
-            <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">{' '}{uiText("Ch")}{' '}{chapter.number} · {t(chapter.title)}
+            <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">{' '}{uiText("Ch")}{' '}{chapter.number}{(() => {
+              const rawChTitle = t(chapter.title);
+              const valid = rawChTitle && !rawChTitle.includes('Content not available') && !rawChTitle.includes('उपलब्ध नहीं');
+              const text = valid ? rawChTitle : (chapter.title?.en || chapter.title?.hi || '');
+              return text ? ` · ${text}` : '';
+            })()}
             </Link>
           </div>
         }

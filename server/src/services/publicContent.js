@@ -37,6 +37,14 @@ import { relatedFor } from './related.js';
 import { countsForChapters, countsForExercises } from './stats.js';
 import { getTerms, pick, term } from './terms.js';
 import { urls } from './urls.js';
+import { compatibleText } from '../../../shared/localization.js';
+
+const CANONICAL_REF_TITLES = {
+  'ml-aggarwal': { en: 'M.L. Aggarwal', hi: 'एम. एल. अग्रवाल' },
+  'rd-sharma': { en: 'R.D. Sharma', hi: 'आर. डी. शर्मा' },
+  'rs-aggarwal': { en: 'R.S. Aggarwal', hi: 'आर. एस. अग्रवाल' },
+  'kc-sinha-maths': { en: 'K.C. Sinha Mathematics', hi: 'के. सी. सिन्हा गणित' },
+};
 
 const vis = (Model, preview, extra = {}) => (preview ? extra : Model.publicFilter(extra));
 
@@ -1061,9 +1069,17 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         continue;
       }
       const existing = allBooksMap.get(b.slug) || {};
+      const canonical = CANONICAL_REF_TITLES[b.slug];
+      const title = {
+        en: b.title?.en || canonical?.en || (typeof b.title === 'string' ? b.title : '') || b.author || b.name,
+        hi: b.title?.hi || canonical?.hi || b.title?.en || canonical?.en || b.author || b.name,
+      };
+      const author = b.author || (b.slug === 'rd-sharma' ? 'Dr. R.D. Sharma' : b.slug === 'kc-sinha-maths' ? 'Prof. K.C. Sinha' : canonical?.en || '');
       allBooksMap.set(b.slug, {
         ...existing,
         ...b,
+        title,
+        author,
         classes: (b.availableClasses && b.availableClasses.length > 0) ? b.availableClasses : (b.class?.number ? [b.class.number] : []),
         url: `/${rootSlug}/${b.slug}`,
       });
@@ -1255,7 +1271,13 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     Object.assign(chapter, draft.toObject());
   }
 
-  const chapterCrumb = { label: chapter.title, url: urls.referenceChapter(book, cls, chapter) };
+  const chLabelEn = (chapter.title?.en && compatibleText(chapter.title.en, 'en'))
+    ? chapter.title.en
+    : (chapter.title?.hi || (typeof chapter.title === 'string' ? chapter.title : '') || `Chapter ${chapter.number}`);
+  const chLabelHi = (chapter.title?.hi && compatibleText(chapter.title.hi, 'hi'))
+    ? chapter.title.hi
+    : (chapter.title?.en || (typeof chapter.title === 'string' ? chapter.title : '') || `अध्याय ${chapter.number}`);
+  const chapterCrumb = { label: { en: chLabelEn, hi: chLabelHi }, url: urls.referenceChapter(book, cls, chapter) };
   const chapterExercises = chapter.exercises || [];
 
   const [resources, siblingChapters] = await Promise.all([
