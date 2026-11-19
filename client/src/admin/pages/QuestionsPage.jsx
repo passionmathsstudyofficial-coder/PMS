@@ -276,7 +276,7 @@ const QUESTION_DEFAULTS = {
   attachments: [],
   video: { video: null, placement: 'afterSolution' },
   formulas: [],
-  solution: { blocks: [], methods: [], status: 'draft', languageMode: 'auto' },
+  solution: { blocks: [], methods: [], status: 'published', languageMode: 'auto' },
   hint: {},
   answer: {},
   importantPoint: {},
@@ -324,7 +324,7 @@ const toQuestionForm = (doc) => ({
     ...doc.solution,
     blocks: doc.solution?.blocks || [],
     methods: doc.solution?.methods || [],
-    status: doc.solution?.status || (doc.solution ? 'published' : 'draft'),
+    status: doc.solution?.status || doc.status || 'published',
     languageMode: doc.solution?.languageMode || 'auto',
   },
 });
@@ -384,15 +384,19 @@ export function QuestionEditor({ id }) {
   const chapter = exercise?.chapter || form?.chapter;
   const cls = chapter?.class || form?.class;
   const sub = chapter?.subject || form?.subject;
+  const book = form?.book || chapter?.book || editor.doc?.book;
+  const bookSlug = book?.slug;
   const classSlug = cls?.slug;
   const subjectSlug = sub?.slug;
   const chapterSlug = chapter?.slug;
   const exerciseSlug = exercise?.slug;
 
   const path =
-    classSlug && subjectSlug && chapterSlug && exerciseSlug && form?.slug
-      ? `/${classSlug}/${subjectSlug}/${chapterSlug}/${exerciseSlug}/${form.slug}`
-      : null;
+    bookSlug && classSlug && chapterSlug && exerciseSlug && form?.slug
+      ? `/reference-solutions/${bookSlug}/${classSlug}/${chapterSlug}/${exerciseSlug}/${form.slug}`
+      : (classSlug && subjectSlug && chapterSlug && exerciseSlug && form?.slug
+        ? `/${classSlug}/${subjectSlug}/${chapterSlug}/${exerciseSlug}/${form.slug}`
+        : null);
 
   const setSolution = (patch) => setForm((f) => ({ ...f, solution: { ...f.solution, ...patch } }));
 

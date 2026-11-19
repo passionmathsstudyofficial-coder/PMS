@@ -29,7 +29,7 @@ router.get('/revision', async (req, res) => {
     const latest = await ActivityLog.findOne().sort({ _id: -1 }).select('_id').lean();
     return hmac(String(latest?._id || 'initial'));
   });
-  res.set('Cache-Control', 'no-store').json({ revision });
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private').json({ revision });
 });
 
 router.get('/site', async (req, res) => {

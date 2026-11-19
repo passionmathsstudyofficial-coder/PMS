@@ -266,8 +266,11 @@ export function TopicEditor({ id }) {
   const selectedChapter = chapterItems.find((ch) => String(ch._id) === String(chapterId)) || (typeof doc?.chapter === 'object' ? doc?.chapter : null);
   const classSlug = selectedClass?.slug || (typeof doc?.class === 'object' ? doc?.class?.slug : null) || (doc?.class?.number ? `class-${doc.class.number}` : 'class-10');
   const chapterSlug = selectedChapter?.slug || (typeof doc?.chapter === 'object' ? doc?.chapter?.slug : null) || 'adhyay-4';
+  const bookSlug = doc?.book?.slug || selectedChapter?.book?.slug;
   const previewPath = doc?.slug
-    ? `/${classSlug}/maths/${chapterSlug}/topic/${doc.slug}`
+    ? (bookSlug
+        ? `/reference-solutions/${bookSlug}/${classSlug}/${chapterSlug}/topic/${doc.slug}`
+        : `/${classSlug}/maths/${chapterSlug}/topic/${doc.slug}`)
     : undefined;
 
   useEffect(() => {

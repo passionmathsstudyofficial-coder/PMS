@@ -903,10 +903,12 @@ router.post('/landing-pages/ensure', requireAuth, requirePermission('content:wri
     const { landingKey } = req.body || {};
     if (landingKey) {
       const page = await ensureLandingPageByKey(landingKey);
+      await logActivity(req, { action: 'update', entityType: 'Page', entityId: page?._id, entityLabel: `Landing page ${landingKey}` });
       cache.invalidate();
       return res.json({ item: page });
     }
     const created = await ensureDefaultLandingPages();
+    await logActivity(req, { action: 'update', entityType: 'Page', entityLabel: 'Landing pages' });
     cache.invalidate();
     const registry = await getLandingRegistry();
     res.json({ createdCount: created.length, items: registry });

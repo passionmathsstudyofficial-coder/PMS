@@ -106,6 +106,7 @@ function structuredData(result, base, settings, lang) {
 }
 
 export async function renderAppHtml(req, res) {
+  await cache.sync();
   const [html, site] = await Promise.all([loadTemplate(), getSiteBootstrap()]);
   const { settings, seoRoutes } = site;
   const lang = requestLanguage(req);

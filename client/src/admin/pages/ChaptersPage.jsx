@@ -126,9 +126,13 @@ export function ChapterEditor({ id }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor.isNew, subjects.data]);
 
-  const classSlug = form?.class?.slug;
+  const classSlug = form?.class?.slug || (form?.class?.number ? `class-${form.class.number}` : null);
   const subjectSlug = form?.subject?.slug;
-  const path = classSlug && subjectSlug && form.slug ? `/${classSlug}/${subjectSlug}/${form.slug}` : null;
+  const book = form?.book || editor.doc?.book;
+  const bookSlug = book?.slug;
+  const path = bookSlug && classSlug && form.slug
+    ? `/reference-solutions/${bookSlug}/${classSlug}/${form.slug}`
+    : (classSlug && subjectSlug && form.slug ? `/${classSlug}/${subjectSlug}/${form.slug}` : null);
 
   return (
     <EditorGate editor={editor}>

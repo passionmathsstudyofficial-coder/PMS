@@ -614,6 +614,21 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
               </div>
             )}
 
+            {/* Exercise Description and Instructions */}
+            {(hasContent(exercise.description) || hasContent(exercise.instructions)) && (
+              <div className="space-y-3 rounded-2xl border bg-card p-5 shadow-xs">
+                {hasContent(exercise.description) && <RichContent html={t(exercise.description, exercise.languageMode)} />}
+                {hasContent(exercise.instructions) && <RichContent html={t(exercise.instructions, exercise.languageMode)} className="text-sm text-muted-foreground" />}
+              </div>
+            )}
+
+            {/* Exercise Notes */}
+            {hasContent(exercise.notes) && (
+              <section aria-label={uiText("Exercise notes")} className="rounded-2xl border bg-card p-5 shadow-xs">
+                <RichContent html={t(exercise.notes, exercise.languageMode)} />
+              </section>
+            )}
+
             {/* Quick Question Jump Navigator */}
             {questions.length > 1 && (
               <div className="rounded-2xl border bg-card p-3 shadow-xs">
@@ -637,13 +652,15 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
 
             {/* Question cards */}
             {questions.length === 0 ? (
-              <div className="rounded-3xl border bg-card p-8 text-center">
-                <div className="mx-auto mb-3 grid size-12 place-items-center rounded-2xl bg-brand/10 text-brand">
-                  <BookOpen className="size-6" />
+              (!hasContent(exercise.description) && !hasContent(exercise.notes)) && (
+                <div className="rounded-3xl border bg-card p-8 text-center">
+                  <div className="mx-auto mb-3 grid size-12 place-items-center rounded-2xl bg-brand/10 text-brand">
+                    <BookOpen className="size-6" />
+                  </div>
+                  <h3 className="font-heading text-base font-bold text-foreground">{uiText("Exercise")}{' '}{exercise.number}{uiText("Solutions")}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">{' '}{uiText("Digital question blocks for this exercise are being updated. Use the PDF button above to view complete step-by-step solutions.")}{' '}</p>
                 </div>
-                <h3 className="font-heading text-base font-bold text-foreground">{uiText("Exercise")}{' '}{exercise.number}{uiText("Solutions")}</h3>
-                <p className="mt-1 text-xs text-muted-foreground">{' '}{uiText("Digital question blocks for this exercise are being updated. Use the PDF button above to view complete step-by-step solutions.")}{' '}</p>
-              </div>
+              )
             ) : (
               questions.map((question) => (
                 <QuestionCard key={question._id} question={question} />

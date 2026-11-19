@@ -110,7 +110,11 @@ export function ExerciseEditor({ id }) {
     if (!classId && chapter?.class?._id) setClassId(chapter.class._id);
   }, [chapter, classId]);
 
-  const path = chapter?.class?.slug && chapter?.subject?.slug && form?.slug ? `/${chapter.class.slug}/${chapter.subject.slug}/${chapter.slug}/${form.slug}` : null;
+  const book = form?.book || chapter?.book || editor.doc?.book;
+  const bookSlug = book?.slug;
+  const path = bookSlug && chapter?.class?.slug && chapter?.slug && form?.slug
+    ? `/reference-solutions/${bookSlug}/${chapter.class.slug}/${chapter.slug}/${form.slug}`
+    : (chapter?.class?.slug && chapter?.subject?.slug && form?.slug ? `/${chapter.class.slug}/${chapter.subject.slug}/${chapter.slug}/${form.slug}` : null);
 
   return (
     <EditorGate editor={editor}>
