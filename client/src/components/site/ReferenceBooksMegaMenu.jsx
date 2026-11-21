@@ -1,16 +1,17 @@
-import { getReferenceBooks } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle } from '@/lib/referenceBooks.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, ChevronDown, ChevronRight, GraduationCap, Library, Sparkles } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { useInterfaceL10n } from '@/lib/i18n';
+import { useInterfaceL10n, useLang } from '@/lib/i18n';
 import { useSite } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { SmartLink } from './SmartLink.jsx';
 
 export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), currentPath = '' }) {
+  const { lang } = useLang();
   useUiLanguage();
   const site = useSite();
   const t = useInterfaceL10n();
@@ -143,7 +144,7 @@ export function ReferenceBooksMegaMenu({ label = uiText('Reference Books'), curr
                 books.length <= 2 ? 'grid-cols-2' : books.length === 3 ? 'grid-cols-3' : 'grid-cols-3',
               )}>
                 {books.map((book) => {
-                  const bookTitle = t(book.title) || book.author || 'Reference Book';
+                  const bookTitle = getReferenceBookDisplayTitle(book, lang, t);
                   const bookDesc = t(book.description) || '';
                   const classes =
                     book.availableClasses && book.availableClasses.length > 0

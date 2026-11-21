@@ -108,7 +108,11 @@ function StudyRecordEditor({ module, section, id, basePath }) {
           onChange={(key, value) => editor.setForm(current => ({
             ...current, ...Object.fromEntries(parentKeys.slice(parentKeys.indexOf(key) + 1).map(child => [child, null])), [key]: value,
           }))}
-          required={parentKeys.filter(key => section !== 'sets' || key !== 'studyChapter')} disabled={!editor.isNew} />
+          required={
+            ['important-questions', 'notes-formulas'].includes(module) || ['notes', 'formulas', 'questions'].includes(section)
+              ? ['studyClass']
+              : parentKeys.filter(key => section !== 'sets' || key !== 'studyChapter')
+          } disabled={!editor.isNew} />
         {['classes', 'chapters'].includes(section) && <NumberField label="Number" value={form.number} onChange={v => setField('number', v)} />}
         <NumberField label="Display order" value={form.sortOrder ?? 0} onChange={v => setField('sortOrder', v)} />
         <SlugField value={form.slug} suggestion={form.title?.en} onChange={v => setField('slug', v)} />

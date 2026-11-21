@@ -11,9 +11,7 @@ export function StudyBatchImport({ resource, category, placement }) {
   const [failures, setFailures] = useState([]);
   const [busy, setBusy] = useState(false);
   const { save } = useResourceMutations(resource);
-  const required = resource === 'important-questions'
-    ? ['studyClass', 'questionCategory', 'questionSet']
-    : category === 'formula_sheet' ? ['studyClass'] : ['studyClass', 'studyChapter'];
+  const required = ['studyClass'];
 
   const importDrafts = async () => {
     let rows;

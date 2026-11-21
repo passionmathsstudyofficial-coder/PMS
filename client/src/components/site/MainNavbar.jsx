@@ -235,6 +235,7 @@ export function MainNavbar({ onOpenMobileMenu }) {
         item.type === 'reference-books' ||
         item.type === 'mega' ||
         enLabel.includes('reference book') ||
+        hiLabel.includes('संदर्भ') ||
         item.url === '/reference-solutions' ||
         item.url === '/reference-books';
 
@@ -319,10 +320,12 @@ export function MainNavbar({ onOpenMobileMenu }) {
             {navItems.map((rawItem) => {
               const item = studyNavigationItem(rawItem);
               const enLabel = (item.label?.en || '').toLowerCase();
+              const hiLabel = (item.label?.hi || '');
               const isReference =
                 item.type === 'reference-books' ||
                 item.type === 'mega' ||
                 enLabel.includes('reference') ||
+                hiLabel.includes('संदर्भ') ||
                 item.url === '/reference-solutions' ||
                 item.url === '/reference-books';
               const isImportant =

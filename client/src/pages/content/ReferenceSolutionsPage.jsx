@@ -30,13 +30,15 @@ import { YouTubeEmbed } from '@/components/content/YouTubeEmbed.jsx';
 import { StudySidebar } from '@/components/site/StudySidebar.jsx';
 import { EmptyState } from '@/components/site/States.jsx';
 import { errorMessage, get } from '@/lib/api';
-import { hasContent, useL10n, useInterfaceL10n } from '@/lib/i18n';
+import { hasContent, useL10n, useInterfaceL10n, useLang } from '@/lib/i18n';
+import { getReferenceBookDisplayTitle } from '@/lib/referenceBooks.js';
 import { useTerm } from '@/lib/site';
 import { cn } from '@/lib/utils';
 import { ContentHeader, PrevNext } from './ContentHeader.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 
 export default function ReferenceSolutionsPage({ data, breadcrumbs, path, preview, previewToken }) {
+  const { lang } = useLang();
   useUiLanguage();
   const t = useL10n();
   const interfaceL10n = useInterfaceL10n();
@@ -64,6 +66,13 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     academicSessions = [],
     currentSession = '2026–27',
   } = data;
+
+  const bookDisplayTitle = getReferenceBookDisplayTitle(book, lang, interfaceL10n);
+  const cleanChTitle = (raw) => {
+    if (!raw || typeof raw !== 'string') return '';
+    if (raw.includes('Content not available') || raw.includes('उपलब्ध नहीं')) return '';
+    return raw.trim();
+  };
 
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [activePdfTitle, setActivePdfTitle] = useState('');
@@ -176,16 +185,16 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         <ContentHeader
           breadcrumbs={breadcrumbs}
           watermark="Book"
-          eyebrow={<Chip tone="brand">{interfaceL10n(book?.title) || uiText("Reference Book")}</Chip>}
+          eyebrow={<Chip tone="brand">{bookDisplayTitle || uiText("Reference Book")}</Chip>}
           title={book.title}
-          subtitle={uiTemplate`Complete exercise-wise step-by-step solutions for ${interfaceL10n(book.title)} across middle and high school classes.`}
+          subtitle={uiTemplate`Complete exercise-wise step-by-step solutions for ${bookDisplayTitle} across middle and high school classes.`}
         />
 
         <div className="container-page py-10">
           <div className="grid gap-8 lg:grid-cols-12">
             <div className="space-y-8 lg:col-span-8">
               <div className="rounded-3xl border bg-card p-6 sm:p-8">
-                <h2 className="mb-2 font-heading text-xl font-bold text-foreground">{' '}{uiText("Select Your Class for")}{' '}{interfaceL10n(book.title)}
+                <h2 className="mb-2 font-heading text-xl font-bold text-foreground">{' '}{uiText("Select Your Class for")}{' '}{bookDisplayTitle}
                 </h2>
                 <p className="mb-6 text-sm text-muted-foreground">{' '}{uiText("Choose your class below to access detailed chapter-by-chapter exercise solutions, step-by-step formulas, and free PDF notes:")}{' '}</p>
 
@@ -232,12 +241,12 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           eyebrow={
             <div className="flex items-center gap-2">
               <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
-              <Chip>{interfaceL10n(book.title)}</Chip>
+              <Chip>{bookDisplayTitle}</Chip>
             </div>
           }
           title={{
-            hi: `${interfaceL10n(book.title)} — ${interfaceL10n(cls.name) || `कक्षा ${cls.number}`}`,
-            en: `${interfaceL10n(book.title)} — ${interfaceL10n(cls.name) || `Class ${cls.number}`}`,
+            hi: `${bookDisplayTitle} — ${interfaceL10n(cls.name) || `कक्षा ${cls.number}`}`,
+            en: `${bookDisplayTitle} — ${interfaceL10n(cls.name) || `Class ${cls.number}`}`,
           }}
           subtitle={t(cls.description) || uiTemplate`Browse available chapters and exercises for Class ${cls.number} Mathematics.`}
           actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
@@ -249,7 +258,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
               {cls.thumbnail && <Figure media={cls.thumbnail} alt={t(cls.thumbnail.alt) || t(cls.name)} />}
               {/* Introduction box */}
               <div className="rounded-2xl border bg-card p-5 text-sm text-foreground/90">
-                <p>{uiText("Welcome to")}<strong>{interfaceL10n(book.title)}{uiText("Class")}{' '}{cls.number}</strong>{' '}{uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
+                <p>{uiText("Welcome to")}<strong>{bookDisplayTitle}{' '}{uiText("Class")}{' '}{cls.number}</strong>{' '}{uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
               </div>
 
               {/* Chapters and Exercise Links */}
@@ -352,22 +361,18 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           eyebrow={
             <div className="flex items-center gap-2">
               <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
-              <Chip>{interfaceL10n(book.title)}</Chip>
+              <Chip>{bookDisplayTitle}</Chip>
               <Chip>{uiText("Chapter")}{' '}{chapter.number}</Chip>
             </div>
           }
           title={{
-            hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number}${(() => {
-              const chTitle = t(chapter.title);
-              const valid = chTitle && !chTitle.includes('Content not available') && !chTitle.includes('उपलब्ध नहीं');
-              const text = valid ? chTitle : (chapter.title?.hi || chapter.title?.en || '');
-              return text ? `: ${text}` : '';
+            hi: `${bookDisplayTitle} कक्षा ${cls.number} अध्याय ${chapter.number}${(() => {
+              const chTitle = cleanChTitle(t(chapter.title)) || cleanChTitle(chapter.title?.hi) || cleanChTitle(chapter.title?.en);
+              return chTitle ? `: ${chTitle}` : '';
             })()}`,
-            en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number}${(() => {
-              const chTitle = chapter.title?.en || t(chapter.title);
-              const valid = chTitle && !chTitle.includes('Content not available') && !chTitle.includes('उपलब्ध नहीं');
-              const text = valid ? chTitle : (chapter.title?.hi || '');
-              return text ? `: ${text}` : '';
+            en: `${bookDisplayTitle} Class ${cls.number} Chapter ${chapter.number}${(() => {
+              const chTitle = cleanChTitle(chapter.title?.en) || cleanChTitle(t(chapter.title)) || cleanChTitle(chapter.title?.hi);
+              return chTitle ? `: ${chTitle}` : '';
             })()}`,
           }}
           subtitle={uiTemplate`Exercise-wise step-by-step solutions, key concept summaries, and PDF download for Chapter ${chapter.number}.`}
@@ -560,19 +565,17 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
         eyebrow={
           <div className="flex items-center gap-2">
             <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
-            <Chip>{interfaceL10n(book.title)}</Chip>
+            <Chip>{bookDisplayTitle}</Chip>
             <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">{' '}{uiText("Ch")}{' '}{chapter.number}{(() => {
-              const rawChTitle = t(chapter.title);
-              const valid = rawChTitle && !rawChTitle.includes('Content not available') && !rawChTitle.includes('उपलब्ध नहीं');
-              const text = valid ? rawChTitle : (chapter.title?.en || chapter.title?.hi || '');
-              return text ? ` · ${text}` : '';
+              const raw = cleanChTitle(t(chapter.title)) || cleanChTitle(chapter.title?.en) || cleanChTitle(chapter.title?.hi);
+              return raw ? ` · ${raw}` : '';
             })()}
             </Link>
           </div>
         }
         title={{
-          hi: `${interfaceL10n(book.title)} कक्षा ${cls.number} अध्याय ${chapter.number} अभ्यास ${exercise.number}`,
-          en: `${interfaceL10n(book.title)} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} Solutions`,
+          hi: `${bookDisplayTitle} कक्षा ${cls.number} अध्याय ${chapter.number} अभ्यास ${exercise.number}`,
+          en: `${bookDisplayTitle} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} Solutions`,
         }}
         subtitle={uiTemplate`Detailed step-by-step solutions for Exercise ${exercise.number} with mathematical formulas, diagrams, and video lessons.`}
         aside={<LanguageNotice />}

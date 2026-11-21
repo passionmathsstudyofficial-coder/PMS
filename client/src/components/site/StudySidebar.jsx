@@ -1,5 +1,6 @@
 import { useSite } from '@/lib/site';
-import { getReferenceBooks } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle } from '@/lib/referenceBooks.js';
+import { useLang } from '@/lib/i18n';
 import { uiTemplate } from '@/lib/uiLanguage.js';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
@@ -30,6 +31,7 @@ export const STUDY_MATERIAL_LINKS = [
 ];
 
 export function StudySidebar({ currentCategory, currentBook, currentClass, chapters = [], className }) {
+  const { lang } = useLang();
   useUiLanguage();
   const t = useInterfaceL10n();
   const site = useSite();
@@ -136,7 +138,7 @@ export function StudySidebar({ currentCategory, currentBook, currentClass, chapt
                       : 'text-foreground/80 hover:bg-muted hover:text-foreground',
                   )}
                 >
-                  <span className="truncate">{t(b.title)}</span>
+                  <span className="truncate">{getReferenceBookDisplayTitle(b, lang, t)}</span>
                   <span
                     className={cn(
                       'ml-1.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase',

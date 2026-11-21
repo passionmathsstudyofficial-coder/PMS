@@ -13,7 +13,7 @@ import { SmartLink } from '@/components/site/SmartLink.jsx';
 import { Icon } from '@/lib/icons';
 import { hasContent, useInterfaceL10n } from '@/lib/i18n';
 import { gsap, prefersReducedMotion, ScrollTrigger, useGSAP } from '@/lib/motion';
-import { getReferenceBooks } from '@/lib/referenceBooks.js';
+import { getReferenceBooks, getReferenceBookDisplayTitle } from '@/lib/referenceBooks.js';
 import { bookCoverUrl } from '@/lib/media';
 import { useSite, useTerm } from '@/lib/site';
 import { uiText } from '@/lib/uiLanguage.js';
@@ -265,7 +265,7 @@ export function ReferenceBooksSection({ section }) {
     <SectionShell section={effectiveSection} className="py-12 sm:py-16">
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {books.map((book) => {
-          const bookTitle = t(book.title) || book.author || book.name || book.slug;
+          const bookTitle = getReferenceBookDisplayTitle(book, language, t);
           const bookDesc = t(book.description) || (t(book.subtitle) || '');
           const classes = (book.availableClasses || []);
           const classRangeLabel = classes.length > 1

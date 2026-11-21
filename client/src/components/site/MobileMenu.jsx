@@ -347,9 +347,12 @@ export function MobileMenu({ open, onClose, returnFocusRef }) {
             <div className="min-h-0 flex-1 overflow-y-auto p-4 space-y-1">
               {navItems.map((item) => {
                 const enLabel = (item.label?.en || '').toLowerCase();
+                const hiLabel = (item.label?.hi || '');
                 const isReference =
+                  item.type === 'reference-books' ||
                   item.type === 'mega' ||
                   enLabel.includes('reference') ||
+                  hiLabel.includes('संदर्भ') ||
                   item.url === '/reference-solutions' ||
                   item.url === '/reference-books';
 
