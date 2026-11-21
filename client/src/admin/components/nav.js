@@ -104,7 +104,6 @@ export const NAV_GROUPS = [
       { to: 'study-cms/important-questions/topics', label: 'Topics Management', icon: Sparkles },
       { to: 'important-questions/pyq', get label() { return uiText("Previous Year Questions"); }, icon: Star },
       { to: 'important-questions/sample-papers', get label() { return uiText("CBSE Sample Papers"); }, icon: FileSpreadsheet },
-      { to: 'important-questions/extra-questions', get label() { return uiText("CBSE Extra Questions"); }, icon: CircleHelp },
       { to: 'important-questions/vvi', get label() { return uiText("VVI Questions (Board Special)"); }, icon: Sparkles },
       { to: 'important-questions/syllabus', get label() { return uiText("Maths Syllabus"); }, icon: GraduationCap },
     ],

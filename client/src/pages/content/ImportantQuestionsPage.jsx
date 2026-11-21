@@ -31,7 +31,7 @@ function ImportantQuestionCard({ item, index }) {
       <header className="flex flex-wrap items-center gap-2 border-b bg-saffron-soft/50 px-4 py-2.5 sm:px-5">
         <Star className="size-4 text-warning" aria-hidden="true" />
         <h2 className="text-sm font-bold">
-          {term('question')} {index + 1}
+          {t(item.title) || `${term('question')} ${index + 1}`}
         </h2>
         {item.marks ? (
           <span className="rounded-full border bg-background px-2 py-0.5 text-[11px] font-semibold">
@@ -47,7 +47,7 @@ function ImportantQuestionCard({ item, index }) {
         )}
       </header>
       <div className="space-y-4 p-4 sm:p-5">
-        <RichContent html={t(item.text, mode)} className="text-[16.5px] font-medium" />
+        {t(item.text, mode) ? <RichContent html={t(item.text, mode)} className="text-[16.5px] font-medium" /> : null}
         {item.attachments.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2">
             {item.attachments.map((a, i) => (

@@ -222,7 +222,7 @@ export function PagesList() {
 }
 
 const LANDING_KEYS = [
-  'study-materials', 'study-materials/ncert-books', 'study-materials/previous-year-questions', 'study-materials/pyq', 'study-materials/cbse-sample-papers', 'study-materials/maths-syllabus', 'study-materials/syllabus', 'study-materials/cbse-extra-questions', 'study-materials/extra-questions', 'study-materials/vvi-questions', 'study-materials/important-questions',
+  'study-materials', 'study-materials/ncert-books', 'study-materials/previous-year-questions', 'study-materials/pyq', 'study-materials/cbse-sample-papers', 'study-materials/maths-syllabus', 'study-materials/syllabus', 'study-materials/vvi-questions', 'study-materials/important-questions',
   'notes', 'notes/ncert-chapter-wise-notes', 'notes/ncert-notes', 'notes/maths-formula-sheets', 'notes/rs-aggarwal-formulas-notes', 'notes/rd-sharma-formulas-notes', 'notes/ml-aggarwal-formulas-notes', 'notes/kc-sinha-formulas-notes', 'notes/vvi-questions-short-notes',
   'reference-solutions', 'reference-solutions/rs-aggarwal', 'reference-solutions/rd-sharma', 'reference-solutions/ml-aggarwal', 'reference-solutions/kc-sinha',
   'class-12/mathematics', 'class-11/mathematics', 'class-10/mathematics', 'class-9/mathematics', 'class-8/mathematics', 'class-7/mathematics', 'class-6/mathematics',

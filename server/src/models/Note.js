@@ -48,7 +48,14 @@ noteSchema.index({ class: 1, subject: 1, academicSession: 1, slug: 1 }, { unique
 noteSchema.index({ searchText: 'text' }, { default_language: 'none' });
 
 noteSchema.pre('validate', async function buildNote() {
-  this.slug = slugify(this.slug || this.title?.en || this.title?.hi, 'note');
+  const hasCustomSlug = Boolean(this.slug && this.slug !== 'note');
+  const baseSlug = slugify(this.slug || this.title?.en || this.title?.hi, 'note');
+  if (!hasCustomSlug || (!this.title?.en && !this.title?.hi && baseSlug === 'note')) {
+    const idSuffix = this._id ? this._id.toString().slice(-6) : Math.random().toString(36).slice(-6);
+    this.slug = `${baseSlug}-${idSuffix}`;
+  } else {
+    this.slug = baseSlug;
+  }
   if (this.studyClass && this.isNew && !this.slug.endsWith(this._id.toString().slice(-8))) this.slug = this.slug.slice(0, 130) + '-' + this._id.toString().slice(-8);
   const [cls, chapter] = await Promise.all([
     this.class ? mongoose.model('Class').findById(this.class).select('number').lean() : null,

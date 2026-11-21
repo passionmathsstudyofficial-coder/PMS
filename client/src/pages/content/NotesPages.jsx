@@ -36,7 +36,7 @@ export function NotesListPage({ data, breadcrumbs }) {
               <li key={note._id}>
                 <Link to={note.url} className="group flex h-full flex-col rounded-2xl border bg-card p-5 transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-md">
                   <FileText className="mb-3 size-6 text-indigo" aria-hidden="true" />
-                  <span className="font-bold group-hover:text-brand">{t(note.title)}</span>
+                  <span className="font-bold group-hover:text-brand">{t(note.title) || (note.chapter ? `${term('chapter')} ${note.chapter.number} ${term('notes')}` : term('notes'))}</span>
                   {t(note.summary) && <span className="mt-1 line-clamp-3 text-sm text-muted-foreground">{t(note.summary)}</span>}
                   {note.chapter && (
                     <span className="mt-auto pt-3 text-xs font-semibold text-muted-foreground">
@@ -77,7 +77,7 @@ export function NotePage({ data, breadcrumbs, related }) {
             )}
           </>
         }
-        title={t(note.title, note.languageMode)}
+        title={t(note.title, note.languageMode) || (note.chapter ? `${term('chapter')} ${note.chapter.number} ${term('notes')}` : term('notes'))}
         subtitle={t(note.summary, note.languageMode)}
         aside={<LanguageNotice />}
       />

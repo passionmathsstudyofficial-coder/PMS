@@ -1,8 +1,7 @@
 const entry = (en, hi, url) => ({ _id: `study-${en.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, label: { en, hi }, url });
 const questions = [
   entry('Previous Year Questions (PYQ)', 'पिछले वर्षों के प्रश्न (PYQ)', '/study-materials/previous-year-questions'),
-  entry('Sample Papers', 'सैंपल पेपर्स', '/study-materials/cbse-sample-papers'),
-  entry('CBSE Extra Questions', 'CBSE अतिरिक्त प्रश्न', '/study-materials/cbse-extra-questions'),
+  entry('CBSE Sample Papers', 'CBSE सैंपल पेपर्स', '/study-materials/cbse-sample-papers'),
   entry('VVI Questions (Board Special)', 'अति महत्वपूर्ण प्रश्न (बोर्ड विशेष)', '/study-materials/vvi-questions'),
   entry('Maths Syllabus', 'गणित पाठ्यक्रम', '/study-materials/maths-syllabus'),
 ];

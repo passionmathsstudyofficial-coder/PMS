@@ -218,7 +218,7 @@ export function NoteEditor({ id, studyBasePath, studyCategory }) {
                 <div className="sm:col-span-2">
                   <SlugField value={form.slug} onChange={(v) => setField('slug', v)} suggestion={form.title?.en} prefix={classSlug ? `/${classSlug}/${subjectSlug || 'maths'}/notes/` : undefined} />
                 </div>
-                <L10nField className="sm:col-span-3" label={uiText("Title")} required value={form.title} onChange={(v) => setField('title', v)} placeholder={uiText("Coordinate Geometry Notes / निर्देशांक ज्यामिति नोट्स")} />
+                <L10nField className="sm:col-span-3" label={uiText("Title (optional)")} value={form.title} onChange={(v) => setField('title', v)} placeholder={uiText("Coordinate Geometry Notes / निर्देशांक ज्यामिति नोट्स")} />
                 <L10nField className="sm:col-span-3" label={uiText("Short description / Summary")} multiline rows={2} value={form.summary} onChange={(v) => setField('summary', v)} />
               </div>
             </Panel>
@@ -349,7 +349,7 @@ export function ImportantQuestionEditor({ id, studyBasePath }) {
       class: studyBasePath ? null : params.get('class') || null,
       chapter: studyBasePath ? null : params.get('chapter') || null,
       book: studyBasePath ? null : params.get('book') || null,
-      category: ({ 'sample-papers': 'sample_paper', 'extra-questions': 'extra_questions' })[params.get('category')] || params.get('category') || IQ_DEFAULTS.category,
+      category: ({ 'sample-papers': 'sample_paper', 'extra-questions': 'sample_paper' })[params.get('category')] || params.get('category') || IQ_DEFAULTS.category,
       academicSession: params.get('session') || IQ_DEFAULTS.academicSession,
       year: params.get('year') ? Number(params.get('year')) : IQ_DEFAULTS.year,
     },
@@ -427,7 +427,6 @@ export function ImportantQuestionEditor({ id, studyBasePath }) {
                   options={[
                     { value: 'pyq', get label() { return uiText("Previous Year Question (PYQ)"); } },
                     { value: 'sample_paper', get label() { return uiText("CBSE Sample Paper"); } },
-                    { value: 'extra_questions', get label() { return uiText("CBSE Extra Questions"); } },
                     { value: 'vvi', get label() { return uiText("VVI / Board Special"); } },
                     { value: 'syllabus', get label() { return uiText("Maths Syllabus"); } },
                     { value: 'general', get label() { return uiText("General"); } },
@@ -538,8 +537,7 @@ function ScopedFields({ editor, important }) {
   const keys = important
     ? ['questionCategory', 'studyClass', 'studyChapter', 'studyTopic', 'questionSet']
     : studyKeys.slice(0, 3);
-  const required = important ? ['studyClass', 'questionCategory', 'questionSet'] :
-    editor.form.category === 'formula_sheet' ? ['studyClass'] : ['studyClass', 'studyChapter'];
+  const required = ['studyClass'];
   return <StudyPlacement module={important ? 'important-questions' : 'notes-formulas'} values={editor.form}
     keys={keys} required={required} onChange={(key, value) => editor.setForm(current => {
       const next = { ...current, [key]: value };

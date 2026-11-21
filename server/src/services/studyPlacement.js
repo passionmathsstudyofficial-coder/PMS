@@ -22,12 +22,11 @@ export async function validateStudyPlacement(doc) {
   if (doc.studyTopic && (!doc.studyChapter || String(topic?.studyChapter) !== String(doc.studyChapter))) throw new ApiError(400, 'The topic belongs to a different chapter.');
   if (model === 'StudyChapter' || model === 'QuestionSet') return;
   if (doc.class || doc.chapter || doc.topic || doc.book || doc.subject) throw new ApiError(400, 'CMS placement cannot be combined with legacy placement.');
-  if (model === 'Note' && !['ncert_notes', 'formula_sheet'].includes(doc.category)) throw new ApiError(400, 'Select notes or formula sheet for this CMS.');
-  if (model === 'Note' && !doc.studyChapter && doc.category !== 'formula_sheet') throw new ApiError(400, 'Select a chapter for this note.');
+  if (model === 'Note' && doc.category && !['ncert_notes', 'formula_sheet'].includes(doc.category)) throw new ApiError(400, 'Select notes or formula sheet for this CMS.');
   if (model === 'ImportantQuestion') {
-    if (!doc.questionCategory || !set) throw new ApiError(400, 'Select a question category and set.');
-    if (String(set.studyClass) !== String(doc.studyClass) || String(set.questionCategory) !== String(doc.questionCategory) ||
-        (set.studyChapter && String(set.studyChapter) !== String(doc.studyChapter))) {
+    if (set && (String(set.studyClass) !== String(doc.studyClass) ||
+        (doc.questionCategory && String(set.questionCategory) !== String(doc.questionCategory)) ||
+        (set.studyChapter && doc.studyChapter && String(set.studyChapter) !== String(doc.studyChapter)))) {
       throw new ApiError(400, 'The question set must match the selected category, class and chapter.');
     }
   }

@@ -25,7 +25,8 @@ import { adminUrl } from '@/lib/config';
 export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   useUiLanguage();
   const params = useParams();
-  const activeCategory = fixedCategory || params.category || 'pyq';
+  const rawCategory = fixedCategory || params.category || 'pyq';
+  const activeCategory = rawCategory === 'extra-questions' ? 'sample-papers' : rawCategory;
 
   const [questions, setQuestions] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -52,13 +53,11 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   const CATEGORY_NAMES = {
     pyq: 'Previous Year Questions (PYQ)',
     'sample-papers': 'CBSE Sample Papers',
-    'extra-questions': 'CBSE Extra Questions',
     vvi: 'VVI Questions (Board Special)',
     syllabus: 'Maths Syllabus Resources',
   };
   const resourceType = activeCategory === 'pyq' ? 'previous_year_paper'
     : activeCategory === 'sample-papers' ? 'sample_paper'
-    : activeCategory === 'extra-questions' ? 'extra_questions'
     : activeCategory === 'syllabus' ? 'syllabus'
     : 'important_questions';
 
@@ -90,9 +89,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     if (!selectedClass?._id) return;
     setLoading(true);
     try {
-      const dbCat = activeCategory === 'sample-papers' ? 'sample_paper'
-        : activeCategory === 'extra-questions' ? 'extra_questions'
-        : activeCategory;
+      const dbCat = activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory;
       const res = await get('/content/important-questions', {
         scope: 'admin',
         class: selectedClass._id,
@@ -117,9 +114,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     e.preventDefault();
     if (!selectedClass?._id) return;
     try {
-      const dbCat = activeCategory === 'sample-papers' ? 'sample_paper'
-        : activeCategory === 'extra-questions' ? 'extra_questions'
-        : activeCategory;
+      const dbCat = activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory;
       const payload = {
         title: form.title,
         text: form.text,
@@ -175,7 +170,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
 
   const handleEditLanding = async () => {
     try {
-      const key = `study-materials/${activeCategory === 'sample-papers' ? 'cbse-sample-papers' : activeCategory === 'extra-questions' ? 'cbse-extra-questions' : activeCategory === 'vvi' ? 'vvi-questions' : activeCategory === 'syllabus' ? 'maths-syllabus' : 'previous-year-questions'}`;
+      const key = `study-materials/${activeCategory === 'sample-papers' ? 'cbse-sample-papers' : activeCategory === 'vvi' ? 'vvi-questions' : activeCategory === 'syllabus' ? 'maths-syllabus' : 'previous-year-questions'}`;
       const res = await post('/content/landing-pages/ensure', { landingKey: key });
       if (res.item?._id) {
         window.location.href = adminUrl(`pages/${res.item._id}`);
@@ -370,19 +365,18 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">{uiText("Question Text (LaTeX formulas: $...$) *")}</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Question Text (LaTeX formulas: $...$)")}</label>
                 <textarea
                   rows={3}
                   placeholder={uiText("e.g. Find the roots of the quadratic equation: $2x^2 - 7x + 3 = 0$")}
                   value={form.text.en}
                   onChange={(e) => setForm({ ...form, text: { ...form.text, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
-                  required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">{uiText("Step-by-Step Mathematical Solution *")}</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Step-by-Step Mathematical Solution")}</label>
                 <textarea
                   rows={6}
                   placeholder={uiTemplate`Step 1: Compare with $ax^2 + bx + c = 0$
@@ -393,7 +387,6 @@ $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$`}
                   value={form.solutionText.en}
                   onChange={(e) => setForm({ ...form, solutionText: { ...form.solutionText, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm font-mono text-xs"
-                  required
                 />
               </div>
 

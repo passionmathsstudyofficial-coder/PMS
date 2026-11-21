@@ -149,8 +149,7 @@ async function seed() {
       isVisible: true,
       children: [
         { label: { hi: 'पिछले वर्षों के प्रश्न (PYQ)', en: 'Previous Year Questions (PYQ)' }, url: '/study-materials/previous-year-questions', newTab: false, isVisible: true },
-        { label: { hi: 'CBSE सैंपल पेपर्स', en: 'Sample Papers' }, url: '/study-materials/cbse-sample-papers', newTab: false, isVisible: true },
-        { label: { hi: 'CBSE अतिरिक्त प्रश्न', en: 'CBSE Extra Questions' }, url: '/study-materials/cbse-extra-questions', newTab: false, isVisible: true },
+        { label: { hi: 'CBSE सैंपल पेपर्स', en: 'CBSE Sample Papers' }, url: '/study-materials/cbse-sample-papers', newTab: false, isVisible: true },
         { label: { hi: 'अति महत्वपूर्ण प्रश्न (बोर्ड विशेष)', en: 'VVI Questions (Board Special)' }, url: '/study-materials/vvi-questions', newTab: false, isVisible: true },
         { label: { hi: 'गणित पाठ्यक्रम', en: 'Maths Syllabus' }, url: '/study-materials/maths-syllabus', newTab: false, isVisible: true },
       ],

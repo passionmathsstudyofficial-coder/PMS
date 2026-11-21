@@ -349,14 +349,13 @@ export default function NotesManagerPage({ fixedCategory }) {
               </div>
 
               <div>
-                <label className="text-xs font-semibold block mb-1">{uiText("Note Title (English) *")}</label>
+                <label className="text-xs font-semibold block mb-1">{uiText("Note Title (English)")}</label>
                 <input
                   type="text"
                   placeholder={uiText("e.g. Fundamental Theorem of Arithmetic & Proofs")}
                   value={form.title.en}
                   onChange={(e) => setForm({ ...form, title: { ...form.title, en: e.target.value } })}
                   className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm"
-                  required
                 />
               </div>
 

@@ -332,16 +332,6 @@ export const STUDY_MATERIAL_CATEGORIES = [
     icon: 'FileSpreadsheet',
   },
   {
-    slug: 'cbse-extra-questions',
-    type: 'extra_questions',
-    name: { hi: 'CBSE अतिरिक्त अभ्यास प्रश्न', en: 'CBSE Extra Questions' },
-    shortDesc: {
-      hi: 'कक्षा और अध्याय-वार अतिरिक्त महत्वपूर्ण प्रश्न, हॉट्स (HOTS) और चरणबद्ध हल।',
-      en: 'Class-wise and chapter-wise extra practice questions with detailed step-by-step solutions.',
-    },
-    icon: 'HelpCircle',
-  },
-  {
     slug: 'vvi-questions',
     type: 'important_questions',
     name: { hi: 'VVI प्रश्न (बोर्ड विशेष)', en: 'VVI Questions (Board Special)' },
@@ -360,16 +350,6 @@ export const STUDY_MATERIAL_CATEGORIES = [
       en: 'Latest CBSE Mathematics syllabus, unit-wise marks distribution, and curriculum downloads.',
     },
     icon: 'GraduationCap',
-  },
-  {
-    slug: 'extra-questions',
-    type: 'extra_questions',
-    name: { hi: 'अतिरिक्त अभ्यास प्रश्न', en: 'Extra Practice Questions' },
-    shortDesc: {
-      hi: 'परीक्षा तैयारी और अवधारणा सुदृढ़ीकरण हेतु अतिरिक्त अभ्यास प्रश्न और हल।',
-      en: 'Extra practice questions with step-by-step solutions for deep mathematical clarity.',
-    },
-    icon: 'HelpCircle',
   },
   {
     slug: 'important-questions',
@@ -545,7 +525,8 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
   const ALIASES = {
     pyq: 'previous-year-questions',
     syllabus: 'maths-syllabus',
-    'extra-questions': 'cbse-extra-questions',
+    'extra-questions': 'cbse-sample-papers',
+    'cbse-extra-questions': 'cbse-sample-papers',
     'sample-papers': 'cbse-sample-papers',
     'important-questions': 'vvi-questions',
   };
@@ -630,7 +611,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
   if (categorySlug === 'cbse-sample-papers') {
     const classFilter = cls ? { class: cls._id } : {};
     const [samplePapers, markingSchemes, sampleQuestions] = await Promise.all([
-      Resource.find(vis(Resource, preview, { resourceType: { $in: ['cbse_sample_papers', 'sample_paper', 'practice_paper'] }, ...classFilter }))
+      Resource.find(vis(Resource, preview, { resourceType: { $in: ['cbse_sample_papers', 'sample_paper', 'practice_paper', 'extra_questions'] }, ...classFilter }))
         .sort({ createdAt: -1 })
         .populate([
           { path: 'class', select: 'number name slug' },
@@ -645,7 +626,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
           { path: 'file', select: MEDIA_SELECT },
         ])
         .lean(),
-      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: 'sample_paper', ...classFilter }))
+      ImportantQuestion.find(vis(ImportantQuestion, preview, { studyClass: null, category: { $in: ['sample_paper', 'extra_questions'] }, ...classFilter }))
         .sort({ sortOrder: 1, createdAt: -1 })
         .populate([{ path: 'chapter', select: 'number title slug' }, ...blockPopulate(), ...studyMediaPopulate])
         .lean(),

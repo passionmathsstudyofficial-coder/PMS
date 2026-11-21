@@ -72,12 +72,15 @@ function hasOptionContent(value) {
 }
 
 importantQuestionSchema.pre('validate', async function buildImportantQuestion() {
-  if (!this.slug) {
+  const hasCustomSlug = Boolean(this.slug && this.slug !== 'important-question');
+  if (!hasCustomSlug || (!this.title?.en && !this.title?.hi && !this.text?.en && !this.text?.hi)) {
     const base = l10nText({ en: this.title?.en }) || l10nText({ en: this.text?.en }).slice(0, 60) || 'important-question';
-    this.slug = `${slugify(base, 'important-question')}-${this._id.toString().slice(-5)}`;
+    const idSuffix = this._id ? this._id.toString().slice(-6) : Math.random().toString(36).slice(-6);
+    this.slug = `${slugify(base, 'important-question')}-${idSuffix}`;
+  } else {
+    this.slug = slugify(this.slug, 'important-question');
   }
-  this.slug = slugify(this.slug, 'important-question');
-  if (this.status === 'published' && this.questionType === 'mcq' && (this.studyClass || this.mcqOptions.length)) {
+  if (this.status === 'published' && this.questionType === 'mcq' && this.mcqOptions?.length > 0 && this.mcqOptions.some(option => hasOptionContent(option.text))) {
     const filled = this.mcqOptions.filter(option => hasOptionContent(option.text));
     if (filled.length < 4 || filled.length !== this.mcqOptions.length || filled.filter(option => option.correct).length !== 1) {
       this.invalidate('mcqOptions', 'Provide at least four options and choose exactly one correct answer.');

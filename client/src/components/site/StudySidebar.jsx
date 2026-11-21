@@ -24,7 +24,6 @@ export const STUDY_MATERIAL_LINKS = [
   { slug: 'ncert-books', label: { hi: 'NCERT पुस्तकें', en: 'NCERT Books' }, icon: BookOpen },
   { slug: 'ncert-notes', label: { hi: 'NCERT नोट्स व सूत्र', en: 'NCERT Notes' }, icon: FileText },
   { slug: 'cbse-sample-papers', label: { hi: 'CBSE सैंपल पेपर्स', en: 'CBSE Sample Papers' }, icon: FileSpreadsheet },
-  { slug: 'extra-questions', label: { hi: 'अतिरिक्त अभ्यास प्रश्न', en: 'Extra Questions' }, icon: HelpCircle },
   { slug: 'important-questions', label: { hi: 'महत्वपूर्ण प्रश्न (बोर्ड)', en: 'Important Questions' }, icon: Sparkles },
   { slug: 'english-summaries', label: { hi: 'अंग्रेजी / कॉन्सेप्ट सारांश', en: 'English Summaries' }, icon: AlignLeft },
   { slug: 'syllabus', label: { hi: 'पाठ्यक्रम (Syllabus)', en: 'CBSE Syllabus' }, icon: GraduationCap },
