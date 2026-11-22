@@ -33,7 +33,7 @@ export default function StudyCmsPublicPage({ data, breadcrumbs, preview }) {
       {record && <article className="space-y-4">
         {[record.thumbnail, record.image, record.featuredImage].filter(Boolean).map((media, index) => <Figure key={index} media={media} alt={t(media.alt)} />)}
         {kind === 'question' && <p className="text-sm text-muted-foreground">
-          {[record.board, record.examType, record.year, record.marks != null && `${record.marks} marks`, record.difficulty].filter(Boolean).join(' · ')}
+          {[(record.board || 'CBSE') + (record.year ? ` ${record.year}` : ''), record.examType, record.marks != null && `${record.marks} marks`].filter(Boolean).join(' · ')}
         </p>}
         <RichContent html={t(record.introduction)} />
         <RichContent html={t(record.text || record.content)} />

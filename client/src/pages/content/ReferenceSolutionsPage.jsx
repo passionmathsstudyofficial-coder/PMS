@@ -85,6 +85,14 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
           if (label.includes('Content not available') || label.includes('उपलब्ध नहीं') || label.includes('सामग्री उपलब्ध नहीं')) {
             label = chapter ? (cleanChTitle(chapter.title?.en) || cleanChTitle(chapter.title?.hi) || `Chapter ${chapter.number}`) : '';
           }
+        } else if (label && typeof label === 'object') {
+          const lEn = cleanChTitle(label.en);
+          const lHi = cleanChTitle(label.hi);
+          if (!lEn && !lHi) {
+            label = chapter ? { en: `Chapter ${chapter.number}`, hi: `अध्याय ${chapter.number}` } : '';
+          } else {
+            label = { en: lEn || `Chapter ${chapter?.number || ''}`, hi: lHi || `अध्याय ${chapter?.number || ''}` };
+          }
         }
         return { ...crumb, label };
       })
@@ -650,7 +658,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => openPdf(chapter.pdfUrl || chapter.pdfFile?.url, `${t(chapter.title)} PDF`)}>
+                    <Button size="sm" variant="outline" onClick={() => openPdf(chapter.pdfUrl || chapter.pdfFile?.url, `${cleanChTitle(t(chapter.title)) || cleanChTitle(chapter.title?.en) || cleanChTitle(chapter.title?.hi) || `Chapter ${chapter.number}`} PDF`)}>
                       <Eye className="mr-1.5 size-3.5" />{uiText("View PDF")}</Button>
                     <Button size="sm" variant="default" asChild>
                       <a href={documentDownloadUrl(resolveMediaUrl(chapter.pdfFile?.url || chapter.pdfUrl))} download target="_blank" rel="noopener noreferrer">

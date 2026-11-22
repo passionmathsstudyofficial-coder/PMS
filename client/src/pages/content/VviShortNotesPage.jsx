@@ -10,7 +10,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Chip, DifficultyBadge } from '@/components/content/badges.jsx';
+import { Chip } from '@/components/content/badges.jsx';
 import { RichContent } from '@/components/content/RichContent.jsx';
 import { SolutionRenderer } from '@/components/content/SolutionRenderer.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
@@ -151,18 +151,11 @@ export default function VviShortNotesPage({ data, breadcrumbs }) {
             {questions.map((q, idx) => (
               <article key={q._id} className="overflow-hidden rounded-2xl border bg-card shadow-xs">
                 <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/10 px-4 py-2.5">
-                  <span className="grid size-5.5 place-items-center rounded-md bg-brand text-xs font-bold text-white">
-                    {idx + 1}
-                  </span>
-                  <span className="text-xs font-bold text-foreground">
-                    {term('question')} {idx + 1}
-                  </span>
-                  {q.marks && (
-                    <span className="rounded-full border bg-background px-2 py-0.5 text-[10px] font-semibold">
-                      {q.marks} {term('marks')}
+                  {(q.year || q.board) && (
+                    <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
+                      {q.board || 'CBSE'} {q.year || ''}
                     </span>
                   )}
-                  {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
                   {q.chapter && (
                     <span className="ml-auto text-xs font-semibold text-brand">{uiText("Ch ")}{q.chapter.number}: {t(q.chapter.title)}
                     </span>

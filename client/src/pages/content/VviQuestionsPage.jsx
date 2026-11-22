@@ -12,7 +12,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Chip, DifficultyBadge } from '@/components/content/badges.jsx';
+import { Chip } from '@/components/content/badges.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
 import { RichContent } from '@/components/content/RichContent.jsx';
 import { SolutionRenderer } from '@/components/content/SolutionRenderer.jsx';
@@ -194,20 +194,14 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
                   className="overflow-hidden rounded-2xl border border-amber-500/20 bg-card shadow-xs transition hover:border-brand/40"
                 >
                   <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/10 px-4 py-3 sm:px-5">
-                    <span className="grid size-6 place-items-center rounded-md bg-brand text-xs font-extrabold text-white">
-                      {idx + 1}
-                    </span>
-                    <span className="text-xs font-bold text-foreground">
-                      {uiText("VVI Question")} {idx + 1}
-                    </span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-extrabold text-red-600">
-                      <Flame className="size-3" />{uiText(" Board Special")}</span>
-                    {q.marks && (
-                      <span className="rounded-full border bg-background px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                        {q.marks} {term('marks')}
+                    {(q.year || q.board) && (
+                      <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
+                        {q.board || 'CBSE'} {q.year || ''}
                       </span>
                     )}
-                    {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
+                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-extrabold text-red-600">
+                      <Flame className="size-3" />{uiText(" Board Special")}
+                    </span>
                     {q.chapter && (
                       <span className="ml-auto text-xs font-semibold text-brand">
                         {term('chapter')} {q.chapter.number}: {t(q.chapter.title)}

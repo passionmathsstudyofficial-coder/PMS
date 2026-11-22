@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { toast } from '@/lib/notifications.jsx';
 import { Button } from '@/components/ui/button';
-import { Chip, DifficultyBadge } from '@/components/content/badges.jsx';
+import { Chip } from '@/components/content/badges.jsx';
 import { Callout } from '@/components/content/Callout.jsx';
 import { Figure } from '@/components/content/Figure.jsx';
 import { toViewerImage, useImageViewer } from '@/components/content/ImageViewer.jsx';
@@ -29,16 +29,16 @@ function ImportantQuestionCard({ item, index }) {
   return (
     <article id={item.slug} className="scroll-mt-24 overflow-hidden rounded-2xl border bg-card">
       <header className="flex flex-wrap items-center gap-2 border-b bg-saffron-soft/50 px-4 py-2.5 sm:px-5">
-        <Star className="size-4 text-warning" aria-hidden="true" />
-        <h2 className="text-sm font-bold">
-          {t(item.title) || `${term('question')} ${index + 1}`}
-        </h2>
-        {item.marks ? (
-          <span className="rounded-full border bg-background px-2 py-0.5 text-[11px] font-semibold">
-            {item.marks} {term('marks')}
+        {(item.year || item.board) && (
+          <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
+            {item.board || 'CBSE'} {item.year || ''}
           </span>
-        ) : null}
-        <DifficultyBadge difficulty={item.difficulty} />
+        )}
+        {t(item.title) && !/^(question|प्रश्न)\s*\d+/i.test(t(item.title).trim()) && (
+          <h2 className="text-sm font-bold">
+            {t(item.title)}
+          </h2>
+        )}
         {item.source && <span className="text-[11px] text-muted-foreground">{item.source}</span>}
         {item.chapter && (
           <Link to={item.chapter.url} className="ml-auto text-xs font-semibold text-brand hover:underline">

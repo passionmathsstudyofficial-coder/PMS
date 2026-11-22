@@ -17,6 +17,7 @@ import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 import { documentDownloadUrl } from '@/lib/media';
 import { useL10n } from '@/lib/i18n';
+import { useTerm } from '@/lib/site';
 import { useUiLanguage } from '@/lib/useUiTranslation.jsx';
 import { uiText } from '@/lib/uiLanguage.js';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ import { ContentHeader } from './ContentHeader.jsx';
 export default function SamplePapersPage({ data, breadcrumbs }) {
   useUiLanguage();
   const t = useL10n();
+  const term = useTerm();
 
   const {
     category,
@@ -187,13 +189,33 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
           )}
         </section>
 
-        {questions.length > 0 && <section className="mb-12 space-y-4">
-          <h2 className="text-lg font-bold">{uiText('Important Questions')}</h2>
-          {questions.map(question => <article key={question._id} className="rounded-2xl border bg-card p-5">
-            <h3 className="mb-3 font-bold">{t(question.title)}</h3>
-            <StudyArticleContent record={question} question />
-          </article>)}
-        </section>}
+        {questions.length > 0 && (
+          <section className="mb-12 space-y-4">
+            <h2 className="text-lg font-bold">{uiText('Important Questions')}</h2>
+            {questions.map((question) => (
+              <article key={question._id} className="overflow-hidden rounded-2xl border bg-card shadow-xs">
+                <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/5 px-4 py-3 sm:px-5">
+                  {(question.year || question.board) && (
+                    <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
+                      {question.board || 'CBSE'} {question.year || ''}
+                    </span>
+                  )}
+                  {question.chapter && (
+                    <span className="ml-auto text-xs font-semibold text-brand">
+                      {term('chapter')} {question.chapter.number}: {t(question.chapter.title)}
+                    </span>
+                  )}
+                </header>
+                <div className="space-y-4 p-5">
+                  {t(question.title) && !/^(question|प्रश्न)\s*\d+/i.test(t(question.title).trim()) && (
+                    <h3 className="font-bold">{t(question.title)}</h3>
+                  )}
+                  <StudyArticleContent record={question} question />
+                </div>
+              </article>
+            ))}
+          </section>
+        )}
 
         {/* Marking Schemes Section */}
         {markingSchemes.length > 0 && (

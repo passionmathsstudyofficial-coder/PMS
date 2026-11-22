@@ -153,8 +153,8 @@ export async function publicReferenceBooks(preview = false) {
     .map(book => {
       const canonical = CANONICAL_REF_TITLES[book.slug];
       const title = {
-        en: book.title?.en || canonical?.en || (typeof book.title === 'string' ? book.title : '') || book.author || book.name,
-        hi: book.title?.hi || canonical?.hi || book.title?.en || canonical?.en || book.author || book.name,
+        en: canonical?.en || (book.title?.en && compatibleText(book.title.en, 'en') ? book.title.en : '') || (typeof book.title === 'string' && compatibleText(book.title, 'en') ? book.title : '') || book.author || book.name,
+        hi: canonical?.hi || (book.title?.hi && compatibleText(book.title.hi, 'hi') ? book.title.hi : '') || book.author || book.name,
       };
       const author = book.author || (book.slug === 'rd-sharma' ? 'Dr. R.D. Sharma' : book.slug === 'kc-sinha-maths' ? 'Prof. K.C. Sinha' : canonical?.en || '');
       const bookEntries = entries.filter(entry => String(entry.book) === String(book._id) && numbers.has(entry.class?.number));

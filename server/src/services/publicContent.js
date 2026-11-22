@@ -1059,8 +1059,8 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
       const existing = allBooksMap.get(b.slug) || {};
       const canonical = CANONICAL_REF_TITLES[b.slug];
       const title = {
-        en: b.title?.en || canonical?.en || (typeof b.title === 'string' ? b.title : '') || b.author || b.name,
-        hi: b.title?.hi || canonical?.hi || b.title?.en || canonical?.en || b.author || b.name,
+        en: canonical?.en || (b.title?.en && compatibleText(b.title.en, 'en') ? b.title.en : '') || (typeof b.title === 'string' && compatibleText(b.title, 'en') ? b.title : '') || b.author || b.name,
+        hi: canonical?.hi || (b.title?.hi && compatibleText(b.title.hi, 'hi') ? b.title.hi : '') || b.author || b.name,
       };
       const author = b.author || (b.slug === 'rd-sharma' ? 'Dr. R.D. Sharma' : b.slug === 'kc-sinha-maths' ? 'Prof. K.C. Sinha' : canonical?.en || '');
       allBooksMap.set(b.slug, {
@@ -1325,10 +1325,10 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
 
   const chLabelEn = (chapter.title?.en && compatibleText(chapter.title.en, 'en'))
     ? chapter.title.en
-    : (chapter.title?.hi || (typeof chapter.title === 'string' ? chapter.title : '') || `Chapter ${chapter.number}`);
+    : `Chapter ${chapter.number}`;
   const chLabelHi = (chapter.title?.hi && compatibleText(chapter.title.hi, 'hi'))
     ? chapter.title.hi
-    : (chapter.title?.en || (typeof chapter.title === 'string' ? chapter.title : '') || `अध्याय ${chapter.number}`);
+    : `अध्याय ${chapter.number}`;
   const chapterCrumb = { label: { en: chLabelEn, hi: chLabelHi }, url: urls.referenceChapter(book, cls, chapter, matchedPart || chapter.part) };
   const chapterExercises = chapter.exercises || [];
 

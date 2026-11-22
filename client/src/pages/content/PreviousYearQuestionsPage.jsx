@@ -14,7 +14,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Chip, DifficultyBadge } from '@/components/content/badges.jsx';
+import { Chip } from '@/components/content/badges.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
 import { RichContent } from '@/components/content/RichContent.jsx';
 import { SolutionRenderer } from '@/components/content/SolutionRenderer.jsx';
@@ -267,23 +267,11 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                     className="overflow-hidden rounded-2xl border bg-card shadow-xs"
                   >
                     <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/5 px-4 py-3 sm:px-5">
-                      <span className="grid size-6 place-items-center rounded-md bg-brand text-xs font-bold text-white">
-                        {idx + 1}
-                      </span>
-                      <span className="text-xs font-bold text-foreground">
-                        {term('question')} {idx + 1}
-                      </span>
-                      {q.year && (
+                      {(q.year || q.board) && (
                         <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
-                          CBSE {q.year}
+                          {q.board || 'CBSE'} {q.year || ''}
                         </span>
                       )}
-                      {q.marks && (
-                        <span className="rounded-full border bg-background px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                          {q.marks} {term('marks')}
-                        </span>
-                      )}
-                      {q.difficulty && <DifficultyBadge difficulty={q.difficulty} />}
                       {q.chapter && (
                         <span className="ml-auto text-xs font-semibold text-brand">
                           {term('chapter')} {q.chapter.number}: {t(q.chapter.title)}

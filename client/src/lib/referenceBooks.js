@@ -127,9 +127,24 @@ export function getReferenceBooks(site) {
 
 export function getReferenceBookDisplayTitle(book, lang = 'en', t = null) {
   if (!book) return '';
-  const canonical = CANONICAL_REF_TITLES[book.slug];
+  const rawSlug = (book.slug || '').trim().toLowerCase().replace(/[\u200B-\u200D\uFEFF]/g, '');
+  const canonical = CANONICAL_REF_TITLES[rawSlug] || CANONICAL_REF_TITLES[book.slug];
   if (canonical) {
     return lang === 'hi' ? canonical.hi : canonical.en;
+  }
+  const titleStr = typeof book.title === 'string' ? book.title : (book.title?.en || book.title?.hi || book.name || book.author || '');
+  const lower = (rawSlug + ' ' + titleStr).toLowerCase();
+  if (lower.includes('ml-aggarwal') || lower.includes('m.l. aggarwal') || lower.includes('ml aggarwal')) {
+    return lang === 'hi' ? CANONICAL_REF_TITLES['ml-aggarwal'].hi : CANONICAL_REF_TITLES['ml-aggarwal'].en;
+  }
+  if (lower.includes('rd-sharma') || lower.includes('r.d. sharma') || lower.includes('rd sharma')) {
+    return lang === 'hi' ? CANONICAL_REF_TITLES['rd-sharma'].hi : CANONICAL_REF_TITLES['rd-sharma'].en;
+  }
+  if (lower.includes('rs-aggarwal') || lower.includes('r.s. aggarwal') || lower.includes('rs aggarwal')) {
+    return lang === 'hi' ? CANONICAL_REF_TITLES['rs-aggarwal'].hi : CANONICAL_REF_TITLES['rs-aggarwal'].en;
+  }
+  if (lower.includes('kc-sinha') || lower.includes('k.c. sinha') || lower.includes('kc sinha')) {
+    return lang === 'hi' ? CANONICAL_REF_TITLES['kc-sinha-maths'].hi : CANONICAL_REF_TITLES['kc-sinha-maths'].en;
   }
   const translated = t ? t(book.title) : '';
   const isInvalid = !translated || translated.includes('Content not available') || translated.includes('उपलब्ध नहीं') || translated.includes('सामग्री उपलब्ध नहीं');
