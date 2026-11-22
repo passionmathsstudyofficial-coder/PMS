@@ -15,6 +15,7 @@ import {
   Announcement,
   Book,
   BookClass,
+  BookPart,
   Chapter,
   ClassLevel,
   Exercise,
@@ -109,6 +110,47 @@ router.use('/book-classes', crudRouter(BookClass, {
   },
 }));
 
+router.use('/book-parts', crudRouter(BookPart, {
+  entityType: 'BookPart',
+  defaultSort: { sortOrder: 1, number: 1 },
+  adminFilters: q => ({
+    ...idFilter(q, ['book', 'class']),
+    ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+    ...(q.status ? { status: String(q.status) } : {}),
+  }),
+  publicFilters: q => ({
+    ...idFilter(q, ['book', 'class']),
+    ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
+  }),
+  populate: {
+    list: [{ path: 'book', select: 'title slug' }, { path: 'class', select: 'number name slug' }],
+    detail: [{ path: 'book', select: 'title slug' }, { path: 'class', select: 'number name slug' }],
+  },
+  beforeWrite: async (doc) => {
+    if (!doc.title?.en && !doc.title?.hi) {
+      doc.title = { en: `Part ${doc.number}`, hi: `भाग ${doc.number}` };
+    }
+  },
+  beforeDelete: async (doc) => {
+    await assertNoChildren(Chapter, { part: doc._id }, 'This Part/Volume still has {count} chapters. Move or delete them first.');
+  },
+  extend: (r) => {
+    r.get('/:id/chapters', optionalAuth, async (req, res) => {
+      if (!isObjectId(req.params.id)) throw new ApiError(400, 'Invalid part id');
+      const admin = req.query.scope === 'admin' && req.admin && hasPermission(req.admin.role, 'content:read');
+      const filter = {
+        part: req.params.id,
+        ...(req.query.academicSession ? { academicSession: String(req.query.academicSession) } : {}),
+      };
+      const items = await Chapter.find(admin ? filter : { ...Chapter.publicFilter(filter), ...await publicParentFilter(Chapter) })
+        .sort({ sortOrder: 1, number: 1 })
+        .populate([{ path: 'part', select: 'number title slug' }])
+        .lean();
+      res.json({ items, total: items.length });
+    });
+  },
+}));
+
 router.use(
   '/classes',
   crudRouter(ClassLevel, {
@@ -163,22 +205,25 @@ router.use(
     entityType: 'Chapter',
     defaultSort: { sortOrder: 1, number: 1 },
     adminFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'book']),
+      ...idFilter(q, ['class', 'subject', 'book', 'part']),
       ...(q.book === 'none' ? { book: null } : {}),
+      ...(q.part === 'none' || q.part === 'null' ? { part: null } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'book']),
+      ...idFilter(q, ['class', 'subject', 'book', 'part']),
       ...(q.book === 'none' ? { book: null } : {}),
+      ...(q.part === 'none' || q.part === 'null' ? { part: null } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     }),
     populate: {
-      list: [classPopulate, subjectPopulate, { path: 'book', select: 'title author slug' }],
+      list: [classPopulate, subjectPopulate, { path: 'book', select: 'title author slug' }, { path: 'part', select: 'number title slug' }],
       detail: [
         classPopulate,
         subjectPopulate,
         { path: 'book', select: 'title author slug' },
+        { path: 'part', select: 'number title slug' },
         { path: 'image', select: MEDIA_SELECT },
         { path: 'featuredImage', select: MEDIA_SELECT },
         { path: 'introVideo', select: VIDEO_SELECT },
@@ -188,6 +233,16 @@ router.use(
       ],
     },
     beforeWrite: async (doc) => {
+      if (doc.part === '' || doc.part === 'none' || doc.part === 'null') {
+        doc.part = null;
+      }
+      if (doc.part) {
+        const partDoc = await BookPart.findById(doc.part).select('book class').lean();
+        if (partDoc) {
+          if (!doc.book && partDoc.book) doc.book = partDoc.book;
+          if (!doc.class && partDoc.class) doc.class = partDoc.class;
+        }
+      }
       if (!doc.subject && doc.class) {
         const cls = await ClassLevel.findById(doc.class).select('subjects').lean();
         if (cls?.subjects?.length) doc.subject = cls.subjects[0];
@@ -250,6 +305,27 @@ router.use(
         cache.invalidate();
         await logActivity(req, { action: 'create', entityType: 'Exercise', entityId: exercise._id, entityLabel: labelOf(exercise) });
         res.status(201).json(exercise);
+      });
+
+      r.post('/:id/move-part', requireAuth, requirePermission('content:write'), async (req, res) => {
+        if (!isObjectId(req.params.id)) throw new ApiError(400, 'Invalid chapter id');
+        const chapter = await Chapter.findById(req.params.id);
+        if (!chapter) throw new ApiError(404, 'Chapter not found');
+        const targetPartId = req.body?.partId || req.body?.part;
+        let newPart = null;
+        if (targetPartId && targetPartId !== 'none' && targetPartId !== 'null') {
+          if (!isObjectId(targetPartId)) throw new ApiError(400, 'Invalid target part id');
+          newPart = await BookPart.findById(targetPartId);
+          if (!newPart) throw new ApiError(404, 'Target Part/Volume not found');
+          if (String(newPart.book) !== String(chapter.book) || String(newPart.class) !== String(chapter.class)) {
+            throw new ApiError(400, 'Target Part belongs to a different book or class');
+          }
+        }
+        chapter.part = newPart ? newPart._id : null;
+        await chapter.save();
+        cache.invalidate();
+        await logActivity(req, { action: 'update', entityType: 'Chapter', entityId: chapter._id, entityLabel: labelOf(chapter), meta: { movePart: chapter.part } });
+        res.json({ ok: true, chapter: await Chapter.findById(chapter._id).populate([{ path: 'part', select: 'number title slug' }]).lean() });
       });
     },
   }),

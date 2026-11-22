@@ -103,6 +103,23 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     isVisible: true,
   });
 
+  // Parts / Volumes State
+  const [parts, setParts] = useState([]);
+  const [selectedPartFilter, setSelectedPartFilter] = useState('all');
+  const [loadingParts, setLoadingParts] = useState(false);
+  const [partModal, setPartModal] = useState(false);
+  const [editingPartId, setEditingPartId] = useState(null);
+  const [partForm, setPartForm] = useState({
+    number: 1,
+    title: { en: '', hi: '' },
+    slug: '',
+    shortDescription: { en: '', hi: '' },
+    status: 'published',
+    isVisible: true,
+  });
+  const [movePartModal, setMovePartModal] = useState(null);
+  const [targetMovePartId, setTargetMovePartId] = useState('');
+
   const [chapterModal, setChapterModal] = useState(false);
   const [editingChapterId, setEditingChapterId] = useState(null);
   const [chapterForm, setChapterForm] = useState({
@@ -110,6 +127,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     title: { en: '', hi: '' },
     shortDescription: { en: '', hi: '' },
     status: 'published',
+    part: '',
   });
 
   const [exerciseModal, setExerciseModal] = useState(false);
@@ -231,23 +249,47 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     reloadBookClasses();
   }, [selectedBook?._id]);
 
-  // Load Chapters
+  // Load Parts & Chapters
   const reloadChapters = async () => {
     if (!selectedBook?._id || !selectedClass?._id) return;
     setLoadingChapters(true);
+    setLoadingParts(true);
     setSelectedChapter(null);
     setSelectedExercise(null);
     setExercises([]);
     setQuestions([]);
     try {
-      const res = await get('/content/chapters', {
-        scope: 'admin',
-        book: selectedBook._id,
-        class: selectedClass._id,
-        academicSession: selectedSession,
-        limit: 100,
+      const [partsRes, chRes] = await Promise.all([
+        get('/content/book-parts', {
+          scope: 'admin',
+          book: selectedBook._id,
+          class: selectedClass._id,
+          academicSession: selectedSession,
+          limit: 50,
+          sort: 'number',
+        }),
+        get('/content/chapters', {
+          scope: 'admin',
+          book: selectedBook._id,
+          class: selectedClass._id,
+          academicSession: selectedSession,
+          limit: 150,
+        }),
+      ]);
+      const partsList = (partsRes.items || []).sort((a, b) => a.number - b.number);
+      setParts(partsList);
+      const chList = (chRes.items || []).sort((a, b) => {
+        const partA = a.part?._id || a.part;
+        const partB = b.part?._id || b.part;
+        if (partA && partB && String(partA) !== String(partB)) {
+          const numA = partsList.find((p) => String(p._id) === String(partA))?.number || 0;
+          const numB = partsList.find((p) => String(p._id) === String(partB))?.number || 0;
+          if (numA !== numB) return numA - numB;
+        }
+        if (partA && !partB) return -1;
+        if (!partA && partB) return 1;
+        return a.number - b.number;
       });
-      const chList = (res.items || []).sort((a, b) => a.number - b.number);
       setChapters(chList);
       if (chList.length > 0) {
         setSelectedChapter(chList[0]);
@@ -256,6 +298,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       toast.apiError(err);
     } finally {
       setLoadingChapters(false);
+      setLoadingParts(false);
     }
   };
 
@@ -482,7 +525,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   };
 
   // CHAPTER CRUD
-  const handleOpenChapterModal = (ch = null) => {
+  const handleOpenChapterModal = (ch = null, defaultPartId = null) => {
     if (ch) {
       setEditingChapterId(ch._id);
       setChapterForm({
@@ -490,14 +533,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         title: ch.title || { en: '', hi: '' },
         shortDescription: ch.shortDescription || { en: '', hi: '' },
         status: ch.status || 'published',
+        part: ch.part?._id || ch.part || '',
       });
     } else {
+      const activePartId = defaultPartId || (selectedPartFilter !== 'all' && selectedPartFilter !== 'none' ? selectedPartFilter : '');
+      const partChapters = activePartId ? chapters.filter((c) => String(c.part?._id || c.part) === String(activePartId)) : chapters;
       setEditingChapterId(null);
       setChapterForm({
-        number: (chapters.length || 0) + 1,
+        number: (partChapters.length || 0) + 1,
         title: { en: '', hi: '' },
         shortDescription: { en: '', hi: '' },
         status: 'published',
+        part: activePartId || '',
       });
     }
     setChapterModal(true);
@@ -516,6 +563,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         subject: defaultSubject,
         academicSession: selectedSession,
         status: chapterForm.status || 'published',
+        part: chapterForm.part || null,
       };
 
       if (editingChapterId) {
@@ -530,6 +578,93 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         setSelectedChapter(created);
       }
       setChapterModal(false);
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  // PART / VOLUME CRUD
+  const handleOpenPartModal = (part = null) => {
+    if (part) {
+      setEditingPartId(part._id);
+      setPartForm({
+        number: part.number,
+        title: part.title || { en: '', hi: '' },
+        slug: part.slug || `part-${part.number}`,
+        shortDescription: part.shortDescription || { en: '', hi: '' },
+        status: part.status || 'published',
+        isVisible: part.isVisible !== false,
+      });
+    } else {
+      const nextNum = (parts.length || 0) + 1;
+      setEditingPartId(null);
+      setPartForm({
+        number: nextNum,
+        title: { en: `Part ${nextNum}`, hi: `भाग ${nextNum}` },
+        slug: `part-${nextNum}`,
+        shortDescription: { en: '', hi: '' },
+        status: 'published',
+        isVisible: true,
+      });
+    }
+    setPartModal(true);
+  };
+
+  const handleSavePart = async (e) => {
+    e.preventDefault();
+    if (!selectedBook?._id || !selectedClass?._id) return;
+    try {
+      const payload = {
+        number: Number(partForm.number),
+        title: partForm.title,
+        slug: partForm.slug || `part-${partForm.number}`,
+        shortDescription: partForm.shortDescription,
+        book: selectedBook._id,
+        class: selectedClass._id,
+        academicSession: selectedSession,
+        status: partForm.status || 'published',
+        isVisible: partForm.isVisible !== false,
+      };
+
+      if (editingPartId) {
+        const updated = await put(`/content/book-parts/${editingPartId}`, payload);
+        toast.success(uiText('Part / Volume updated successfully'));
+        setParts((prev) => prev.map((p) => (p._id === editingPartId ? updated : p)).sort((a, b) => a.number - b.number));
+      } else {
+        const created = await post('/content/book-parts', payload);
+        toast.success(uiText('Part / Volume created successfully'));
+        setParts((prev) => [...prev, created].sort((a, b) => a.number - b.number));
+      }
+      setPartModal(false);
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  const handleDeletePart = async (part) => {
+    const linked = chapters.filter((c) => String(c.part?._id || c.part) === String(part._id));
+    if (linked.length > 0) {
+      alert(`Cannot delete Part ${part.number} (${part.title?.en || ''}) because it contains ${linked.length} chapters. Please move or delete those chapters first.`);
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to delete Part ${part.number}: "${part.title?.en || ''}"?`)) return;
+    try {
+      await del(`/content/book-parts/${part._id}`);
+      toast.success(uiText('Part / Volume deleted'));
+      setParts((prev) => prev.filter((p) => p._id !== part._id));
+      if (selectedPartFilter === part._id) setSelectedPartFilter('all');
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  const handleMoveChapterPart = async (chapterId, newPartId) => {
+    try {
+      const res = await post(`/content/chapters/${chapterId}/move-part`, { partId: newPartId || null });
+      toast.success(uiText('Chapter moved to new Part / Volume'));
+      setChapters((prev) => prev.map((c) => (c._id === chapterId ? res.chapter : c)));
+      if (selectedChapter?._id === chapterId) setSelectedChapter(res.chapter);
+      setMovePartModal(null);
     } catch (err) {
       toast.apiError(err);
     }
@@ -973,6 +1108,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   const TABS = [
     { id: 'content', label: uiText('3-Column Explorer'), icon: Layers },
     { id: 'classes', label: uiText('Class Management'), icon: GraduationCap, badge: bookClasses.length || 7 },
+    { id: 'parts', label: uiText('Parts / Volumes'), icon: Layers, badge: parts.length },
     { id: 'chapters', label: uiText('Chapters'), icon: Layers, badge: chapters.length },
     { id: 'exercises', label: uiText('Exercises'), icon: ListOrdered, badge: exercises.length },
     { id: 'questions', label: uiText('Questions & Solutions'), icon: HelpCircle, badge: questions.length },
@@ -1134,22 +1270,86 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         <div className="grid gap-4 lg:grid-cols-12 min-h-[620px]">
           {/* Column 1: Chapters (col-span-3) */}
           <div className="lg:col-span-3 rounded-2xl border bg-card p-4 shadow-xs flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b mb-3">
+            <div className="flex items-center justify-between pb-3 border-b mb-2">
               <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                 <Layers className="size-3.5 text-brand" />
                 <span>{uiText('Chapters (')}{chapters.length})</span>
               </h3>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => handleOpenChapterModal(null)}
-                className="h-7 px-2 text-xs gap-1 cursor-pointer font-bold"
-              >
-                <Plus className="size-3" />
-                {uiText('Add')}
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleOpenPartModal(null)}
+                  className="h-7 px-1.5 text-[11px] gap-1 cursor-pointer font-bold"
+                  title={uiText('Add Part / Volume')}
+                >
+                  <Plus className="size-3" />
+                  {uiText('Part')}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleOpenChapterModal(null)}
+                  className="h-7 px-2 text-xs gap-1 cursor-pointer font-bold bg-brand/10 border-brand/40 text-brand"
+                  title={uiText('Add Chapter')}
+                >
+                  <Plus className="size-3" />
+                  {uiText('Add')}
+                </Button>
+              </div>
             </div>
+
+            {/* Part filter pills if parts exist */}
+            {parts.length > 0 && (
+              <div className="flex items-center gap-1 pb-2.5 mb-2 overflow-x-auto border-b">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPartFilter('all')}
+                  className={cn(
+                    'px-2 py-0.5 rounded-lg text-[10px] font-bold shrink-0 transition border cursor-pointer',
+                    selectedPartFilter === 'all'
+                      ? 'bg-brand text-white border-brand'
+                      : 'bg-muted text-muted-foreground border-transparent hover:text-foreground'
+                  )}
+                >
+                  {uiText('All')} ({chapters.length})
+                </button>
+                {parts.map((p) => {
+                  const count = chapters.filter((c) => String(c.part?._id || c.part) === String(p._id)).length;
+                  return (
+                    <button
+                      key={p._id}
+                      type="button"
+                      onClick={() => setSelectedPartFilter(p._id)}
+                      className={cn(
+                        'px-2 py-0.5 rounded-lg text-[10px] font-bold shrink-0 transition border cursor-pointer',
+                        selectedPartFilter === p._id
+                          ? 'bg-brand text-white border-brand'
+                          : 'bg-muted text-muted-foreground border-transparent hover:text-foreground'
+                      )}
+                    >
+                      {uiText('P')}{p.number} ({count})
+                    </button>
+                  );
+                })}
+                {chapters.some((c) => !c.part) && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPartFilter('none')}
+                    className={cn(
+                      'px-2 py-0.5 rounded-lg text-[10px] font-bold shrink-0 transition border cursor-pointer',
+                      selectedPartFilter === 'none'
+                        ? 'bg-brand text-white border-brand'
+                        : 'bg-muted text-muted-foreground border-transparent hover:text-foreground'
+                    )}
+                  >
+                    {uiText('No Part')} ({chapters.filter((c) => !c.part).length})
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 max-h-[550px]">
               {loadingChapters ? (
@@ -1159,60 +1359,96 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                   {uiText('No chapters added for this book & class. Click "+ Add" to create Chapter 1.')}
                 </div>
               ) : (
-                chapters.map((ch) => {
-                  const isSelected = selectedChapter?._id === ch._id;
-                  return (
-                    <div
-                      key={ch._id}
-                      className={cn(
-                        'group flex items-center justify-between rounded-xl px-2.5 py-1.5 transition-all border',
-                        isSelected
-                          ? 'bg-brand/10 border-brand/50 text-brand font-bold'
-                          : 'border-transparent hover:bg-muted text-foreground'
-                      )}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setSelectedChapter(ch)}
-                        className="flex-1 text-left text-xs font-semibold truncate cursor-pointer pr-1"
-                      >
-                        <span className="font-mono text-brand font-bold mr-1.5">{uiText('Ch ')}{ch.number}:</span>
-                        <span>{ch.title?.en || ch.title?.hi || uiTemplate`Chapter ${ch.number}`}</span>
-                      </button>
-                      <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100">
-                        <Link
-                          to={adminUrl(`chapters/${ch._id}`)}
-                          className="p-1 hover:text-brand cursor-pointer"
-                          title={uiText('Open Full Chapter Editor')}
-                        >
-                          <ExternalLink className="size-3" />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenChapterModal(ch);
-                          }}
-                          className="p-1 hover:text-brand cursor-pointer"
-                          title={uiText('Edit Chapter')}
-                        >
-                          <Edit2 className="size-3" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteChapter(ch);
-                          }}
-                          className="p-1 hover:text-destructive cursor-pointer"
-                          title={uiText('Delete Chapter')}
-                        >
-                          <Trash2 className="size-3" />
-                        </button>
+                (() => {
+                  const filteredChapters = selectedPartFilter === 'all'
+                    ? chapters
+                    : selectedPartFilter === 'none'
+                    ? chapters.filter((c) => !c.part)
+                    : chapters.filter((c) => String(c.part?._id || c.part) === String(selectedPartFilter));
+
+                  if (filteredChapters.length === 0) {
+                    return (
+                      <div className="p-4 text-center text-xs text-muted-foreground">
+                        {uiText('No chapters in this part yet. Click "+ Add" to create one.')}
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  }
+
+                  return filteredChapters.map((ch) => {
+                    const isSelected = selectedChapter?._id === ch._id;
+                    const partObj = ch.part && typeof ch.part === 'object'
+                      ? ch.part
+                      : parts.find((p) => String(p._id) === String(ch.part));
+                    return (
+                      <div
+                        key={ch._id}
+                        className={cn(
+                          'group flex items-center justify-between rounded-xl px-2.5 py-1.5 transition-all border',
+                          isSelected
+                            ? 'bg-brand/10 border-brand/50 text-brand font-bold'
+                            : 'border-transparent hover:bg-muted text-foreground'
+                        )}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => setSelectedChapter(ch)}
+                          className="flex-1 text-left text-xs font-semibold truncate cursor-pointer pr-1 flex items-center"
+                        >
+                          {partObj && (
+                            <span className="font-mono text-[9px] bg-brand/15 text-brand px-1 py-0.2 rounded font-extrabold mr-1 shrink-0">
+                              P{partObj.number}
+                            </span>
+                          )}
+                          <span className="font-mono text-brand font-bold mr-1.5 shrink-0">{uiText('Ch ')}{ch.number}:</span>
+                          <span className="truncate">{ch.title?.en || ch.title?.hi || uiTemplate`Chapter ${ch.number}`}</span>
+                        </button>
+                        <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMovePartModal(ch);
+                              setTargetMovePartId(ch.part?._id || ch.part || '');
+                            }}
+                            className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                            title={uiText('Move Chapter to Part')}
+                          >
+                            <Layers className="size-3" />
+                          </button>
+                          <Link
+                            to={adminUrl(`chapters/${ch._id}`)}
+                            className="p-1 hover:text-brand cursor-pointer"
+                            title={uiText('Open Full Chapter Editor')}
+                          >
+                            <ExternalLink className="size-3" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenChapterModal(ch);
+                            }}
+                            className="p-1 hover:text-brand cursor-pointer"
+                            title={uiText('Edit Chapter')}
+                          >
+                            <Edit2 className="size-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteChapter(ch);
+                            }}
+                            className="p-1 hover:text-destructive cursor-pointer"
+                            title={uiText('Delete Chapter')}
+                          >
+                            <Trash2 className="size-3" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()
               )}
             </div>
           </div>
@@ -1709,6 +1945,145 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       )}
 
       {/* ==================================================== */}
+      {/* TAB 2.5: PARTS / VOLUMES MANAGEMENT                  */}
+      {/* ==================================================== */}
+      {activeTab === 'parts' && (
+        <div className="rounded-2xl border bg-card p-5 shadow-xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between pb-3 border-b gap-2">
+            <div>
+              <h3 className="text-sm font-extrabold text-foreground flex items-center gap-2">
+                <Layers className="size-4 text-brand" />
+                <span>
+                  {uiText('Parts / Volumes Management · ')}{selectedClass ? uiTemplate`Class ${selectedClass.number}` : ''} ({parts.length})
+                </span>
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {uiText('Manage multiple parts/volumes for reference books (e.g., Part 1, Part 2). Supports duplicate chapter numbers across different parts.')}
+              </p>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleOpenPartModal(null)}
+              className="h-8 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
+            >
+              <Plus className="size-3.5" />
+              {uiText('Add Part / Volume')}
+            </Button>
+          </div>
+
+          {parts.length === 0 ? (
+            <div className="py-12 text-center rounded-xl border border-dashed border-border/80 bg-muted/10 space-y-3">
+              <Layers className="size-10 text-muted-foreground/50 mx-auto" />
+              <div>
+                <p className="text-sm font-bold text-foreground">{uiText('No Parts / Volumes Created')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {uiText('All chapters for this class are currently standalone. Click below if this book has Part 1 and Part 2.')}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => handleOpenPartModal(null)}
+                className="font-bold text-xs bg-brand text-white hover:bg-brand/90"
+              >
+                <Plus className="size-3.5 mr-1" />
+                {uiText('Add First Part / Volume')}
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {parts.map((p) => {
+                const partChapters = chapters.filter((c) => String(c.part?._id || c.part) === String(p._id));
+                const studentPartUrl = `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${p.slug}`;
+
+                return (
+                  <div key={p._id} className="rounded-xl border border-border bg-card p-4 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-brand/10 text-brand">
+                          Part {p.number}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={cn(
+                              'px-2 py-0.5 rounded-full font-bold text-[10px] uppercase',
+                              p.status === 'published'
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40'
+                                : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40'
+                            )}
+                          >
+                            {p.status || 'published'}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="font-bold text-sm text-foreground">
+                        {p.title?.en || `Part ${p.number}`}
+                      </h4>
+                      {p.title?.hi && (
+                        <p className="text-xs text-muted-foreground">{p.title.hi}</p>
+                      )}
+                      <p className="font-mono text-[11px] text-muted-foreground mt-1">
+                        slug: /{p.slug}
+                      </p>
+                      <div className="mt-3 py-1.5 px-2.5 rounded-lg bg-muted/30 text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>{uiText('Chapters Assigned')}:</span>
+                        <span className="font-mono font-bold text-brand">{partChapters.length}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-3 mt-4 border-t border-border/60 gap-1">
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="outline"
+                        onClick={() => handleOpenChapterModal(null, p._id)}
+                        className="text-xs font-bold gap-1 cursor-pointer hover:text-brand"
+                      >
+                        <Plus className="size-3" />
+                        {uiText('Add Ch')}
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          type="button"
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => handleOpenPartModal(p)}
+                          className="size-7 p-0 cursor-pointer text-muted-foreground hover:text-brand"
+                          title={uiText('Edit Part')}
+                        >
+                          <Edit2 className="size-3.5" />
+                        </Button>
+                        <a
+                          href={studentPartUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center size-7 rounded-md text-muted-foreground hover:text-brand cursor-pointer"
+                          title={uiText('View Student Part Page')}
+                        >
+                          <ExternalLink className="size-3.5" />
+                        </a>
+                        <Button
+                          type="button"
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => handleDeletePart(p)}
+                          className="size-7 p-0 cursor-pointer text-muted-foreground hover:text-destructive"
+                          title={uiText('Delete Part')}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ==================================================== */}
       {/* TAB 3: CHAPTERS MANAGEMENT                           */}
       {/* ==================================================== */}
       {activeTab === 'chapters' && (
@@ -1725,22 +2100,84 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 {uiText('Create, edit, reorder, and manage chapter intros, PDF formulas, and syllabus.')}
               </p>
             </div>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => handleOpenChapterModal(null)}
-              className="h-8 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
-            >
-              <Plus className="size-3.5" />
-              {uiText('Add New Chapter')}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => handleOpenPartModal(null)}
+                className="h-8 gap-1 font-bold text-xs cursor-pointer border-brand/40 text-brand hover:bg-brand/10"
+              >
+                <Plus className="size-3" />
+                {uiText('Add Part')}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => handleOpenChapterModal(null)}
+                className="h-8 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
+              >
+                <Plus className="size-3.5" />
+                {uiText('Add New Chapter')}
+              </Button>
+            </div>
           </div>
+
+          {/* Part Filter Pills */}
+          {parts.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 pb-2">
+              <span className="text-xs font-bold text-muted-foreground mr-1">{uiText('Filter by Part')}:</span>
+              <button
+                type="button"
+                onClick={() => setSelectedPartFilter('all')}
+                className={cn(
+                  'rounded-lg px-2.5 py-1 text-xs font-bold transition-all cursor-pointer border',
+                  selectedPartFilter === 'all'
+                    ? 'bg-brand text-white border-brand shadow-2xs'
+                    : 'bg-background border-border/80 text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                {uiText('All Chapters')} ({chapters.length})
+              </button>
+              {parts.map((p) => {
+                const count = chapters.filter((c) => String(c.part?._id || c.part) === String(p._id)).length;
+                return (
+                  <button
+                    key={p._id}
+                    type="button"
+                    onClick={() => setSelectedPartFilter(p._id)}
+                    className={cn(
+                      'rounded-lg px-2.5 py-1 text-xs font-bold transition-all cursor-pointer border',
+                      selectedPartFilter === p._id
+                        ? 'bg-brand text-white border-brand shadow-2xs'
+                        : 'bg-background border-border/80 text-muted-foreground hover:bg-muted hover:text-foreground'
+                    )}
+                  >
+                    Part {p.number}: {p.title?.en || `Part ${p.number}`} ({count})
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => setSelectedPartFilter('none')}
+                className={cn(
+                  'rounded-lg px-2.5 py-1 text-xs font-bold transition-all cursor-pointer border',
+                  selectedPartFilter === 'none'
+                    ? 'bg-brand text-white border-brand shadow-2xs'
+                    : 'bg-background border-border/80 text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                {uiText('No Part / Standalone')} ({chapters.filter((c) => !c.part).length})
+              </button>
+            </div>
+          )}
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b bg-muted/40 text-muted-foreground">
                   <th className="py-2.5 px-3 font-bold">{uiText('Ch #')}</th>
+                  <th className="py-2.5 px-3 font-bold">{uiText('Part / Volume')}</th>
                   <th className="py-2.5 px-3 font-bold">{uiText('Title (English & Hindi)')}</th>
                   <th className="py-2.5 px-3 font-bold">{uiText('Short Description')}</th>
                   <th className="py-2.5 px-3 font-bold">{uiText('Status')}</th>
@@ -1748,77 +2185,126 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </tr>
               </thead>
               <tbody>
-                {chapters.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="py-8 text-center text-muted-foreground">
-                      {uiText('No chapters added for this class yet. Click "+ Add New Chapter" above.')}
-                    </td>
-                  </tr>
-                ) : (
-                  chapters.map((ch) => (
-                    <tr key={ch._id} className="border-b transition-colors hover:bg-muted/20">
-                      <td className="py-3 px-3 font-mono font-bold text-brand">
-                        {ch.number}
-                      </td>
-                      <td className="py-3 px-3">
-                        <div className="font-semibold text-foreground">{ch.title?.en || uiTemplate`Chapter ${ch.number}`}</div>
-                        {ch.title?.hi && <div className="text-[11px] text-muted-foreground">{ch.title.hi}</div>}
-                      </td>
-                      <td className="py-3 px-3 text-muted-foreground max-w-sm truncate">
-                        {ch.shortDescription?.en || ch.shortDescription?.hi || '—'}
-                      </td>
-                      <td className="py-3 px-3">
-                        <span
-                          className={cn(
-                            'px-2 py-0.5 rounded-full font-bold text-[10px] uppercase',
-                            ch.status === 'published'
-                              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40'
-                              : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40'
+                {(() => {
+                  const filteredChapters = chapters.filter((ch) => {
+                    if (selectedPartFilter === 'all') return true;
+                    if (selectedPartFilter === 'none') return !ch.part;
+                    return String(ch.part?._id || ch.part) === String(selectedPartFilter);
+                  });
+
+                  if (filteredChapters.length === 0) {
+                    return (
+                      <tr>
+                        <td colSpan={6} className="py-8 text-center text-muted-foreground">
+                          {uiText('No chapters match the selected filter. Click "+ Add New Chapter" above.')}
+                        </td>
+                      </tr>
+                    );
+                  }
+
+                  return filteredChapters.map((ch) => {
+                    const partObj = ch.part?.number != null ? ch.part : parts.find((p) => String(p._id) === String(ch.part?._id || ch.part));
+                    const partSlug = partObj?.slug;
+                    const studentChapterUrl = partSlug
+                      ? `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${partSlug}/${ch.slug}`
+                      : `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${ch.slug}`;
+
+                    return (
+                      <tr key={ch._id} className="border-b transition-colors hover:bg-muted/20">
+                        <td className="py-3 px-3 font-mono font-bold text-brand">
+                          {ch.number}
+                        </td>
+                        <td className="py-3 px-3">
+                          {partObj ? (
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-brand/10 text-brand">
+                              Part {partObj.number}: {partObj.title?.en || `Part ${partObj.number}`}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-muted-foreground font-mono">
+                              —
+                            </span>
                           )}
-                        >
-                          {ch.status || 'published'}
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedChapter(ch);
-                              setActiveTab('exercises');
-                            }}
-                            className="font-bold text-brand hover:underline cursor-pointer"
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="font-semibold text-foreground">{ch.title?.en || uiTemplate`Chapter ${ch.number}`}</div>
+                          {ch.title?.hi && <div className="text-[11px] text-muted-foreground">{ch.title.hi}</div>}
+                        </td>
+                        <td className="py-3 px-3 text-muted-foreground max-w-sm truncate">
+                          {ch.shortDescription?.en || ch.shortDescription?.hi || '—'}
+                        </td>
+                        <td className="py-3 px-3">
+                          <span
+                            className={cn(
+                              'px-2 py-0.5 rounded-full font-bold text-[10px] uppercase',
+                              ch.status === 'published'
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40'
+                                : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40'
+                            )}
                           >
-                            {uiText('Exercises')}
-                          </button>
-                          <Link
-                            to={adminUrl(`chapters/${ch._id}`)}
-                            className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
-                            title={uiText('Open Full Chapter Editor')}
-                          >
-                            <Edit2 className="size-3.5" />
-                          </Link>
-                          <Link
-                            to={`/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${ch.slug}`}
-                            target="_blank"
-                            className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
-                            title={uiText('View Student Chapter Page')}
-                          >
-                            <ExternalLink className="size-3.5" />
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteChapter(ch)}
-                            className="p-1 hover:text-destructive cursor-pointer text-muted-foreground"
-                            title={uiText('Delete Chapter')}
-                          >
-                            <Trash2 className="size-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                            {ch.status || 'published'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedChapter(ch);
+                                setActiveTab('exercises');
+                              }}
+                              className="font-bold text-brand hover:underline cursor-pointer mr-1"
+                            >
+                              {uiText('Exercises')}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setMovePartModal(ch);
+                                setTargetMovePartId(ch.part?._id || ch.part || '');
+                              }}
+                              className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                              title={uiText('Move Chapter to Part')}
+                            >
+                              <Layers className="size-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenChapterModal(ch)}
+                              className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                              title={uiText('Edit Chapter')}
+                            >
+                              <Edit2 className="size-3.5" />
+                            </button>
+                            <Link
+                              to={adminUrl(`chapters/${ch._id}`)}
+                              className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                              title={uiText('Open Full Chapter Editor')}
+                            >
+                              <ExternalLink className="size-3.5" />
+                            </Link>
+                            <a
+                              href={studentChapterUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                              title={uiText('View Student Chapter Page')}
+                            >
+                              <ExternalLink className="size-3.5 text-brand" />
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteChapter(ch)}
+                              className="p-1 hover:text-destructive cursor-pointer text-muted-foreground"
+                              title={uiText('Delete Chapter')}
+                            >
+                              <Trash2 className="size-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
@@ -2813,6 +3299,24 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
             </h3>
             <form onSubmit={handleSaveChapter} className="space-y-4">
               <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Part / Volume')}</label>
+                <select
+                  value={chapterForm.part || ''}
+                  onChange={(e) => setChapterForm({ ...chapterForm, part: e.target.value })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
+                >
+                  <option value="">{uiText('No Part / Standalone Chapter')}</option>
+                  {parts.map((p) => (
+                    <option key={p._id} value={p._id}>
+                      Part {p.number}: {p.title?.en || `Part ${p.number}`}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  {uiText('Assign to a part/volume or keep standalone. Duplicate chapter numbers are allowed across parts.')}
+                </p>
+              </div>
+              <div>
                 <label className="text-xs font-bold block mb-1">{uiText('Chapter Number *')}</label>
                 <input
                   type="number"
@@ -3279,6 +3783,154 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </Button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Part / Volume Modal */}
+      {partModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
+            <h3 className="text-base font-extrabold text-foreground mb-4">
+              {editingPartId ? uiText('Edit Part / Volume') : uiText('Add New Part / Volume')}
+            </h3>
+            <form onSubmit={handleSavePart} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('Part Number *')}</label>
+                  <input
+                    type="number"
+                    value={partForm.number}
+                    onChange={(e) => {
+                      const num = e.target.value;
+                      setPartForm({
+                        ...partForm,
+                        number: num,
+                        slug: partForm.slug || `part-${num}`,
+                        title: {
+                          ...partForm.title,
+                          en: partForm.title?.en || `Part ${num}`,
+                          hi: partForm.title?.hi || `भाग ${num}`,
+                        },
+                      });
+                    }}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('URL Slug')}</label>
+                  <input
+                    type="text"
+                    placeholder="part-1"
+                    value={partForm.slug}
+                    onChange={(e) => setPartForm({ ...partForm, slug: e.target.value })}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-mono"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Part Title (English) *')}</label>
+                <input
+                  type="text"
+                  placeholder={uiText('e.g. Part 1 or Volume 1')}
+                  value={partForm.title.en}
+                  onChange={(e) => setPartForm({ ...partForm, title: { ...partForm.title, en: e.target.value } })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Part Title (Hindi)')}</label>
+                <input
+                  type="text"
+                  placeholder={uiText('e.g. भाग 1')}
+                  value={partForm.title.hi}
+                  onChange={(e) => setPartForm({ ...partForm, title: { ...partForm.title, hi: e.target.value } })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Short Description (Optional)')}</label>
+                <textarea
+                  rows={2}
+                  placeholder={uiText('Brief description of chapters covered in this part...')}
+                  value={partForm.shortDescription.en}
+                  onChange={(e) => setPartForm({ ...partForm, shortDescription: { ...partForm.shortDescription, en: e.target.value } })}
+                  className="w-full rounded-xl border border-border bg-background p-2.5 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Status')}</label>
+                <select
+                  value={partForm.status}
+                  onChange={(e) => setPartForm({ ...partForm, status: e.target.value })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                >
+                  <option value="published">{uiText('Published (Visible to Students)')}</option>
+                  <option value="draft">{uiText('Draft (Admin Only)')}</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-3 border-t">
+                <Button type="button" variant="outline" size="sm" onClick={() => setPartModal(false)}>
+                  {uiText('Cancel')}
+                </Button>
+                <Button type="submit" size="sm" className="font-bold bg-brand text-white hover:bg-brand/90">
+                  {uiText('Save Part')}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Move Chapter to Part Modal */}
+      {movePartModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
+            <h3 className="text-base font-extrabold text-foreground mb-1">
+              {uiText('Move Chapter to Part / Volume')}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              {uiText('Moving Chapter')} <span className="font-mono font-bold text-brand">{movePartModal.number}</span>: &quot;{movePartModal.title?.en || ''}&quot;
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold block mb-1.5">{uiText('Select Destination Part / Volume')}:</label>
+                <select
+                  value={targetMovePartId}
+                  onChange={(e) => setTargetMovePartId(e.target.value)}
+                  className="w-full h-9 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                >
+                  <option value="">{uiText('No Part / Standalone Chapter')}</option>
+                  {parts.map((p) => (
+                    <option key={p._id} value={p._id}>
+                      Part {p.number}: {p.title?.en || `Part ${p.number}`}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  {uiText('The chapter will be updated to belong to this part. Duplicate chapter numbers are allowed across parts.')}
+                </p>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-3 border-t">
+                <Button type="button" variant="outline" size="sm" onClick={() => setMovePartModal(null)}>
+                  {uiText('Cancel')}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => handleMoveChapterPart(movePartModal._id, targetMovePartId)}
+                  className="font-bold bg-brand text-white hover:bg-brand/90"
+                >
+                  {uiText('Move Chapter')}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

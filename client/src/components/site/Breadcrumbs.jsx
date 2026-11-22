@@ -22,11 +22,11 @@ export function Breadcrumbs({ items, className }) {
 
   const resolveCrumbLabel = (item) => {
     if (item.url === '/') return uiText('Home');
-    const raw = t(item.label);
-    const isInvalid = !raw || raw.includes('Content not available') || raw.includes('उपलब्ध नहीं');
+    const raw = typeof item.label === 'string' ? item.label : t(item.label);
+    const isInvalid = !raw || raw.includes('Content not available') || raw.includes('उपलब्ध नहीं') || raw.includes('सामग्री उपलब्ध नहीं');
     if (!isInvalid) return raw;
-    const fallback = (typeof item.label === 'object' ? (item.label?.en || item.label?.hi || item.label?.mixed) : item.label) || '';
-    if (fallback && !fallback.includes('Content not available') && !fallback.includes('उपलब्ध नहीं')) return fallback;
+    const fallback = (typeof item.label === 'object' ? (item.label?.en || item.label?.hi || item.label?.mixed) : '') || '';
+    if (fallback && !fallback.includes('Content not available') && !fallback.includes('उपलब्ध नहीं') && !fallback.includes('सामग्री उपलब्ध नहीं')) return fallback;
     // Derive fallback from URL segment if label was empty or invalid
     const segment = (item.url || '').split('?')[0].split('/').filter(Boolean).pop() || '';
     if (segment) {
@@ -37,6 +37,14 @@ export function Breadcrumbs({ items, className }) {
       if (segment.startsWith('prashnavali-') || segment.startsWith('exercise-')) {
         const num = segment.replace(/^[a-z]+-?/i, '').replace(/-/g, '.');
         return `${uiText('Exercise')} ${num}`;
+      }
+      if (segment.startsWith('part-') || segment.startsWith('volume-')) {
+        const num = segment.replace(/^[a-z]+-?/i, '');
+        return `${uiText('Part')} ${num}`;
+      }
+      if (segment.startsWith('class-')) {
+        const num = segment.replace(/^[a-z]+-?/i, '');
+        return `${uiText('Class')} ${num}`;
       }
     }
     return '';

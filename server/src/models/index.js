@@ -32,5 +32,6 @@ export { AcademicSession, ensureDefaultSessions } from './AcademicSession.js';
 
 
 export { BookClass } from './BookClass.js';
+export { BookPart } from './BookPart.js';
 
 export { initializeStudyCms } from './StudyContent.js';

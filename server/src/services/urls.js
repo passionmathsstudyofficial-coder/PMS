@@ -22,7 +22,20 @@ export const urls = {
   referenceBooks: () => '/reference-books',
   referenceBook: (b) => `/reference-solutions/${b?.slug || b}`,
   referenceBookClass: (b, cls) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}`,
-  referenceChapter: (b, cls, ch) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${ch?.slug || ch}`,
-  referenceExercise: (b, cls, ch, e) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${ch?.slug || ch}/${e?.slug || e}`,
+  referenceBookPart: (b, cls, p) => `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${p?.slug || p}`,
+  referenceChapter: (b, cls, ch, p) => {
+    const partSlug = p?.slug || (ch?.part && typeof ch.part === 'object' ? ch.part.slug : null) || (typeof p === 'string' ? p : null);
+    if (partSlug) {
+      return `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${partSlug}/${ch?.slug || ch}`;
+    }
+    return `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${ch?.slug || ch}`;
+  },
+  referenceExercise: (b, cls, ch, e, p) => {
+    const partSlug = p?.slug || (ch?.part && typeof ch.part === 'object' ? ch.part.slug : null) || (typeof p === 'string' ? p : null);
+    if (partSlug) {
+      return `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${partSlug}/${ch?.slug || ch}/${e?.slug || e}`;
+    }
+    return `/reference-solutions/${b?.slug || b}/${cls?.slug || `class-${cls?.number || cls}`}/${ch?.slug || ch}/${e?.slug || e}`;
+  },
 };
 

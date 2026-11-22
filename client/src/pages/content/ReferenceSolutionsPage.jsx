@@ -48,6 +48,10 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     level = 'hub',
     book,
     class: cls,
+    part,
+    parts = [],
+    unassignedChapters = [],
+    hasParts = false,
     chapter,
     exercise,
     books = [],
@@ -70,9 +74,21 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
   const bookDisplayTitle = getReferenceBookDisplayTitle(book, lang, interfaceL10n);
   const cleanChTitle = (raw) => {
     if (!raw || typeof raw !== 'string') return '';
-    if (raw.includes('Content not available') || raw.includes('उपलब्ध नहीं')) return '';
+    if (raw.includes('Content not available') || raw.includes('उपलब्ध नहीं') || raw.includes('सामग्री उपलब्ध नहीं')) return '';
     return raw.trim();
   };
+
+  const cleanBreadcrumbs = Array.isArray(breadcrumbs)
+    ? breadcrumbs.map((crumb) => {
+        let label = crumb?.label;
+        if (typeof label === 'string') {
+          if (label.includes('Content not available') || label.includes('उपलब्ध नहीं') || label.includes('सामग्री उपलब्ध नहीं')) {
+            label = chapter ? (cleanChTitle(chapter.title?.en) || cleanChTitle(chapter.title?.hi) || `Chapter ${chapter.number}`) : '';
+          }
+        }
+        return { ...crumb, label };
+      })
+    : breadcrumbs;
 
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [activePdfTitle, setActivePdfTitle] = useState('');
@@ -235,7 +251,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     return (
       <>
         <ContentHeader
-          breadcrumbs={breadcrumbs}
+          breadcrumbs={cleanBreadcrumbs}
           inheritLandingHero={false}
           watermark={`C${cls.number}`}
           eyebrow={
@@ -258,14 +274,142 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
               {cls.thumbnail && <Figure media={cls.thumbnail} alt={t(cls.thumbnail.alt) || t(cls.name)} />}
               {/* Introduction box */}
               <div className="rounded-2xl border bg-card p-5 text-sm text-foreground/90">
-                <p>{uiText("Welcome to")}<strong>{bookDisplayTitle}{' '}{uiText("Class")}{' '}{cls.number}</strong>{' '}{uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
+                <p>{uiText("Welcome to")} <strong>{bookDisplayTitle}{' '}{uiText("Class")}{' '}{cls.number}</strong> {uiText("solutions index on Passion Maths Study. Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}{' '}</p>
               </div>
 
               {/* Chapters and Exercise Links */}
-              <div className="space-y-4">
-                <h2 className="font-heading text-lg font-bold text-foreground">{uiText("Class")}{' '}{cls.number}{uiText("Chapters & Exercises")}</h2>
+              <div className="space-y-6">
+                <h2 className="font-heading text-lg font-bold text-foreground">{uiText("Class")}{' '}{cls.number} {uiText("Chapters & Exercises")}</h2>
 
-                {chapters.length === 0 ? (
+                {hasParts && parts.length > 0 ? (
+                  <div className="space-y-6">
+                    {parts.map((p) => (
+                      <div key={p._id || p.slug} className="rounded-2xl border bg-card p-5 shadow-xs space-y-4">
+                        <div className="flex flex-col justify-between gap-2 border-b pb-3 sm:flex-row sm:items-center">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="rounded-md bg-brand/10 px-2.5 py-0.5 text-xs font-extrabold uppercase text-brand">
+                                {uiText("Part")}{' '}{p.number}
+                              </span>
+                              <h3 className="font-heading text-base font-bold text-foreground">
+                                {t(p.title) || `${uiText("Part")} ${p.number}`}
+                              </h3>
+                            </div>
+                            {p.shortDescription && (
+                              <p className="mt-1 text-xs text-muted-foreground">{t(p.shortDescription)}</p>
+                            )}
+                          </div>
+                          {p.url && (
+                            <Button size="sm" variant="outline" className="h-7 text-xs font-semibold self-start sm:self-auto" asChild>
+                              <Link to={p.url}>
+                                {uiText("View Part")} {p.number} →
+                              </Link>
+                            </Button>
+                          )}
+                        </div>
+
+                        {(!p.chapters || p.chapters.length === 0) ? (
+                          <p className="text-xs text-muted-foreground italic py-2">
+                            {uiText("No chapters in this part yet.")}
+                          </p>
+                        ) : (
+                          <div className="space-y-3">
+                            {p.chapters.map((ch) => (
+                              <div key={ch._id} className="rounded-xl border bg-background/60 p-4 shadow-2xs transition hover:border-brand/40">
+                                <div className="mb-2 flex flex-col justify-between gap-1 sm:flex-row sm:items-center">
+                                  <Link to={ch.url} className="group">
+                                    <span className="text-xs font-bold text-brand uppercase">
+                                      {uiText("Chapter")}{' '}{ch.number}
+                                    </span>
+                                    <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-brand">
+                                      {cleanChTitle(t(ch.title)) || cleanChTitle(ch.title?.en) || cleanChTitle(ch.title?.hi) || `Chapter ${ch.number}`}
+                                    </h4>
+                                  </Link>
+                                  <div className="flex gap-2">
+                                    {ch.pdfUrl && (
+                                      <Button size="sm" variant="outline" className="h-6 text-[11px]" onClick={() => openPdf(ch.pdfUrl, `${t(ch.title)} PDF`)}>
+                                        <Eye className="mr-1 size-3" /> PDF
+                                      </Button>
+                                    )}
+                                    <Button size="sm" variant="ghost" className="h-6 text-[11px]" asChild>
+                                      <Link to={ch.url}>{uiText("Chapter Page →")}</Link>
+                                    </Button>
+                                  </div>
+                                </div>
+                                {ch.exercises?.length > 0 && (
+                                  <div className="border-t border-border/50 pt-2">
+                                    <p className="mb-1 text-[10px] font-bold text-muted-foreground uppercase">{uiText("Exercises:")}</p>
+                                    <div className="flex flex-wrap gap-1.5">
+                                      {ch.exercises.map((ex) => (
+                                        <Link
+                                          key={ex.slug || ex.number}
+                                          to={ex.url || `${ch.url}/${ex.slug}`}
+                                          className="rounded-md border bg-background px-2.5 py-0.5 text-xs font-bold transition hover:border-brand hover:bg-brand hover:text-white"
+                                        >
+                                          {uiText("Exercise")}{' '}{ex.number}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+
+                    {/* Unassigned / General chapters if any */}
+                    {unassignedChapters?.length > 0 && (
+                      <div className="rounded-2xl border bg-card p-5 shadow-xs space-y-3">
+                        <div className="border-b pb-2">
+                          <h3 className="font-heading text-base font-bold text-foreground">
+                            {uiText("Additional Chapters")}
+                          </h3>
+                        </div>
+                        <div className="space-y-3">
+                          {unassignedChapters.map((ch) => (
+                            <div key={ch._id} className="rounded-xl border bg-background/60 p-4 shadow-2xs transition hover:border-brand/40">
+                              <div className="mb-2 flex flex-col justify-between gap-1 sm:flex-row sm:items-center">
+                                <Link to={ch.url} className="group">
+                                  <span className="text-xs font-bold text-brand uppercase">{uiText("Chapter")}{' '}{ch.number}</span>
+                                  <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-brand">
+                                    {cleanChTitle(t(ch.title)) || cleanChTitle(ch.title?.en) || cleanChTitle(ch.title?.hi) || `Chapter ${ch.number}`}
+                                  </h4>
+                                </Link>
+                                <div className="flex gap-2">
+                                  {ch.pdfUrl && (
+                                    <Button size="sm" variant="outline" className="h-6 text-[11px]" onClick={() => openPdf(ch.pdfUrl, `${t(ch.title)} PDF`)}>
+                                      <Eye className="mr-1 size-3" /> PDF
+                                    </Button>
+                                  )}
+                                  <Button size="sm" variant="ghost" className="h-6 text-[11px]" asChild>
+                                    <Link to={ch.url}>{uiText("Chapter Page →")}</Link>
+                                  </Button>
+                                </div>
+                              </div>
+                              {ch.exercises?.length > 0 && (
+                                <div className="border-t border-border/50 pt-2">
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {ch.exercises.map((ex) => (
+                                      <Link
+                                        key={ex.slug || ex.number}
+                                        to={ex.url || `${ch.url}/${ex.slug}`}
+                                        className="rounded-md border bg-background px-2.5 py-0.5 text-xs font-bold transition hover:border-brand hover:bg-brand hover:text-white"
+                                      >
+                                        {uiText("Exercise")}{' '}{ex.number}
+                                      </Link>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : chapters.length === 0 ? (
                   <EmptyState title={uiText("No chapters found")} description={uiText("Chapters for this reference book will appear here.")} />
                 ) : (
                   <div className="space-y-4">
@@ -275,7 +419,7 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
                           <Link to={ch.url} className="group">
                             <span className="text-xs font-bold text-brand uppercase">{uiText("Chapter")}{' '}{ch.number}</span>
                             <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">
-                              {t(ch.title)}
+                              {cleanChTitle(t(ch.title)) || cleanChTitle(ch.title?.en) || cleanChTitle(ch.title?.hi) || `Chapter ${ch.number}`}
                             </h3>
                           </Link>
 
@@ -351,17 +495,125 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
     );
   }
 
+  // 3b. BOOK + CLASS + PART LEVEL: /reference-solutions/:bookSlug/class-:number/:partSlug
+  if (level === 'part' && part) {
+    const partTitle = t(part.title) || `${uiText("Part")} ${part.number}`;
+    return (
+      <>
+        <ContentHeader
+          breadcrumbs={cleanBreadcrumbs}
+          inheritLandingHero={false}
+          watermark={`P${part.number}`}
+          eyebrow={
+            <div className="flex items-center gap-2">
+              <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
+              <Chip>{bookDisplayTitle}</Chip>
+              <Chip tone="brand">{uiText("Part")}{' '}{part.number}</Chip>
+            </div>
+          }
+          title={{
+            hi: `${bookDisplayTitle} — कक्षा ${cls.number} (${partTitle})`,
+            en: `${bookDisplayTitle} — Class ${cls.number} (${partTitle})`,
+          }}
+          subtitle={t(part.shortDescription) || uiTemplate`Browse available chapters and exercises for ${partTitle}.`}
+          actions={<AcademicSessionSelector sessions={academicSessions} currentSession={currentSession} />}
+        />
+
+        <div className="container-page py-10">
+          <div className="grid gap-8 lg:grid-cols-12">
+            <div className="space-y-6 lg:col-span-8">
+              <div className="rounded-2xl border bg-card p-5 text-sm text-foreground/90">
+                <p>
+                  {uiText("Welcome to")} <strong>{bookDisplayTitle} {uiText("Class")} {cls.number} ({partTitle})</strong>. {uiText("Every exercise contains clear step-by-step explanations, diagrams, formulas, and downloadable PDFs.")}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="font-heading text-lg font-bold text-foreground">
+                  {partTitle} {uiText("Chapters & Exercises")}
+                </h2>
+
+                {chapters.length === 0 ? (
+                  <EmptyState title={uiText("No chapters found in this part")} description={uiText("Chapters for this part will appear here.")} />
+                ) : (
+                  <div className="space-y-4">
+                    {chapters.map((ch) => (
+                      <div key={ch._id} className="rounded-2xl border bg-card p-5 shadow-xs transition hover:border-brand/40">
+                        <div className="mb-3 flex flex-col justify-between gap-1 sm:flex-row sm:items-center">
+                          <Link to={ch.url} className="group">
+                            <span className="text-xs font-bold text-brand uppercase">{uiText("Chapter")}{' '}{ch.number}</span>
+                            <h3 className="font-heading text-base font-bold text-foreground group-hover:text-brand">
+                              {cleanChTitle(t(ch.title)) || cleanChTitle(ch.title?.en) || cleanChTitle(ch.title?.hi) || `Chapter ${ch.number}`}
+                            </h3>
+                          </Link>
+
+                          <div className="flex gap-2">
+                            {ch.pdfUrl && (
+                              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => openPdf(ch.pdfUrl, `${t(ch.title)} PDF`)}>
+                                <Eye className="mr-1 size-3" /> PDF
+                              </Button>
+                            )}
+                            <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
+                              <Link to={ch.url}>{uiText("Chapter Page →")}</Link>
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Clickable exercise pills */}
+                        {ch.exercises?.length > 0 && (
+                          <div className="border-t pt-3">
+                            <p className="mb-2 text-[11px] font-bold text-muted-foreground uppercase">{uiText("Exercises:")}</p>
+                            <div className="flex flex-wrap gap-2">
+                              {ch.exercises.map((ex) => (
+                                <Link
+                                  key={ex.slug || ex.number}
+                                  to={ex.url || `${ch.url}/${ex.slug}`}
+                                  className="rounded-lg border bg-background px-3 py-1 text-xs font-bold transition hover:border-brand hover:bg-brand hover:text-white"
+                                >
+                                  {uiText("Exercise")}{' '}{ex.number}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="lg:col-span-4">
+              <StudySidebar currentBook={book} currentClass={cls} chapters={chapters} />
+            </div>
+          </div>
+        </div>
+
+        <PdfViewerDialog
+          open={Boolean(activePdfUrl)}
+          onOpenChange={(open) => !open && setActivePdfUrl(null)}
+          url={activePdfUrl}
+          title={activePdfTitle}
+          downloadAllowed={downloadAllowed}
+        />
+      </>
+    );
+  }
+
   // 4. BOOK CHAPTER LEVEL: /reference-solutions/:bookSlug/class-:number/:chapterSlug
   if (level === 'chapter') {
     return (
       <>
         <ContentHeader
-          breadcrumbs={breadcrumbs}
+          breadcrumbs={cleanBreadcrumbs}
           watermark={`Ch${chapter.number}`}
           eyebrow={
             <div className="flex items-center gap-2">
               <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
               <Chip>{bookDisplayTitle}</Chip>
+              {part && (
+                <Chip tone="brand">{t(part.title) || `${uiText("Part")} ${part.number}`}</Chip>
+              )}
               <Chip>{uiText("Chapter")}{' '}{chapter.number}</Chip>
             </div>
           }
@@ -560,12 +812,15 @@ export default function ReferenceSolutionsPage({ data, breadcrumbs, path, previe
   return (
     <>
       <ContentHeader
-        breadcrumbs={breadcrumbs}
+        breadcrumbs={cleanBreadcrumbs}
         watermark={`Ex${exercise.number}`}
         eyebrow={
           <div className="flex items-center gap-2">
             <Chip tone="brand">{uiText("Class")}{' '}{cls.number}</Chip>
             <Chip>{bookDisplayTitle}</Chip>
+            {part && (
+              <Chip tone="brand">{t(part.title) || `${uiText("Part")} ${part.number}`}</Chip>
+            )}
             <Link to={chapter.url} className="text-xs font-semibold text-muted-foreground hover:text-brand">{' '}{uiText("Ch")}{' '}{chapter.number}{(() => {
               const raw = cleanChTitle(t(chapter.title)) || cleanChTitle(chapter.title?.en) || cleanChTitle(chapter.title?.hi);
               return raw ? ` · ${raw}` : '';

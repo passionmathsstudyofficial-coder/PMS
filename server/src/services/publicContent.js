@@ -3,6 +3,7 @@ import { BookClass } from '../models/BookClass.js';
 import {
   AcademicSession,
   Book,
+  BookPart,
   Chapter,
   ClassLevel,
   Exercise,
@@ -1026,8 +1027,14 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const refCrumb = { label: { hi: 'संदर्भ समाधान', en: 'Reference Solutions' }, url: urls.referenceSolutions() };
 
   // Load registered reference books from DB + canonical list
+  const refBookFilter = {
+    $or: [
+      { category: 'reference' },
+      { slug: { $in: ['ml-aggarwal', 'rd-sharma', 'rs-aggarwal', 'kc-sinha-maths'] } },
+    ],
+  };
   const [dbBooks, sessions] = await Promise.all([
-    Book.find(vis(Book, preview, { category: 'reference' }))
+    Book.find(vis(Book, preview, refBookFilter))
       .sort({ sortOrder: 1, createdAt: -1 })
       .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
       .lean(),
@@ -1162,15 +1169,21 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const dbBookDoc = dbBooks.find((b) => b.slug === bookSlug);
   const bookFilter = { book: dbBookDoc._id };
 
-  const rawChapters = await Chapter.find(vis(Chapter, preview, { class: cls._id, ...bookFilter }))
-    .sort({ sortOrder: 1, number: 1 })
-    .select('number title slug shortDescription image pdfFile pdfUrl introduction notes formulas introVideo seo')
-    .populate([
-      { path: 'image', select: MEDIA_SELECT },
-      { path: 'pdfFile', select: MEDIA_SELECT },
-      { path: 'introVideo', select: VIDEO_SELECT },
-    ])
-    .lean();
+  const [rawChapters, rawParts] = await Promise.all([
+    Chapter.find(vis(Chapter, preview, { class: cls._id, ...bookFilter }))
+      .sort({ sortOrder: 1, number: 1 })
+      .select('number title slug shortDescription image pdfFile pdfUrl introduction notes formulas introVideo seo part')
+      .populate([
+        { path: 'image', select: MEDIA_SELECT },
+        { path: 'pdfFile', select: MEDIA_SELECT },
+        { path: 'introVideo', select: VIDEO_SELECT },
+        { path: 'part', select: 'number title slug shortDescription' },
+      ])
+      .lean(),
+    BookPart.find(vis(BookPart, preview, { book: dbBookDoc._id, class: cls._id }))
+      .sort({ sortOrder: 1, number: 1 })
+      .lean(),
+  ]);
 
   const chapterIds = rawChapters.map((c) => c._id);
   const rawExercises = await Exercise.find(vis(Exercise, preview, { chapter: { $in: chapterIds } }))
@@ -1183,17 +1196,25 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   for (const ex of rawExercises) {
     const key = String(ex.chapter);
     if (!exercisesByChapter.has(key)) exercisesByChapter.set(key, []);
+    const parentCh = rawChapters.find((c) => String(c._id) === key) || {};
     exercisesByChapter.get(key).push({
       ...ex,
-      url: urls.referenceExercise(book, cls, rawChapters.find((c) => String(c._id) === key) || {}, ex),
+      url: urls.referenceExercise(book, cls, parentCh, ex, parentCh.part),
     });
   }
 
   const chapters = rawChapters.map((ch) => ({
     ...ch,
-    url: urls.referenceChapter(book, cls, ch),
+    url: urls.referenceChapter(book, cls, ch, ch.part),
     exercises: exercisesByChapter.get(String(ch._id)) || [],
   }));
+
+  const partsWithChapters = rawParts.map((p) => ({
+    ...p,
+    url: urls.referenceBookPart(book, cls, p),
+    chapters: chapters.filter((c) => String(c.part?._id || c.part) === String(p._id)),
+  }));
+  const unassignedChapters = chapters.filter((c) => !c.part);
 
   if (segments.length === 3) {
     const [classNotes, classTopics, classImpQuestions] = await Promise.all([
@@ -1221,6 +1242,9 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         book,
         class: cls,
         chapters,
+        parts: partsWithChapters,
+        unassignedChapters,
+        hasParts: rawParts.length > 0,
         books: allBooks,
         classes: entriesFor(book),
         notes: classNotes,
@@ -1238,12 +1262,59 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     };
   }
 
-  // 4. Chapter page: /reference-solutions/:bookSlug/class-:number/:chapterSlug
-  const chapterSegment = segments[3];
+  // Check if segments[3] matches a Part/Volume
+  const matchedPart = rawParts.find((p) => p.slug === segments[3]);
+  const isPartRoute = Boolean(matchedPart);
+  const partCrumb = matchedPart
+    ? {
+        label: {
+          en: matchedPart.title?.en || `Part ${matchedPart.number}`,
+          hi: matchedPart.title?.hi || `भाग ${matchedPart.number}`,
+        },
+        url: urls.referenceBookPart(book, cls, matchedPart),
+      }
+    : null;
+
+  // 3b. Part page: /reference-solutions/:bookSlug/class-:number/:partSlug
+  if (isPartRoute && segments.length === 4) {
+    const partChapters = chapters.filter((c) => String(c.part?._id || c.part) === String(matchedPart._id));
+    return {
+      type: 'referenceSolutions',
+      data: {
+        level: 'part',
+        book,
+        class: cls,
+        part: matchedPart,
+        chapters: partChapters,
+        parts: partsWithChapters,
+        books: allBooks,
+        classes: entriesFor(book),
+        academicSessions: activeSessions,
+        currentSession,
+      },
+      breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, partCrumb],
+      seo: seoFor(matchedPart, {
+        title: `${pick(book.title, 'en')} Class ${cls.number} ${pick(matchedPart.title, 'en')} Solutions | Passion Maths Study`,
+        description: `Complete solutions for ${pick(book.title, 'en')} Class ${cls.number} ${pick(matchedPart.title, 'en')} chapters and exercises with step-by-step explanations.`,
+        url: urls.referenceBookPart(book, cls, matchedPart),
+      }),
+    };
+  }
+
+  const baseCrumbs = [home, refCrumb, bookCrumb, classCrumb, ...(isPartRoute ? [partCrumb] : [])];
+  const chapterIndex = isPartRoute ? 4 : 3;
+
+  // 4. Chapter page:
+  // Legacy: /reference-solutions/:bookSlug/class-:number/:chapterSlug
+  // In Part: /reference-solutions/:bookSlug/class-:number/:partSlug/:chapterSlug
+  const chapterSegment = segments[chapterIndex];
+  if (!chapterSegment) throw new ApiError(404, 'Chapter not found');
   const numMatch = chapterSegment.match(/\d+/);
   const chNum = numMatch ? Number(numMatch[0]) : null;
-  const chapter = chapters.find((c) => c.slug === chapterSegment)
-    || chapters.find((c) => chNum !== null && c.number === chNum);
+  const chapter = chapters.find((c) => {
+    if (isPartRoute && String(c.part?._id || c.part) !== String(matchedPart._id)) return false;
+    return c.slug === chapterSegment || (chNum !== null && c.number === chNum);
+  });
   if (!chapter) throw new ApiError(404, 'Chapter not found');
   if (override?.entityType === 'Chapter' && String(override.id) === String(chapter._id)) {
     const draft = Chapter.hydrate(chapter);
@@ -1258,7 +1329,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const chLabelHi = (chapter.title?.hi && compatibleText(chapter.title.hi, 'hi'))
     ? chapter.title.hi
     : (chapter.title?.en || (typeof chapter.title === 'string' ? chapter.title : '') || `अध्याय ${chapter.number}`);
-  const chapterCrumb = { label: { en: chLabelEn, hi: chLabelHi }, url: urls.referenceChapter(book, cls, chapter) };
+  const chapterCrumb = { label: { en: chLabelEn, hi: chLabelHi }, url: urls.referenceChapter(book, cls, chapter, matchedPart || chapter.part) };
   const chapterExercises = chapter.exercises || [];
 
   const [resources, siblingChapters] = await Promise.all([
@@ -1269,14 +1340,16 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         { path: 'thumbnail', select: MEDIA_SELECT },
       ])
       .lean(),
-    chapters,
+    isPartRoute
+      ? chapters.filter((c) => String(c.part?._id || c.part) === String(matchedPart._id))
+      : chapters,
   ]);
 
   const chIndex = siblingChapters.findIndex((c) => String(c._id) === String(chapter._id));
   const prevChapter = chIndex > 0 ? siblingChapters[chIndex - 1] : null;
   const nextChapter = chIndex < siblingChapters.length - 1 ? siblingChapters[chIndex + 1] : null;
 
-  if (segments.length === 4) {
+  if (segments.length === chapterIndex + 1) {
     const [topics, notes, importantQuestions] = await Promise.all([
       Topic.find(vis(Topic, preview, { chapter: chapter._id }))
         .sort({ sortOrder: 1, number: 1 })
@@ -1301,6 +1374,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         level: 'chapter',
         book,
         class: cls,
+        part: matchedPart || chapter.part || null,
         chapter,
         exercises: chapterExercises,
         topics,
@@ -1308,22 +1382,23 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
         importantQuestions,
         resources: resources.map(formatResource),
         siblingChapters,
-        prev: prevChapter ? { label: prevChapter.title, url: urls.referenceChapter(book, cls, prevChapter) } : null,
-        next: nextChapter ? { label: nextChapter.title, url: urls.referenceChapter(book, cls, nextChapter) } : null,
+        prev: prevChapter ? { label: prevChapter.title, url: urls.referenceChapter(book, cls, prevChapter, matchedPart || chapter.part) } : null,
+        next: nextChapter ? { label: nextChapter.title, url: urls.referenceChapter(book, cls, nextChapter, matchedPart || chapter.part) } : null,
         academicSessions: activeSessions,
         currentSession,
       },
-      breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb],
+      breadcrumbs: [...baseCrumbs, chapterCrumb],
       seo: {
         title: `${pick(book.title, 'en')} Class ${cls.number} Chapter ${chapter.number} Solutions | ${pick(chapter.title, 'en')}`,
         description: `Download and view ${pick(book.title, 'en')} Class ${cls.number} Chapter ${chapter.number} (${pick(chapter.title, 'en')}) exercise solutions, PDF notes, and formula sheets.`,
-        canonical: urls.referenceChapter(book, cls, chapter),
+        canonical: urls.referenceChapter(book, cls, chapter, matchedPart || chapter.part),
       },
     };
   }
 
-  if (segments.length === 6 && segments[4] === 'topic') {
-    const topic = await Topic.findOne(vis(Topic, preview, { chapter: chapter._id, slug: segments[5] }));
+  const topicIndex = chapterIndex + 1;
+  if (segments.length === chapterIndex + 3 && segments[topicIndex] === 'topic') {
+    const topic = await Topic.findOne(vis(Topic, preview, { chapter: chapter._id, slug: segments[topicIndex + 1] }));
     if (!topic) throw new ApiError(404, 'Topic not found');
     applyOverride(topic, override, 'Topic');
     await topic.populate([{ path: 'image', select: MEDIA_SELECT }, { path: 'featuredImage', select: MEDIA_SELECT },
@@ -1331,11 +1406,15 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
       { path: 'attachments.media', select: MEDIA_SELECT }, { path: 'seo.ogImage', select: MEDIA_SELECT }]);
     const subject = await Subject.findById(topic.subject).lean();
     return shapeTopic(topic, { cls, subject, ch: chapter, preview, override, terms,
-      baseCrumbs: [home, refCrumb, bookCrumb, classCrumb], session, referenceBook: book });
+      baseCrumbs, session, referenceBook: book });
   }
 
-  // 5. Exercise page: /reference-solutions/:bookSlug/class-:number/:chapterSlug/:exerciseSlug
-  const exerciseSegment = segments[4];
+  // 5. Exercise page:
+  // Legacy: /reference-solutions/:bookSlug/class-:number/:chapterSlug/:exerciseSlug
+  // In Part: /reference-solutions/:bookSlug/class-:number/:partSlug/:chapterSlug/:exerciseSlug
+  const exerciseIndex = chapterIndex + 1;
+  const exerciseSegment = segments[exerciseIndex];
+  if (!exerciseSegment) throw new ApiError(404, 'Exercise not found');
   const exClean = exerciseSegment.replace(/^(exercise|prashnavali)-?/i, '');
   let exercise = await Exercise.findOne(vis(Exercise, preview, {
     chapter: chapter._id,
@@ -1357,13 +1436,14 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     exercise = draft.toObject();
   }
 
-  const exerciseCrumb = { label: { hi: `अभ्यास ${exercise.number}`, en: `Exercise ${exercise.number}` }, url: urls.referenceExercise(book, cls, chapter, exercise) };
+  const exerciseCrumb = { label: { hi: `अभ्यास ${exercise.number}`, en: `Exercise ${exercise.number}` }, url: urls.referenceExercise(book, cls, chapter, exercise, matchedPart || chapter.part) };
 
-  if (segments.length === 6) {
-    const q = await Question.findOne(vis(Question, preview, { exercise: exercise._id, slug: segments[5] })).populate(questionPopulate);
+  const questionIndex = exerciseIndex + 1;
+  if (segments.length === questionIndex + 1) {
+    const q = await Question.findOne(vis(Question, preview, { exercise: exercise._id, slug: segments[questionIndex] })).populate(questionPopulate);
     if (!q) throw new ApiError(404, 'Question not found');
     applyOverride(q, override, 'Question');
-    const base = urls.referenceExercise(book, cls, chapter, exercise);
+    const base = urls.referenceExercise(book, cls, chapter, exercise, matchedPart || chapter.part);
     const question = await shapeQuestion(q, { preview, override, base });
     const siblings = await Question.find(vis(Question, preview, { exercise: exercise._id }))
       .sort({ sortOrder: 1, createdAt: 1 }).select('number slug').lean();
@@ -1371,9 +1451,9 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     const nav = item => item ? { label: term(terms, 'question', item.number), url: `${base}/${item.slug}` } : null;
     return {
       type: 'question',
-      data: { class: cls, book, chapter: { ...chapter, url: urls.referenceChapter(book, cls, chapter) },
+      data: { class: cls, book, part: matchedPart || chapter.part || null, chapter: { ...chapter, url: urls.referenceChapter(book, cls, chapter, matchedPart || chapter.part) },
         exercise: { ...exercise, url: base }, question, prev: nav(siblings[index - 1]), next: nav(siblings[index + 1]) },
-      breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb, exerciseCrumb,
+      breadcrumbs: [...baseCrumbs, chapterCrumb, exerciseCrumb,
         { label: term(terms, 'question', q.number), url: question.url }],
       seo: seoFor(q, { title: `${pick(book.title, 'en')} Exercise ${exercise.number} Question ${q.number}`, description: describe(question.text), url: question.url }),
     };
@@ -1397,7 +1477,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
     ]);
     totalQuestions = count;
     for (const q of questions) {
-      shapedQuestions.push(await shapeQuestion(q, { preview, base: urls.referenceExercise(book, cls, chapter, exercise) }));
+      shapedQuestions.push(await shapeQuestion(q, { preview, base: urls.referenceExercise(book, cls, chapter, exercise, matchedPart || chapter.part) }));
     }
   }
 
@@ -1411,6 +1491,7 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
       level: 'exercise',
       book,
       class: cls,
+      part: matchedPart || chapter.part || null,
       chapter,
       exercise: {
         ...exercise,
@@ -1420,17 +1501,17 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
       questions: shapedQuestions,
       pagination: { page, limit: pageSize, total: totalQuestions, pages: Math.ceil(totalQuestions / pageSize) || 1 },
       siblings: chapterExercises,
-      prev: prevEx ? { label: `Exercise ${prevEx.number}`, url: urls.referenceExercise(book, cls, chapter, prevEx) } : null,
-      next: nextEx ? { label: `Exercise ${nextEx.number}`, url: urls.referenceExercise(book, cls, chapter, nextEx) } : null,
+      prev: prevEx ? { label: `Exercise ${prevEx.number}`, url: urls.referenceExercise(book, cls, chapter, prevEx, matchedPart || chapter.part) } : null,
+      next: nextEx ? { label: `Exercise ${nextEx.number}`, url: urls.referenceExercise(book, cls, chapter, nextEx, matchedPart || chapter.part) } : null,
       resources: resources.map(formatResource),
       academicSessions: activeSessions,
       currentSession,
     },
-    breadcrumbs: [home, refCrumb, bookCrumb, classCrumb, chapterCrumb, exerciseCrumb],
+    breadcrumbs: [...baseCrumbs, chapterCrumb, exerciseCrumb],
     seo: {
       title: `${pick(book.title, 'en')} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} Solutions`,
       description: `Step-by-step solutions for ${pick(book.title, 'en')} Class ${cls.number} Chapter ${chapter.number} Exercise ${exercise.number} with diagrams, formulas, and video explanations.`,
-      canonical: urls.referenceExercise(book, cls, chapter, exercise),
+      canonical: urls.referenceExercise(book, cls, chapter, exercise, matchedPart || chapter.part),
     },
   };
 }

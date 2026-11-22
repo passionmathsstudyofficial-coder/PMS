@@ -56,6 +56,12 @@ function isExcludedRefBook(book) {
   const rawSlug = (book.slug || '').trim().toLowerCase();
   const cleanSlug = rawSlug.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
+  // Always keep all 4 canonical reference books
+  if (['ml-aggarwal', 'rd-sharma', 'rs-aggarwal', 'kc-sinha-maths'].includes(cleanSlug) ||
+      ['ml-aggarwal', 'rd-sharma', 'rs-aggarwal', 'kc-sinha-maths'].includes(rawSlug)) {
+    return false;
+  }
+
   const en = (book.title?.en || (typeof book.title === 'string' ? book.title : '') || book.author || '').toLowerCase().trim();
   const hi = (book.title?.hi || '').toLowerCase().trim();
 
@@ -123,7 +129,13 @@ const CANONICAL_REF_TITLES = {
 
 export async function publicReferenceBooks(preview = false) {
   // Use the same records, slugs and class constraints as the public resolver.
-  const books = await Book.find(preview ? { category: 'reference' } : Book.publicFilter({ category: 'reference' }))
+  const filter = {
+    $or: [
+      { category: 'reference' },
+      { slug: { $in: ['ml-aggarwal', 'rd-sharma', 'rs-aggarwal', 'kc-sinha-maths'] } },
+    ],
+  };
+  const books = await Book.find(preview ? filter : Book.publicFilter(filter))
     .sort({ sortOrder: 1, createdAt: -1 })
     .populate([{ path: 'coverImage', select: MEDIA_SELECT }, { path: 'class', select: 'number' }])
     .lean();
