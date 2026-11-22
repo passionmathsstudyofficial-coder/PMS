@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 import { AnnouncementBar } from './AnnouncementBar.jsx';
 import { MainNavbar } from './MainNavbar.jsx';
 import { MobileMenu } from './MobileMenu.jsx';
-import { SponsoredResourcesBar } from './SponsoredResourcesBar.jsx';
 
 export function Header({ className }) {
   useUiLanguage();
@@ -25,9 +24,6 @@ export function Header({ className }) {
 
       {/* Row 2: Main Desktop & Mobile Navigation Bar */}
       <MainNavbar onOpenMobileMenu={(event) => { mobileTriggerRef.current = event.currentTarget; setMobileOpen(true); }} />
-
-      {/* Row 3: Sponsored Resources Bar */}
-      <SponsoredResourcesBar />
 
       {/* Mobile Drawer Navigation */}
       <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} returnFocusRef={mobileTriggerRef} />

@@ -96,7 +96,7 @@ const siteSettingsSchema = new Schema(
       iconUrl: { type: String, default: '', maxlength: 500 },
     },
     sponsoredBar: {
-      enabled: { type: Boolean, default: true },
+      enabled: { type: Boolean, default: false },
       badge: l10n(),
       text: l10n(),
       linkLabel: l10n(),
