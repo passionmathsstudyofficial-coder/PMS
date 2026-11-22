@@ -43,7 +43,7 @@ const chapterSchema = new Schema(
 
 chapterSchema.plugin(contentPlugin);
 chapterSchema.index({ class: 1, subject: 1, book: 1, part: 1, academicSession: 1, slug: 1 }, { unique: true });
-chapterSchema.index({ book: 1, class: 1, part: 1, academicSession: 1, number: 1 }, { unique: true, partialFilterExpression: { book: { $type: 'objectId' } } });
+chapterSchema.index({ book: 1, class: 1, part: 1, academicSession: 1, number: 1 }, { unique: true, partialFilterExpression: { book: { $type: 'objectId' }, part: { $type: 'objectId' } } });
 chapterSchema.index({ class: 1, subject: 1, sortOrder: 1, number: 1 });
 chapterSchema.index({ searchText: 'text' }, { default_language: 'none' });
 

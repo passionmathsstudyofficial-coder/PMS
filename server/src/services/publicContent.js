@@ -1313,7 +1313,10 @@ async function resolveReferenceSolutionsPath(segments, { preview, page, limit, s
   const chNum = numMatch ? Number(numMatch[0]) : null;
   const chapter = chapters.find((c) => {
     if (isPartRoute && String(c.part?._id || c.part) !== String(matchedPart._id)) return false;
-    return c.slug === chapterSegment || (chNum !== null && c.number === chNum);
+    return c.slug === chapterSegment;
+  }) || chapters.find((c) => {
+    if (isPartRoute && String(c.part?._id || c.part) !== String(matchedPart._id)) return false;
+    return chNum !== null && c.number === chNum;
   });
   if (!chapter) throw new ApiError(404, 'Chapter not found');
   if (override?.entityType === 'Chapter' && String(override.id) === String(chapter._id)) {

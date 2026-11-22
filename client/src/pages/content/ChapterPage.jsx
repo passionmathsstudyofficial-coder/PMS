@@ -72,7 +72,13 @@ export default function ChapterPage({ data, breadcrumbs, related }) {
             </Chip>
           </div>
         }
-        title={t(chapter.title, mode)}
+        title={(() => {
+          const raw = t(chapter.title, mode);
+          const isInvalid = !raw || raw.includes('Content not available') || raw.includes('उपलब्ध नहीं') || raw.includes('सामग्री उपलब्ध नहीं');
+          const clean = !isInvalid ? raw.trim() : (typeof chapter.title === 'object' ? (chapter.title?.en || chapter.title?.hi) : (typeof chapter.title === 'string' ? chapter.title : ''));
+          const safe = clean && !clean.includes('Content not available') && !clean.includes('उपलब्ध नहीं') && !clean.includes('सामग्री उपलब्ध नहीं') ? clean.trim() : '';
+          return safe || `${term('chapter')} ${chapter.number}`;
+        })()}
         subtitle={t(chapter.shortDescription, mode)}
         aside={<LanguageNotice />}
       >

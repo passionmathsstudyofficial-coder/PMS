@@ -16,6 +16,7 @@ import {
 import { MEDIA_SELECT } from './populate.js';
 import { getTerms } from './terms.js';
 import { urls } from './urls.js';
+import { compatibleText } from '../../../shared/localization.js';
 
 export async function publicClasses(preview = false) {
   const filter = preview ? {} : ClassLevel.publicFilter();

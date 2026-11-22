@@ -54,7 +54,13 @@ export default function ExercisePage({ data, breadcrumbs, related, path, preview
           <>
             <Chip tone="brand">{t(cls.name) || `${term('class')} ${cls.number}`}</Chip>
             <Link to={chapter.url} className="inline-flex h-6 items-center rounded-full bg-muted px-2.5 text-[11px] font-semibold text-muted-foreground hover:text-brand">
-              {term('chapter')} {chapter.number} · {t(chapter.title)}
+              {(() => {
+                const raw = t(chapter.title);
+                const isInvalid = !raw || raw.includes('Content not available') || raw.includes('उपलब्ध नहीं') || raw.includes('सामग्री उपलब्ध नहीं');
+                const clean = !isInvalid ? raw.trim() : (typeof chapter.title === 'object' ? (chapter.title?.en || chapter.title?.hi) : (typeof chapter.title === 'string' ? chapter.title : ''));
+                const safe = clean && !clean.includes('Content not available') && !clean.includes('उपलब्ध नहीं') && !clean.includes('सामग्री उपलब्ध नहीं') ? clean.trim() : '';
+                return safe ? `${term('chapter')} ${chapter.number} · ${safe}` : `${term('chapter')} ${chapter.number}`;
+              })()}
             </Link>
           </>
         }

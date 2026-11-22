@@ -15,7 +15,7 @@ import { EmptyState } from '@/components/site/States.jsx';
 import { errorMessage, get } from '@/lib/api';
 import { hasContent, useL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
-import { ContentHeader, StatPills } from './ContentHeader.jsx';
+import { ContentHeader } from './ContentHeader.jsx';
 
 function ImportantQuestionCard({ item, index }) {
   useUiLanguage();
@@ -97,9 +97,7 @@ export default function ImportantQuestionsPage({ data, breadcrumbs, path, previe
         eyebrow={<Chip tone="saffron">{t(cls.name) || `${term('class')} ${cls.number}`}</Chip>}
         title={term('importantQuestions')}
         aside={<LanguageNotice />}
-      >
-        <StatPills items={[{ value: pagination.total, label: term('questions') }]} />
-      </ContentHeader>
+      />
       <div className="container-page max-w-4xl space-y-6 py-8">
         {items.length === 0 && <EmptyState icon={Star} title={term('comingSoon')} />}
         {items.map((item, index) => (
