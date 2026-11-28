@@ -218,6 +218,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       content: initialContent,
       category: q.category || (activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory),
       chapter: q.chapter?._id || q.chapter || '',
+      subject: q.subject?._id || q.subject || '',
       year: q.year || defaultYear,
       paperSet: q.paperSet || '',
       marks: q.marks ?? '',
@@ -320,10 +321,22 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     setSaving(true);
     try {
       const dbCat = activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory;
-      // Auto-extract if not yet extracted
-      const finalExtracted = form.extractedQuestions?.length > 0
+      // Auto-extract if not yet extracted and sanitize payload
+      const rawExtracted = form.extractedQuestions?.length > 0
         ? form.extractedQuestions
         : parseAndClassifyQuestions(form.content?.en || form.content?.hi || '');
+
+      const finalExtracted = (rawExtracted || []).map((qItem, idx) => ({
+        questionNumber: String(qItem.questionNumber || idx + 1).trim(),
+        marks: typeof qItem.marks === 'number' && !isNaN(qItem.marks) ? qItem.marks : (Number(qItem.marks) || 2),
+        questionType: ['vsa', 'short', 'long', 'case_study', 'mcq', 'short_answer', 'long_answer', 'case_based', 'numerical', 'proof'].includes(qItem.questionType)
+          ? qItem.questionType
+          : 'short',
+        questionHtml: qItem.questionHtml || '',
+        solutionHtml: qItem.solutionHtml || '',
+        needsReview: Boolean(qItem.needsReview),
+        confidence: String(qItem.confidence || 'high'),
+      }));
 
       const payload = {
         title: form.title,
@@ -331,8 +344,8 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
         text: form.content, // sync text with content so all endpoints render
         category: dbCat,
         class: selectedClass._id,
-        subject: mathSubId,
-        chapter: form.chapter || undefined,
+        subject: form.subject || mathSubId,
+        chapter: form.chapter ? form.chapter : null,
         academicSession: selectedSession,
         year: form.year ? Number(form.year) : undefined,
         paperSet: form.paperSet || '',
