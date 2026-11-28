@@ -1,3 +1,4 @@
+import { QuestionPaperContent } from '@/components/content/QuestionPaperContent.jsx';
 import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -56,8 +57,20 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
 
   const filteredQuestions = questions.filter((q) => {
     if (selectedChapter !== 'all' && q.chapter && String(q.chapter._id || q.chapter) !== selectedChapter) return false;
-    if (selectedType !== 'all' && q.questionType !== selectedType) return false;
-    return true;
+    if (selectedType === 'all') return true;
+    if (selectedType === 'vsa') {
+      return q.questionType === 'vsa' || q.marks === 1 || q.marks === 2;
+    }
+    if (selectedType === 'short') {
+      return q.questionType === 'short' || q.questionType === 'short_answer' || q.marks === 2 || q.marks === 3;
+    }
+    if (selectedType === 'long') {
+      return q.questionType === 'long' || q.questionType === 'long_answer' || (q.marks >= 4 && q.questionType !== 'case_study');
+    }
+    if (selectedType === 'case_study') {
+      return q.questionType === 'case_study' || q.questionType === 'case_based';
+    }
+    return q.questionType === selectedType;
   });
 
   return (
@@ -150,10 +163,11 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
               <span className="text-xs font-bold text-foreground">
                 {uiText("Type")}:
               </span>
-              <div className="flex gap-1">
+              <div className="flex flex-wrap gap-1">
                 {[
                   { id: 'all', label: uiText('All') },
-                  { id: 'short', label: uiText('Short (2-3M)') },
+                  { id: 'vsa', label: uiText('VSA (1–2M)') },
+                  { id: 'short', label: uiText('Short (2–3M)') },
                   { id: 'long', label: uiText('Long (5M)') },
                   { id: 'case_study', label: uiText('Case Study') },
                 ].map((type) => (
@@ -180,65 +194,13 @@ export default function VviQuestionsPage({ data, breadcrumbs }) {
           </div>
         </div>
 
-        {/* Questions List */}
+        {/* Questions List with Highlighted Containers & Step-by-Step Solutions */}
         <section className="space-y-6">
           {filteredQuestions.length > 0 ? (
-            filteredQuestions.map((q, idx) => {
-              const images = (q.attachments || []).map((a) =>
-                toViewerImage(a.media, { alt: t(a.alt) || t(a.media?.alt), caption: t(a.caption) })
-              );
-              return (
-                <article
-                  key={q._id}
-                  id={q.slug}
-                  className="overflow-hidden rounded-2xl border border-amber-500/20 bg-card shadow-xs transition hover:border-brand/40"
-                >
-                  <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/10 px-4 py-3 sm:px-5">
-                    {(q.year || q.board) && (
-                      <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
-                        {q.board || 'CBSE'} {q.year || ''}
-                      </span>
-                    )}
-                    <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-extrabold text-red-600">
-                      <Flame className="size-3" />{uiText(" Board Special")}
-                    </span>
-                    {q.chapter && (
-                      <span className="ml-auto text-xs font-semibold text-brand">
-                        {term('chapter')} {q.chapter.number}: {t(q.chapter.title)}
-                      </span>
-                    )}
-                  </header>
-
-                  <div className="space-y-4 p-5">
-                    <RichContent html={t(q.text, q.languageMode)} className="text-base font-medium" />
-                    <StudyArticleContent record={q} question showContent={false} showAttachments={false} />
-
-                    {q.attachments?.length > 0 && (
-                      <div className="grid gap-4 sm:grid-cols-2">
-                        {q.attachments.map((a, i) => (
-                          <Figure
-                            key={a._id || i}
-                            media={a.media}
-                            alt={images[i]?.alt}
-                            caption={images[i]?.caption}
-                            onOpen={() => openViewer(images, i)}
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    {q.blocks?.length > 0 && (
-                      <div className="rounded-xl border border-brand/15 bg-brand/[0.02] p-4">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-brand mb-3">
-                          {uiText("Detailed Step-by-Step Solution")}
-                        </h4>
-                        <SolutionRenderer blocks={q.blocks} languageMode={q.languageMode} />
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-            })
+            <QuestionPaperContent
+              questions={filteredQuestions}
+              pageType="vvi"
+            />
           ) : (
             <div className="rounded-2xl border border-dashed p-12 text-center bg-card/50">
               <Sparkles className="size-10 text-muted-foreground mx-auto mb-3" />

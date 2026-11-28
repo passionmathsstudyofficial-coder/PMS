@@ -177,20 +177,20 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
           </div>
         </div>
 
-        {/* Question Papers List & Downloads */}
-        <section className="mb-12">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <FileText className="size-5 text-brand" />
-              <span>
-                {selectedYear !== 'all'
-                  ? getPaperBadgeLabel('pyq', selectedYear)
-                  : uiText("Previous Year Question Papers & Marking Schemes")}
-              </span>
-            </h2>
-          </div>
+        {/* Question Papers List & Downloads (shown when papers exist) */}
+        {filteredPapers.length > 0 && (
+          <section className="mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <FileText className="size-5 text-brand" />
+                <span>
+                  {selectedYear !== 'all'
+                    ? `${getPaperBadgeLabel('pyq', selectedYear)} — ${uiText("Question Papers & Marking Schemes")}`
+                    : uiText("Previous Year Question Papers & Marking Schemes")}
+                </span>
+              </h2>
+            </div>
 
-          {filteredPapers.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredPapers.map((paper) => (
                 <div
@@ -243,21 +243,24 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed p-8 text-center bg-card/50">
-              <p className="text-sm text-muted-foreground mb-3">
-                {selectedYear !== 'all'
-                  ? uiText("Question papers for the selected year will be uploaded shortly.")
-                  : uiText("Question papers and solutions will be uploaded shortly.")}
-              </p>
-              {selectedYear !== 'all' && (
-                <Button variant="outline" size="sm" onClick={() => setSelectedYear('all')}>
-                  {uiText("View All Available Years")}
-                </Button>
-              )}
-            </div>
-          )}
-        </section>
+          </section>
+        )}
+
+        {/* Empty State shown only when neither papers nor solved questions exist */}
+        {filteredPapers.length === 0 && filteredQuestions.length === 0 && (
+          <div className="rounded-2xl border border-dashed p-8 text-center bg-card/50 mb-12">
+            <p className="text-sm text-muted-foreground mb-3">
+              {selectedYear !== 'all'
+                ? uiText("Question papers for the selected year will be uploaded shortly.")
+                : uiText("Question papers and solutions will be uploaded shortly.")}
+            </p>
+            {selectedYear !== 'all' && (
+              <Button variant="outline" size="sm" onClick={() => setSelectedYear('all')}>
+                {uiText("View All Available Years")}
+              </Button>
+            )}
+          </div>
+        )}
 
         {/* Solved Questions Section with Visual Distinction and Highlighted Cards */}
         {filteredQuestions.length > 0 && (

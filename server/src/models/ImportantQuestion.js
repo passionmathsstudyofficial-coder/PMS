@@ -51,9 +51,24 @@ const importantQuestionSchema = new mongoose.Schema(
     markingScheme: richL10n(),
     questionType: {
       type: String,
-      enum: ['mcq', 'true_false', 'fill_blank', 'short_answer', 'long_answer', 'numerical', 'case_based', 'assertion_reason', 'competency_based', 'proof', 'subjective', 'short', 'long', 'case_study'],
+      enum: ['vsa', 'mcq', 'true_false', 'fill_blank', 'short_answer', 'long_answer', 'numerical', 'case_based', 'assertion_reason', 'competency_based', 'proof', 'subjective', 'short', 'long', 'case_study'],
       default: 'short',
     },
+    extractedQuestions: [
+      {
+        questionNumber: { type: String, default: '1', trim: true },
+        marks: { type: Number, default: 2 },
+        questionType: {
+          type: String,
+          enum: ['vsa', 'short', 'long', 'case_study', 'mcq', 'short_answer', 'long_answer', 'case_based', 'numerical', 'proof'],
+          default: 'short',
+        },
+        questionHtml: richL10n(),
+        solutionHtml: richL10n(),
+        needsReview: { type: Boolean, default: false },
+        confidence: { type: String, default: 'high' },
+      },
+    ],
     featured: { type: Boolean, default: false },
     tags: [{ type: String, trim: true, lowercase: true, maxlength: 60 }],
     languageMode,

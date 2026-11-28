@@ -6,6 +6,7 @@ import { Figure } from '@/components/content/Figure.jsx';
 import { uiText } from '@/lib/uiLanguage.js';
 import { useL10n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { getQuestionTypeBadge } from '@/lib/questionClassifier.js';
 
 /**
  * Dynamic Paper Badge & Label Generator based on page/category type.
@@ -35,6 +36,16 @@ export function getPaperBadgeLabel(pageType, year, board = 'CBSE', customLabel) 
     normType === 'cbsesamplepapers'
   ) {
     return yearStr ? `${boardPrefix} Sample Paper ${yearStr}` : `${boardPrefix} Sample Paper`;
+  }
+
+  // VVI / Important Questions -> CBSE Important Questions {year} or CBSE Board Special
+  if (
+    normType === 'vvi' ||
+    normType === 'vviquestions' ||
+    normType === 'important' ||
+    normType === 'importantquestions'
+  ) {
+    return yearStr ? `${boardPrefix} Important Questions ${yearStr}` : `${boardPrefix} Board Special`;
   }
 
   // Default fallback
@@ -181,6 +192,7 @@ export function QuestionItemCard({
   paperSet,
   marks,
   chapter,
+  questionType,
   attachments = [],
   languageMode,
   onImageOpen,
@@ -189,24 +201,25 @@ export function QuestionItemCard({
 }) {
   const t = useL10n();
   const badgeLabel = getPaperBadgeLabel(pageType, year, board, paperLabel);
+  const typeBadge = questionType ? getQuestionTypeBadge(questionType, marks) : null;
 
   return (
     <article className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs transition hover:border-brand/40 hover:shadow-md">
       {/* Question Header */}
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 bg-muted/30 px-4 py-3 sm:px-6">
         <div className="flex flex-wrap items-center gap-2">
-          {questionNumber && (
-            <span className="inline-flex items-center justify-center rounded-xl bg-brand px-3 py-1 text-xs font-black text-white shadow-xs">
-              {uiText("Question")} {questionNumber}
-            </span>
-          )}
           {badgeLabel && (
-            <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
+            <span className="inline-flex items-center rounded-lg bg-brand/10 border border-brand/20 px-3 py-1 text-xs font-extrabold text-brand shadow-2xs">
               {badgeLabel}
             </span>
           )}
+          {typeBadge && (
+            <span className={cn('inline-flex items-center rounded-lg px-2.5 py-0.5 text-[11px] font-bold border shadow-2xs', typeBadge.color)}>
+              {typeBadge.label}
+            </span>
+          )}
           {paperSet && (
-            <span className="rounded-full border border-border/70 bg-card px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+            <span className="rounded-full border border-border/70 bg-card px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
               {paperSet}
             </span>
           )}
@@ -309,7 +322,33 @@ export function QuestionPaperContent({
         const rawContent = t(q.content || q.text, q.languageMode);
         const parsedItems = parseQuestionPaperHtml(rawContent);
         const currentYear = q.year || defaultYear;
-        const currentType = q.category || pageType;
+        const currentType = pageType || q.category || 'pyq';
+
+        // If document has pre-classified extractedQuestions
+        if (q.extractedQuestions?.length > 0) {
+          return (
+            <div key={q._id || idx} className="space-y-6">
+              {q.extractedQuestions.map((item, pIdx) => (
+                <QuestionItemCard
+                  key={`${q._id || idx}-ext-${pIdx}`}
+                  questionNumber={item.questionNumber}
+                  questionHtml={t(item.questionHtml, q.languageMode) || item.questionHtml?.en || item.questionHtml}
+                  solutionHtml={t(item.solutionHtml, q.languageMode) || item.solutionHtml?.en || item.solutionHtml}
+                  year={currentYear}
+                  board={q.board || board}
+                  paperSet={q.paperSet || paperSet}
+                  marks={item.marks || q.marks}
+                  chapter={q.chapter}
+                  questionType={item.questionType || q.questionType}
+                  attachments={q.attachments}
+                  languageMode={q.languageMode}
+                  pageType={currentType}
+                  paperLabel={paperLabel}
+                />
+              ))}
+            </div>
+          );
+        }
 
         // If the document content parsed into multiple questions
         if (parsedItems.length > 1) {
@@ -324,8 +363,9 @@ export function QuestionPaperContent({
                   year={currentYear}
                   board={q.board || board}
                   paperSet={q.paperSet || paperSet}
-                  marks={q.marks}
+                  marks={item.marks || q.marks}
                   chapter={q.chapter}
+                  questionType={item.questionType || q.questionType}
                   attachments={q.attachments}
                   languageMode={q.languageMode}
                   pageType={currentType}
@@ -355,6 +395,7 @@ export function QuestionPaperContent({
             paperSet={q.paperSet || paperSet}
             marks={q.marks}
             chapter={q.chapter}
+            questionType={q.questionType}
             attachments={q.attachments}
             languageMode={q.languageMode}
             pageType={currentType}

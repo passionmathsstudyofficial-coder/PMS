@@ -151,20 +151,6 @@ export function HeroSection({ section }) {
         <div className="absolute top-10 left-1/2 h-72 w-[42rem] max-w-full -translate-x-1/2 rounded-full bg-amber-500/10 blur-3xl" />
       </div>
 
-      {/* Reserved Sponsored / Announcement Strip */}
-      <div className="hidden" data-purpose="ad-slot-reserved-top">
-        <div className="w-full bg-slate-100/90 dark:bg-card/90 border border-dashed border-slate-300 dark:border-border rounded-lg py-2.5 px-4 text-center flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-2">
-            <span className="bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800">{' '}{uiText("प्रायोजित संसाधन")}{' '}</span>
-            <span className="font-medium text-slate-700 dark:text-slate-200">{' '}{uiText("🎯 IIT-JEE फाउंडेशन & NTSE 2025: गणित टेस्ट सीरीज लाइव उपलब्ध")}{' '}</span>
-          </div>
-          <a
-            className="text-brand-600 dark:text-brand-400 font-bold hover:underline inline-flex items-center gap-1"
-            href="#classes"
-          >{' '}{uiText("अन्वेषण करें →")}{' '}</a>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Column: Value Proposition and Action Trigger */}

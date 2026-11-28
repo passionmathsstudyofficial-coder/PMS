@@ -15,6 +15,10 @@ import {
   Sparkles,
   BookOpen,
   Wand2,
+  RefreshCw,
+  AlertTriangle,
+  Check,
+  Layers,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Panel } from '../components/PageHeader.jsx';
@@ -26,6 +30,11 @@ import { cn } from '@/lib/utils';
 import { adminUrl } from '@/lib/config';
 import { RichL10nField } from '../components/fields/RichL10nField.jsx';
 import { L10nField, SelectField, TextField } from '../components/fields/Fields.jsx';
+import {
+  parseAndClassifyQuestions,
+  getQuestionTypeBadge,
+  QUESTION_TYPES,
+} from '@/lib/questionClassifier.js';
 
 export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   useUiLanguage();
@@ -36,6 +45,8 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   const [questions, setQuestions] = useState([]);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
+  const [chapters, setChapters] = useState([]);
+  const [selectedChapter, setSelectedChapter] = useState('all');
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState('2026–27');
   const [selectedYear, setSelectedYear] = useState('all');
@@ -86,6 +97,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     title: computeDynamicTitle(activeCategory, defaultYear, ''),
     content: { en: '', hi: '' },
     category: activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory,
+    chapter: '',
     year: defaultYear,
     paperSet: '',
     marks: '',
@@ -93,6 +105,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     board: 'CBSE',
     pdfUrl: '',
     status: 'published',
+    extractedQuestions: [],
   });
 
   useEffect(() => {
@@ -118,6 +131,27 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     }
     init();
   }, []);
+
+  // Fetch chapters whenever selectedClass changes
+  useEffect(() => {
+    async function loadChapters() {
+      if (!selectedClass?._id) {
+        setChapters([]);
+        return;
+      }
+      try {
+        const res = await get('/content/chapters', {
+          scope: 'admin',
+          class: selectedClass._id,
+          limit: 100,
+        });
+        setChapters(res.items || []);
+      } catch (err) {
+        console.error('Error fetching chapters:', err);
+      }
+    }
+    loadChapters();
+  }, [selectedClass]);
 
   const loadQuestions = async () => {
     if (!selectedClass?._id) return;
@@ -154,6 +188,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       title: initialTitle,
       content: { en: '', hi: '' },
       category: cat,
+      chapter: selectedChapter !== 'all' ? selectedChapter : '',
       year: yr,
       paperSet: '',
       marks: '',
@@ -161,6 +196,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       board: 'CBSE',
       pdfUrl: '',
       status: 'published',
+      extractedQuestions: [],
     });
     setModalOpen(true);
   };
@@ -168,17 +204,20 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
   const openEditModal = (q) => {
     setEditingId(q._id);
     setCustomTitle(true);
-    // Combine existing content / text / blocks if present
     let initialContent = q.content || q.text || { en: '', hi: '' };
-    // If q has blocks but no formatted content, include blocks
     if ((!initialContent.en && !initialContent.hi) && q.blocks?.length > 0) {
       const blocksHtml = q.blocks.map(b => `<p><strong>${b.title?.en || 'Step'}:</strong> ${b.content?.en || ''}</p>`).join('');
       initialContent = { en: blocksHtml, hi: blocksHtml };
     }
+    const existingExtracted = q.extractedQuestions?.length > 0
+      ? q.extractedQuestions
+      : parseAndClassifyQuestions(initialContent.en || initialContent.hi);
+
     setForm({
       title: q.title || computeDynamicTitle(q.category || activeCategory, q.year || defaultYear, q.paperSet),
       content: initialContent,
       category: q.category || (activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory),
+      chapter: q.chapter?._id || q.chapter || '',
       year: q.year || defaultYear,
       paperSet: q.paperSet || '',
       marks: q.marks ?? '',
@@ -186,6 +225,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
       board: q.board || 'CBSE',
       pdfUrl: q.pdfUrl || '',
       status: q.status || 'published',
+      extractedQuestions: existingExtracted,
     });
     setModalOpen(true);
   };
@@ -200,32 +240,67 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     setForm(nextForm);
   };
 
+  // Re-scan editor content and run automatic classification
+  const handleReprocess = () => {
+    const textHtml = form.content?.en || form.content?.hi || '';
+    const classified = parseAndClassifyQuestions(textHtml, form.extractedQuestions);
+    setForm((f) => ({ ...f, extractedQuestions: classified }));
+    toast.success(uiText(`Classified ${classified.length} question(s) successfully`));
+  };
+
+  // Update specific extracted question item (e.g. manual marks or type override)
+  const handleUpdateExtracted = (idx, patch) => {
+    setForm((f) => {
+      const updated = [...(f.extractedQuestions || [])];
+      if (updated[idx]) {
+        updated[idx] = { ...updated[idx], ...patch, confidence: 'manual' };
+      }
+      return { ...f, extractedQuestions: updated };
+    });
+  };
+
   const handleInsertTemplate = () => {
-    const templateEn = `<h3>Question 1</h3>
+    const templateEn = `<h3>Question 1 [2 Marks]</h3>
 <p>Solve the quadratic equation: $2x^2 - 7x + 3 = 0$ using the quadratic formula.</p>
 <h4>Solution:</h4>
 <p><strong>Step 1:</strong> Compare with standard form $ax^2 + bx + c = 0$, where $a = 2, b = -7, c = 3$.</p>
 <p><strong>Step 2:</strong> Discriminant $D = b^2 - 4ac = (-7)^2 - 4(2)(3) = 49 - 24 = 25 > 0$.</p>
 <p><strong>Step 3:</strong> Using quadratic formula $x = \\frac{-b \\pm \\sqrt{D}}{2a} = \\frac{7 \\pm 5}{4}$. Hence $x = 3$ or $x = \\frac{1}{2}$.</p>
 
-<h3>Question 2</h3>
+<h3>Question 2 [5 Marks]</h3>
 <p>Prove that $\\sqrt{5}$ is an irrational number.</p>
 <h4>Solution:</h4>
-<p>Let us assume to the contrary that $\\sqrt{5}$ is rational. Hence $\\sqrt{5} = \\frac{p}{q}$ where $p, q$ are coprime integers and $q \\neq 0$.</p>`;
+<p>Let us assume to the contrary that $\\sqrt{5}$ is rational. Hence $\\sqrt{5} = \\frac{p}{q}$ where $p, q$ are coprime integers and $q \\neq 0$.</p>
 
-    const templateHi = `<h3>प्रश्न 1</h3>
+<h3>Question 3 (Case Study - 4 Marks)</h3>
+<p>Read the following passage and answer the questions that follow: A circus artist is climbing a 20 m long rope tightly stretched from the top of a vertical pole to the ground.</p>
+<p>(i) Find the height of the pole if the angle made by the rope with ground is $30^\\circ$.</p>
+<p>(ii) If the angle changes to $45^\\circ$, calculate the new length of rope required.</p>
+<h4>Solution:</h4>
+<p><strong>(i)</strong> Let $h$ be height. $\\sin 30^\\circ = \\frac{h}{20} \\implies h = 10\\text{ m}$.</p>
+<p><strong>(ii)</strong> $\\sin 45^\\circ = \\frac{10}{L} \\implies L = 10\\sqrt{2}\\text{ m}$.</p>`;
+
+    const templateHi = `<h3>प्रश्न 1 [2 अंक]</h3>
 <p>द्विघात समीकरण हल कीजिए: $2x^2 - 7x + 3 = 0$</p>
 <h4>हल:</h4>
 <p><strong>चरण 1:</strong> मानक रूप $ax^2 + bx + c = 0$ से तुलना करने पर $a = 2, b = -7, c = 3$.</p>
 <p><strong>चरण 2:</strong> विविक्तकर $D = b^2 - 4ac = (-7)^2 - 4(2)(3) = 25 > 0$.</p>
-<p><strong>चरण 3:</strong> $x = \\frac{-b \\pm \\sqrt{D}}{2a} = \\frac{7 \\pm 5}{4}$, अत: $x = 3$ या $x = \\frac{1}{2}$.</p>`;
+<p><strong>चरण 3:</strong> $x = \\frac{-b \\pm \\sqrt{D}}{2a} = \\frac{7 \\pm 5}{4}$, अत: $x = 3$ या $x = \\frac{1}{2}$.</p>
 
+<h3>प्रश्न 2 [5 अंक]</h3>
+<p>सिद्ध कीजिए कि $\\sqrt{5}$ एक अपरिमेय संख्या है।</p>
+<h4>हल:</h4>
+<p>मान लेते हैं कि $\\sqrt{5}$ एक परिमेय संख्या है। अत: $\\sqrt{5} = \\frac{p}{q}$ जहाँ $p$ और $q$ सह-अभाज्य पूर्णांक हैं।</p>`;
+
+    const newContent = {
+      en: form.content?.en ? `${form.content.en}\n<hr/>\n${templateEn}` : templateEn,
+      hi: form.content?.hi ? `${form.content.hi}\n<hr/>\n${templateHi}` : templateHi,
+    };
+    const newClassified = parseAndClassifyQuestions(newContent.en || newContent.hi);
     setForm((f) => ({
       ...f,
-      content: {
-        en: f.content?.en ? `${f.content.en}\n<hr/>\n${templateEn}` : templateEn,
-        hi: f.content?.hi ? `${f.content.hi}\n<hr/>\n${templateHi}` : templateHi,
-      },
+      content: newContent,
+      extractedQuestions: newClassified,
     }));
     toast.success(uiText('Question & Solution template inserted into editor'));
   };
@@ -245,6 +320,11 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
     setSaving(true);
     try {
       const dbCat = activeCategory === 'sample-papers' ? 'sample_paper' : activeCategory;
+      // Auto-extract if not yet extracted
+      const finalExtracted = form.extractedQuestions?.length > 0
+        ? form.extractedQuestions
+        : parseAndClassifyQuestions(form.content?.en || form.content?.hi || '');
+
       const payload = {
         title: form.title,
         content: form.content,
@@ -252,6 +332,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
         category: dbCat,
         class: selectedClass._id,
         subject: mathSubId,
+        chapter: form.chapter || undefined,
         academicSession: selectedSession,
         year: form.year ? Number(form.year) : undefined,
         paperSet: form.paperSet || '',
@@ -260,6 +341,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
         board: form.board || 'CBSE',
         pdfUrl: form.pdfUrl || '',
         status: form.status || 'published',
+        extractedQuestions: finalExtracted,
       };
 
       if (editingId) {
@@ -536,7 +618,7 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
             {/* Modal Form */}
             <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
               {/* Top Meta Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-4 rounded-xl border bg-muted/15">
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 p-4 rounded-xl border bg-muted/15">
                 <div>
                   <label className="text-xs font-bold block mb-1 text-foreground">{uiText("Class")}</label>
                   <select
@@ -547,6 +629,22 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
                     <option value={selectedClass?._id || ''}>
                       {uiText("Class ")}{selectedClass?.number}
                     </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold block mb-1 text-foreground">{uiText("Chapter (optional)")}</label>
+                  <select
+                    value={form.chapter}
+                    onChange={(e) => setForm({ ...form, chapter: e.target.value })}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs font-bold cursor-pointer"
+                  >
+                    <option value="">{uiText("All Chapters / Whole Syllabus")}</option>
+                    {chapters.map((ch) => (
+                      <option key={ch._id} value={ch._id}>
+                        {ch.number ? `Ch ${ch.number}: ` : ''}{ch.title?.en || ch.title?.hi || ch.title}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -658,6 +756,124 @@ export default function ImportantQuestionsManagerPage({ fixedCategory }) {
                     placeholder={uiText("Enter question statements and solutions together. E.g.\n<h3>Question 1</h3>\n<p>Find the roots...</p>\n<h4>Solution:</h4>\n<p>Step-by-step mathematical derivation...</p>")}
                   />
                 </div>
+              </div>
+
+              {/* Automatic Question Classification & Review Panel */}
+              <div className="rounded-2xl border border-purple-500/30 bg-purple-500/[0.03] p-4 sm:p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-black text-foreground flex items-center gap-2">
+                      <Sparkles className="size-4 text-purple-600 dark:text-purple-400" />
+                      <span>{uiText("Automatic Question Classification & Mark Breakdown")}</span>
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {uiText("Questions are automatically detected and classified: VSA (1–2M), Short (2–3M), Long (5M), and Case Study (4–5M). Review or override marks and types below:")}
+                    </p>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleReprocess}
+                    className="gap-1.5 text-xs font-bold border-purple-500/30 text-purple-700 dark:text-purple-300 hover:bg-purple-500/10 cursor-pointer"
+                  >
+                    <RefreshCw className="size-3.5" />
+                    <span>{uiText("Reprocess Classification")}</span>
+                  </Button>
+                </div>
+
+                {/* Detected Questions Summary Chips */}
+                {form.extractedQuestions?.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/50 text-xs">
+                    <span className="font-bold text-foreground">
+                      {uiText("Detected Questions")}: <strong>{form.extractedQuestions.length}</strong>
+                    </span>
+                    <span className="rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 px-2.5 py-0.5 font-bold border border-blue-500/20">
+                      VSA (1–2M): {form.extractedQuestions.filter(q => q.questionType === 'vsa' || q.marks <= 2).length}
+                    </span>
+                    <span className="rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2.5 py-0.5 font-bold border border-emerald-500/20">
+                      Short (2–3M): {form.extractedQuestions.filter(q => q.questionType === 'short' || q.marks === 3).length}
+                    </span>
+                    <span className="rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 px-2.5 py-0.5 font-bold border border-amber-500/20">
+                      Long (5M): {form.extractedQuestions.filter(q => q.questionType === 'long' || (q.marks >= 4 && q.questionType !== 'case_study')).length}
+                    </span>
+                    <span className="rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 px-2.5 py-0.5 font-bold border border-purple-500/20">
+                      Case Study: {form.extractedQuestions.filter(q => q.questionType === 'case_study').length}
+                    </span>
+                  </div>
+                )}
+
+                {/* Extracted Questions Review Cards */}
+                {form.extractedQuestions?.length > 0 ? (
+                  <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+                    {form.extractedQuestions.map((qItem, idx) => {
+                      const plainText = (qItem.questionHtml || '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim();
+                      const snippet = plainText.length > 110 ? `${plainText.substring(0, 110)}...` : plainText;
+
+                      return (
+                        <div
+                          key={`extracted-${idx}`}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-border/80 bg-card shadow-2xs hover:border-brand/40 transition-colors"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="inline-flex items-center justify-center rounded-lg bg-brand px-2 py-0.5 text-xs font-black text-white shrink-0">
+                                #{qItem.questionNumber || idx + 1}
+                              </span>
+                              {qItem.needsReview ? (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 px-2 py-0.5 text-[10px] font-bold border border-amber-500/20">
+                                  <AlertTriangle className="size-2.5" />
+                                  {uiText("Review Flagged")}
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 text-[10px] font-bold border border-emerald-500/20">
+                                  <Check className="size-2.5" />
+                                  {uiText("Classified")}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {snippet || uiText("Question content parsed from editor")}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-1">
+                              <label className="text-[11px] font-bold text-muted-foreground">{uiText("Marks")}:</label>
+                              <input
+                                type="number"
+                                min="1"
+                                max="20"
+                                value={qItem.marks ?? 2}
+                                onChange={(e) => handleUpdateExtracted(idx, { marks: Number(e.target.value) })}
+                                className="w-14 h-8 rounded-lg border border-border bg-background px-2 text-xs font-bold text-center"
+                              />
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <label className="text-[11px] font-bold text-muted-foreground">{uiText("Type")}:</label>
+                              <select
+                                value={qItem.questionType || 'short'}
+                                onChange={(e) => handleUpdateExtracted(idx, { questionType: e.target.value })}
+                                className="h-8 rounded-lg border border-border bg-background px-2 text-xs font-bold cursor-pointer"
+                              >
+                                <option value="vsa">{uiText("VSA (1–2 Marks)")}</option>
+                                <option value="short">{uiText("Short (2–3 Marks)")}</option>
+                                <option value="long">{uiText("Long (5 Marks)")}</option>
+                                <option value="case_study">{uiText("Case Study (4–5 Marks)")}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-dashed border-border/70 p-4 text-center text-xs text-muted-foreground">
+                    {uiText("Type or paste questions in the editor above, then click 'Reprocess Classification' or insert the template to automatically extract and classify questions.")}
+                  </div>
+                )}
               </div>
 
               {/* Modal Footer */}
