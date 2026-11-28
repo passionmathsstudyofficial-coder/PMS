@@ -114,25 +114,43 @@ router.use('/book-parts', crudRouter(BookPart, {
   entityType: 'BookPart',
   defaultSort: { sortOrder: 1, number: 1 },
   adminFilters: q => ({
-    ...idFilter(q, ['book', 'class']),
+    ...idFilter(q, ['book', 'class', 'volume']),
+    ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
+    ...(q.kind ? { kind: String(q.kind) } : {}),
+    ...(q.volume === 'none' || q.volume === 'null' ? { volume: null } : {}),
     ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     ...(q.status ? { status: String(q.status) } : {}),
   }),
   publicFilters: q => ({
-    ...idFilter(q, ['book', 'class']),
+    ...idFilter(q, ['book', 'class', 'volume']),
+    ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
+    ...(q.kind ? { kind: String(q.kind) } : {}),
+    ...(q.volume === 'none' || q.volume === 'null' ? { volume: null } : {}),
     ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
   }),
   populate: {
-    list: [{ path: 'book', select: 'title slug' }, { path: 'class', select: 'number name slug' }],
-    detail: [{ path: 'book', select: 'title slug' }, { path: 'class', select: 'number name slug' }],
+    list: [
+      { path: 'book', select: 'title slug' },
+      { path: 'class', select: 'number name slug' },
+      { path: 'volume', select: 'number title slug kind' },
+    ],
+    detail: [
+      { path: 'book', select: 'title slug' },
+      { path: 'class', select: 'number name slug' },
+      { path: 'volume', select: 'number title slug kind' },
+    ],
   },
   beforeWrite: async (doc) => {
     if (!doc.title?.en && !doc.title?.hi) {
-      doc.title = { en: `Part ${doc.number}`, hi: `भाग ${doc.number}` };
+      const isVolume = doc.kind === 'volume';
+      doc.title = isVolume
+        ? { en: `Volume ${doc.number}`, hi: `वॉल्यूम ${doc.number}` }
+        : { en: `Part ${doc.number}`, hi: `भाग ${doc.number}` };
     }
   },
   beforeDelete: async (doc) => {
-    await assertNoChildren(Chapter, { part: doc._id }, 'This Part/Volume still has {count} chapters. Move or delete them first.');
+    await assertNoChildren(Chapter, { $or: [{ part: doc._id }, { volume: doc._id }] }, 'This Part/Volume still has {count} chapters. Move or delete them first.');
+    await assertNoChildren(BookPart, { volume: doc._id }, 'This Volume still has {count} parts assigned to it. Move or delete them first.');
   },
   extend: (r) => {
     r.get('/:id/chapters', optionalAuth, async (req, res) => {
@@ -205,25 +223,34 @@ router.use(
     entityType: 'Chapter',
     defaultSort: { sortOrder: 1, number: 1 },
     adminFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'book', 'part']),
-      ...(q.book === 'none' ? { book: null } : {}),
+      ...idFilter(q, ['class', 'subject', 'book', 'volume', 'part']),
+      ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
+      ...(q.volume === 'none' || q.volume === 'null' ? { volume: null } : {}),
       ...(q.part === 'none' || q.part === 'null' ? { part: null } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
       ...(q.status ? { status: String(q.status) } : {}),
     }),
     publicFilters: (q) => ({
-      ...idFilter(q, ['class', 'subject', 'book', 'part']),
-      ...(q.book === 'none' ? { book: null } : {}),
+      ...idFilter(q, ['class', 'subject', 'book', 'volume', 'part']),
+      ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
+      ...(q.volume === 'none' || q.volume === 'null' ? { volume: null } : {}),
       ...(q.part === 'none' || q.part === 'null' ? { part: null } : {}),
       ...(q.academicSession ? { academicSession: String(q.academicSession) } : {}),
     }),
     populate: {
-      list: [classPopulate, subjectPopulate, { path: 'book', select: 'title author slug' }, { path: 'part', select: 'number title slug' }],
+      list: [
+        classPopulate,
+        subjectPopulate,
+        { path: 'book', select: 'title author slug' },
+        { path: 'volume', select: 'number title slug kind' },
+        { path: 'part', select: 'number title slug kind' },
+      ],
       detail: [
         classPopulate,
         subjectPopulate,
         { path: 'book', select: 'title author slug' },
-        { path: 'part', select: 'number title slug' },
+        { path: 'volume', select: 'number title slug kind' },
+        { path: 'part', select: 'number title slug kind' },
         { path: 'image', select: MEDIA_SELECT },
         { path: 'featuredImage', select: MEDIA_SELECT },
         { path: 'introVideo', select: VIDEO_SELECT },
@@ -233,6 +260,9 @@ router.use(
       ],
     },
     beforeWrite: async (doc) => {
+      if (doc.volume === '' || doc.volume === 'none' || doc.volume === 'null') {
+        doc.volume = null;
+      }
       if (doc.part === '' || doc.part === 'none' || doc.part === 'null') {
         doc.part = null;
       }
@@ -317,7 +347,7 @@ router.use(
           if (!isObjectId(targetPartId)) throw new ApiError(400, 'Invalid target part id');
           newPart = await BookPart.findById(targetPartId);
           if (!newPart) throw new ApiError(404, 'Target Part/Volume not found');
-          if (String(newPart.book) !== String(chapter.book) || String(newPart.class) !== String(chapter.class)) {
+          if (String(newPart.book || '') !== String(chapter.book || '') || String(newPart.class) !== String(chapter.class)) {
             throw new ApiError(400, 'Target Part belongs to a different book or class');
           }
         }
@@ -325,7 +355,27 @@ router.use(
         await chapter.save();
         cache.invalidate();
         await logActivity(req, { action: 'update', entityType: 'Chapter', entityId: chapter._id, entityLabel: labelOf(chapter), meta: { movePart: chapter.part } });
-        res.json({ ok: true, chapter: await Chapter.findById(chapter._id).populate([{ path: 'part', select: 'number title slug' }]).lean() });
+        res.json({ ok: true, chapter: await Chapter.findById(chapter._id).populate([{ path: 'part', select: 'number title slug kind' }, { path: 'volume', select: 'number title slug kind' }]).lean() });
+      });
+      r.post('/:id/move-volume', requirePermission('content:update'), async (req, res) => {
+        if (!isObjectId(req.params.id)) throw new ApiError(400, 'Invalid chapter id');
+        const chapter = await Chapter.findById(req.params.id);
+        if (!chapter) throw new ApiError(404, 'Chapter not found');
+        const { targetVolumeId } = req.body;
+        let newVol = null;
+        if (targetVolumeId && targetVolumeId !== 'none' && targetVolumeId !== 'null') {
+          if (!isObjectId(targetVolumeId)) throw new ApiError(400, 'Invalid target volume id');
+          newVol = await BookPart.findById(targetVolumeId);
+          if (!newVol) throw new ApiError(404, 'Target Volume not found');
+          if (String(newVol.book || '') !== String(chapter.book || '') || String(newVol.class) !== String(chapter.class)) {
+            throw new ApiError(400, 'Target Volume belongs to a different book or class');
+          }
+        }
+        chapter.volume = newVol ? newVol._id : null;
+        await chapter.save();
+        cache.invalidate();
+        await logActivity(req, { action: 'update', entityType: 'Chapter', entityId: chapter._id, entityLabel: labelOf(chapter), meta: { moveVolume: chapter.volume } });
+        res.json({ ok: true, chapter: await Chapter.findById(chapter._id).populate([{ path: 'part', select: 'number title slug kind' }, { path: 'volume', select: 'number title slug kind' }]).lean() });
       });
     },
   }),
@@ -340,6 +390,9 @@ router.use(
       ...idFilter(q, ['chapter', 'class', 'subject']),
       ...(isObjectId(q.book) ? {
         $or: [{ book: q.book }, { chapter: { $in: await Chapter.distinct('_id', { book: q.book }) } }],
+      } : {}),
+      ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? {
+        $or: [{ book: null }, { chapter: { $in: await Chapter.distinct('_id', { book: null }) } }],
       } : {}),
       ...(q.difficulty ? { difficulty: String(q.difficulty) } : {}),
       ...(q.featured === 'true' ? { featured: true } : {}),
@@ -839,6 +892,7 @@ router.use(
     adminFilters: (q) => ({
       ...studyFilters(q),
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
+      ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
       ...(q.scoped === 'true' && !isObjectId(q.studyClass) ? { studyClass: { $ne: null } } : {}),
       ...(q.legacy === 'true' ? { studyClass: null } : {}),
       ...(q.category ? { category: String(q.category) } : {}),
@@ -903,6 +957,7 @@ router.use(
     adminFilters: (q) => ({
       ...studyFilters(q),
       ...idFilter(q, ['class', 'subject', 'chapter', 'topic', 'book']),
+      ...(q.book === 'none' || q.book === 'null' || q.book === 'ncert' ? { book: null } : {}),
       ...(q.scoped === 'true' && !isObjectId(q.studyClass) ? { studyClass: { $ne: null } } : {}),
       ...(q.legacy === 'true' ? { studyClass: null } : {}),
       ...(q.category ? { category: String(q.category) } : {}),

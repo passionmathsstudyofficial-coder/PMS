@@ -33,16 +33,17 @@ import { adminUrl } from '@/lib/config';
 
 const CANONICAL_BOOKS = ['rs-aggarwal', 'rd-sharma', 'ml-aggarwal', 'kc-sinha-maths'];
 
-export default function ReferenceBookManagerPage({ fixedBookSlug }) {
+export default function ReferenceBookManagerPage({ fixedBookSlug, isNcert: propIsNcert }) {
   useUiLanguage();
   const params = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Normalize book slug
-  let rawSlug = fixedBookSlug || params.bookSlug || 'rs-aggarwal';
+  let rawSlug = fixedBookSlug || params.bookSlug || (propIsNcert ? 'ncert' : 'rs-aggarwal');
   if (rawSlug === 'kc-sinha') rawSlug = 'kc-sinha-maths';
   const bookSlug = rawSlug;
+  const isNcert = Boolean(propIsNcert || bookSlug === 'ncert');
 
   // Active Tab
   const activeTab = searchParams.get('tab') || 'content';
@@ -103,7 +104,24 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     isVisible: true,
   });
 
-  // Parts / Volumes State
+  // Volumes State
+  const [volumes, setVolumes] = useState([]);
+  const [selectedVolumeFilter, setSelectedVolumeFilter] = useState('all');
+  const [loadingVolumes, setLoadingVolumes] = useState(false);
+  const [volumeModal, setVolumeModal] = useState(false);
+  const [editingVolumeId, setEditingVolumeId] = useState(null);
+  const [volumeForm, setVolumeForm] = useState({
+    number: 1,
+    title: { en: '', hi: '' },
+    slug: '',
+    shortDescription: { en: '', hi: '' },
+    status: 'published',
+    isVisible: true,
+  });
+  const [moveVolumeModal, setMoveVolumeModal] = useState(null);
+  const [targetMoveVolumeId, setTargetMoveVolumeId] = useState('');
+
+  // Parts State
   const [parts, setParts] = useState([]);
   const [selectedPartFilter, setSelectedPartFilter] = useState('all');
   const [loadingParts, setLoadingParts] = useState(false);
@@ -116,6 +134,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     shortDescription: { en: '', hi: '' },
     status: 'published',
     isVisible: true,
+    volume: '',
   });
   const [movePartModal, setMovePartModal] = useState(null);
   const [targetMovePartId, setTargetMovePartId] = useState('');
@@ -127,6 +146,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     title: { en: '', hi: '' },
     shortDescription: { en: '', hi: '' },
     status: 'published',
+    volume: '',
     part: '',
   });
 
@@ -210,7 +230,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         const finalBooks = canonical.length > 0 ? canonical : allBooks;
         setBooks(finalBooks);
 
-        const match = finalBooks.find((b) => b.slug === bookSlug) || finalBooks[0] || null;
+        let match = null;
+        if (isNcert) {
+          match = {
+            _id: null,
+            slug: 'ncert',
+            title: { en: 'NCERT Mathematics', hi: 'एनसीईआरटी गणित' },
+            author: 'NCERT',
+            isNcert: true,
+          };
+        } else {
+          match = finalBooks.find((b) => b.slug === bookSlug) || finalBooks[0] || null;
+        }
         setSelectedBook(match);
 
         const dbClasses = (classesRes.items || []).sort((a, b) => b.number - a.number);
@@ -228,10 +259,23 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       }
     }
     init();
-  }, [bookSlug]);
+  }, [bookSlug, isNcert]);
 
   // Load BookClasses for selected book
   const reloadBookClasses = async () => {
+    if (isNcert) {
+      setBookClasses(
+        classes.map((c) => ({
+          _id: `ncert-class-${c.number}`,
+          class: c,
+          name: c.name || { en: `Class ${c.number} Mathematics`, hi: `कक्षा ${c.number} गणित` },
+          description: c.description || { en: `NCERT Class ${c.number} Mathematics Solutions`, hi: `एनसीईआरटी कक्षा ${c.number} गणित संपूर्ण हल` },
+          status: c.status || 'published',
+          isVisible: c.isVisible !== false,
+        }))
+      );
+      return;
+    }
     if (!selectedBook?._id) return;
     try {
       const res = await get('/content/book-classes', {
@@ -247,38 +291,62 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   useEffect(() => {
     reloadBookClasses();
-  }, [selectedBook?._id]);
+  }, [selectedBook?._id, classes, isNcert]);
 
   // Load Parts & Chapters
   const reloadChapters = async () => {
-    if (!selectedBook?._id || !selectedClass?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
     setLoadingChapters(true);
     setLoadingParts(true);
+    setLoadingVolumes(true);
     setSelectedChapter(null);
     setSelectedExercise(null);
     setExercises([]);
     setQuestions([]);
     try {
-      const [partsRes, chRes] = await Promise.all([
+      const bookQuery = isNcert ? 'none' : selectedBook._id;
+      const [volsRes, partsRes, chRes] = await Promise.all([
         get('/content/book-parts', {
           scope: 'admin',
-          book: selectedBook._id,
+          book: bookQuery,
           class: selectedClass._id,
+          kind: 'volume',
+          academicSession: selectedSession,
+          limit: 50,
+          sort: 'number',
+        }),
+        get('/content/book-parts', {
+          scope: 'admin',
+          book: bookQuery,
+          class: selectedClass._id,
+          kind: 'part',
           academicSession: selectedSession,
           limit: 50,
           sort: 'number',
         }),
         get('/content/chapters', {
           scope: 'admin',
-          book: selectedBook._id,
+          book: bookQuery,
           class: selectedClass._id,
           academicSession: selectedSession,
           limit: 150,
         }),
       ]);
+      const volsList = (volsRes.items || []).sort((a, b) => a.number - b.number);
       const partsList = (partsRes.items || []).sort((a, b) => a.number - b.number);
+      setVolumes(volsList);
       setParts(partsList);
       const chList = (chRes.items || []).sort((a, b) => {
+        const volA = a.volume?._id || a.volume;
+        const volB = b.volume?._id || b.volume;
+        if (volA && volB && String(volA) !== String(volB)) {
+          const numA = volsList.find((v) => String(v._id) === String(volA))?.number || 0;
+          const numB = volsList.find((v) => String(v._id) === String(volB))?.number || 0;
+          if (numA !== numB) return numA - numB;
+        }
+        if (volA && !volB) return -1;
+        if (!volA && volB) return 1;
+
         const partA = a.part?._id || a.part;
         const partB = b.part?._id || b.part;
         if (partA && partB && String(partA) !== String(partB)) {
@@ -299,12 +367,13 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     } finally {
       setLoadingChapters(false);
       setLoadingParts(false);
+      setLoadingVolumes(false);
     }
   };
 
   useEffect(() => {
     reloadChapters();
-  }, [selectedBook?._id, selectedClass?._id, selectedSession]);
+  }, [selectedBook?._id, selectedClass?._id, selectedSession, isNcert]);
 
   // Load Exercises
   const reloadExercises = async () => {
@@ -373,7 +442,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   // Load Topics
   const reloadTopics = async () => {
-    if (!selectedBook?._id || !selectedClass?._id) {
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) {
       setTopics([]);
       return;
     }
@@ -381,7 +450,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     try {
       const qParams = {
         scope: 'admin',
-        book: selectedBook._id,
+        book: isNcert ? 'none' : selectedBook._id,
         class: selectedClass._id,
         limit: 100,
       };
@@ -399,11 +468,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (activeTab === 'topics' || activeTab === 'content') {
       reloadTopics();
     }
-  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, activeTab]);
+  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, activeTab, isNcert]);
 
   // Load Notes
   const reloadNotes = async () => {
-    if (!selectedBook?._id || !selectedClass?._id) {
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) {
       setNotes([]);
       return;
     }
@@ -411,7 +480,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     try {
       const qParams = {
         scope: 'admin',
-        book: selectedBook._id,
+        book: isNcert ? 'none' : selectedBook._id,
         class: selectedClass._id,
         academicSession: selectedSession,
         limit: 100,
@@ -430,11 +499,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (activeTab === 'notes') {
       reloadNotes();
     }
-  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, selectedSession, activeTab]);
+  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, selectedSession, activeTab, isNcert]);
 
   // Load Important Questions
   const reloadIqs = async () => {
-    if (!selectedBook?._id || !selectedClass?._id) {
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) {
       setImportantQuestions([]);
       return;
     }
@@ -442,7 +511,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     try {
       const qParams = {
         scope: 'admin',
-        book: selectedBook._id,
+        book: isNcert ? 'none' : selectedBook._id,
         class: selectedClass._id,
         academicSession: selectedSession,
         limit: 100,
@@ -461,7 +530,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (activeTab === 'important-questions') {
       reloadIqs();
     }
-  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, selectedSession, activeTab]);
+  }, [selectedBook?._id, selectedClass?._id, selectedChapter?._id, selectedSession, activeTab, isNcert]);
 
   const defaultSubject =
     selectedClass?.subjects?.find((s) => /math/i.test(`${s.slug || ''} ${s.name?.en || ''}`))?._id ||
@@ -525,7 +594,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   };
 
   // CHAPTER CRUD
-  const handleOpenChapterModal = (ch = null, defaultPartId = null) => {
+  const handleOpenChapterModal = (ch = null, defaultPartId = null, defaultVolumeId = null) => {
     if (ch) {
       setEditingChapterId(ch._id);
       setChapterForm({
@@ -533,10 +602,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         title: ch.title || { en: '', hi: '' },
         shortDescription: ch.shortDescription || { en: '', hi: '' },
         status: ch.status || 'published',
+        volume: ch.volume?._id || ch.volume || '',
         part: ch.part?._id || ch.part || '',
       });
     } else {
       const activePartId = defaultPartId || (selectedPartFilter !== 'all' && selectedPartFilter !== 'none' ? selectedPartFilter : '');
+      const activeVolumeId = defaultVolumeId || (selectedVolumeFilter !== 'all' && selectedVolumeFilter !== 'none' ? selectedVolumeFilter : '');
       const partChapters = activePartId ? chapters.filter((c) => String(c.part?._id || c.part) === String(activePartId)) : chapters;
       setEditingChapterId(null);
       setChapterForm({
@@ -544,6 +615,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         title: { en: '', hi: '' },
         shortDescription: { en: '', hi: '' },
         status: 'published',
+        volume: activeVolumeId || '',
         part: activePartId || '',
       });
     }
@@ -552,17 +624,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleSaveChapter = async (e) => {
     e.preventDefault();
-    if (!selectedBook?._id || !selectedClass?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
     try {
       const payload = {
         number: Number(chapterForm.number),
         title: chapterForm.title,
         shortDescription: chapterForm.shortDescription,
-        book: selectedBook._id,
+        book: isNcert ? null : selectedBook._id,
         class: selectedClass._id,
         subject: defaultSubject,
         academicSession: selectedSession,
         status: chapterForm.status || 'published',
+        volume: chapterForm.volume || null,
         part: chapterForm.part || null,
       };
 
@@ -583,7 +656,100 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     }
   };
 
-  // PART / VOLUME CRUD
+  // VOLUME CRUD
+  const handleOpenVolumeModal = (vol = null) => {
+    if (vol) {
+      setEditingVolumeId(vol._id);
+      setVolumeForm({
+        number: vol.number,
+        title: vol.title || { en: '', hi: '' },
+        slug: vol.slug || `volume-${vol.number}`,
+        shortDescription: vol.shortDescription || { en: '', hi: '' },
+        status: vol.status || 'published',
+        isVisible: vol.isVisible !== false,
+      });
+    } else {
+      const nextNum = (volumes.length || 0) + 1;
+      setEditingVolumeId(null);
+      setVolumeForm({
+        number: nextNum,
+        title: { en: `Volume ${nextNum}`, hi: `वॉल्यूम ${nextNum}` },
+        slug: `volume-${nextNum}`,
+        shortDescription: { en: '', hi: '' },
+        status: 'published',
+        isVisible: true,
+      });
+    }
+    setVolumeModal(true);
+  };
+
+  const handleSaveVolume = async (e) => {
+    e.preventDefault();
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
+    try {
+      const payload = {
+        number: Number(volumeForm.number),
+        title: volumeForm.title,
+        slug: volumeForm.slug || `volume-${volumeForm.number}`,
+        shortDescription: volumeForm.shortDescription,
+        kind: 'volume',
+        book: isNcert ? null : selectedBook._id,
+        class: selectedClass._id,
+        academicSession: selectedSession,
+        status: volumeForm.status || 'published',
+        isVisible: volumeForm.isVisible !== false,
+      };
+
+      if (editingVolumeId) {
+        const updated = await put(`/content/book-parts/${editingVolumeId}`, payload);
+        toast.success(uiText('Volume updated successfully'));
+        setVolumes((prev) => prev.map((v) => (v._id === editingVolumeId ? updated : v)).sort((a, b) => a.number - b.number));
+      } else {
+        const created = await post('/content/book-parts', payload);
+        toast.success(uiText('Volume created successfully'));
+        setVolumes((prev) => [...prev, created].sort((a, b) => a.number - b.number));
+      }
+      setVolumeModal(false);
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  const handleDeleteVolume = async (vol) => {
+    const linkedChapters = chapters.filter((c) => String(c.volume?._id || c.volume) === String(vol._id));
+    if (linkedChapters.length > 0) {
+      alert(`Cannot delete Volume ${vol.number} (${vol.title?.en || ''}) because it contains ${linkedChapters.length} chapters. Please move or delete those chapters first.`);
+      return;
+    }
+    const linkedParts = parts.filter((p) => String(p.volume?._id || p.volume) === String(vol._id));
+    if (linkedParts.length > 0) {
+      alert(`Cannot delete Volume ${vol.number} (${vol.title?.en || ''}) because it contains ${linkedParts.length} parts. Please reassign those parts first.`);
+      return;
+    }
+    if (!window.confirm(`Are you sure you want to delete Volume ${vol.number}: "${vol.title?.en || ''}"?`)) return;
+    try {
+      await del(`/content/book-parts/${vol._id}`);
+      toast.success(uiText('Volume deleted'));
+      setVolumes((prev) => prev.filter((v) => v._id !== vol._id));
+      if (selectedVolumeFilter === vol._id) setSelectedVolumeFilter('all');
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  const handleMoveChapterVolume = async (chapterId, newVolumeId) => {
+    try {
+      const res = await post(`/content/chapters/${chapterId}/move-volume`, { targetVolumeId: newVolumeId || null });
+      toast.success(uiText('Chapter moved to new Volume'));
+      setChapters((prev) => prev.map((c) => (c._id === chapterId ? res.chapter : c)));
+      if (selectedChapter?._id === chapterId) setSelectedChapter(res.chapter);
+      setMoveVolumeModal(null);
+    } catch (err) {
+      toast.apiError(err);
+    }
+  };
+
+  // PART CRUD
   const handleOpenPartModal = (part = null) => {
     if (part) {
       setEditingPartId(part._id);
@@ -594,6 +760,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         shortDescription: part.shortDescription || { en: '', hi: '' },
         status: part.status || 'published',
         isVisible: part.isVisible !== false,
+        volume: part.volume?._id || part.volume || '',
       });
     } else {
       const nextNum = (parts.length || 0) + 1;
@@ -605,6 +772,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         shortDescription: { en: '', hi: '' },
         status: 'published',
         isVisible: true,
+        volume: selectedVolumeFilter !== 'all' && selectedVolumeFilter !== 'none' ? selectedVolumeFilter : '',
       });
     }
     setPartModal(true);
@@ -612,14 +780,16 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleSavePart = async (e) => {
     e.preventDefault();
-    if (!selectedBook?._id || !selectedClass?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
     try {
       const payload = {
         number: Number(partForm.number),
         title: partForm.title,
         slug: partForm.slug || `part-${partForm.number}`,
         shortDescription: partForm.shortDescription,
-        book: selectedBook._id,
+        kind: 'part',
+        volume: partForm.volume || null,
+        book: isNcert ? null : selectedBook._id,
         class: selectedClass._id,
         academicSession: selectedSession,
         status: partForm.status || 'published',
@@ -628,11 +798,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
       if (editingPartId) {
         const updated = await put(`/content/book-parts/${editingPartId}`, payload);
-        toast.success(uiText('Part / Volume updated successfully'));
+        toast.success(uiText('Part updated successfully'));
         setParts((prev) => prev.map((p) => (p._id === editingPartId ? updated : p)).sort((a, b) => a.number - b.number));
       } else {
         const created = await post('/content/book-parts', payload);
-        toast.success(uiText('Part / Volume created successfully'));
+        toast.success(uiText('Part created successfully'));
         setParts((prev) => [...prev, created].sort((a, b) => a.number - b.number));
       }
       setPartModal(false);
@@ -650,7 +820,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     if (!window.confirm(`Are you sure you want to delete Part ${part.number}: "${part.title?.en || ''}"?`)) return;
     try {
       await del(`/content/book-parts/${part._id}`);
-      toast.success(uiText('Part / Volume deleted'));
+      toast.success(uiText('Part deleted'));
       setParts((prev) => prev.filter((p) => p._id !== part._id));
       if (selectedPartFilter === part._id) setSelectedPartFilter('all');
     } catch (err) {
@@ -661,7 +831,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
   const handleMoveChapterPart = async (chapterId, newPartId) => {
     try {
       const res = await post(`/content/chapters/${chapterId}/move-part`, { partId: newPartId || null });
-      toast.success(uiText('Chapter moved to new Part / Volume'));
+      toast.success(uiText('Chapter moved to new Part'));
       setChapters((prev) => prev.map((c) => (c._id === chapterId ? res.chapter : c)));
       if (selectedChapter?._id === chapterId) setSelectedChapter(res.chapter);
       setMovePartModal(null);
@@ -829,7 +999,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleSaveTopic = async (e) => {
     e.preventDefault();
-    if (!selectedBook?._id || !selectedClass?._id || !selectedChapter?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id || !selectedChapter?._id) return;
     try {
       const payload = {
         number: Number(topicForm.number),
@@ -838,7 +1008,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         notes: topicForm.notes,
         difficulty: topicForm.difficulty,
         estimatedTime: topicForm.estimatedTime,
-        book: selectedBook._id,
+        book: isNcert ? null : selectedBook._id,
         class: selectedClass._id,
         subject: defaultSubject,
         chapter: selectedChapter._id,
@@ -874,7 +1044,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   // NOTE CRUD
   const handleOpenNoteModal = (n = null) => {
-    const bookCategory = selectedBook ? `${selectedBook.slug.replace(/-/g, '_')}_notes` : 'formula_sheet';
+    const bookCategory = isNcert
+      ? 'ncert_notes'
+      : (selectedBook ? `${selectedBook.slug.replace(/-/g, '_')}_notes` : 'formula_sheet');
     if (n) {
       setEditingNoteId(n._id);
       setNoteForm({
@@ -905,7 +1077,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleSaveNote = async (e) => {
     e.preventDefault();
-    if (!selectedBook?._id || !selectedClass?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
     try {
       const payload = {
         title: noteForm.title,
@@ -914,7 +1086,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         summary: noteForm.summary,
         content: noteForm.content,
         pdfUrl: noteForm.pdfUrl,
-        book: selectedBook._id,
+        book: isNcert ? null : selectedBook._id,
         class: selectedClass._id,
         subject: defaultSubject,
         academicSession: selectedSession,
@@ -987,7 +1159,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
   const handleSaveIq = async (e) => {
     e.preventDefault();
-    if (!selectedBook?._id || !selectedClass?._id) return;
+    if ((!selectedBook?._id && !isNcert) || !selectedClass?._id) return;
     try {
       const payload = {
         title: iqForm.title,
@@ -1000,7 +1172,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
         marks: Number(iqForm.marks),
         year: Number(iqForm.year),
         paperSet: iqForm.paperSet,
-        book: selectedBook._id,
+        book: isNcert ? null : selectedBook._id,
         class: selectedClass._id,
         subject: defaultSubject,
         academicSession: selectedSession,
@@ -1105,28 +1277,43 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
     }
   };
 
-  const TABS = [
-    { id: 'content', label: uiText('3-Column Explorer'), icon: Layers },
-    { id: 'classes', label: uiText('Class Management'), icon: GraduationCap, badge: bookClasses.length || 7 },
-    { id: 'parts', label: uiText('Parts / Volumes'), icon: Layers, badge: parts.length },
-    { id: 'chapters', label: uiText('Chapters'), icon: Layers, badge: chapters.length },
-    { id: 'exercises', label: uiText('Exercises'), icon: ListOrdered, badge: exercises.length },
-    { id: 'questions', label: uiText('Questions & Solutions'), icon: HelpCircle, badge: questions.length },
-    { id: 'topics', label: uiText('Topics'), icon: BookOpen, badge: topics.length },
-    { id: 'notes', label: uiText('Notes & Formulas'), icon: NotebookPen, badge: notes.length },
-    { id: 'important-questions', label: uiText('Important Questions'), icon: Star, badge: importantQuestions.length },
-    { id: 'settings', label: uiText('Book Settings & SEO'), icon: Settings },
-  ];
+  const TABS = isNcert
+    ? [
+        { id: 'content', label: uiText('3-Column Explorer'), icon: Layers },
+        { id: 'classes', label: uiText('Class Management'), icon: GraduationCap, badge: classes.length || 7 },
+        { id: 'volumes', label: uiText('Volume Management'), icon: Library, badge: volumes.length },
+        { id: 'parts', label: uiText('Parts Management'), icon: Shapes, badge: parts.length },
+        { id: 'chapters', label: uiText('Chapter Management'), icon: BookOpen, badge: chapters.length },
+        { id: 'exercises', label: uiText('Exercise Management'), icon: ListOrdered, badge: exercises.length },
+        { id: 'questions', label: uiText('Questions & Solutions'), icon: HelpCircle, badge: questions.length },
+        { id: 'topics', label: uiText('Topics Management'), icon: Sparkles, badge: topics.length },
+        { id: 'notes', label: uiText('Notes Management'), icon: NotebookPen, badge: notes.length },
+        { id: 'important-questions', label: uiText('Important Questions'), icon: Star, badge: importantQuestions.length },
+      ]
+    : [
+        { id: 'content', label: uiText('3-Column Explorer'), icon: Layers },
+        { id: 'classes', label: uiText('Class Management'), icon: GraduationCap, badge: bookClasses.length || 7 },
+        { id: 'volumes', label: uiText('Volume Management'), icon: Library, badge: volumes.length },
+        { id: 'parts', label: uiText('Parts Management'), icon: Shapes, badge: parts.length },
+        { id: 'chapters', label: uiText('Chapters'), icon: BookOpen, badge: chapters.length },
+        { id: 'exercises', label: uiText('Exercises'), icon: ListOrdered, badge: exercises.length },
+        { id: 'questions', label: uiText('Questions & Solutions'), icon: HelpCircle, badge: questions.length },
+        { id: 'topics', label: uiText('Topics'), icon: Sparkles, badge: topics.length },
+        { id: 'notes', label: uiText('Notes & Formulas'), icon: NotebookPen, badge: notes.length },
+        { id: 'important-questions', label: uiText('Important Questions'), icon: Star, badge: importantQuestions.length },
+        { id: 'settings', label: uiText('Book Settings & SEO'), icon: Settings },
+      ];
 
   return (
     <div className="space-y-6">
       {/* Top Header & Overview */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Panel
-          title={uiTemplate`${getBookDisplayName()} Solutions CMS`}
-          description={uiText(
-            'Complete Manual Educational Authoring Workflow: Book → Class → Subject → Chapter → Exercise → Question → Multiple Solution Methods.'
-          )}
+          title={isNcert ? uiText('NCERT Mathematics (एनसीईआरटी गणित) Management') : uiTemplate`${getBookDisplayName()} Solutions CMS`}
+          description={isNcert
+            ? uiText('Comprehensive NCERT Mathematics authoring across Classes, Volumes, Parts, Chapters, Exercises, Questions & Solutions, Topics, Notes and Important Questions.')
+            : uiText('Complete Manual Educational Authoring Workflow: Book → Class → Subject → Chapter → Exercise → Question → Multiple Solution Methods.')
+          }
         />
         <div className="flex items-center gap-2">
           <Button
@@ -1146,42 +1333,53 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
             asChild
             className="h-9 gap-1.5 font-bold text-xs cursor-pointer"
           >
-            <Link to={`/reference-solutions/${selectedBook?.slug || 'rs-aggarwal'}`} target="_blank">
+            <Link
+              to={isNcert ? `/class-${selectedClass?.number || 10}/maths` : `/reference-solutions/${selectedBook?.slug || 'rs-aggarwal'}`}
+              target="_blank"
+            >
               <ExternalLink className="size-3.5 text-brand" />
-              {uiText('View Live Public Book')}
+              {isNcert ? uiText('View Student Page') : uiText('View Live Public Book')}
             </Link>
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => handleOpenBookModal(false)}
-            className="h-9 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
-          >
-            <Plus className="size-3.5" />
-            {uiText('Add New Reference Book')}
-          </Button>
+          {!isNcert && (
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleOpenBookModal(false)}
+              className="h-9 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
+            >
+              <Plus className="size-3.5" />
+              {uiText('Add New Reference Book')}
+            </Button>
+          )}
         </div>
       </div>
 
       {/* Top Filter Bar: Book, Class, Session */}
       <div className="flex flex-wrap items-center gap-3 rounded-2xl border bg-card p-4 shadow-xs">
-        {/* Book Selector */}
+        {/* Book / Curriculum Selector */}
         <div className="flex items-center gap-2">
           <BookOpen className="size-4 text-brand" />
-          <span className="text-xs font-bold text-foreground">{uiText('Book')}:</span>
-          <select
-            value={selectedBook?.slug || bookSlug}
-            onChange={(e) => {
-              navigate(adminUrl('reference-books-manager/' + e.target.value + (activeTab ? `?tab=${activeTab}` : '')));
-            }}
-            className="h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:ring-1 focus:ring-brand"
-          >
-            {books.map((b) => (
-              <option key={b.slug} value={b.slug}>
-                {b.title?.en || b.slug} {b.author ? uiTemplate`(${b.author})` : ''}
-              </option>
-            ))}
-          </select>
+          <span className="text-xs font-bold text-foreground">{isNcert ? uiText('Curriculum') : uiText('Book')}:</span>
+          {isNcert ? (
+            <span className="h-8.5 inline-flex items-center rounded-xl border border-brand/20 bg-brand/5 px-3 text-xs font-black text-brand">
+              NCERT Mathematics (एनसीईआरटी गणित)
+            </span>
+          ) : (
+            <select
+              value={selectedBook?.slug || bookSlug}
+              onChange={(e) => {
+                navigate(adminUrl('reference-books-manager/' + e.target.value + (activeTab ? `?tab=${activeTab}` : '')));
+              }}
+              className="h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold text-foreground focus:ring-1 focus:ring-brand"
+            >
+              {books.map((b) => (
+                <option key={b.slug} value={b.slug}>
+                  {b.title?.en || b.slug} {b.author ? uiTemplate`(${b.author})` : ''}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Class Selector Pills */}
@@ -1276,6 +1474,17 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 <span>{uiText('Chapters (')}{chapters.length})</span>
               </h3>
               <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleOpenVolumeModal(null)}
+                  className="h-7 px-1.5 text-[11px] gap-1 cursor-pointer font-bold"
+                  title={uiText('Add Volume')}
+                >
+                  <Plus className="size-3" />
+                  {uiText('Vol')}
+                </Button>
                 <Button
                   type="button"
                   size="sm"
@@ -1376,6 +1585,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
 
                   return filteredChapters.map((ch) => {
                     const isSelected = selectedChapter?._id === ch._id;
+                    const volumeObj = ch.volume && typeof ch.volume === 'object'
+                      ? ch.volume
+                      : volumes.find((v) => String(v._id) === String(ch.volume));
                     const partObj = ch.part && typeof ch.part === 'object'
                       ? ch.part
                       : parts.find((p) => String(p._id) === String(ch.part));
@@ -1394,6 +1606,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           onClick={() => setSelectedChapter(ch)}
                           className="flex-1 text-left text-xs font-semibold truncate cursor-pointer pr-1 flex items-center"
                         >
+                          {volumeObj && (
+                            <span className="font-mono text-[9px] bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 px-1 py-0.2 rounded font-extrabold mr-1 shrink-0">
+                              V{volumeObj.number}
+                            </span>
+                          )}
                           {partObj && (
                             <span className="font-mono text-[9px] bg-brand/15 text-brand px-1 py-0.2 rounded font-extrabold mr-1 shrink-0">
                               P{partObj.number}
@@ -1403,6 +1620,18 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           <span className="truncate">{ch.title?.en || ch.title?.hi || uiTemplate`Chapter ${ch.number}`}</span>
                         </button>
                         <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMoveVolumeModal(ch);
+                              setTargetMoveVolumeId(ch.volume?._id || ch.volume || '');
+                            }}
+                            className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                            title={uiText('Move Chapter to Volume')}
+                          >
+                            <BookOpen className="size-3" />
+                          </button>
                           <button
                             type="button"
                             onClick={(e) => {
@@ -1945,6 +2174,154 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
       )}
 
       {/* ==================================================== */}
+      {/* TAB 2.4: VOLUMES MANAGEMENT                          */}
+      {/* ==================================================== */}
+      {activeTab === 'volumes' && (
+        <div className="rounded-2xl border bg-card p-5 shadow-xs space-y-4">
+          <div className="flex flex-wrap items-center justify-between pb-3 border-b gap-2">
+            <div>
+              <h3 className="text-sm font-extrabold text-foreground flex items-center gap-2">
+                <BookOpen className="size-4 text-brand" />
+                <span>
+                  {uiText('Volumes Management · ')}{selectedClass ? uiTemplate`Class ${selectedClass.number}` : ''} ({volumes.length})
+                </span>
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {uiText('Manage multiple volumes for NCERT and reference books (e.g. Volume 1, Volume 2). Volumes can contain multiple parts.')}
+              </p>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => handleOpenVolumeModal(null)}
+              className="h-8 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
+            >
+              <Plus className="size-3.5" />
+              {uiText('Add Volume')}
+            </Button>
+          </div>
+
+          {volumes.length === 0 ? (
+            <div className="py-12 text-center rounded-xl border border-dashed border-border/80 bg-muted/10 space-y-3">
+              <BookOpen className="size-10 text-muted-foreground/50 mx-auto" />
+              <div>
+                <p className="text-sm font-bold text-foreground">{uiText('No Volumes Created')}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {uiText('All chapters for this class are currently standalone. Click below to create Volume 1 or Volume 2.')}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => handleOpenVolumeModal(null)}
+                className="font-bold text-xs bg-brand text-white hover:bg-brand/90"
+              >
+                <Plus className="size-3.5 mr-1" />
+                {uiText('Add First Volume')}
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {volumes.map((v) => {
+                const volChapters = chapters.filter((c) => String(c.volume?._id || c.volume) === String(v._id));
+                const volParts = parts.filter((p) => String(p.volume?._id || p.volume) === String(v._id));
+                const studentUrl = isNcert
+                  ? `/class-${selectedClass?.number}/maths`
+                  : `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${v.slug}`;
+
+                return (
+                  <div key={v._id} className="rounded-xl border border-border bg-card p-4 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
+                          Volume {v.number}
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span
+                            className={cn(
+                              'px-2 py-0.5 rounded-full font-bold text-[10px] uppercase',
+                              v.status === 'published'
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40'
+                                : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40'
+                            )}
+                          >
+                            {v.status || 'published'}
+                          </span>
+                        </div>
+                      </div>
+                      <h4 className="font-bold text-sm text-foreground">
+                        {v.title?.en || `Volume ${v.number}`}
+                      </h4>
+                      {v.title?.hi && (
+                        <p className="text-xs text-muted-foreground">{v.title.hi}</p>
+                      )}
+                      <p className="font-mono text-[11px] text-muted-foreground mt-1">
+                        slug: /{v.slug}
+                      </p>
+                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                        <div className="py-1.5 px-2 rounded-lg bg-muted/30 font-semibold text-foreground flex items-center justify-between">
+                          <span>{uiText('Chapters')}:</span>
+                          <span className="font-mono font-bold text-brand">{volChapters.length}</span>
+                        </div>
+                        <div className="py-1.5 px-2 rounded-lg bg-muted/30 font-semibold text-foreground flex items-center justify-between">
+                          <span>{uiText('Parts')}:</span>
+                          <span className="font-mono font-bold text-indigo-600">{volParts.length}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-3 mt-4 border-t border-border/60 gap-1">
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="outline"
+                        onClick={() => handleOpenChapterModal(null, undefined, v._id)}
+                        className="text-xs font-bold gap-1 cursor-pointer hover:text-brand"
+                      >
+                        <Plus className="size-3" />
+                        {uiText('Add Ch')}
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          type="button"
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => handleOpenVolumeModal(v)}
+                          className="size-7 p-0 cursor-pointer text-muted-foreground hover:text-brand"
+                          title={uiText('Edit Volume')}
+                        >
+                          <Edit2 className="size-3.5" />
+                        </Button>
+                        <a
+                          href={studentUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center justify-center size-7 rounded-md text-muted-foreground hover:text-brand cursor-pointer"
+                          title={uiText('View Student Page')}
+                        >
+                          <ExternalLink className="size-3.5" />
+                        </a>
+                        <Button
+                          type="button"
+                          size="xs"
+                          variant="ghost"
+                          onClick={() => handleDeleteVolume(v)}
+                          className="size-7 p-0 cursor-pointer text-muted-foreground hover:text-destructive"
+                          title={uiText('Delete Volume')}
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ==================================================== */}
       {/* TAB 2.5: PARTS / VOLUMES MANAGEMENT                  */}
       {/* ==================================================== */}
       {activeTab === 'parts' && (
@@ -1954,11 +2331,11 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               <h3 className="text-sm font-extrabold text-foreground flex items-center gap-2">
                 <Layers className="size-4 text-brand" />
                 <span>
-                  {uiText('Parts / Volumes Management · ')}{selectedClass ? uiTemplate`Class ${selectedClass.number}` : ''} ({parts.length})
+                  {uiText('Parts Management · ')}{selectedClass ? uiTemplate`Class ${selectedClass.number}` : ''} ({parts.length})
                 </span>
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {uiText('Manage multiple parts/volumes for reference books (e.g., Part 1, Part 2). Supports duplicate chapter numbers across different parts.')}
+                {uiText('Manage multiple parts for reference books and NCERT (e.g., Part 1, Part 2). Supports duplicate chapter numbers across different parts.')}
               </p>
             </div>
             <Button
@@ -1968,7 +2345,7 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               className="h-8 gap-1.5 font-bold text-xs cursor-pointer bg-brand text-white hover:bg-brand/90"
             >
               <Plus className="size-3.5" />
-              {uiText('Add Part / Volume')}
+              {uiText('Add Part')}
             </Button>
           </div>
 
@@ -1976,9 +2353,9 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
             <div className="py-12 text-center rounded-xl border border-dashed border-border/80 bg-muted/10 space-y-3">
               <Layers className="size-10 text-muted-foreground/50 mx-auto" />
               <div>
-                <p className="text-sm font-bold text-foreground">{uiText('No Parts / Volumes Created')}</p>
+                <p className="text-sm font-bold text-foreground">{uiText('No Parts Created')}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {uiText('All chapters for this class are currently standalone. Click below if this book has Part 1 and Part 2.')}
+                  {uiText('All chapters for this class are currently standalone. Click below if this curriculum has Part 1 and Part 2.')}
                 </p>
               </div>
               <Button
@@ -1988,22 +2365,34 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 className="font-bold text-xs bg-brand text-white hover:bg-brand/90"
               >
                 <Plus className="size-3.5 mr-1" />
-                {uiText('Add First Part / Volume')}
+                {uiText('Add First Part')}
               </Button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {parts.map((p) => {
                 const partChapters = chapters.filter((c) => String(c.part?._id || c.part) === String(p._id));
-                const studentPartUrl = `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${p.slug}`;
+                const volObj = p.volume && typeof p.volume === 'object'
+                  ? p.volume
+                  : volumes.find((v) => String(v._id) === String(p.volume));
+                const studentPartUrl = isNcert
+                  ? `/class-${selectedClass?.number}/maths`
+                  : `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${p.slug}`;
 
                 return (
                   <div key={p._id} className="rounded-xl border border-border bg-card p-4 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-brand/10 text-brand">
-                          Part {p.number}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-brand/10 text-brand">
+                            Part {p.number}
+                          </span>
+                          {volObj && (
+                            <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
+                              Vol {volObj.number}
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-1.5">
                           <span
                             className={cn(
@@ -2101,6 +2490,16 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               </p>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => handleOpenVolumeModal(null)}
+                className="h-8 gap-1 font-bold text-xs cursor-pointer border-brand/40 text-brand hover:bg-brand/10"
+              >
+                <Plus className="size-3" />
+                {uiText('Add Volume')}
+              </Button>
               <Button
                 type="button"
                 size="sm"
@@ -2203,9 +2602,12 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                   }
 
                   return filteredChapters.map((ch) => {
+                    const volumeObj = ch.volume && typeof ch.volume === 'object' ? ch.volume : volumes.find((v) => String(v._id) === String(ch.volume));
                     const partObj = ch.part?.number != null ? ch.part : parts.find((p) => String(p._id) === String(ch.part?._id || ch.part));
                     const partSlug = partObj?.slug;
-                    const studentChapterUrl = partSlug
+                    const studentChapterUrl = isNcert
+                      ? `/class-${selectedClass?.number}/maths/${ch.slug}`
+                      : partSlug
                       ? `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${partSlug}/${ch.slug}`
                       : `/reference-solutions/${selectedBook?.slug}/class-${selectedClass?.number}/${ch.slug}`;
 
@@ -2215,15 +2617,23 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                           {ch.number}
                         </td>
                         <td className="py-3 px-3">
-                          {partObj ? (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-brand/10 text-brand">
-                              Part {partObj.number}: {partObj.title?.en || `Part ${partObj.number}`}
-                            </span>
-                          ) : (
-                            <span className="text-[10px] text-muted-foreground font-mono">
-                              —
-                            </span>
-                          )}
+                          <div className="flex flex-col gap-1 items-start">
+                            {volumeObj && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400">
+                                Vol {volumeObj.number}: {volumeObj.title?.en || `Volume ${volumeObj.number}`}
+                              </span>
+                            )}
+                            {partObj && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-md font-mono text-[10px] font-bold bg-brand/10 text-brand">
+                                Part {partObj.number}: {partObj.title?.en || `Part ${partObj.number}`}
+                              </span>
+                            )}
+                            {!volumeObj && !partObj && (
+                              <span className="text-[10px] text-muted-foreground font-mono">
+                                —
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3 px-3">
                           <div className="font-semibold text-foreground">{ch.title?.en || uiTemplate`Chapter ${ch.number}`}</div>
@@ -2255,6 +2665,17 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                               className="font-bold text-brand hover:underline cursor-pointer mr-1"
                             >
                               {uiText('Exercises')}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setMoveVolumeModal(ch);
+                                setTargetMoveVolumeId(ch.volume?._id || ch.volume || '');
+                              }}
+                              className="p-1 hover:text-brand cursor-pointer text-muted-foreground"
+                              title={uiText('Move Chapter to Volume')}
+                            >
+                              <BookOpen className="size-3.5" />
                             </button>
                             <button
                               type="button"
@@ -3298,23 +3719,37 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
               {editingChapterId ? uiText('Edit Chapter') : uiText('Add New Chapter')}
             </h3>
             <form onSubmit={handleSaveChapter} className="space-y-4">
-              <div>
-                <label className="text-xs font-bold block mb-1">{uiText('Part / Volume')}</label>
-                <select
-                  value={chapterForm.part || ''}
-                  onChange={(e) => setChapterForm({ ...chapterForm, part: e.target.value })}
-                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
-                >
-                  <option value="">{uiText('No Part / Standalone Chapter')}</option>
-                  {parts.map((p) => (
-                    <option key={p._id} value={p._id}>
-                      Part {p.number}: {p.title?.en || `Part ${p.number}`}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  {uiText('Assign to a part/volume or keep standalone. Duplicate chapter numbers are allowed across parts.')}
-                </p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('Volume (Optional)')}</label>
+                  <select
+                    value={chapterForm.volume || ''}
+                    onChange={(e) => setChapterForm({ ...chapterForm, volume: e.target.value })}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                  >
+                    <option value="">{uiText('No Volume')}</option>
+                    {volumes.map((v) => (
+                      <option key={v._id} value={v._id}>
+                        Vol {v.number}: {v.title?.en || `Volume ${v.number}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('Part (Optional)')}</label>
+                  <select
+                    value={chapterForm.part || ''}
+                    onChange={(e) => setChapterForm({ ...chapterForm, part: e.target.value })}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                  >
+                    <option value="">{uiText('No Part')}</option>
+                    {parts.map((p) => (
+                      <option key={p._id} value={p._id}>
+                        Part {p.number}: {p.title?.en || `Part ${p.number}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div>
                 <label className="text-xs font-bold block mb-1">{uiText('Chapter Number *')}</label>
@@ -3831,6 +4266,24 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                 </div>
               </div>
               <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Parent Volume (Optional)')}</label>
+                <select
+                  value={partForm.volume || ''}
+                  onChange={(e) => setPartForm({ ...partForm, volume: e.target.value })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                >
+                  <option value="">{uiText('No Parent Volume / Standalone Part')}</option>
+                  {volumes.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      Volume {v.number}: {v.title?.en || `Volume ${v.number}`}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  {uiText('Assign this part to a volume if this book has volumes containing multiple parts.')}
+                </p>
+              </div>
+              <div>
                 <label className="text-xs font-bold block mb-1">{uiText('Part Title (English) *')}</label>
                 <input
                   type="text"
@@ -3925,6 +4378,151 @@ export default function ReferenceBookManagerPage({ fixedBookSlug }) {
                   type="button"
                   size="sm"
                   onClick={() => handleMoveChapterPart(movePartModal._id, targetMovePartId)}
+                  className="font-bold bg-brand text-white hover:bg-brand/90"
+                >
+                  {uiText('Move Chapter')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Volume Modal */}
+      {volumeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
+            <h3 className="text-base font-extrabold text-foreground mb-4">
+              {editingVolumeId ? uiText('Edit Volume') : uiText('Add New Volume')}
+            </h3>
+            <form onSubmit={handleSaveVolume} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('Volume Number *')}</label>
+                  <input
+                    type="number"
+                    value={volumeForm.number}
+                    onChange={(e) => {
+                      const num = e.target.value;
+                      setVolumeForm({
+                        ...volumeForm,
+                        number: num,
+                        slug: volumeForm.slug || `volume-${num}`,
+                        title: {
+                          ...volumeForm.title,
+                          en: volumeForm.title?.en || `Volume ${num}`,
+                          hi: volumeForm.title?.hi || `वॉल्यूम ${num}`,
+                        },
+                      });
+                    }}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold block mb-1">{uiText('URL Slug')}</label>
+                  <input
+                    type="text"
+                    placeholder="volume-1"
+                    value={volumeForm.slug}
+                    onChange={(e) => setVolumeForm({ ...volumeForm, slug: e.target.value })}
+                    className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-mono"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Volume Title (English) *')}</label>
+                <input
+                  type="text"
+                  placeholder={uiText('e.g. Volume 1')}
+                  value={volumeForm.title?.en || ''}
+                  onChange={(e) => setVolumeForm({ ...volumeForm, title: { ...volumeForm.title, en: e.target.value } })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Volume Title (Hindi)')}</label>
+                <input
+                  type="text"
+                  placeholder={uiText('e.g. वॉल्यूम 1')}
+                  value={volumeForm.title?.hi || ''}
+                  onChange={(e) => setVolumeForm({ ...volumeForm, title: { ...volumeForm.title, hi: e.target.value } })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Short Description (Optional)')}</label>
+                <textarea
+                  rows={2}
+                  placeholder={uiText('Brief description of content covered in this volume...')}
+                  value={volumeForm.shortDescription?.en || ''}
+                  onChange={(e) => setVolumeForm({ ...volumeForm, shortDescription: { ...volumeForm.shortDescription, en: e.target.value } })}
+                  className="w-full rounded-xl border border-border bg-background p-2.5 text-xs"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold block mb-1">{uiText('Status')}</label>
+                <select
+                  value={volumeForm.status}
+                  onChange={(e) => setVolumeForm({ ...volumeForm, status: e.target.value })}
+                  className="w-full h-8.5 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                >
+                  <option value="published">{uiText('Published (Visible to Students)')}</option>
+                  <option value="draft">{uiText('Draft (Admin Only)')}</option>
+                </select>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-3 border-t">
+                <Button type="button" variant="outline" size="sm" onClick={() => setVolumeModal(false)}>
+                  {uiText('Cancel')}
+                </Button>
+                <Button type="submit" size="sm" className="font-bold bg-brand text-white hover:bg-brand/90">
+                  {uiText('Save Volume')}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Move Chapter to Volume Modal */}
+      {moveVolumeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border bg-card p-6 shadow-xl animate-in zoom-in-95">
+            <h3 className="text-base font-extrabold text-foreground mb-1">
+              {uiText('Move Chapter to Volume')}
+            </h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              {uiText('Moving Chapter')} <span className="font-mono font-bold text-brand">{moveVolumeModal.number}</span>: &quot;{moveVolumeModal.title?.en || ''}&quot;
+            </p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold block mb-1.5">{uiText('Select Destination Volume')}:</label>
+                <select
+                  value={targetMoveVolumeId}
+                  onChange={(e) => setTargetMoveVolumeId(e.target.value)}
+                  className="w-full h-9 rounded-xl border border-border bg-background px-3 text-xs font-bold"
+                >
+                  <option value="">{uiText('No Volume / Standalone Chapter')}</option>
+                  {volumes.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      Volume {v.number}: {v.title?.en || `Volume ${v.number}`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex gap-2 justify-end pt-3 border-t">
+                <Button type="button" variant="outline" size="sm" onClick={() => setMoveVolumeModal(null)}>
+                  {uiText('Cancel')}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => handleMoveChapterVolume(moveVolumeModal._id, targetMoveVolumeId)}
                   className="font-bold bg-brand text-white hover:bg-brand/90"
                 >
                   {uiText('Move Chapter')}

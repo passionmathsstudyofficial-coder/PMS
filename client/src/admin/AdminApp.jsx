@@ -154,6 +154,7 @@ export default function AdminApp() {
               <Route path="reference-books/:id" element={<EditorRoute component={BookEditor} />} />
               <Route path="reference-books-manager" element={<ReferenceBookManagerPage />} />
               <Route path="reference-books-manager/:bookSlug" element={<ReferenceBookManagerPage />} />
+              <Route path="ncert-manager" element={<ReferenceBookManagerPage isNcert={true} />} />
               <Route path="announcements" element={<AnnouncementsList />} />
               <Route path="announcements/:id" element={<EditorRoute component={AnnouncementEditor} />} />
               <Route path="study-cms/:module/:section/:id?" element={<StudyCmsPage />} />

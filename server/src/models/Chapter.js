@@ -25,6 +25,7 @@ const chapterSchema = new Schema(
     featuredImage: { type: ObjectId, ref: 'Media' },
     introVideo: { type: ObjectId, ref: 'Video' },
     book: { type: ObjectId, ref: 'Book', index: true },
+    volume: { type: ObjectId, ref: 'BookPart', default: null, index: true },
     part: { type: ObjectId, ref: 'BookPart', default: null, index: true },
     academicSession: { type: String, default: '2026-27', trim: true, index: true },
     pdfFile: { type: ObjectId, ref: 'Media' },

@@ -7,9 +7,11 @@ const { Schema } = mongoose;
 
 const bookPartSchema = new Schema(
   {
-    book: { type: ObjectId, ref: 'Book', required: true, index: true },
+    book: { type: ObjectId, ref: 'Book', required: false, default: null, index: true },
     class: { type: ObjectId, ref: 'Class', required: true, index: true },
     bookClass: { type: ObjectId, ref: 'BookClass', index: true },
+    kind: { type: String, enum: ['part', 'volume'], default: 'part', index: true },
+    volume: { type: ObjectId, ref: 'BookPart', default: null, index: true },
     number: { type: Number, required: true, min: 1, default: 1 },
     title: l10n(),
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 120 },
@@ -25,12 +27,13 @@ const bookPartSchema = new Schema(
 );
 
 bookPartSchema.plugin(contentPlugin);
-bookPartSchema.index({ book: 1, class: 1, academicSession: 1, slug: 1 }, { unique: true });
-bookPartSchema.index({ book: 1, class: 1, number: 1 });
-bookPartSchema.index({ book: 1, class: 1, sortOrder: 1, number: 1 });
+bookPartSchema.index({ book: 1, class: 1, kind: 1, academicSession: 1, slug: 1 }, { unique: true });
+bookPartSchema.index({ book: 1, class: 1, kind: 1, number: 1 });
+bookPartSchema.index({ book: 1, class: 1, kind: 1, sortOrder: 1, number: 1 });
 
 bookPartSchema.pre('validate', function buildSlug() {
-  const defaultSlug = `part-${this.number}`;
+  const prefix = this.kind === 'volume' ? 'volume' : 'part';
+  const defaultSlug = `${prefix}-${this.number}`;
   this.slug = slugify(this.slug || this.title?.en || defaultSlug, defaultSlug);
 });
 

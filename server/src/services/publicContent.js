@@ -1732,8 +1732,12 @@ export async function resolvePath(pathname, { preview = false, page = 1, limit =
   const chapterList = async (withExercises, withTopics) => {
     const chapters = await Chapter.find(vis(Chapter, preview, chapterScope))
       .sort({ sortOrder: 1, number: 1 })
-      .select('number title slug shortDescription image status featured')
-      .populate({ path: 'image', select: MEDIA_SELECT })
+      .select('number title slug shortDescription image status featured part volume')
+      .populate([
+        { path: 'image', select: MEDIA_SELECT },
+        { path: 'part', select: 'number title slug kind' },
+        { path: 'volume', select: 'number title slug kind' },
+      ])
       .lean();
     const counts = await countsForChapters(chapters.map((c) => c._id), preview, effectiveSession);
 

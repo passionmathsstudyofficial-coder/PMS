@@ -55,11 +55,15 @@ export const NAV_GROUPS = [
   {
     get label() { return uiText("NCERT Mathematics"); },
     items: [
-      { to: 'classes', get label() { return uiText("Class Management"); }, icon: GraduationCap },
-      { to: 'chapters', get label() { return uiText("Chapter Management"); }, icon: BookOpen },
-      { to: 'exercises', get label() { return uiText("Exercise Management"); }, icon: ListOrdered },
-      { to: 'questions', get label() { return uiText("Question & Solution Management"); }, icon: CircleHelp },
-      { to: 'topics', get label() { return uiText("Topics (टॉपिक)"); }, icon: Sparkles },
+      { to: 'ncert-manager?tab=classes', get label() { return uiText("Class Management"); }, icon: GraduationCap },
+      { to: 'ncert-manager?tab=chapters', get label() { return uiText("Chapter Management"); }, icon: BookOpen },
+      { to: 'ncert-manager?tab=exercises', get label() { return uiText("Exercise Management"); }, icon: ListOrdered },
+      { to: 'ncert-manager?tab=questions', get label() { return uiText("Questions & Solutions Management"); }, icon: CircleHelp },
+      { to: 'ncert-manager?tab=topics', get label() { return uiText("Topics Management"); }, icon: Sparkles },
+      { to: 'ncert-manager?tab=notes', get label() { return uiText("Notes Management"); }, icon: NotebookPen },
+      { to: 'ncert-manager?tab=important-questions', get label() { return uiText("Important Questions Management"); }, icon: Star },
+      { to: 'ncert-manager?tab=parts', get label() { return uiText("Parts Management"); }, icon: Shapes },
+      { to: 'ncert-manager?tab=volumes', get label() { return uiText("Volume Management"); }, icon: Library },
     ],
   },
   {
