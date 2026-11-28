@@ -581,7 +581,12 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
         .lean(),
     ]);
 
-    const examYears = [2025, 2024, 2023, 2022, 2020, 2019, 2018];
+    const examYears = Array.from(
+      new Set([
+        ...papers.map((p) => p.year),
+        ...solvedQuestions.map((q) => q.year),
+      ].filter(Boolean).map(Number))
+    ).sort((a, b) => b - a);
     return {
       type: 'pyq',
       data: {
@@ -633,6 +638,13 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
         .lean(),
     ]);
 
+    const examYears = Array.from(
+      new Set([
+        ...samplePapers.map((p) => p.year),
+        ...sampleQuestions.map((q) => q.year),
+      ].filter(Boolean).map(Number))
+    ).sort((a, b) => b - a);
+
     return {
       type: 'samplePapers',
       data: {
@@ -641,6 +653,7 @@ async function resolveStudyMaterialsPath(segments, { preview, page, limit, sessi
         classes: classes.map((c) => ({ ...c, url: urls.studyMaterialCategoryClass(cat.slug, c) })),
         academicSessions: activeSessions,
         currentSession,
+        examinationYears: examYears,
         papers: samplePapers.map(formatResource),
         questions: sampleQuestions.map(q => ({ ...q, attachments: cleanAttachments(q.attachments), blocks: cleanBlocks(q.blocks) })),
         markingSchemes: markingSchemes.map(formatResource),

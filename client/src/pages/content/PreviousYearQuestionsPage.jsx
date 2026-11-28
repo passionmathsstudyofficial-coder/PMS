@@ -1,5 +1,5 @@
 import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import {
   FileText,
@@ -16,10 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
-import { RichContent } from '@/components/content/RichContent.jsx';
-import { SolutionRenderer } from '@/components/content/SolutionRenderer.jsx';
-import { Figure } from '@/components/content/Figure.jsx';
-import { toViewerImage, useImageViewer } from '@/components/content/ImageViewer.jsx';
+import { QuestionPaperContent } from '@/components/content/QuestionPaperContent.jsx';
 import { EmptyState } from '@/components/site/States.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 import { documentDownloadUrl } from '@/lib/media';
@@ -35,7 +32,6 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
   const t = useL10n();
   const term = useTerm();
   const [searchParams] = useSearchParams();
-  const { openViewer } = useImageViewer();
 
   const {
     category,
@@ -43,7 +39,6 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
     classes = [],
     academicSessions = [],
     currentSession = '2026–27',
-    examinationYears = [2025, 2024, 2023, 2022, 2020, 2019, 2018],
     papers = [],
     solvedQuestions = [],
   } = data;
@@ -52,6 +47,17 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
   const [selectedBoard, setSelectedBoard] = useState('all');
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [activePdfTitle, setActivePdfTitle] = useState('');
+
+  // Only show years for which relevant content exists
+  const availableYears = useMemo(() => {
+    const set = new Set(
+      [
+        ...papers.map((p) => p.year),
+        ...solvedQuestions.map((q) => q.year),
+      ].filter(Boolean).map(Number)
+    );
+    return Array.from(set).sort((a, b) => b - a);
+  }, [papers, solvedQuestions]);
 
   const filteredPapers = papers.filter((p) => {
     if (selectedYear !== 'all' && String(p.year) !== String(selectedYear)) return false;
@@ -69,17 +75,24 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
     setActivePdfTitle(title);
   };
 
+  const dynamicHeaderTitle = selectedYear !== 'all'
+    ? {
+        hi: `CBSE PYQ ${selectedYear} — कक्षा ${cls?.number || '6-12'} गणित प्रश्नपत्र व हल`,
+        en: `CBSE PYQ ${selectedYear} — Class ${cls?.number || '6–12'} Maths Previous Year Paper & Solutions`,
+      }
+    : {
+        hi: `CBSE कक्षा ${cls?.number || '6-12'} पिछले वर्षों के प्रश्नपत्र (PYQ)`,
+        en: `CBSE Class ${cls?.number || '6–12'} Maths Previous Year Question Papers (PYQ)`,
+      };
+
   return (
     <>
       <ContentHeader
         breadcrumbs={breadcrumbs}
         watermark="PYQ"
         eyebrow={<Chip tone="brand">{uiText("CBSE Class ")}{cls?.number || '6–12'}{uiText(" Mathematics")}</Chip>}
-        title={{
-          hi: `CBSE कक्षा ${cls?.number || '6-12'} पिछले वर्षों के प्रश्नपत्र (PYQ)`,
-          en: `CBSE Class ${cls?.number || '6–12'} Maths Previous Year Question Papers (PYQ)`,
-        }}
-        subtitle={uiText("Download past 10 years CBSE question papers with question-wise step-by-step solutions, marking schemes, paper sets, and answer keys.")}
+        title={dynamicHeaderTitle}
+        subtitle={uiText("Download past CBSE question papers with question-wise step-by-step solutions, marking schemes, paper sets, and answer keys.")}
         actions={
           <AcademicSessionSelector
             sessions={academicSessions}
@@ -125,46 +138,42 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
           </div>
         </div>
 
-        {/* Filter Controls: Year, Board */}
+        {/* Filter Controls: Year Dropdown */}
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border bg-muted/30 p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-foreground">
-              <Filter className="size-3.5 text-brand" />
-              {uiText("Filter by Year")}:
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => setSelectedYear('all')}
-                className={cn(
-                  'rounded-lg px-2.5 py-1 text-xs font-bold transition-colors cursor-pointer',
-                  selectedYear === 'all'
-                    ? 'bg-brand text-white'
-                    : 'bg-card border border-border text-foreground hover:bg-muted'
-                )}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Calendar className="size-4 text-brand" />
+              <label htmlFor="pyq-year-dropdown" className="text-xs font-bold text-foreground">
+                {uiText("Select Year")}:
+              </label>
+              <select
+                id="pyq-year-dropdown"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="h-9 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground shadow-xs focus:border-brand focus:outline-none cursor-pointer"
               >
-                {uiText("All Years")}
-              </button>
-              {examinationYears.map((yr) => (
-                <button
-                  key={yr}
-                  type="button"
-                  onClick={() => setSelectedYear(String(yr))}
-                  className={cn(
-                    'rounded-lg px-2.5 py-1 text-xs font-bold transition-colors cursor-pointer',
-                    selectedYear === String(yr)
-                      ? 'bg-brand text-white'
-                      : 'bg-card border border-border text-foreground hover:bg-muted'
-                  )}
-                >
-                  {yr}
-                </button>
-              ))}
+                <option value="all">{uiText("All Available Years")}</option>
+                {availableYears.map((yr) => (
+                  <option key={yr} value={String(yr)}>
+                    {yr}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {selectedYear !== 'all' && (
+              <span className="inline-flex items-center rounded-lg bg-brand/10 px-2.5 py-1 text-xs font-black text-brand">
+                CBSE PYQ {selectedYear}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <span>{uiText("Showing")} <strong>{filteredPapers.length}</strong> {uiText("Papers")}</span>
+            <span>
+              {uiText("Showing")}{' '}
+              <strong>{filteredPapers.length + filteredQuestions.length}</strong>{' '}
+              {selectedYear !== 'all' ? `CBSE PYQ ${selectedYear}` : uiText("Papers & Resources")}
+            </span>
           </div>
         </div>
 
@@ -173,7 +182,11 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <FileText className="size-5 text-brand" />
-              <span>{uiText("Previous Year Question Papers & Marking Schemes")}</span>
+              <span>
+                {selectedYear !== 'all'
+                  ? `CBSE PYQ ${selectedYear}`
+                  : uiText("Previous Year Question Papers & Marking Schemes")}
+              </span>
             </h2>
           </div>
 
@@ -187,7 +200,7 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <span className="rounded-lg bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand">
-                        {paper.year || uiText('PYQ')}
+                        CBSE PYQ {paper.year || ''}
                       </span>
                       {paper.paperSet && (
                         <span className="rounded-lg border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
@@ -196,7 +209,7 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                       )}
                     </div>
                     <h3 className="text-sm font-bold text-foreground line-clamp-2 mb-1">
-                      {t(paper.title)}
+                      {t(paper.title) || `CBSE PYQ ${paper.year || ''}`}
                     </h3>
                     {paper.description && (
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
@@ -211,14 +224,14 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openPdf(paper.fileUrl, t(paper.title))}
+                          onClick={() => openPdf(paper.fileUrl, t(paper.title) || `CBSE PYQ ${paper.year || ''}`)}
                           className="flex-1 gap-1.5 text-xs font-bold"
                         >
                           <Eye className="size-3.5" />
                           <span>{uiText("View PDF")}</span>
                         </Button>
                         <a
-                          href={documentDownloadUrl(paper.fileUrl, t(paper.title))}
+                          href={documentDownloadUrl(paper.fileUrl, t(paper.title) || `CBSE PYQ ${paper.year || ''}`)}
                           download
                           className="inline-flex h-8 items-center justify-center rounded-xl bg-brand px-3 text-xs font-bold text-white shadow-xs hover:bg-brand/90 transition-colors"
                         >
@@ -233,83 +246,40 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
           ) : (
             <div className="rounded-2xl border border-dashed p-8 text-center bg-card/50">
               <p className="text-sm text-muted-foreground mb-3">
-                {uiText("Question papers for the selected year will be uploaded shortly.")}
+                {selectedYear !== 'all'
+                  ? uiText("Question papers for the selected year will be uploaded shortly.")
+                  : uiText("Question papers and solutions will be uploaded shortly.")}
               </p>
-              <Button variant="outline" size="sm" onClick={() => setSelectedYear('all')}>
-                {uiText("View All Available Years")}
-              </Button>
+              {selectedYear !== 'all' && (
+                <Button variant="outline" size="sm" onClick={() => setSelectedYear('all')}>
+                  {uiText("View All Available Years")}
+                </Button>
+              )}
             </div>
           )}
         </section>
 
-        {/* Solved Questions Section */}
+        {/* Solved Questions Section with Visual Distinction and Highlighted Cards */}
         {filteredQuestions.length > 0 && (
           <section className="mb-12">
             <div className="mb-6">
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <CheckCircle2 className="size-5 text-emerald-600" />
-                <span>{uiText("Solved Board Questions with Step-by-Step Mathematical Explanations")}</span>
+                <span>
+                  {selectedYear !== 'all'
+                    ? `CBSE PYQ ${selectedYear} — ${uiText("Questions & Step-by-Step Solutions")}`
+                    : uiText("Solved Board Questions with Step-by-Step Mathematical Explanations")}
+                </span>
               </h2>
               <p className="text-xs text-muted-foreground mt-1">
-                {uiText("Real questions from past CBSE board exams with complete factorizations, proofs, equations, and answer keys.")}
+                {uiText("Questions from CBSE board exams with complete factorizations, proofs, equations, and answer keys.")}
               </p>
             </div>
 
-            <div className="space-y-6">
-              {filteredQuestions.map((q, idx) => {
-                const images = (q.attachments || []).map((a) =>
-                  toViewerImage(a.media, { alt: t(a.alt) || t(a.media?.alt), caption: t(a.caption) })
-                );
-                return (
-                  <article
-                    key={q._id}
-                    id={q.slug}
-                    className="overflow-hidden rounded-2xl border bg-card shadow-xs"
-                  >
-                    <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/5 px-4 py-3 sm:px-5">
-                      {(q.year || q.board) && (
-                        <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
-                          {q.board || 'CBSE'} {q.year || ''}
-                        </span>
-                      )}
-                      {q.chapter && (
-                        <span className="ml-auto text-xs font-semibold text-brand">
-                          {term('chapter')} {q.chapter.number}: {t(q.chapter.title)}
-                        </span>
-                      )}
-                    </header>
-
-                    <div className="space-y-4 p-5">
-                      <RichContent html={t(q.text, q.languageMode)} className="text-base font-medium" />
-                    <StudyArticleContent record={q} question showContent={false} showAttachments={false} />
-
-                      {q.attachments?.length > 0 && (
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          {q.attachments.map((a, i) => (
-                            <Figure
-                              key={a._id || i}
-                              media={a.media}
-                              alt={images[i]?.alt}
-                              caption={images[i]?.caption}
-                              onOpen={() => openViewer(images, i)}
-                            />
-                          ))}
-                        </div>
-                      )}
-
-                      {q.blocks?.length > 0 && (
-                        <div className="rounded-xl border border-brand/15 bg-brand/[0.02] p-4">
-                          <h4 className="text-xs font-bold uppercase tracking-wider text-brand mb-3">
-                            {uiText("Step-by-Step Solution")}
-                          </h4>
-                          <SolutionRenderer blocks={q.blocks} languageMode={q.languageMode} />
-                        </div>
-                      )}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+            <QuestionPaperContent
+              questions={filteredQuestions}
+              defaultYear={selectedYear !== 'all' ? selectedYear : undefined}
+            />
           </section>
         )}
       </div>
@@ -323,4 +293,3 @@ export default function PreviousYearQuestionsPage({ data, breadcrumbs }) {
     </>
   );
 }
-

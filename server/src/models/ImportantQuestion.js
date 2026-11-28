@@ -26,6 +26,7 @@ const importantQuestionSchema = new mongoose.Schema(
     board: { type: String, default: 'CBSE', trim: true },
     slug: { type: String, required: true, lowercase: true, trim: true, maxlength: 140 },
     text: richL10n(),
+    content: richL10n(),
     attachments: [AttachmentSchema],
     pdfFile: { type: ObjectId, ref: 'Media' },
     pdfUrl: { type: String, default: '', trim: true, maxlength: 2000 },
@@ -72,9 +73,14 @@ function hasOptionContent(value) {
 }
 
 importantQuestionSchema.pre('validate', async function buildImportantQuestion() {
+  if ((this.content?.en || this.content?.hi) && (!this.text?.en && !this.text?.hi)) {
+    this.text = this.content;
+  } else if ((this.text?.en || this.text?.hi) && (!this.content?.en && !this.content?.hi)) {
+    this.content = this.text;
+  }
   const hasCustomSlug = Boolean(this.slug && this.slug !== 'important-question');
-  if (!hasCustomSlug || (!this.title?.en && !this.title?.hi && !this.text?.en && !this.text?.hi)) {
-    const base = l10nText({ en: this.title?.en }) || l10nText({ en: this.text?.en }).slice(0, 60) || 'important-question';
+  if (!hasCustomSlug || (!this.title?.en && !this.title?.hi && !this.text?.en && !this.text?.hi && !this.content?.en && !this.content?.hi)) {
+    const base = l10nText({ en: this.title?.en }) || l10nText({ en: this.content?.en || this.text?.en }).slice(0, 60) || 'important-question';
     const idSuffix = this._id ? this._id.toString().slice(-6) : Math.random().toString(36).slice(-6);
     this.slug = `${slugify(base, 'important-question')}-${idSuffix}`;
   } else {

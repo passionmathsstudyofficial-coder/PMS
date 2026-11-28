@@ -1,5 +1,5 @@
 import { StudyArticleContent } from '@/components/content/StudyArticleContent.jsx';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router';
 import {
   FileSpreadsheet,
@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
+import { QuestionPaperContent } from '@/components/content/QuestionPaperContent.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 import { documentDownloadUrl } from '@/lib/media';
 import { useL10n } from '@/lib/i18n';
@@ -42,6 +43,18 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
   const [activePdfUrl, setActivePdfUrl] = useState(null);
   const [activePdfTitle, setActivePdfTitle] = useState('');
   const [selectedSet, setSelectedSet] = useState('all');
+  const [selectedYear, setSelectedYear] = useState('all');
+
+  // Only show years for which relevant content exists
+  const availableYears = useMemo(() => {
+    const set = new Set(
+      [
+        ...papers.map((p) => p.year),
+        ...questions.map((q) => q.year),
+      ].filter(Boolean).map(Number)
+    );
+    return Array.from(set).sort((a, b) => b - a);
+  }, [papers, questions]);
 
   const openPdf = (url, title) => {
     setActivePdfUrl(url);
@@ -49,9 +62,25 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
   };
 
   const filteredPapers = papers.filter((p) => {
+    if (selectedYear !== 'all' && String(p.year) !== String(selectedYear)) return false;
     if (selectedSet !== 'all' && p.paperSet && p.paperSet !== selectedSet) return false;
     return true;
   });
+
+  const filteredQuestions = questions.filter((q) => {
+    if (selectedYear !== 'all' && q.year && String(q.year) !== String(selectedYear)) return false;
+    return true;
+  });
+
+  const dynamicHeaderTitle = selectedYear !== 'all'
+    ? {
+        hi: `CBSE Sample Paper ${selectedYear} — कक्षा ${cls?.number || '6-12'} गणित मॉडल प्रश्नपत्र व हल`,
+        en: `CBSE Sample Paper ${selectedYear} — Class ${cls?.number || '6–12'} Maths Sample Paper & Solutions`,
+      }
+    : {
+        hi: `CBSE कक्षा ${cls?.number || '6-12'} सैंपल पेपर्स व मॉडल प्रश्नपत्र`,
+        en: `CBSE Class ${cls?.number || '6–12'} Maths Sample Papers & Model Papers`,
+      };
 
   return (
     <>
@@ -59,10 +88,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
         breadcrumbs={breadcrumbs}
         watermark="SAMPLE"
         eyebrow={<Chip tone="brand">{uiText("CBSE Class ")}{cls?.number || '6–12'}{uiText(" Mathematics")}</Chip>}
-        title={{
-          hi: `CBSE कक्षा ${cls?.number || '6-12'} सैंपल पेपर्स व मॉडल प्रश्नपत्र`,
-          en: `CBSE Class ${cls?.number || '6–12'} Maths Sample Papers & Model Papers`,
-        }}
+        title={dynamicHeaderTitle}
         subtitle={uiText("Official CBSE sample question papers with marking schemes, blueprint, section-wise marks distribution, and model solutions.")}
         actions={
           <AcademicSessionSelector
@@ -116,7 +142,45 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
           <p className="text-xs text-muted-foreground mb-4">
             {uiText("The question paper consists of 5 sections: Section A (20 MCQs of 1 mark each), Section B (5 Very Short Answer questions of 2 marks each), Section C (6 Short Answer questions of 3 marks each), Section D (4 Long Answer questions of 5 marks each), and Section E (3 Case-Based integrated units of assessment of 4 marks each).")}
           </p>
+        </div>
 
+        {/* Filter Controls: Year Dropdown */}
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border bg-muted/30 p-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Calendar className="size-4 text-brand" />
+              <label htmlFor="sample-year-dropdown" className="text-xs font-bold text-foreground">
+                {uiText("Filter by Year")}:
+              </label>
+              <select
+                id="sample-year-dropdown"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="h-9 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground shadow-xs focus:border-brand focus:outline-none cursor-pointer"
+              >
+                <option value="all">{uiText("All Available Years")}</option>
+                {availableYears.map((yr) => (
+                  <option key={yr} value={String(yr)}>
+                    {yr}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {selectedYear !== 'all' && (
+              <span className="inline-flex items-center rounded-lg bg-brand/10 px-2.5 py-1 text-xs font-black text-brand">
+                CBSE Sample Paper {selectedYear}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+            <span>
+              {uiText("Showing")}{' '}
+              <strong>{filteredPapers.length + filteredQuestions.length}</strong>{' '}
+              {selectedYear !== 'all' ? `CBSE Sample Paper ${selectedYear}` : uiText("Papers & Questions")}
+            </span>
+          </div>
         </div>
 
         {/* Sample Question Papers Grid */}
@@ -124,7 +188,11 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <FileSpreadsheet className="size-5 text-brand" />
-              <span>{uiText("CBSE Sample Question Papers (SQP)")}</span>
+              <span>
+                {selectedYear !== 'all'
+                  ? `CBSE Sample Paper ${selectedYear}`
+                  : uiText("CBSE Sample Question Papers (SQP)")}
+              </span>
             </h2>
           </div>
 
@@ -137,7 +205,8 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <span className="rounded-lg bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand">{uiText("SQP ")}{paper.year || currentSession}
+                      <span className="rounded-lg bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand">
+                        CBSE Sample Paper {paper.year || ''}
                       </span>
                       {paper.paperSet && (
                         <span className="rounded-lg border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
@@ -146,7 +215,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                       )}
                     </div>
                     <h3 className="text-sm font-bold text-foreground line-clamp-2 mb-1">
-                      {t(paper.title)}
+                      {t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`}
                     </h3>
                     {paper.description && (
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
@@ -161,14 +230,14 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openPdf(paper.fileUrl, t(paper.title))}
+                          onClick={() => openPdf(paper.fileUrl, t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`)}
                           className="flex-1 gap-1.5 text-xs font-bold"
                         >
                           <Eye className="size-3.5" />
                           <span>{uiText("View Sample Paper")}</span>
                         </Button>
                         <a
-                          href={documentDownloadUrl(paper.fileUrl, t(paper.title))}
+                          href={documentDownloadUrl(paper.fileUrl, t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`)}
                           download
                           className="inline-flex h-8 items-center justify-center rounded-xl bg-brand px-3 text-xs font-bold text-white shadow-xs hover:bg-brand/90 transition-colors"
                         >
@@ -183,37 +252,37 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
           ) : (
             <div className="rounded-2xl border border-dashed p-8 text-center bg-card/50">
               <p className="text-sm text-muted-foreground mb-3">
-                {uiText("Sample papers will be published here for download.")}
+                {selectedYear !== 'all'
+                  ? uiText("Sample papers for the selected year will be published here for download.")
+                  : uiText("Sample papers will be published here for download.")}
               </p>
+              {selectedYear !== 'all' && (
+                <Button variant="outline" size="sm" onClick={() => setSelectedYear('all')}>
+                  {uiText("View All Available Years")}
+                </Button>
+              )}
             </div>
           )}
         </section>
 
-        {questions.length > 0 && (
-          <section className="mb-12 space-y-4">
-            <h2 className="text-lg font-bold">{uiText('Important Questions')}</h2>
-            {questions.map((question) => (
-              <article key={question._id} className="overflow-hidden rounded-2xl border bg-card shadow-xs">
-                <header className="flex flex-wrap items-center gap-2 border-b bg-amber-500/5 px-4 py-3 sm:px-5">
-                  {(question.year || question.board) && (
-                    <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
-                      {question.board || 'CBSE'} {question.year || ''}
-                    </span>
-                  )}
-                  {question.chapter && (
-                    <span className="ml-auto text-xs font-semibold text-brand">
-                      {term('chapter')} {question.chapter.number}: {t(question.chapter.title)}
-                    </span>
-                  )}
-                </header>
-                <div className="space-y-4 p-5">
-                  {t(question.title) && !/^(question|प्रश्न)\s*\d+/i.test(t(question.title).trim()) && (
-                    <h3 className="font-bold">{t(question.title)}</h3>
-                  )}
-                  <StudyArticleContent record={question} question />
-                </div>
-              </article>
-            ))}
+        {/* Questions Section with Highlighted Question Cards & Solutions */}
+        {filteredQuestions.length > 0 && (
+          <section className="mb-12">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <FileCheck2 className="size-5 text-brand" />
+                <span>
+                  {selectedYear !== 'all'
+                    ? `CBSE Sample Paper ${selectedYear} — ${uiText("Model Questions & Step-by-Step Solutions")}`
+                    : uiText("Official Sample Questions & Step-by-Step Solutions")}
+                </span>
+              </h2>
+            </div>
+
+            <QuestionPaperContent
+              questions={filteredQuestions}
+              defaultYear={selectedYear !== 'all' ? selectedYear : undefined}
+            />
           </section>
         )}
 
@@ -237,7 +306,9 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                   className="flex flex-col justify-between rounded-2xl border border-emerald-500/20 bg-card p-5 shadow-xs"
                 >
                   <div>
-                    <span className="rounded-lg bg-emerald-500/10 px-2 py-0.5 text-xs font-extrabold text-emerald-600 mb-2 inline-block">{uiText("Marking Scheme")}</span>
+                    <span className="rounded-lg bg-emerald-500/10 px-2 py-0.5 text-xs font-extrabold text-emerald-600 mb-2 inline-block">
+                      {uiText("Marking Scheme")}
+                    </span>
                     <h3 className="text-sm font-bold text-foreground line-clamp-2 mb-1">
                       {t(ms.title)}
                     </h3>
@@ -281,4 +352,3 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
     </>
   );
 }
-

@@ -471,9 +471,15 @@ export function ImportantQuestionEditor({ id, studyBasePath }) {
               </div>
             </Panel>
 
-            <Panel title={uiText("Question Statement")} description={uiText("Enter question text with LaTeX math support e.g. $\\int x^2 dx$ or $\\frac{a}{b}$.")}>
-              <RichL10nField value={form.text} onChange={(v) => setField('text', v)} />
-            </Panel>
+            {['pyq', 'sample_paper'].includes(form.category) ? (
+              <Panel title={uiText("Question Paper & Step-by-Step Solutions Content (Blog CMS Editor)")} description={uiText("Admin enters questions and their corresponding answers/solutions together using one rich-text editor, exactly like a blog post.")}>
+                <RichL10nField value={form.content?.en || form.content?.hi ? form.content : form.text} onChange={(v) => { setField('content', v); setField('text', v); }} />
+              </Panel>
+            ) : (
+              <Panel title={uiText("Question Statement")} description={uiText("Enter question text with LaTeX math support e.g. $\\int x^2 dx$ or $\\frac{a}{b}$.")}>
+                <RichL10nField value={form.text} onChange={(v) => setField('text', v)} />
+              </Panel>
+            )}
 
             {form.questionType === 'mcq' && <ImportantMcqEditor form={form} setField={setField} />}
             <Panel title={uiText("Images, Diagrams & Video")}>
@@ -493,9 +499,11 @@ export function ImportantQuestionEditor({ id, studyBasePath }) {
               <FormulaListField value={form.formulas} onChange={(v) => setField('formulas', v)} />
             </Panel>
 
-            <Panel title={uiText("Step-by-step Solution")} description={uiText("Add steps, calculations, theorems, explanations, and diagrams.")}>
-              <SolutionBuilder blocks={form.blocks} onChange={(v) => setField('blocks', v)} />
-            </Panel>
+            {(!['pyq', 'sample_paper'].includes(form.category) || form.blocks?.length > 0) && (
+              <Panel title={uiText("Step-by-step Solution")} description={uiText("Add steps, calculations, theorems, explanations, and diagrams.")}>
+                <SolutionBuilder blocks={form.blocks} onChange={(v) => setField('blocks', v)} />
+              </Panel>
+            )}
 
             <Panel title={uiText("Short Answer & Marking Scheme")}>
               <div className="grid gap-4 sm:grid-cols-2">
