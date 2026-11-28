@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/content/badges.jsx';
 import { PdfViewerDialog } from '@/components/content/PdfViewerDialog.jsx';
-import { QuestionPaperContent } from '@/components/content/QuestionPaperContent.jsx';
+import { QuestionPaperContent, getPaperBadgeLabel } from '@/components/content/QuestionPaperContent.jsx';
 import { AcademicSessionSelector } from '@/components/site/AcademicSessionSelector.jsx';
 import { documentDownloadUrl } from '@/lib/media';
 import { useL10n } from '@/lib/i18n';
@@ -169,7 +169,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
 
             {selectedYear !== 'all' && (
               <span className="inline-flex items-center rounded-lg bg-brand/10 px-2.5 py-1 text-xs font-black text-brand">
-                CBSE Sample Paper {selectedYear}
+                {getPaperBadgeLabel('sample_paper', selectedYear)}
               </span>
             )}
           </div>
@@ -178,7 +178,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
             <span>
               {uiText("Showing")}{' '}
               <strong>{filteredPapers.length + filteredQuestions.length}</strong>{' '}
-              {selectedYear !== 'all' ? `CBSE Sample Paper ${selectedYear}` : uiText("Papers & Questions")}
+              {selectedYear !== 'all' ? getPaperBadgeLabel('sample_paper', selectedYear) : uiText("Papers & Questions")}
             </span>
           </div>
         </div>
@@ -190,7 +190,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
               <FileSpreadsheet className="size-5 text-brand" />
               <span>
                 {selectedYear !== 'all'
-                  ? `CBSE Sample Paper ${selectedYear}`
+                  ? getPaperBadgeLabel('sample_paper', selectedYear)
                   : uiText("CBSE Sample Question Papers (SQP)")}
               </span>
             </h2>
@@ -206,7 +206,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <span className="rounded-lg bg-brand/10 px-2 py-0.5 text-xs font-extrabold text-brand">
-                        CBSE Sample Paper {paper.year || ''}
+                        {getPaperBadgeLabel('sample_paper', paper.year)}
                       </span>
                       {paper.paperSet && (
                         <span className="rounded-lg border bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
@@ -215,7 +215,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                       )}
                     </div>
                     <h3 className="text-sm font-bold text-foreground line-clamp-2 mb-1">
-                      {t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`}
+                      {t(paper.title) || getPaperBadgeLabel('sample_paper', paper.year)}
                     </h3>
                     {paper.description && (
                       <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
@@ -230,14 +230,14 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openPdf(paper.fileUrl, t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`)}
+                          onClick={() => openPdf(paper.fileUrl, t(paper.title) || getPaperBadgeLabel('sample_paper', paper.year))}
                           className="flex-1 gap-1.5 text-xs font-bold"
                         >
                           <Eye className="size-3.5" />
                           <span>{uiText("View Sample Paper")}</span>
                         </Button>
                         <a
-                          href={documentDownloadUrl(paper.fileUrl, t(paper.title) || `CBSE Sample Paper ${paper.year || ''}`)}
+                          href={documentDownloadUrl(paper.fileUrl, t(paper.title) || getPaperBadgeLabel('sample_paper', paper.year))}
                           download
                           className="inline-flex h-8 items-center justify-center rounded-xl bg-brand px-3 text-xs font-bold text-white shadow-xs hover:bg-brand/90 transition-colors"
                         >
@@ -273,7 +273,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
                 <FileCheck2 className="size-5 text-brand" />
                 <span>
                   {selectedYear !== 'all'
-                    ? `CBSE Sample Paper ${selectedYear} — ${uiText("Model Questions & Step-by-Step Solutions")}`
+                    ? `${getPaperBadgeLabel('sample_paper', selectedYear)} — ${uiText("Model Questions & Step-by-Step Solutions")}`
                     : uiText("Official Sample Questions & Step-by-Step Solutions")}
                 </span>
               </h2>
@@ -281,6 +281,7 @@ export default function SamplePapersPage({ data, breadcrumbs }) {
 
             <QuestionPaperContent
               questions={filteredQuestions}
+              pageType="sample_paper"
               defaultYear={selectedYear !== 'all' ? selectedYear : undefined}
             />
           </section>

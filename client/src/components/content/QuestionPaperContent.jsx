@@ -8,6 +8,40 @@ import { useL10n } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 /**
+ * Dynamic Paper Badge & Label Generator based on page/category type.
+ * - Previous Year Questions -> CBSE PYQ 2026
+ * - Sample Papers -> CBSE Sample Paper 2026
+ * - General/Other -> CBSE 2026
+ */
+export function getPaperBadgeLabel(pageType, year, board = 'CBSE', customLabel) {
+  if (customLabel) return customLabel;
+  const yearStr = year ? String(year).trim() : '';
+  const boardPrefix = (board || 'CBSE').trim();
+  const normType = String(pageType || '').toLowerCase().replace(/[-_]/g, '');
+
+  // Previous Year Questions -> CBSE PYQ {year}
+  if (
+    normType === 'pyq' ||
+    normType === 'previousyearquestions' ||
+    normType === 'previousyearpaper'
+  ) {
+    return yearStr ? `${boardPrefix} PYQ ${yearStr}` : `${boardPrefix} PYQ`;
+  }
+
+  // Sample Papers -> CBSE Sample Paper {year}
+  if (
+    normType === 'samplepaper' ||
+    normType === 'samplepapers' ||
+    normType === 'cbsesamplepapers'
+  ) {
+    return yearStr ? `${boardPrefix} Sample Paper ${yearStr}` : `${boardPrefix} Sample Paper`;
+  }
+
+  // Default fallback
+  return yearStr ? `${boardPrefix} ${yearStr}` : boardPrefix;
+}
+
+/**
  * Parses a combined question-and-answer rich text HTML into distinct questions.
  * Handles headings (h2, h3, h4), bold tags (<p><strong>Question 1...</strong></p>),
  * and solution demarcations (<h4>Solution</h4>, <strong>Solution:</strong>).
@@ -31,7 +65,6 @@ export function parseQuestionPaperHtml(html) {
     const tag = el.tagName.toLowerCase();
     if (/^h[2-4]$/.test(tag)) {
       if (/^(?:question|q\.?|q\s*\d+|प्रश्न|प्र\.?|problem)\b/i.test(text)) return true;
-      // If there are multiple h3 or h2 elements and some mention question
       if (children.filter((c) => /^h[2-4]$/.test(c.tagName.toLowerCase())).length > 1) {
         return /^(?:question|q\.?|q\s*\d+|प्रश्न|प्र\.?|problem|\d+[\.\)])\b/i.test(text);
       }
@@ -62,7 +95,6 @@ export function parseQuestionPaperHtml(html) {
 
   // If there are no question headers at all, treat whole content as one question
   if (!hasAnyQuestionHeaders) {
-    // Check if there is an embedded solution header
     const solutionIdx = children.findIndex(isSolutionHeader);
     if (solutionIdx !== -1) {
       const qElements = children.slice(0, solutionIdx).map((c) => c.outerHTML).join('');
@@ -105,7 +137,6 @@ export function parseQuestionPaperHtml(html) {
         current.questionElements.push(child.outerHTML);
       }
     } else {
-      // Content before the first question header
       if (!current) {
         current = {
           questionNumber: '1',
@@ -137,6 +168,7 @@ export function parseQuestionPaperHtml(html) {
 /**
  * Highlighting Question Card component.
  * Displays visually distinct question container with prominent question number,
+ * page-based paper label (e.g. CBSE PYQ 2026 or CBSE Sample Paper 2026),
  * highlighted question statement, and answer/solution immediately underneath.
  */
 export function QuestionItemCard({
@@ -152,8 +184,11 @@ export function QuestionItemCard({
   attachments = [],
   languageMode,
   onImageOpen,
+  pageType = 'pyq',
+  paperLabel,
 }) {
   const t = useL10n();
+  const badgeLabel = getPaperBadgeLabel(pageType, year, board, paperLabel);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs transition hover:border-brand/40 hover:shadow-md">
@@ -165,9 +200,9 @@ export function QuestionItemCard({
               {uiText("Question")} {questionNumber}
             </span>
           )}
-          {(year || board) && (
+          {badgeLabel && (
             <span className="rounded-full bg-brand/10 px-2.5 py-0.5 text-[11px] font-bold text-brand">
-              {board} {year || ''}
+              {badgeLabel}
             </span>
           )}
           {paperSet && (
@@ -255,9 +290,17 @@ export function QuestionItemCard({
  * - A single document (with html content that might have multiple questions)
  * - Or a list of question documents
  * And renders them with highlighted question boxes, prominent question numbers,
+ * dynamic paper-based labels (CBSE PYQ 2026 vs CBSE Sample Paper 2026),
  * and answers immediately underneath.
  */
-export function QuestionPaperContent({ questions = [], defaultYear, board = 'CBSE', paperSet }) {
+export function QuestionPaperContent({
+  questions = [],
+  defaultYear,
+  board = 'CBSE',
+  paperSet,
+  pageType = 'pyq',
+  paperLabel,
+}) {
   const t = useL10n();
 
   return (
@@ -265,6 +308,8 @@ export function QuestionPaperContent({ questions = [], defaultYear, board = 'CBS
       {questions.map((q, idx) => {
         const rawContent = t(q.content || q.text, q.languageMode);
         const parsedItems = parseQuestionPaperHtml(rawContent);
+        const currentYear = q.year || defaultYear;
+        const currentType = q.category || pageType;
 
         // If the document content parsed into multiple questions
         if (parsedItems.length > 1) {
@@ -276,13 +321,15 @@ export function QuestionPaperContent({ questions = [], defaultYear, board = 'CBS
                   questionNumber={item.questionNumber}
                   questionHtml={item.questionHtml}
                   solutionHtml={item.solutionHtml}
-                  year={q.year || defaultYear}
+                  year={currentYear}
                   board={q.board || board}
                   paperSet={q.paperSet || paperSet}
                   marks={q.marks}
                   chapter={q.chapter}
                   attachments={q.attachments}
                   languageMode={q.languageMode}
+                  pageType={currentType}
+                  paperLabel={paperLabel}
                 />
               ))}
             </div>
@@ -303,13 +350,15 @@ export function QuestionPaperContent({ questions = [], defaultYear, board = 'CBS
             questionHtml={singleParsed.questionHtml || rawContent}
             solutionHtml={singleParsed.solutionHtml}
             blocks={q.blocks}
-            year={q.year || defaultYear}
+            year={currentYear}
             board={q.board || board}
             paperSet={q.paperSet || paperSet}
             marks={q.marks}
             chapter={q.chapter}
             attachments={q.attachments}
             languageMode={q.languageMode}
+            pageType={currentType}
+            paperLabel={paperLabel}
           />
         );
       })}

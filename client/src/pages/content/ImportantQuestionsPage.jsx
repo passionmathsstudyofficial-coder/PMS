@@ -16,6 +16,7 @@ import { errorMessage, get } from '@/lib/api';
 import { hasContent, useL10n } from '@/lib/i18n';
 import { useTerm } from '@/lib/site';
 import { ContentHeader } from './ContentHeader.jsx';
+import { getPaperBadgeLabel } from '@/components/content/QuestionPaperContent.jsx';
 
 function ImportantQuestionCard({ item, index }) {
   useUiLanguage();
@@ -31,7 +32,7 @@ function ImportantQuestionCard({ item, index }) {
       <header className="flex flex-wrap items-center gap-2 border-b bg-saffron-soft/50 px-4 py-2.5 sm:px-5">
         {(item.year || item.board) && (
           <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-bold text-brand">
-            {item.board || 'CBSE'} {item.year || ''}
+            {getPaperBadgeLabel(item.category, item.year, item.board)}
           </span>
         )}
         {t(item.title) && !/^(question|प्रश्न)\s*\d+/i.test(t(item.title).trim()) && (
